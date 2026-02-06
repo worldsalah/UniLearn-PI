@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage Services - Admin{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+<main>
+    <section class="pt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <div class="d-sm-flex justify-content-between align-items-center">
+                        <h1 class="h3 mb-2 mb-sm-0">Manage Services (Products)</h1>
+                        <a href="{{ path('app_admin_dashboard') }}" class="btn btn-sm btn-secondary mb-0">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow">
+                 <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-nowrap">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Freelancer</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Created</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td>
+                                            <div class="avatar avatar-md">
+                                                 <img src="{{ vich_uploader_asset(product, 'imageFile')|default(asset('assets/images/courses/4by3/08.jpg')) }}" class="rounded" alt="">
+                                            </div>
+                                        </td>
+                                        <td><h6 class="mb-0">{{ product.title }}</h6></td>
+                                        <td>{{ product.freelancer.fullName }}</td>
+                                        <td>${{ product.price }}</td>
+                                        <td><span class="badge bg-info bg-opacity-10 text-info">{{ product.category }}</span></td>
+                                        <td>{{ product.createdAt|date('d M Y') }}</td>
+                                        <td>
+                                            <form method="post" action="{{ path('app_admin_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Are you sure?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                                                <button class="btn btn-sm btn-danger-soft mb-0"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">No services found.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                 <div class="card-footer border-top text-center">
+                    {{ knp_pagination_render(products) }}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% include 'components/footer.html.twig' %}
+{% endblock %}

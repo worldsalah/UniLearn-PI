@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Become a Freelancer - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+<section class="py-5">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header border-bottom">
+                        <h4 class="card-header-title">Register as a Freelancer</h4>
+                    </div>
+                    <div class="card-body">
+                         {{ form_start(form) }}
+                            <div class="mb-3">
+                                {{ form_label(form.fullName, 'Display Name') }}
+                                {{ form_widget(form.fullName, {'attr': {'class': 'form-control', 'placeholder': 'e.g. John Doe'}}) }}
+                                {{ form_errors(form.fullName) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(form.bio) }}
+                                {{ form_widget(form.bio, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Tell us about your skills...'}}) }}
+                                {{ form_errors(form.bio) }}
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Create Profile</button>
+                            </div>
+                            <div class="d-none">
+                                {{ form_rest(form) }}
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'components/footer.html.twig' %}
+{% endblock %}

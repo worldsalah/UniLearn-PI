@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.title }} - Marketplace{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+<!-- Page Banner START -->
+<section class="py-4">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<div class="bg-light p-4 text-center rounded-3">
+					<h1 class="m-0">{{ product.title }}</h1>
+					<!-- Breadcrumb -->
+					<div class="d-flex justify-content-center">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb breadcrumb-dots mb-0">
+								<li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+								<li class="breadcrumb-item"><a href="{{ path('app_marketplace_index') }}">Marketplace</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Service Details</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- Page Banner END -->
+
+<!-- Page content START -->
+<section class="pt-0">
+	<div class="container">
+		<div class="row g-4 g-lg-5">
+			<!-- Main content START -->
+            <div class="col-lg-8">
+                <!-- Image -->
+                {% set productImage = vich_uploader_asset(product, 'imageFile') %}
+                <img src="{{ productImage ?: asset('assets/images/courses/4by3/01.jpg') }}" class="rounded mb-4 w-100" alt="">
+                
+                <h3>Description</h3>
+                <p>{{ product.description|nl2br }}</p>
+
+                <!-- Rating -->
+                <hr>
+                <h4>Rate this service</h4>
+                {% if orderToRate %}
+                    <form method="post" action="{{ path('app_order_complete', {id: orderToRate.id}) }}" class="row g-2 align-items-center">
+                        <div class="col-auto">
+                            <label class="form-label mb-0 me-2">Your rating:</label>
+                        </div>
+                        <div class="col-auto">
+                            <select name="rating" class="form-select form-select-sm">
+                                {% for i in 1..5 %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <textarea name="review" class="form-control" rows="3" placeholder="Write a short review (optional)"></textarea>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ orderToRate.id) }}">
+                            <button type="submit" class="btn btn-sm btn-primary">Submit rating</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <p class="text-muted">You can rate this service after you purchase and complete an order.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="card card-body shadow p-4">
+                    <h4 class="mb-3">{{ product.price }} $</h4>
+                    <div class="d-grid">
+                        <a href="{{ path('app_order_new', {id: product.id}) }}" class="btn btn-lg btn-success">Order Now</a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>Freelancer</h6>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar avatar-sm me-2">
+                                <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                            </div>
+                            <div>
+                                <h6 class="mb-0"><a href="{{ path('app_student_show', {id: product.freelancer.id}) }}">{{ product.freelancer.fullName }}</a></h6>
+                                <small>{{ product.freelancer.user.email }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'components/footer.html.twig' %}
+{% endblock %}

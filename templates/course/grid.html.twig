@@ -1,0 +1,349 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Course Grid - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Course <span class="text-primary">Grid View</span></h1>
+                    <p class="lead mb-0">Browse courses in grid layout</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Course Grid START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- Sort and View -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <p class="mb-0">Showing <span class="fw-bold">1-12</span> of <span class="fw-bold">8,456</span> results</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <select class="form-select form-select-sm">
+                            <option selected>Sort by: Relevance</option>
+                            <option>Price: Low to High</option>
+                            <option>Price: High to Low</option>
+                            <option>Rating: High to Low</option>
+                            <option>Newest First</option>
+                        </select>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-secondary btn-sm active">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course Grid -->
+                <div class="row g-4">
+                    <!-- Course 1 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="card-img-top" alt="Course">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-danger">Bestseller</span>
+                                </div>
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary">Development</span>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.5</span>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">Complete Web Development Bootcamp 2024</h5>
+                                <p class="card-text text-muted small mb-3">Learn web development from scratch with HTML, CSS, JavaScript, React, Node.js and more.</p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                    <div>
+                                        <h6 class="mb-0 small">John Doe</h6>
+                                        <p class="mb-0 small text-muted">Senior Developer</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="mb-0">$89.99</h4>
+                                        <span class="text-decoration-line-through text-muted small">$199.99</span>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="mb-0 small text-muted">45,234 students</p>
+                                        <p class="mb-0 small text-muted">12 hours</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course 2 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/courses/4by3/02.jpg') }}" class="card-img-top" alt="Course">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-warning">Hot</span>
+                                </div>
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-success bg-opacity-10 text-success">Design</span>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">UI/UX Design Masterclass</h5>
+                                <p class="card-text text-muted small mb-3">Master the principles of user interface and user experience design.</p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/02.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                    <div>
+                                        <h6 class="mb-0 small">Jane Smith</h6>
+                                        <p class="mb-0 small text-muted">UI/UX Designer</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="mb-0">$79.99</h4>
+                                        <span class="text-decoration-line-through text-muted small">$149.99</span>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="mb-0 small text-muted">32,456 students</p>
+                                        <p class="mb-0 small text-muted">8 hours</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course 3 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/courses/4by3/03.jpg') }}" class="card-img-top" alt="Course">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-info">New</span>
+                                </div>
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-warning bg-opacity-10 text-warning">Marketing</span>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.7</span>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">Digital Marketing Complete Course</h5>
+                                <p class="card-text text-muted small mb-3">Learn SEO, social media marketing, content marketing, and more.</p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/03.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                    <div>
+                                        <h6 class="mb-0 small">Mike Johnson</h6>
+                                        <p class="mb-0 small text-muted">Marketing Expert</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="mb-0">$69.99</h4>
+                                        <span class="text-decoration-line-through text-muted small">$129.99</span>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="mb-0 small text-muted">28,789 students</p>
+                                        <p class="mb-0 small text-muted">10 hours</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course 4 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/courses/4by3/04.jpg') }}" class="card-img-top" alt="Course">
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-info bg-opacity-10 text-info">Business</span>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.6</span>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">Business Analysis Fundamentals</h5>
+                                <p class="card-text text-muted small mb-3">Learn business analysis skills and techniques for professional success.</p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/04.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                    <div>
+                                        <h6 class="mb-0 small">Sarah Wilson</h6>
+                                        <p class="mb-0 small text-muted">Business Analyst</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="mb-0">$94.99</h4>
+                                        <span class="text-decoration-line-through text-muted small">$189.99</span>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="mb-0 small text-muted">18,234 students</p>
+                                        <p class="mb-0 small text-muted">15 hours</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course 5 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/courses/4by3/05.jpg') }}" class="card-img-top" alt="Course">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-success">Free</span>
+                                </div>
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary">Development</span>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.4</span>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">Python for Beginners</h5>
+                                <p class="card-text text-muted small mb-3">Start your programming journey with Python basics and fundamentals.</p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/05.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                    <div>
+                                        <h6 class="mb-0 small">David Brown</h6>
+                                        <p class="mb-0 small text-muted">Python Developer</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="mb-0 text-success">Free</h4>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="mb-0 small text-muted">45,678 students</p>
+                                        <p class="mb-0 small text-muted">6 hours</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course 6 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/courses/4by3/06.jpg') }}" class="card-img-top" alt="Course">
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-danger bg-opacity-10 text-danger">Photography</span>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">Photography Masterclass</h5>
+                                <p class="card-text text-muted small mb-3">Complete guide to photography from basics to advanced techniques.</p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/06.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                    <div>
+                                        <h6 class="mb-0 small">Emily Davis</h6>
+                                        <p class="mb-0 small text-muted">Professional Photographer</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="mb-0">$124.99</h4>
+                                        <span class="text-decoration-line-through text-muted small">$249.99</span>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="mb-0 small text-muted">22,345 students</p>
+                                        <p class="mb-0 small text-muted">18 hours</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Course Grid END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

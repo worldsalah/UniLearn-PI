@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Freelancer Dashboard - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<main>
+<!-- =======================
+Page Banner START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-primary bg-opacity-10 rounded-3 p-4 p-md-5">
+                    <h1 class="fs-2 mb-3">Freelancer Dashboard</h1>
+                    <p class="mb-0">Manage your services, track orders, and view your earnings.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Page Banner END -->
+
+<!-- =======================
+Dashboard content START -->
+<section class="pt-5 pb-0">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <div class="avatar-img rounded-circle bg-primary"><span class="text-white position-absolute top-50 start-50 translate-middle display-6">{{ student.fullName|first }}</span></div>
+                        </div>
+                        <h5 class="mb-1">{{ student.fullName }}</h5>
+                        <p class="mb-2 badge bg-success bg-opacity-10 text-success">Verified Freelancer</p>
+                        <div class="d-flex justify-content-center gap-2">
+                             <a href="{{ path('app_student_edit', {'id': student.id}) }}" class="btn btn-sm btn-primary-soft">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation menu -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action active"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
+                            <a href="{{ path('app_product_new') }}" class="list-group-item list-group-item-action"><i class="fas fa-plus-circle me-2"></i>Post New Service</a>
+                            <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-list me-2"></i>My Services</a>
+                            <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-shopping-cart me-2"></i>Orders</a>
+                            <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-chart-line me-2"></i>Earnings</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Left sidebar END -->
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Stats START -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-body shadow p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                            </div>
+                            <h4 class="mb-0">{{ student.products|length }}</h4>
+                            <p class="mb-0 text-muted">Active Services</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-body shadow p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle">
+                                    <i class="fas fa-shopping-basket"></i>
+                                </div>
+                            </div>
+                            <h4 class="mb-0">0</h4>
+                            <p class="mb-0 text-muted">Total Orders</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-body shadow p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-circle">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                            <h4 class="mb-0">$0.00</h4>
+                            <p class="mb-0 text-muted">Total Earnings</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Stats END -->
+
+                <!-- Recent Services START -->
+                <div class="card shadow mb-4">
+                    <div class="card-header border-bottom bg-light">
+                        <h5 class="card-header-title mb-0">My Services</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Service Title</th>
+                                        <th>Price</th>
+                                        <th>Category</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in student.products %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% set productImage = vich_uploader_asset(product, 'imageFile') %}
+                                                {% if productImage %}
+                                                    <img src="{{ productImage }}" class="rounded me-2" width="40" alt="">
+                                                {% else %}
+                                                    <div class="avatar avatar-xs me-2">
+                                                        <div class="avatar-img rounded bg-light"><i class="bi bi-image"></i></div>
+                                                    </div>
+                                                {% endif %}
+                                                <h6 class="mb-0 ms-2"><a href="{{ path('app_product_show', {slug: product.slug}) }}">{{ product.title }}</a></h6>
+                                            </div>
+                                        </td>
+                                        <td>${{ product.price }}</td>
+                                        <td><span class="badge bg-info bg-opacity-10 text-info">{{ product.category }}</span></td>
+                                        <td>
+                                            <a href="{{ path('app_product_show', {slug: product.slug}) }}" class="btn btn-sm btn-light border"><i class="bi bi-eye"></i></a>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4">No services posted yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Recent Services END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- Dashboard content END -->
+</main>
+{% include 'components/footer.html.twig' %}
+{% endblock %}

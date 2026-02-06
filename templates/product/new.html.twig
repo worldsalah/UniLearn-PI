@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post a Service - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+<section class="py-5">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header border-bottom">
+                        <h4 class="card-header-title">Post a New Service</h4>
+                    </div>
+                    <div class="card-body">
+                         {{ form_start(form) }}
+                            <div class="mb-3">
+                                {{ form_label(form.title) }}
+                                {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.title) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(form.category) }}
+                                {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'e.g. Design'}}) }}
+                                {{ form_errors(form.category) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(form.price) }}
+                                {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.price) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(form.description) }}
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '5'}}) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.imageFile) }}
+                                {{ form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.imageFile) }}
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Publish Service</button>
+                            </div>
+                            <div class="d-none">
+                                 {{ form_rest(form) }}
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'components/footer.html.twig' %}
+{% endblock %}

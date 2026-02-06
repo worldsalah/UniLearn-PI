@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Coming Soon - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Coming Soon START -->
+<section class="min-vh-100 d-flex align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <!-- Logo -->
+                <div class="mb-4">
+                    <img src="{{ asset('assets/images/logo.svg') }}" class="h-50px" alt="logo">
+                </div>
+                
+                <!-- Title -->
+                <h1 class="display-1 fw-bold mb-4">Coming Soon</h1>
+                <p class="lead mb-4">We're working hard to bring you something amazing. Stay tuned!</p>
+                
+                <!-- Countdown -->
+                <div class="row justify-content-center mb-5" id="countdown">
+                    <div class="col-auto">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h2 class="mb-0" id="days">00</h2>
+                                <p class="mb-0 small text-muted">Days</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h2 class="mb-0" id="hours">00</h2>
+                                <p class="mb-0 small text-muted">Hours</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h2 class="mb-0" id="minutes">00</h2>
+                                <p class="mb-0 small text-muted">Minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h2 class="mb-0" id="seconds">00</h2>
+                                <p class="mb-0 small text-muted">Seconds</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notification form -->
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <h5 class="mb-3">Get notified when we launch</h5>
+                        <form class="row g-2">
+                            <div class="col-md-8">
+                                <input type="email" class="form-control" placeholder="Enter your email address" required>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary w-100">Notify Me</button>
+                            </div>
+                        </form>
+                        <p class="mb-0 small text-muted mt-2">We respect your privacy. No spam, ever.</p>
+                    </div>
+                </div>
+                
+                <!-- Social links -->
+                <div class="mt-5">
+                    <h6 class="mb-3">Follow us on social media</h6>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-info btn-sm">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-danger btn-sm">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-danger btn-sm">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Coming Soon END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+
+<!-- Countdown Script -->
+<script>
+// Set the date we're counting down to
+const countDownDate = new Date("Jan 1, 2025 00:00:00").getTime();
+
+// Update the count down every 1 second
+const countdownFunction = setInterval(function() {
+    // Get today's date and time
+    const now = new Date().getTime();
+    
+    // Find the distance between now and the count down date
+    const distance = countDownDate - now;
+    
+    // Time calculations for days, hours, minutes and seconds
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    // Display the result
+    document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
+    document.getElementById("hours").innerHTML = hours.toString().padStart(2, '0');
+    document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
+    document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+    
+    // If the count down is finished, display some text
+    if (distance < 0) {
+        clearInterval(countdownFunction);
+        document.getElementById("countdown").innerHTML = "<h2>Launched!</h2>";
+    }
+}, 1000);
+</script>
+{% endblock %}

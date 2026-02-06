@@ -1,0 +1,287 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pricing Plans - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Choose Your <span class="text-primary">Learning Plan</span></h1>
+                    <p class="lead mb-0">Select the perfect plan that fits your learning needs</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Pricing START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Basic Plan -->
+            <div class="col-lg-4">
+                <div class="card card-hover-shadow border-0 h-100">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <h4 class="mb-2">Basic</h4>
+                            <p class="mb-0 text-muted">Perfect for getting started</p>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <h2 class="display-4 mb-0">$0</h2>
+                            <p class="mb-0 text-muted">Free forever</p>
+                        </div>
+                        
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Access to 100+ free courses
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Basic course materials
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Community support
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Mobile app access
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-times text-muted me-2"></i>
+                                <span class="text-muted">Certificates</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-times text-muted me-2"></i>
+                                <span class="text-muted">Offline downloads</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <button class="btn btn-outline-primary">Get Started</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pro Plan -->
+            <div class="col-lg-4">
+                <div class="card card-hover-shadow border-0 h-100 position-relative">
+                    <div class="position-absolute top-0 start-50 translate-middle-x mt-n3">
+                        <span class="badge bg-primary px-3 py-2">Most Popular</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <h4 class="mb-2">Pro</h4>
+                            <p class="mb-0 text-muted">For serious learners</p>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <h2 class="display-4 mb-0">$29</h2>
+                            <p class="mb-0 text-muted">per month</p>
+                        </div>
+                        
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Everything in Basic
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                5,000+ premium courses
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Certificates of completion
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Priority support
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Offline downloads
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Ad-free experience
+                            </li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <button class="btn btn-primary">Start Free Trial</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Premium Plan -->
+            <div class="col-lg-4">
+                <div class="card card-hover-shadow border-0 h-100">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <h4 class="mb-2">Premium</h4>
+                            <p class="mb-0 text-muted">For professionals and teams</p>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <h2 class="display-4 mb-0">$99</h2>
+                            <p class="mb-0 text-muted">per month</p>
+                        </div>
+                        
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Everything in Pro
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Unlimited course access
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                1-on-1 mentoring sessions
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Dedicated account manager
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Custom learning paths
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Team collaboration tools
+                            </li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <button class="btn btn-primary">Contact Sales</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features comparison -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="text-center mb-4">
+                    <h3 class="mb-3">Compare All Features</h3>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Features</th>
+                                <th class="text-center">Basic</th>
+                                <th class="text-center">Pro</th>
+                                <th class="text-center">Premium</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Free Courses</td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Premium Courses</td>
+                                <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Certificates</td>
+                                <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Offline Downloads</td>
+                                <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                            </tr>
+                            <tr>
+                                <td>1-on-1 Mentoring</td>
+                                <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                                <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FAQ -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="text-center mb-4">
+                    <h3 class="mb-3">Frequently Asked Questions</h3>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="accordion" id="faqAccordion1">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        Can I change my plan anytime?
+                                    </button>
+                                </h2>
+                                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion1">
+                                    <div class="accordion-body">
+                                        Yes! You can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="accordion" id="faqAccordion2">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        Is there a free trial?
+                                    </button>
+                                </h2>
+                                <div id="faq2" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion2">
+                                    <div class="accordion-body">
+                                        Yes! We offer a 14-day free trial for our Pro plan. No credit card required to start.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Pricing END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

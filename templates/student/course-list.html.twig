@@ -1,0 +1,264 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Courses - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">My <span class="text-primary">Courses</span></h1>
+                    <p class="lead mb-0">Track your learning progress</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Student Course List START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <!-- Navigation -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-bookmark me-2"></i>Bookmarks
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-credit-card me-2"></i>Payment Info
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <!-- Filter tabs -->
+                <ul class="nav nav-tabs mb-4" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#all-courses">All Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#in-progress">In Progress</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#completed">Completed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#bookmarked">Bookmarked</a>
+                    </li>
+                </ul>
+                
+                <!-- Tab content -->
+                <div class="tab-content">
+                    <!-- All Courses -->
+                    <div class="tab-pane fade show active" id="all-courses">
+                        <div class="row g-4">
+                            <!-- Course 1 -->
+                            <div class="col-md-6">
+                                <div class="card card-hover-shadow border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">Web Development Bootcamp</h6>
+                                                <p class="mb-2 small text-muted">by John Doe</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" style="width: 65%"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <small class="text-muted">65% Complete</small>
+                                                    <small class="text-muted">26 of 40 lessons</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-primary mt-2">Continue</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course 2 -->
+                            <div class="col-md-6">
+                                <div class="card card-hover-shadow border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/images/courses/4by3/02.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">React Masterclass</h6>
+                                                <p class="mb-2 small text-muted">by Jane Smith</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-success" style="width: 100%"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <small class="text-muted">100% Complete</small>
+                                                    <small class="text-muted">40 of 40 lessons</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-success mt-2">View Certificate</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course 3 -->
+                            <div class="col-md-6">
+                                <div class="card card-hover-shadow border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/images/courses/4by3/03.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">Digital Marketing</h6>
+                                                <p class="mb-2 small text-muted">by Mike Johnson</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" style="width: 40%"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <small class="text-muted">40% Complete</small>
+                                                    <small class="text-muted">16 of 40 lessons</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-primary mt-2">Continue</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course 4 -->
+                            <div class="col-md-6">
+                                <div class="card card-hover-shadow border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/images/courses/4by3/04.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">Business Analysis</h6>
+                                                <p class="mb-2 small text-muted">by Sarah Wilson</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-warning" style="width: 10%"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <small class="text-muted">10% Complete</small>
+                                                    <small class="text-muted">4 of 40 lessons</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-primary mt-2">Continue</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- In Progress -->
+                    <div class="tab-pane fade" id="in-progress">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="card card-hover-shadow border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">Web Development Bootcamp</h6>
+                                                <p class="mb-2 small text-muted">by John Doe</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" style="width: 65%"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <small class="text-muted">65% Complete</small>
+                                                    <small class="text-muted">26 of 40 lessons</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-primary mt-2">Continue</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Completed -->
+                    <div class="tab-pane fade" id="completed">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="card card-hover-shadow border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/images/courses/4by3/02.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">React Masterclass</h6>
+                                                <p class="mb-2 small text-muted">by Jane Smith</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-success" style="width: 100%"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <small class="text-muted">100% Complete</small>
+                                                    <small class="text-muted">40 of 40 lessons</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-success mt-2">View Certificate</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bookmarked -->
+                    <div class="tab-pane fade" id="bookmarked">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="card card-hover-shadow border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/images/courses/4by3/05.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">Python for Beginners</h6>
+                                                <p class="mb-2 small text-muted">by David Brown</p>
+                                                <div class="d-flex gap-2 mt-2">
+                                                    <button class="btn btn-sm btn-primary">Enroll Now</button>
+                                                    <button class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-heart"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Student Course List END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

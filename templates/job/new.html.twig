@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post a Job - Unilearn Marketplace{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<section class="py-5">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-8">
+                <!-- Title -->
+                <div class="text-center mb-5">
+                    <h2 class="mb-2">Post a New Job Request</h2>
+                    <p class="mb-0">Describe what you need, and let our freelancers come to you.</p>
+                </div>
+
+                <div class="card shadow rounded-3">
+                    <div class="card-body p-4 p-sm-5">
+                        {{ form_start(form) }}
+                            <!-- Title -->
+                            <div class="mb-4">
+                                <label class="form-label h6">Job Title</label>
+                                {{ form_widget(form.title, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'e.g. I need a WordPress Expert to fix my site'}}) }}
+                                <div class="form-text">Choose a descriptive title to attract the right freelancers.</div>
+                                {{ form_errors(form.title) }}
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-4">
+                                <label class="form-label h6">Project Description</label>
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '6', 'placeholder': 'Describe your project details, requirements, and deliverables...'}}) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+
+                            <!-- Budget -->
+                            <div class="mb-4">
+                                <label class="form-label h6">Estimated Budget ($)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ form_widget(form.budget, {'attr': {'class': 'form-control', 'placeholder': '0.00'}}) }}
+                                </div>
+                                {{ form_errors(form.budget) }}
+                            </div>
+
+                             <!-- Submit -->
+                            <div class="d-grid mt-5">
+                                <button type="submit" class="btn btn-lg btn-primary mb-0">Publish Job Request</button>
+                                <p class="text-center mt-3 mb-0 small text-muted">By posting this job, you agree to our <a href="#">Terms of Service</a>.</p>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'components/footer.html.twig' %}
+{% endblock %}

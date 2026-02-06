@@ -1,0 +1,298 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog Grid - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Our <span class="text-primary">Blog</span></h1>
+                    <p class="lead mb-0">Latest news, tips, and insights from our education experts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Blog Grid START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Blog posts START -->
+            <div class="col-lg-8">
+                <div class="row g-4">
+                    <!-- Blog post 1 -->
+                    <div class="col-md-6">
+                        <article class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/about/04.jpg') }}" class="card-img-top" alt="Blog post">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-primary">Technology</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded-circle me-2" width="30" alt="Author">
+                                    <div>
+                                        <h6 class="mb-0 small">John Doe</h6>
+                                        <p class="mb-0 small text-muted">March 15, 2024</p>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">10 Essential Skills Every Web Developer Should Master in 2024</h5>
+                                <p class="card-text text-muted small mb-3">Discover the key technologies and skills that will make you a successful web developer in today's competitive market.</p>
+                                <a href="#" class="btn btn-sm btn-primary">Read More</a>
+                            </div>
+                        </article>
+                    </div>
+                    
+                    <!-- Blog post 2 -->
+                    <div class="col-md-6">
+                        <article class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/about/05.jpg') }}" class="card-img-top" alt="Blog post">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-success">Design</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/02.jpg') }}" class="rounded-circle me-2" width="30" alt="Author">
+                                    <div>
+                                        <h6 class="mb-0 small">Jane Smith</h6>
+                                        <p class="mb-0 small text-muted">March 14, 2024</p>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">The Future of UI/UX Design: Trends to Watch</h5>
+                                <p class="card-text text-muted small mb-3">Explore the latest trends in user interface and user experience design that will shape the digital landscape.</p>
+                                <a href="#" class="btn btn-sm btn-primary">Read More</a>
+                            </div>
+                        </article>
+                    </div>
+                    
+                    <!-- Blog post 3 -->
+                    <div class="col-md-6">
+                        <article class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/about/06.jpg') }}" class="card-img-top" alt="Blog post">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-warning">Marketing</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/03.jpg') }}" class="rounded-circle me-2" width="30" alt="Author">
+                                    <div>
+                                        <h6 class="mb-0 small">Mike Johnson</h6>
+                                        <p class="mb-0 small text-muted">March 13, 2024</p>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">Digital Marketing Strategies for Educational Platforms</h5>
+                                <p class="card-text text-muted small mb-3">Learn effective marketing techniques to promote your educational content and reach more learners.</p>
+                                <a href="#" class="btn btn-sm btn-primary">Read More</a>
+                            </div>
+                        </article>
+                    </div>
+                    
+                    <!-- Blog post 4 -->
+                    <div class="col-md-6">
+                        <article class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/about/07.jpg') }}" class="card-img-top" alt="Blog post">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-info">Business</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/04.jpg') }}" class="rounded-circle me-2" width="30" alt="Author">
+                                    <div>
+                                        <h6 class="mb-0 small">Sarah Wilson</h6>
+                                        <p class="mb-0 small text-muted">March 12, 2024</p>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">How to Build a Successful Online Education Business</h5>
+                                <p class="card-text text-muted small mb-3">Step-by-step guide to creating and scaling your online education platform for maximum impact.</p>
+                                <a href="#" class="btn btn-sm btn-primary">Read More</a>
+                            </div>
+                        </article>
+                    </div>
+                    
+                    <!-- Blog post 5 -->
+                    <div class="col-md-6">
+                        <article class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/about/08.jpg') }}" class="card-img-top" alt="Blog post">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-danger">Career</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/05.jpg') }}" class="rounded-circle me-2" width="30" alt="Author">
+                                    <div>
+                                        <h6 class="mb-0 small">David Brown</h6>
+                                        <p class="mb-0 small text-muted">March 11, 2024</p>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">Career Change: How to Transition into Tech Successfully</h5>
+                                <p class="card-text text-muted small mb-3">Practical advice for professionals looking to make a career change into the technology industry.</p>
+                                <a href="#" class="btn btn-sm btn-primary">Read More</a>
+                            </div>
+                        </article>
+                    </div>
+                    
+                    <!-- Blog post 6 -->
+                    <div class="col-md-6">
+                        <article class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/about/09.jpg') }}" class="card-img-top" alt="Blog post">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-primary">Technology</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ asset('assets/images/avatar/06.jpg') }}" class="rounded-circle me-2" width="30" alt="Author">
+                                    <div>
+                                        <h6 class="mb-0 small">Emily Davis</h6>
+                                        <p class="mb-0 small text-muted">March 10, 2024</p>
+                                    </div>
+                                </div>
+                                <h5 class="card-title mb-2">Machine Learning for Beginners: Where to Start</h5>
+                                <p class="card-text text-muted small mb-3">A comprehensive guide for beginners looking to enter the exciting field of machine learning.</p>
+                                <a href="#" class="btn btn-sm btn-primary">Read More</a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- Blog posts END -->
+            
+            <!-- Sidebar START -->
+            <div class="col-lg-4">
+                <!-- Search -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">Search</h5>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search articles...">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Categories -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">Categories</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Technology
+                                <span class="badge bg-primary rounded-pill">12</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Design
+                                <span class="badge bg-success rounded-pill">8</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Marketing
+                                <span class="badge bg-warning rounded-pill">6</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Business
+                                <span class="badge bg-info rounded-pill">9</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Career
+                                <span class="badge bg-danger rounded-pill">5</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Popular Posts -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">Popular Posts</h5>
+                        <div class="d-flex mb-3">
+                            <img src="{{ asset('assets/images/about/10.jpg') }}" class="rounded me-3" width="60" alt="Post">
+                            <div>
+                                <h6 class="mb-1 small">Getting Started with React</h6>
+                                <p class="mb-0 small text-muted">2 days ago</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-3">
+                            <img src="{{ asset('assets/images/about/11.jpg') }}" class="rounded me-3" width="60" alt="Post">
+                            <div>
+                                <h6 class="mb-1 small">CSS Grid Layout Guide</h6>
+                                <p class="mb-0 small text-muted">5 days ago</p>
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <img src="{{ asset('assets/images/about/12.jpg') }}" class="rounded me-3" width="60" alt="Post">
+                            <div>
+                                <h6 class="mb-1 small">Python for Data Science</h6>
+                                <p class="mb-0 small text-muted">1 week ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tags -->
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">Popular Tags</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-light text-dark">JavaScript</span>
+                            <span class="badge bg-light text-dark">React</span>
+                            <span class="badge bg-light text-dark">Python</span>
+                            <span class="badge bg-light text-dark">Design</span>
+                            <span class="badge bg-light text-dark">Marketing</span>
+                            <span class="badge bg-light text-dark">Business</span>
+                            <span class="badge bg-light text-dark">Career</span>
+                            <span class="badge bg-light text-dark">AI/ML</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Blog Grid END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

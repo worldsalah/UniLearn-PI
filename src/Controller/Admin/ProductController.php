@@ -48,13 +48,21 @@ class ProductController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_admin_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository, int $id): Response
     {
+        $product = $productRepository->find($id);
+        
+        if (!$product) {
+            $this->addFlash('error', 'Product not found.');
+            return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);
+        }
+        
         $form = $this->createForm(\App\Form\ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $this->addFlash('success', 'Product updated successfully.');
 
             return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -66,11 +74,19 @@ class ProductController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_admin_product_delete', methods: ['POST'])]
-    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository, int $id): Response
     {
+        $product = $productRepository->find($id);
+        
+        if (!$product) {
+            $this->addFlash('error', 'Product not found.');
+            return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);
+        }
+        
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
             $entityManager->remove($product);
             $entityManager->flush();
+            $this->addFlash('success', 'Product deleted successfully.');
         }
 
         return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);

@@ -80,7 +80,13 @@
 
                             <!-- Table data -->
                             <td>
-                                <h6 class="mb-0">{{ order.product.title }}</h6>
+                                {% if order.product %}
+                                    <h6 class="mb-0">{{ order.product.title }}</h6>
+                                    <span class="text-body small">${{ order.product.price }}</span>
+                                {% else %}
+                                    <h6 class="mb-0 text-muted">Product Deleted</h6>
+                                    <span class="text-body small text-muted">N/A</span>
+                                {% endif %}
                             </td>
 
                             <!-- Table data -->

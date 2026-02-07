@@ -30,7 +30,10 @@ class JobController extends AbstractController
     {
         $search = $request->query->get('search', '');
         
-        $queryBuilder = $jobRepository->createQueryBuilder('j');
+        $queryBuilder = $jobRepository->createQueryBuilder('j')
+            ->leftJoin('j.applications', 'a')
+            ->addSelect('COUNT(a.id) as applicationCount')
+            ->groupBy('j.id');
         
         if ($search) {
             $queryBuilder
@@ -44,8 +47,17 @@ class JobController extends AbstractController
         $query = $queryBuilder->orderBy('j.createdAt', 'DESC')->getQuery();
         $jobs = $paginator->paginate($query, $request->query->getInt('page', 1), 10);
 
+        // Process jobs to add application count
+        $processedJobs = [];
+        foreach ($jobs as $job) {
+            $jobEntity = $job[0]; // Get the actual Job entity
+            $jobEntity->applicationCount = $job['applicationCount'] ?? 0;
+            $processedJobs[] = $jobEntity;
+        }
+
         return $this->render('admin/job/index.html.twig', [
-            'jobs' => $jobs,
+            'jobs' => $processedJobs,
+            'jobsPaginator' => $jobs, // Keep original paginator for pagination
             'search' => $search,
             'applicationStats' => $this->getApplicationStatistics(),
         ]);

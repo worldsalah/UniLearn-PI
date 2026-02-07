@@ -157,6 +157,9 @@ class MarketplaceController extends AbstractController
             $chartOrderRevenue[] = (float) $item['revenue'];
         }
 
+        // Sample data for Service Categories Performance Chart
+        $serviceCategoriesData = [35, 25, 20, 10, 7, 3]; // Percentages for each category
+
         return $this->render('marketplace/index.html.twig', [
             'products' => $products,
             'jobs' => $jobs,
@@ -172,6 +175,7 @@ class MarketplaceController extends AbstractController
                 'counts' => $chartProductCounts,
                 'dates' => $chartOrderDates,
                 'revenue' => $chartOrderRevenue,
+                'categories_performance' => $serviceCategoriesData,
             ]
         ]);
     }
@@ -354,7 +358,7 @@ class MarketplaceController extends AbstractController
                 ->context([
                     'freelancer_name' => $product->getFreelancer()->getFullName(),
                     'product_title' => $product->getTitle(),
-                    'buyer_email' => $this->getUser()->getEmail(),
+                    'buyer_email' => $user->getEmail(),
                     'price' => $product->getPrice(),
                 ]);
 

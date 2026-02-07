@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>New Application Received</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .content { background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .job-title { color: #2c3e50; font-size: 24px; margin-bottom: 10px; }
+        .application-details { background: #e9ecef; padding: 15px; border-radius: 6px; margin: 20px 0; }
+        .detail-row { margin-bottom: 10px; }
+        .detail-label { font-weight: bold; color: #6c757d; }
+        .btn { display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; }
+        .footer { text-align: center; margin-top: 30px; color: #6c757d; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🎉 New Application Received!</h2>
+            <p>Someone has applied to your job posting on Unilearn Marketplace.</p>
+        </div>
+        
+        <div class="content">
+            <h3 class="job-title">{{ job.title }}</h3>
+            
+            <div class="application-details">
+                <h4>Application Details:</h4>
+                <div class="detail-row">
+                    <span class="detail-label">Freelancer:</span> {{ freelancer.email }}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Cover Letter:</span>
+                    <p>{{ application.coverLetter|nl2br }}</p>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Proposed Budget:</span> ${{ application.proposedBudget|number_format(2, '.', ',') }}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Timeline:</span> {{ application.timeline }}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Applied On:</span> {{ application.createdAt|date('F j, Y \a\t g:i A') }}
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{ url('app_job_show', {'id': job.id}) }}" class="btn">View Job Details</a>
+                <a href="{{ url('app_admin_dashboard') }}" class="btn" style="margin-left: 10px;">Manage Applications</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>This is an automated notification from Unilearn Marketplace.</p>
+            <p>© {{ "now"|date("Y") }} Unilearn. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

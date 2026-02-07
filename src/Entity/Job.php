@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\JobRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -43,9 +45,13 @@ class Job
     #[ORM\JoinColumn(nullable: false)]
     private ?User $client = null;
 
+    #[ORM\OneToMany(mappedBy: 'job', targetEntity: Application::class)]
+    private Collection|array $applications;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->applications = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): ?int
@@ -134,6 +140,28 @@ class Job
     {
         $this->client = $client;
 
+        return $this;
+    }
+
+    public function getApplications(): Collection|array
+    {
+        return $this->applications;
+    }
+
+    public function addApplication(Application $application): static
+    {
+        if (!$this->applications->contains($application)) {
+            $this->applications->add($application);
+            $application->setJob($this);
+        }
+        return $this;
+    }
+
+    public function removeApplication(Application $application): static
+    {
+        if ($this->applications->removeElement($application)) {
+            $application->setJob(null);
+        }
         return $this;
     }
 }

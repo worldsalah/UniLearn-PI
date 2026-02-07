@@ -4,11 +4,86 @@
 
 {% block admin_content %}
 <!-- Title -->
-<div class="row">
+<div class="row mb-4">
     <div class="col-12 mb-3">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="h3 mb-2 mb-sm-0">Job Requests</h1>
             <a href="{{ path('app_admin_job_new') }}" class="btn btn-primary mb-0">Add New Job</a>
+        </div>
+    </div>
+</div>
+
+<!-- Application Statistics Chart -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Application Statistics (Last 30 Days)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Total Applications Card -->
+                    <div class="col-md-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body text-center">
+                                <h3 class="text-primary mb-1">{{ applicationStats.totalApplications }}</h3>
+                                <p class="mb-0 text-muted">Total Applications</p>
+                                <i class="fas fa-users fa-2x text-primary opacity-25"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Breakdown -->
+                    <div class="col-md-9">
+                        <div class="card border-0">
+                            <div class="card-body">
+                                <h6 class="card-title mb-3">Application Status Breakdown</h6>
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div class="h4 text-warning mb-1">{{ applicationStats.applicationsByStatus.pending }}</div>
+                                        <p class="text-muted small">Pending</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="h4 text-success mb-1">{{ applicationStats.applicationsByStatus.accepted }}</div>
+                                        <p class="text-muted small">Accepted</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="h4 text-danger mb-1">{{ applicationStats.applicationsByStatus.rejected }}</div>
+                                        <p class="text-muted small">Rejected</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status Breakdown Chart -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0">
+            <div class="card-body">
+                <h6 class="card-title mb-3">Application Status Breakdown</h6>
+                <div id="statusChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Applications per Job Chart -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Applications per Job (Top 10)</h5>
+            </div>
+            <div class="card-body">
+                <div id="applicationsChart"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -20,8 +95,8 @@
         <div class="row g-3 align-items-center justify-content-between">
             <!-- Search bar -->
             <div class="col-md-8">
-                <form class="rounded position-relative">
-                    <input class="form-control bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                <form method="get" action="{{ path('app_admin_job_index') }}" class="rounded position-relative">
+                    <input class="form-control bg-transparent" type="search" name="search" placeholder="Search jobs..." value="{{ search }}" aria-label="Search">
                     <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
                         <i class="fas fa-search fs-6 "></i>
                     </button>
@@ -104,4 +179,164 @@
     </div>
     <!-- Card footer END -->
 </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Applications per Job Chart
+    const applicationsChartOptions = {
+        series: [{
+            name: 'Applications',
+            data: {{ applicationStats.applicationCounts|json_encode|raw }}
+        }],
+        chart: {
+            height: 350,
+            type: 'bar',
+            toolbar: { show: false },
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800,
+                animateGradually: { enabled: true, delay: 150 },
+                dynamicAnimation: { enabled: true, speed: 350 }
+            }
+        },
+        colors: ['#007bff'],
+        plotOptions: {
+            bar: {
+                borderRadius: 8,
+                columnWidth: '60%',
+                distributed: true
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            style: {
+                fontSize: '12px',
+                colors: ['#fff']
+            },
+            formatter: function (val, opts) {
+                return val + ' applications';
+            }
+        },
+        xaxis: {
+            categories: {{ applicationStats.jobTitles|json_encode|raw }},
+            labels: {
+                style: {
+                    fontSize: '11px',
+                    colors: ['#6c757d']
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Number of Applications',
+                style: {
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    color: '#6c757d'
+                }
+            },
+            labels: {
+                style: {
+                    fontSize: '12px',
+                    colors: ['#6c757d']
+                }
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val + ' applications';
+                }
+            }
+        },
+        responsive: [{
+            breakpoint: 768,
+            options: {
+                chart: {
+                    height: 250
+                },
+                plotOptions: {
+                    bar: {
+                        columnWidth: '80%'
+                    }
+                },
+                xaxis: {
+                    labels: {
+                        style: {
+                            fontSize: '10px'
+                        }
+                    }
+                }
+            }
+        }]
+    };
+
+    const applicationsChart = new ApexCharts(document.querySelector("#applicationsChart"), applicationsChartOptions);
+    applicationsChart.render();
+
+    // Status Breakdown Chart
+    const statusChartOptions = {
+        series: [{
+            name: 'Applications',
+            data: [
+                {{ applicationStats.applicationsByStatus.pending }},
+                {{ applicationStats.applicationsByStatus.accepted }},
+                {{ applicationStats.applicationsByStatus.rejected }}
+            ]
+        }],
+        chart: {
+            height: 300,
+            type: 'donut',
+            toolbar: { show: false },
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800
+            }
+        },
+        colors: ['#ffc107', '#28a745', '#dc3545'],
+        labels: ['Pending', 'Accepted', 'Rejected'],
+        stroke: { show: true, width: 2, colors: ['#fff'] },
+        fill: {
+            opacity: 0.8
+        },
+        dataLabels: {
+            enabled: true,
+            style: {
+                fontSize: '14px',
+                fontFamily: 'Arial, sans-serif'
+            },
+            formatter: function (val, opts) {
+                return val + ' (' + opts.w.config.series[opts.seriesIndex].name + ')';
+            }
+        },
+        legend: {
+            position: 'bottom',
+            fontSize: '12px',
+            labels: {
+                colors: ['#6c757d'],
+                useSeriesColors: false
+            }
+        },
+        responsive: [{
+            breakpoint: 480,
+            options: {
+                chart: {
+                    height: 250
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }]
+    };
+
+    const statusChart = new ApexCharts(document.querySelector("#statusChart"), statusChartOptions);
+    statusChart.render();
+});
+</script>
 {% endblock %}

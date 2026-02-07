@@ -3,7 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Job;
+use App\Entity\Application;
 use App\Repository\JobRepository;
+use App\Repository\ApplicationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,14 +18,36 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 // #[IsGranted('ROLE_ADMIN')]
 class JobController extends AbstractController
 {
+    private ApplicationRepository $applicationRepository;
+
+    public function __construct(ApplicationRepository $applicationRepository)
+    {
+        $this->applicationRepository = $applicationRepository;
+    }
+
     #[Route('/', name: 'app_admin_job_index', methods: ['GET'])]
     public function index(JobRepository $jobRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $query = $jobRepository->createQueryBuilder('j')->orderBy('j.createdAt', 'DESC')->getQuery();
+        $search = $request->query->get('search', '');
+        
+        $queryBuilder = $jobRepository->createQueryBuilder('j');
+        
+        if ($search) {
+            $queryBuilder
+                ->leftJoin('j.client', 'c')
+                ->where('j.title LIKE :search')
+                ->orWhere('j.description LIKE :search')
+                ->orWhere('c.email LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+        
+        $query = $queryBuilder->orderBy('j.createdAt', 'DESC')->getQuery();
         $jobs = $paginator->paginate($query, $request->query->getInt('page', 1), 10);
 
         return $this->render('admin/job/index.html.twig', [
             'jobs' => $jobs,
+            'search' => $search,
+            'applicationStats' => $this->getApplicationStatistics(),
         ]);
     }
 
@@ -74,5 +98,68 @@ class JobController extends AbstractController
         }
 
         return $this->redirectToRoute('app_admin_job_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * Get application statistics for chart visualization
+     */
+    private function getApplicationStatistics(): array
+    {
+        // Get applications per job for the last 30 days
+        $thirtyDaysAgo = new \DateTime('-30 days');
+        
+        $applicationsData = $this->applicationRepository->createQueryBuilder('a')
+            ->select('j.title as jobTitle, COUNT(a.id) as applicationCount')
+            ->leftJoin('a.job', 'j')
+            ->where('a.createdAt >= :date')
+            ->andWhere('a.deletedAt IS NULL')
+            ->groupBy('j.id', 'j.title')
+            ->orderBy('applicationCount', 'DESC')
+            ->setParameter('date', $thirtyDaysAgo)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        // Prepare data for chart
+        $jobTitles = [];
+        $applicationCounts = [];
+        
+        foreach ($applicationsData as $data) {
+            $jobTitles[] = $data['jobTitle'];
+            $applicationCounts[] = $data['applicationCount'];
+        }
+
+        // Get total applications
+        $totalApplications = $this->applicationRepository->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.deletedAt IS NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Get applications by status
+        $applicationsByStatus = $this->applicationRepository->createQueryBuilder('a')
+            ->select('a.status, COUNT(a.id) as count')
+            ->where('a.deletedAt IS NULL')
+            ->groupBy('a.status')
+            ->getQuery()
+            ->getResult();
+
+        $statusData = [
+            'pending' => 0,
+            'accepted' => 0,
+            'rejected' => 0
+        ];
+
+        foreach ($applicationsByStatus as $status) {
+            $statusData[$status['status']] = $status['count'];
+        }
+
+        return [
+            'jobTitles' => $jobTitles,
+            'applicationCounts' => $applicationCounts,
+            'totalApplications' => $totalApplications,
+            'applicationsByStatus' => $statusData,
+            'topJobs' => array_slice($applicationsData, 0, 5), // Top 5 jobs with most applications
+        ];
     }
 }

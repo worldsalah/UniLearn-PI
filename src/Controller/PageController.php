@@ -92,11 +92,6 @@ class PageController extends AbstractController
         return $this->render('student/dashboard.html.twig');
     }
 
-    #[Route('/admin-dashboard', name: 'app_admin_dashboard')]
-    public function adminDashboard(): Response
-    {
-        return $this->render('admin/dashboard.html.twig');
-    }
 
     #[Route('/blog-grid', name: 'app_blog_grid')]
     public function blogGrid(): Response

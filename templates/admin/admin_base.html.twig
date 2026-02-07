@@ -10,13 +10,19 @@
 <main>
 	
 <!-- Sidebar START -->
-<nav class="navbar sidebar navbar-expand-xl navbar-dark bg-dark">
+<nav class="navbar sidebar navbar-expand-xl navbar-dark bg-dark" id="mainSidebar">
 
 	<!-- Navbar brand for xl START -->
-	<div class="d-flex align-items-center">
+	<div class="d-flex align-items-center justify-content-between w-100">
 		<a class="navbar-brand" href="{{ path('app_home') }}">
 			<img class="navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="">
 		</a>
+		<button class="btn btn-link text-white d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+			<i class="fas fa-bars"></i>
+		</button>
+		<button class="btn btn-link text-white d-none d-xl-block" id="sidebarToggle" type="button">
+			<i class="fas fa-bars"></i>
+		</button>
 	</div>
 	<!-- Navbar brand for xl END -->
 	
@@ -46,6 +52,11 @@
 
 				<!-- Menu item 9 -->
 				<li class="nav-item"> <a class="nav-link" href="{{ path('app_marketplace_index') }}"><i class="bi bi-globe fa-fw me-2"></i>Visit Marketplace</a></li>
+
+				<!-- Menu item 10 -->
+				{% if app.user %}
+				<li class="nav-item"> <a class="nav-link {% if app.request.attributes.get('_route') starts with 'app_favorite' %}active{% endif %}" href="{{ path('app_favorite_index') }}"><i class="fas fa-heart fa-fw me-2"></i>My Favorites</a></li>
+				{% endif %}
 
 				<!-- Title -->
 				<li class="nav-item ms-2 my-2">Documentation</li>
@@ -186,4 +197,52 @@
 {% block javascripts %}
     <script src="{{ asset('assets/vendor/apexcharts/js/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/overlay-scrollbar/js/overlayscrollbars.min.js') }}"></script>
+    <style>
+        .sidebar-collapsed {
+            margin-left: -250px !important;
+        }
+        
+        .sidebar-collapsed + .page-content-wrapper {
+            margin-left: 0 !important;
+        }
+        
+        .sidebar {
+            transition: margin-left 0.3s ease !important;
+        }
+        
+        .page-content-wrapper {
+            transition: margin-left 0.3s ease !important;
+        }
+        
+        #sidebarToggle {
+            transition: all 0.3s ease;
+        }
+        
+        #sidebarToggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('mainSidebar');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    
+                    // Toggle icon
+                    const icon = this.querySelector('i');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-chevron-right');
+                    } else {
+                        icon.classList.remove('fa-chevron-right');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}

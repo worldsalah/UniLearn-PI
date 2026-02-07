@@ -12,9 +12,36 @@
     </div>
 </div>
 
-<!-- Charts START -->
+<!-- Analytics Dashboard START -->
 <div class="row g-4 mb-4">
-    <!-- Category Distribution Chart -->
+    <!-- Revenue Trend Chart -->
+    <div class="col-lg-8">
+        <div class="card shadow h-100">
+            <div class="card-header border-bottom">
+                <h5 class="card-header-title">Revenue Trend</h5>
+            </div>
+            <div class="card-body">
+                <div id="revenueTrendChart"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Activity Gauge Chart -->
+    <div class="col-lg-4">
+        <div class="card shadow h-100">
+            <div class="card-header border-bottom">
+                <h5 class="card-header-title">Marketplace Activity</h5>
+            </div>
+            <div class="card-body">
+                <div id="activityGaugeChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Secondary Charts Row -->
+<div class="row g-4 mb-4">
+    <!-- Category Distribution -->
     <div class="col-lg-6">
         <div class="card shadow h-100">
             <div class="card-header border-bottom">
@@ -25,20 +52,20 @@
             </div>
         </div>
     </div>
-
-    <!-- Revenue Trend Chart -->
+    
+    <!-- User Growth Chart -->
     <div class="col-lg-6">
         <div class="card shadow h-100">
             <div class="card-header border-bottom">
-                <h5 class="card-header-title">Weekly Revenue Trend ($)</h5>
+                <h5 class="card-header-title">User Growth</h5>
             </div>
             <div class="card-body">
-                <div id="revenueChart"></div>
+                <div id="userGrowthChart"></div>
             </div>
         </div>
     </div>
 </div>
-<!-- Charts END -->
+<!-- Analytics Dashboard END -->
 
 <!-- Counter boxes START -->
 <div class="row g-4 mb-4">
@@ -217,35 +244,63 @@
 
     <!-- Right Sidebar START -->
     <div class="col-xl-3">
-        <div class="card shadow p-4 mb-4">
-            <h5 class="card-title mb-3">Active Job Requests</h5>
-            <div class="list-group list-group-flush">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-gradient-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-briefcase me-2"></i>Active Job Requests
+                    </h5>
+                    <span class="badge bg-white text-primary">{{ jobs|length }}</span>
+                </div>
+            </div>
+            <div class="card-body p-0">
                 {% for job in jobs %}
-                    <div class="list-group-item px-0 py-3 bg-transparent">
-                        <div class="d-flex justify-content-between align-items-start mb-1">
-                            <h6 class="mb-0 fw-bold">{{ job.title }}</h6>
-                            <span class="badge bg-success bg-opacity-10 text-success small">${{ job.budget }}</span>
-                        </div>
-                        <p class="text-muted small mb-2">{{ job.description|slice(0, 50) }}...</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="small text-muted">{{ job.createdAt|date('M d') }}</span>
-                            <div class="d-flex align-items-center">
-                                <a href="#" class="btn btn-link btn-sm p-0 mb-0 text-primary fw-bold text-decoration-none small">Apply</a>
-                                {% if is_granted('ROLE_ADMIN') or (app.user and job.client == app.user) %}
-                                    <form method="post" action="{{ path('app_job_delete', {id: job.id}) }}" onsubmit="return confirm('Are you sure?');" class="d-inline ms-2">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ job.id) }}">
-                                        <button class="btn btn-link btn-sm text-danger p-0 mb-0"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                {% endif %}
+                    <a href="{{ path('app_job_show', {id: job.id}) }}" class="text-decoration-none">
+                        <div class="p-3 border-bottom job-card-hover">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0 fw-bold text-dark">{{ job.title|slice(0, 30) }}{% if job.title|length > 30 %}...{% endif %}</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if app.user %}
+                                        <button class="btn btn-sm btn-link p-0 text-danger favorite-toggle" data-job-id="{{ job.id }}" onclick="event.stopPropagation(); toggleFavorite({{ job.id }}, this);">
+                                            <i class="far fa-heart"></i>
+                                        </button>
+                                    {% endif %}
+                                    <span class="badge bg-success bg-opacity-10 text-success">${{ job.budget }}</span>
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-2">{{ job.description|striptags|slice(0, 60) }}...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-xs me-2">
+                                        <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-user fa-xs"></i>
+                                        </div>
+                                    </div>
+                                    <span class="small text-muted">{{ job.client.email|split('@')[0] }}</span>
+                                </div>
+                                <span class="small text-primary">
+                                    <i class="fas fa-arrow-right me-1"></i>View Details
+                                </span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 {% else %}
-                    <p class="text-muted small">No jobs open.</p>
+                    <div class="p-4 text-center">
+                        <i class="fas fa-briefcase fa-2x text-muted mb-3"></i>
+                        <p class="text-muted mb-3">No active job requests</p>
+                        <a href="{{ path('app_job_new') }}" class="btn btn-primary-soft btn-sm">
+                            <i class="fas fa-plus me-2"></i>Post First Job
+                        </a>
+                    </div>
                 {% endfor %}
             </div>
-            <hr>
-            <a href="{{ path('app_job_new') }}" class="btn btn-outline-primary w-100 mb-0">Post Job</a>
+            {% if jobs|length > 0 %}
+            <div class="card-footer bg-light">
+                <a href="{{ path('app_job_new') }}" class="btn btn-outline-primary w-100 mb-0">
+                    <i class="fas fa-plus me-2"></i>Post New Job
+                </a>
+            </div>
+            {% endif %}
         </div>
     </div>
     <!-- Right Sidebar END -->
@@ -255,62 +310,250 @@
 
 {% block javascripts %}
 {{ parent() }}
+<style>
+.job-card-hover {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.job-card-hover:hover {
+    background-color: #f8f9fa !important;
+    transform: translateX(5px);
+}
+.job-card-hover:hover h6 {
+    color: #0d6efd !important;
+}
+.favorite-toggle {
+    transition: all 0.3s ease;
+}
+.favorite-toggle:hover {
+    transform: scale(1.2);
+}
+.favorite-toggle.active i {
+    color: #dc3545 !important;
+}
+</style>
 <script>
-    // Category Distribution Chart
-    var options1 = {
-        series: {{ charts.counts|json_encode|raw }},
-        chart: {
-            height: 300,
-            type: 'donut',
-        },
-        labels: {{ charts.categories|json_encode|raw }},
-        legend: {
-            position: 'bottom'
-        },
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                chart: {
-                    width: 200
+function toggleFavorite(jobId, button) {
+    fetch(`/favorite/toggle/${jobId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const icon = button.querySelector('i');
+        if (data.status === 'added') {
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            button.classList.add('active');
+            showToast(data.message, 'success');
+        } else {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            button.classList.remove('active');
+            showToast(data.message, 'info');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Error updating favorites', 'error');
+    });
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} position-fixed top-0 end-0 m-3`;
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+            ${message}
+        </div>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Revenue Trend Chart
+var revenueTrendOptions = {
+    series: [{
+        name: 'Revenue',
+        data: [31000, 35000, 32000, 41000, 38000, 45000, 52000]
+    }],
+    chart: {
+        height: 300,
+        type: 'area',
+        toolbar: { show: false },
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: { enabled: true, delay: 150 },
+            dynamicAnimation: { enabled: true, speed: 350 }
+        }
+    },
+    colors: ['#4F46E5'],
+    stroke: {
+        curve: 'smooth',
+        width: 3
+    },
+    fill: {
+        type: 'gradient',
+        gradient: {
+            shade: 'light',
+            type: 'vertical',
+            shadeIntensity: 0.5,
+            gradientToColors: ['#4F46E5'],
+            inverseColors: false,
+            opacityFrom: 0.8,
+            opacityTo: 0.1,
+            stops: [0, 100]
+        }
+    },
+    dataLabels: { enabled: false },
+    xaxis: {
+        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    tooltip: {
+        y: {
+            formatter: function(val) {
+                return "$" + val.toLocaleString()
+            }
+        }
+    }
+};
+
+// Activity Gauge Chart
+var activityGaugeOptions = {
+    series: [78],
+    chart: {
+        height: 300,
+        type: 'radialBar',
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 1000
+        }
+    },
+    colors: ['#10B981'],
+    plotOptions: {
+        radialBar: {
+            startAngle: -135,
+            endAngle: 135,
+            hollow: {
+                margin: 0,
+                size: '70%',
+                background: 'transparent'
+            },
+            track: {
+                background: '#f3f4f6',
+                strokeWidth: '97%',
+                margin: 5
+            },
+            dataLabels: {
+                show: true,
+                name: {
+                    offsetY: -10,
+                    show: true,
+                    color: '#888',
+                    fontSize: '13px'
                 },
-                legend: {
-                    position: 'bottom'
+                value: {
+                    offsetY: 5,
+                    fontSize: '22px',
+                    color: '#111',
+                    formatter: function(val) {
+                        return val + '%'
+                    }
                 }
             }
-        }]
-    };
-    var chart1 = new ApexCharts(document.querySelector("#categoryChart"), options1);
-    chart1.render();
+        }
+    },
+    labels: ['Activity']
+};
 
-    // Revenue Trend Chart
-    var options2 = {
-        series: [{
-            name: 'Revenue',
-            data: {{ charts.revenue|json_encode|raw }}
-        }],
-        chart: {
-            height: 300,
-            type: 'area',
-            toolbar: {
-                show: false
+// Category Distribution Chart
+var categoryOptions = {
+    series: [45, 25, 15, 10, 5],
+    chart: {
+        height: 300,
+        type: 'donut',
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800
+        }
+    },
+    colors: ['#4F46E5', '#7C3AED', '#EC4899', '#F59E0B', '#10B981'],
+    labels: ['Web Development', 'Design', 'Marketing', 'Writing', 'Other'],
+    stroke: { show: true, width: 2, colors: ['#ffffff'] },
+    dataLabels: {
+        enabled: true,
+        formatter: function (val, opts) {
+            return opts.w.config.series[opts.seriesIndex] + '%';
+        }
+    },
+    legend: { position: 'bottom' }
+};
+
+// User Growth Chart
+var userGrowthOptions = {
+    series: [{
+        name: 'New Users',
+        data: [44, 55, 57, 56, 61, 58, 63, 71, 67, 75, 78, 82]
+    }],
+    chart: {
+        height: 300,
+        type: 'line',
+        toolbar: { show: false },
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800
+        }
+    },
+    colors: ['#EC4899'],
+    stroke: {
+        curve: 'smooth',
+        width: 3
+    },
+    markers: {
+        size: 6,
+        colors: ['#ffffff'],
+        strokeColors: ['#EC4899'],
+        strokeWidth: 2
+    },
+    dataLabels: { enabled: false },
+    xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    },
+    tooltip: {
+        y: {
+            formatter: function(val) {
+                return val + " users"
             }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            curve: 'smooth'
-        },
-        xaxis: {
-            categories: {{ charts.dates|json_encode|raw }},
-        },
-        tooltip: {
-            x: {
-                format: 'dd/MM/yy'
-            },
-        },
-    };
-    var chart2 = new ApexCharts(document.querySelector("#revenueChart"), options2);
-    chart2.render();
+        }
+    }
+};
+
+// Initialize all charts
+document.addEventListener('DOMContentLoaded', function() {
+    var revenueTrendChart = new ApexCharts(document.querySelector("#revenueTrendChart"), revenueTrendOptions);
+    revenueTrendChart.render();
+    
+    var activityGaugeChart = new ApexCharts(document.querySelector("#activityGaugeChart"), activityGaugeOptions);
+    activityGaugeChart.render();
+    
+    var categoryChart = new ApexCharts(document.querySelector("#categoryChart"), categoryOptions);
+    categoryChart.render();
+    
+    var userGrowthChart = new ApexCharts(document.querySelector("#userGrowthChart"), userGrowthOptions);
+    userGrowthChart.render();
+});
 </script>
 {% endblock %}

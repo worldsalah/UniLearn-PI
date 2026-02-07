@@ -1,0 +1,145 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block title %}My Favorite Jobs{% endblock %}
+
+{% block admin_content %}
+<!-- Title -->
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_marketplace_index') }}">Marketplace</a></li>
+                <li class="breadcrumb-item active">My Favorites</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">
+                <i class="fas fa-heart text-danger me-2"></i>My Favorite Jobs
+            </h1>
+            <span class="badge bg-danger bg-opacity-10 text-danger fs-6">{{ jobs|length }} Jobs</span>
+        </div>
+    </div>
+</div>
+
+<!-- Favorites Grid -->
+<div class="row g-4">
+    {% for job in jobs %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow h-100 favorite-card">
+                <!-- Card Header -->
+                <div class="card-header bg-gradient-danger text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">{{ job.title|slice(0, 40) }}{% if job.title|length > 40 %}...{% endif %}</h6>
+                        <button class="btn btn-sm btn-white text-danger favorite-btn" data-job-id="{{ job.id }}">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-success bg-opacity-10 text-success">${{ job.budget }}</span>
+                        <span class="badge bg-info bg-opacity-10 text-info">{{ job.status|title }}</span>
+                    </div>
+                    
+                    <p class="text-muted small mb-3">{{ job.description|striptags|slice(0, 100) }}...</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar avatar-xs me-2">
+                                <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-user fa-xs"></i>
+                                </div>
+                            </div>
+                            <span class="small text-muted">{{ job.client.email|split('@')[0] }}</span>
+                        </div>
+                        <span class="small text-muted">{{ job.createdAt|date('M d') }}</span>
+                    </div>
+                </div>
+                
+                <!-- Card Footer -->
+                <div class="card-footer bg-light">
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_job_show', {id: job.id}) }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-eye me-2"></i>View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-heart fa-4x text-muted mb-4"></i>
+                <h4 class="text-muted mb-3">No favorite jobs yet</h4>
+                <p class="text-muted mb-4">Start adding jobs to your favorites to see them here!</p>
+                <a href="{{ path('app_marketplace_index') }}" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>Browse Jobs
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+.favorite-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.favorite-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.favorite-btn {
+    transition: all 0.3s ease;
+}
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle favorite button clicks
+    document.querySelectorAll('.favorite-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const jobId = this.dataset.jobId;
+            const card = this.closest('.favorite-card');
+            
+            fetch(`/favorite/toggle/${jobId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'removed') {
+                    // Remove card with animation
+                    card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        card.remove();
+                        // Update count
+                        const countElement = document.querySelector('.badge.bg-danger');
+                        const currentCount = parseInt(countElement.textContent);
+                        countElement.textContent = (currentCount - 1) + ' Jobs';
+                        
+                        // Show empty state if no jobs left
+                        if (currentCount - 1 === 0) {
+                            location.reload();
+                        }
+                    }, 300);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

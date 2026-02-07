@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Unilearn - Education Platform{% endblock %}</title>
+
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Unilearn">
+    <meta name="description" content="Unilearn - Education and Course Platform">
+
+    <!-- Dark mode -->
+    <script>
+        const storedTheme = localStorage.getItem('theme')
+ 
+        const getPreferredTheme = () => {
+            if (storedTheme) {
+                return storedTheme
+            }
+            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'light'
+        }
+
+        const setTheme = function (theme) {
+            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-bs-theme', 'dark')
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', theme)
+            }
+        }
+
+        setTheme(getPreferredTheme())
+
+        window.addEventListener('DOMContentLoaded', () => {
+            var el = document.querySelector('.theme-icon-active');
+            if(el != 'undefined' && el != null) {
+                const showActiveTheme = theme => {
+                const activeThemeIcon = document.querySelector('.theme-icon-active use')
+                const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+                
+                if (!btnToActive) return;
+                
+                const modeSwitch = btnToActive.querySelector('.mode-switch use');
+                if (!modeSwitch) return;
+                
+                const svgOfActiveBtn = modeSwitch.getAttribute('href');
+                if (!svgOfActiveBtn) return;
+
+                document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+                    element.classList.remove('active')
+                })
+
+                btnToActive.classList.add('active')
+                if (activeThemeIcon) {
+                    activeThemeIcon.setAttribute('href', svgOfActiveBtn)
+                }
+            }
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                if (storedTheme !== 'light' || storedTheme !== 'dark') {
+                    setTheme(getPreferredTheme())
+                }
+            })
+
+            showActiveTheme(getPreferredTheme())
+
+            document.querySelectorAll('[data-bs-theme-value]')
+                .forEach(toggle => {
+                    toggle.addEventListener('click', () => {
+                        const theme = toggle.getAttribute('data-bs-theme-value')
+                        localStorage.setItem('theme', theme)
+                        setTheme(theme)
+                        showActiveTheme(theme)
+                    })
+                })
+
+            }
+        })
+    </script>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/font-awesome/css/all.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/tiny-slider/tiny-slider.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/glightbox/css/glightbox.css') }}">
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+
+    <!-- Global Notification Styles -->
+    <style>
+    /* Beautiful Global Notification System */
+    .global-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        min-width: 350px;
+        max-width: 450px;
+        background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        overflow: hidden;
+        animation: slideInRight 0.5s ease-out;
+        transition: all 0.3s ease;
+    }
+
+    .global-notification.success {
+        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    }
+
+    .global-notification.error {
+        background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    }
+
+    .global-notification.warning {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    }
+
+    .global-notification.info {
+        background: linear-gradient(135deg, #0dcaf0 0%, #0d6efd 100%);
+    }
+
+    .notification-content {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        color: white;
+        position: relative;
+    }
+
+    .notification-icon {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        font-size: 18px;
+    }
+
+    .notification-text {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+    .notification-title {
+        margin: 0 0 4px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .notification-message {
+        margin: 0;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.4;
+    }
+
+    .notification-close {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 16px;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .notification-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .notification-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.3);
+        animation: progressAnimation 5s linear forwards;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes progressAnimation {
+        from {
+            width: 100%;
+        }
+        to {
+            width: 0%;
+        }
+    }
+
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+
+    .global-notification.hiding {
+        animation: slideOutRight 0.3s ease-out forwards;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .global-notification {
+            right: 10px;
+            left: 10px;
+            min-width: auto;
+            max-width: none;
+        }
+        
+        .notification-content {
+            padding: 12px 16px;
+        }
+        
+        .notification-icon {
+            width: 35px;
+            height: 35px;
+            font-size: 16px;
+            margin-right: 12px;
+        }
+        
+        .notification-title {
+            font-size: 14px;
+        }
+        
+        .notification-message {
+            font-size: 13px;
+        }
+    }
+    </style>
+
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+    <!-- Global Notification Container -->
+    <div id="globalNotificationContainer"></div>
+    
+    {% block body %}{% endblock %}
+
+    <!-- Bootstrap JS -->
+    <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    
+    <!-- Disable Turbo for lesson pages -->
+    <script>
+        if (window.location.pathname.includes('/lesson/')) {
+            if (window.Turbo) {
+                Turbo.session.drive = false;
+            }
+        }
+    </script>
+    
+    {% block vendor_scripts %}
+    <!-- Vendors -->
+    <script src="{{ asset('assets/vendor/tiny-slider/tiny-slider.js') }}"></script>
+    <script src="{{ asset('assets/vendor/glightbox/js/glightbox.js') }}"></script>
+    <script src="{{ asset('assets/vendor/purecounterjs/dist/purecounter_vanilla.js') }}"></script>
+    
+    <!-- Additional Vendors (for course creation and other features) -->
+    <script src="{{ asset('assets/vendor/choices/js/choices.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+    <script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/stepper/js/bs-stepper.min.js') }}"></script>
+    {% endblock %}
+    
+    {% block theme_scripts %}
+    <!-- Theme Functions -->
+    {% endblock %}
+
+    {% block javascripts %}{% endblock %}
+
+    <!-- Global Notification JavaScript -->
+    <script>
+    // Global Notification System
+    function showGlobalNotification(title, message, type = 'success', icon = 'fas fa-check-circle', autoHide = true) {
+        const container = document.getElementById('globalNotificationContainer');
+        if (!container) return;
+
+        const notificationId = 'notification-' + Date.now();
+        
+        const notificationHTML = `
+            <div id="${notificationId}" class="global-notification ${type}">
+                <div class="notification-content">
+                    <div class="notification-icon">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="notification-text">
+                        <h6 class="notification-title">${title}</h6>
+                        <p class="notification-message">${message}</p>
+                    </div>
+                    <button class="notification-close" onclick="closeGlobalNotification('${notificationId}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="notification-progress"></div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', notificationHTML);
+
+        if (autoHide) {
+            setTimeout(() => {
+                closeGlobalNotification(notificationId);
+            }, 5000);
+        }
+    }
+
+    function closeGlobalNotification(notificationId) {
+        const notification = document.getElementById(notificationId);
+        if (notification) {
+            notification.classList.add('hiding');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }
+    }
+
+    // Auto-show flash messages as global notifications
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check for flash messages in the page
+        const flashMessages = {
+            'course_deleted': {
+                selector: '[data-flash-type="course_deleted"]',
+                type: 'success',
+                icon: 'fas fa-check-circle'
+            },
+            'course_updated': {
+                selector: '[data-flash-type="course_updated"]',
+                type: 'success',
+                icon: 'fas fa-edit'
+            },
+            'success': {
+                selector: '[data-flash-type="success"]',
+                type: 'success', 
+                icon: 'fas fa-check-circle'
+            },
+            'error': {
+                selector: '[data-flash-type="error"]',
+                type: 'error',
+                icon: 'fas fa-exclamation-circle'
+            },
+            'warning': {
+                selector: '[data-flash-type="warning"]',
+                type: 'warning',
+                icon: 'fas fa-exclamation-triangle'
+            },
+            'info': {
+                selector: '[data-flash-type="info"]',
+                type: 'info',
+                icon: 'fas fa-info-circle'
+            }
+        };
+
+        // Convert flash messages to global notifications
+        Object.keys(flashMessages).forEach(flashType => {
+            const config = flashMessages[flashType];
+            const elements = document.querySelectorAll(config.selector);
+            
+            elements.forEach(element => {
+                const title = element.getAttribute('data-flash-title') || 'Notification';
+                const message = element.getAttribute('data-flash-message') || element.textContent;
+                
+                showGlobalNotification(title, message, config.type, config.icon);
+                element.style.display = 'none'; // Hide original flash message
+            });
+        });
+    });
+
+    // Make the function globally available
+    window.showGlobalNotification = showGlobalNotification;
+    window.closeGlobalNotification = closeGlobalNotification;
+    </script>
+</body>
+</html>

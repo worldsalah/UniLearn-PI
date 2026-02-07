@@ -1,0 +1,18 @@
+<div class="sidebar-modern pb-0 p-3 w-100">
+    <!-- Dashboard menu -->
+    <div class="list-group list-group-borderless">
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_dashboard' ? 'active' : '' }}" href="{{ path('app_instructor_dashboard') }}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_manage_courses' ? 'active' : '' }}" href="{{ path('app_instructor_manage_courses') }}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'instructor_video_search' ? 'active' : '' }}" href="{{ path('instructor_video_search') }}"><i class="bi bi-youtube fa-fw me-2"></i>Video Search</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_quiz' ? 'active' : '' }}" href="{{ path('app_instructor_quiz') }}"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_earnings' ? 'active' : '' }}" href="{{ path('app_instructor_earnings') }}"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_students' ? 'active' : '' }}" href="{{ path('app_instructor_students') }}"><i class="bi bi-people fa-fw me-2"></i>Students</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_orders' ? 'active' : '' }}" href="{{ path('app_instructor_orders') }}"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_reviews' ? 'active' : '' }}" href="{{ path('app_instructor_reviews') }}"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_edit_profile' ? 'active' : '' }}" href="{{ path('app_instructor_edit_profile') }}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_payout' ? 'active' : '' }}" href="{{ path('app_instructor_payout') }}"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_settings' ? 'active' : '' }}" href="{{ path('app_instructor_settings') }}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+        <a class="list-group-item {{ app.request.attributes.get('_route') == 'app_instructor_delete_account' ? 'active' : '' }}" href="{{ path('app_instructor_delete_account') }}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+        <a class="list-group-item text-danger" href="{{ path('app_login') }}"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a>
+    </div>
+</div>

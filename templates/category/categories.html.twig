@@ -1,0 +1,233 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Course Categories - Unilearn{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Category Page Styles */
+.category-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.5" fill="%23ffffff20" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.1;
+}
+
+.category-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.category-hero p {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.category-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--category-color, #007bff);
+}
+
+.category-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--category-color, #007bff);
+}
+
+.category-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    background: var(--category-color, #007bff);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.category-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+.category-description {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.category-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.stat-item i {
+    color: var(--category-color, #007bff);
+}
+
+.category-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--category-color, #007bff);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.category-link:hover {
+    transform: translateX(5px);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .category-hero {
+        padding: 3rem 0;
+    }
+    
+    .category-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .category-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .category-card {
+        padding: 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Header -->
+{% include 'components/header.html.twig' %}
+
+<!-- Category Hero Section -->
+<section class="category-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1>Explore Course Categories</h1>
+                <p>Discover our wide range of courses organized by category. Find the perfect learning path for your goals.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Grid -->
+<section class="py-5">
+    <div class="container">
+        {% if categories|length > 0 %}
+            <div class="category-grid">
+                {% for category in categories %}
+                    <div class="category-card" style="--category-color: {{ category.color|default('#007bff') }}">
+                        <div class="category-icon">
+                            {% if category.icon %}
+                                <i class="{{ category.icon }}"></i>
+                            {% else %}
+                                <i class="bi bi-tag"></i>
+                            {% endif %}
+                        </div>
+                        
+                        <h3 class="category-name">{{ category.name }}</h3>
+                        
+                        {% if category.description %}
+                            <p class="category-description">{{ category.description }}</p>
+                        {% endif %}
+                        
+                        <div class="category-stats">
+                            <div class="stat-item">
+                                <i class="bi bi-book"></i>
+                                <span>{{ category.courses|length }} courses</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="bi bi-star"></i>
+                                <span>Popular</span>
+                            </div>
+                        </div>
+                        
+                        <a href="{{ path('app_category_detail', {'slug': category.slug}) }}" class="category-link">
+                            Explore Courses
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-tags fa-4x text-muted mb-3"></i>
+                <h3 class="text-muted">No Categories Available</h3>
+                <p class="text-muted">Check back soon for new course categories!</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Footer -->
+{% include 'components/footer.html.twig' %}
+{% endblock %}

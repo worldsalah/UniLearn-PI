@@ -1,0 +1,176 @@
+<!-- Admin Navigation Component -->
+<!-- Sidebar START -->
+<nav class="navbar sidebar navbar-expand-xl navbar-dark bg-dark">
+    
+    <!-- Navbar brand for xl START -->
+    <div class="d-flex align-items-center">
+        <a class="navbar-brand" href="{{ path('app_home') }}">
+            <img class="navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="Unilearn">
+        </a>
+    </div>
+    <!-- Navbar brand for xl END -->
+    
+    <div class="offcanvas offcanvas-start flex-row custom-scrollbar h-100" data-bs-backdrop="true" tabindex="-1" id="offcanvasSidebar">
+        <div class="offcanvas-body sidebar-content d-flex flex-column bg-dark">
+
+            <!-- Sidebar menu START -->
+            <ul class="navbar-nav flex-column" id="navbar-sidebar">
+                
+                <!-- Menu item 1 -->
+                <li class="nav-item">
+                    <a href="{{ path('app_admin_dashboard') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_admin_dashboard' ? 'active' : '' }}">
+                        <i class="bi bi-house fa-fw me-2"></i>Dashboard
+                    </a>
+                </li>
+                
+                <!-- Title -->
+                <li class="nav-item ms-2 my-2">Pages</li>
+
+                <!-- menu item 2 - Courses -->
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_course' ? 'active' : '' }}" data-bs-toggle="collapse" href="#collapsepage" role="button" aria-expanded="{{ app.request.attributes.get('_route') starts with 'admin_course' ? 'true' : 'false' }}" aria-controls="collapsepage">
+                        <i class="bi bi-book fa-fw me-2"></i>Courses
+                    </a>
+                    <!-- Submenu -->
+                    <ul class="nav collapse flex-column {{ app.request.attributes.get('_route') starts with 'admin_course' ? 'show' : '' }}" id="collapsepage" data-bs-parent="#navbar-sidebar">
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_course_list' ? 'active' : '' }}" href="{{ path('admin_course_list') }}">
+                                <i class="bi bi-list fa-fw me-2"></i>Course List
+                            </a>
+                        </li>
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_category_list' ? 'active' : '' }}" href="{{ path('admin_category_list') }}">
+                                <i class="bi bi-tags fa-fw me-2"></i>Categories
+                            </a>
+                        </li>
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_course_detail' ? 'active' : '' }}" href="#">
+                                <i class="bi bi-book-half fa-fw me-2"></i>Course Detail
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Menu item 3 - Students -->
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_student' ? 'active' : '' }}" href="#">
+                        <i class="fas fa-user-graduate fa-fw me-2"></i>Students
+                    </a>
+                </li>
+
+                <!-- Menu item 4 - Instructors -->
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_instructor' ? 'active' : '' }}" data-bs-toggle="collapse" href="#collapseinstructors" role="button" aria-expanded="{{ app.request.attributes.get('_route') starts with 'admin_instructor' ? 'true' : 'false' }}" aria-controls="collapseinstructors">
+                        <i class="fas fa-user-tie fa-fw me-2"></i>Instructors
+                    </a>
+                    <!-- Submenu -->
+                    <ul class="nav collapse flex-column {{ app.request.attributes.get('_route') starts with 'admin_instructor' ? 'show' : '' }}" id="collapseinstructors" data-bs-parent="#navbar-sidebar">
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_instructor_list' ? 'active' : '' }}" href="#">
+                                <i class="bi bi-people fa-fw me-2"></i>Instructors
+                            </a>
+                        </li>
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_instructor_detail' ? 'active' : '' }}" href="#">
+                                <i class="bi bi-person-badge fa-fw me-2"></i>Instructor Detail
+                            </a>
+                        </li>
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_instructor_requests' ? 'active' : '' }}" href="#">
+                                <i class="bi bi-person-plus fa-fw me-2"></i>Instructor requests
+                                <span class="badge text-bg-success rounded-circle ms-2">2</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- Menu item 5 - Reviews -->
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_review' ? 'active' : '' }}" href="#">
+                        <i class="far fa-comment-dots fa-fw me-2"></i>Reviews
+                    </a>
+                </li>
+
+                <!-- Menu item 6 - Earnings -->
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_earnings' ? 'active' : '' }}" href="#">
+                        <i class="far fa-chart-bar fa-fw me-2"></i>Earnings
+                    </a>
+                </li>
+
+                <!-- Menu item 7 - Admin Settings -->
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_settings' ? 'active' : '' }}" href="#">
+                        <i class="fas fa-user-cog fa-fw me-2"></i>Admin Settings
+                    </a>
+                </li>
+
+                <!-- Menu item 8 - Authentication -->
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_auth' ? 'active' : '' }}" data-bs-toggle="collapse" href="#collapseauthentication" role="button" aria-expanded="false" aria-controls="collapseauthentication">
+                        <i class="bi bi-lock fa-fw me-2"></i>Authentication
+                    </a>
+                    <!-- Submenu -->
+                    <ul class="nav collapse flex-column" id="collapseauthentication" data-bs-parent="#navbar-sidebar">
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_signup' ? 'active' : '' }}" href="#">
+                                <i class="bi bi-person-plus fa-fw me-2"></i>Sign Up
+                            </a>
+                        </li>
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_signin' ? 'active' : '' }}" href="#">
+                                <i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In
+                            </a>
+                        </li>
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_forgot_password' ? 'active' : '' }}" href="#">
+                                <i class="bi bi-key fa-fw me-2"></i>Forgot Password
+                            </a>
+                        </li>
+                        <li class="nav-item"> 
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_error' ? 'active' : '' }}" href="#">
+                                <i class="bi bi-exclamation-triangle fa-fw me-2"></i>Error 404
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Title -->
+                <li class="nav-item ms-2 my-2">Documentation</li>
+
+                <!-- Menu item 9 - Documentation -->
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_docs' ? 'active' : '' }}" href="#">
+                        <i class="far fa-clipboard fa-fw me-2"></i>Documentation
+                    </a>
+                </li>
+
+                <!-- Menu item 10 - Changelog -->
+                <li class="nav-item">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_changelog' ? 'active' : '' }}" href="#">
+                        <i class="fas fa-sitemap fa-fw me-2"></i>Changelog
+                    </a>
+                </li>
+            </ul>
+            <!-- Sidebar menu end -->
+
+            <!-- Sidebar footer START -->
+            <div class="px-3 mt-auto pt-3">
+                <div class="d-flex align-items-center justify-content-between text-primary-hover">
+                    <a class="h5 mb-0 text-body" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Settings">
+                        <i class="bi bi-gear-fill"></i>
+                    </a>
+                    <a class="h5 mb-0 text-body" href="{{ path('app_home') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Home">
+                        <i class="bi bi-globe"></i>
+                    </a>
+                    <a class="h5 mb-0 text-body" href="{{ path('app_logout') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Sign out">
+                        <i class="bi bi-power"></i>
+                    </a>
+                </div>
+            </div>
+            <!-- Sidebar footer END -->
+            
+        </div>
+    </div>
+</nav>
+<!-- Sidebar END -->

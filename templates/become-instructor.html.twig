@@ -1,0 +1,335 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Become an Instructor - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+<!-- =======================
+Page Banner START -->
+<section class="pt-4 pb-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-5">Become an <span class="text-primary">Instructor</span></h1>
+                <p class="lead mb-4">Share your knowledge and earn money by teaching what you love</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Benefits START -->
+<section class="pt-5 pb-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="mb-3">Why Teach on Unilearn?</h2>
+                <p class="mb-0">Join thousands of instructors who are already changing lives through education</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Benefit 1 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-4 d-inline-block mb-3">
+                        <i class="bi bi-currency-dollar fs-2"></i>
+                    </div>
+                    <h5 class="mb-2">Earn Money</h5>
+                    <p class="mb-0 small">Get paid monthly with industry-leading commission rates</p>
+                </div>
+            </div>
+            
+            <!-- Benefit 2 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle p-4 d-inline-block mb-3">
+                        <i class="bi bi-globe fs-2"></i>
+                    </div>
+                    <h5 class="mb-2">Global Reach</h5>
+                    <p class="mb-0 small">Teach students from around the world</p>
+                </div>
+            </div>
+            
+            <!-- Benefit 3 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <div class="bg-info bg-opacity-10 text-info rounded-circle p-4 d-inline-block mb-3">
+                        <i class="bi bi-clock-history fs-2"></i>
+                    </div>
+                    <h5 class="mb-2">Flexible Schedule</h5>
+                    <p class="mb-0 small">Teach on your own schedule, from anywhere</p>
+                </div>
+            </div>
+            
+            <!-- Benefit 4 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-4 d-inline-block mb-3">
+                        <i class="bi bi-tools fs-2"></i>
+                    </div>
+                    <h5 class="mb-2">Full Support</h5>
+                    <p class="mb-0 small">Get help with course creation and marketing</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Benefits END -->
+
+<!-- =======================
+Application Form START -->
+<section class="pt-5 pb-0">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Instructor Application</h5>
+                        
+                        <form>
+                            <!-- Personal Information -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">Personal Information</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">First Name *</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Last Name *</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone *</label>
+                                        <input type="tel" class="form-control" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Country *</label>
+                                        <select class="form-select" required>
+                                            <option selected>Select your country</option>
+                                            <option>United States</option>
+                                            <option>United Kingdom</option>
+                                            <option>Canada</option>
+                                            <option>Australia</option>
+                                            <option>France</option>
+                                            <option>Germany</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Professional Information -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">Professional Information</h6>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">Area of Expertise *</label>
+                                        <input type="text" class="form-control" placeholder="e.g., Web Development, Digital Marketing" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Years of Experience *</label>
+                                        <input type="number" class="form-control" min="0" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Highest Education *</label>
+                                        <select class="form-select" required>
+                                            <option selected>Select education level</option>
+                                            <option>High School</option>
+                                            <option>Bachelor's Degree</option>
+                                            <option>Master's Degree</option>
+                                            <option>PhD</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Professional Bio *</label>
+                                        <textarea class="form-control" rows="4" placeholder="Tell us about your professional background and teaching experience" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Teaching Experience -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">Teaching Experience</h6>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">Have you taught online before? *</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="teaching_experience" id="yes" required>
+                                            <label class="form-check-label" for="yes">
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="teaching_experience" id="no" required>
+                                            <label class="form-check-label" for="no">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Previous Teaching Experience</label>
+                                        <textarea class="form-control" rows="3" placeholder="Describe any previous teaching experience"></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Course Topics You'd Like to Teach</label>
+                                        <textarea class="form-control" rows="3" placeholder="List the topics you're interested in teaching"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Information -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">Additional Information</h6>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">LinkedIn Profile</label>
+                                        <input type="url" class="form-control" placeholder="https://linkedin.com/in/yourprofile">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Portfolio/Website</label>
+                                        <input type="url" class="form-control" placeholder="https://yourwebsite.com">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Why do you want to teach on Unilearn? *</label>
+                                        <textarea class="form-control" rows="3" placeholder="Tell us why you're interested in becoming an instructor" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I agree to the <a href="#" class="text-primary">Terms and Conditions</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Submit button -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-send me-2"></i>Submit Application
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Application Form END -->
+
+<!-- =======================
+FAQ START -->
+<section class="pt-5 pb-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="mb-3">Frequently Asked Questions</h2>
+                <p class="mb-0">Everything you need to know about becoming an instructor</p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <!-- FAQ 1 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                How much can I earn as an instructor?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Instructors earn a competitive commission rate on every course sale. Top instructors can earn substantial income, with some making six figures annually. Your earnings depend on course quality, pricing, and marketing efforts.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                What are the requirements to become an instructor?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We look for instructors with expertise in their subject matter, strong communication skills, and a passion for teaching. You should have professional experience or formal education in your field of expertise.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                How do I create a course?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We provide comprehensive resources to help you create engaging courses. This includes video tutorials, course creation guidelines, and access to our production team. You'll need to create video lessons, supplementary materials, and assessments.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                What equipment do I need?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You'll need a computer, internet connection, microphone, and webcam for recording videos. While professional equipment can enhance quality, many successful instructors start with basic setups and upgrade over time.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+FAQ END -->
+
+<!-- =======================
+CTA START -->
+<section class="pt-5 pb-0">
+    <div class="container">
+        <div class="bg-primary bg-opacity-10 rounded-3 p-5 text-center">
+            <h2 class="mb-3">Ready to Start Teaching?</h2>
+            <p class="mb-4">Join our community of passionate instructors and start making an impact today</p>
+            <div>
+                <a href="#application-form" class="btn btn-primary me-2">Apply Now</a>
+                <a href="#" class="btn btn-outline-primary">Learn More</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+CTA END -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

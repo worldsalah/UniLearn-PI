@@ -1,0 +1,278 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Student Dashboard - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Student Dashboard START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/08.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">Alex Johnson</h5>
+                        <p class="mb-2">Web Development Student</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-bookmark me-2"></i>Bookmarks
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-credit-card me-2"></i>Payment Info
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Welcome header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="mb-1">Welcome back, Alex!</h3>
+                        <p class="mb-0">Continue learning and track your progress.</p>
+                    </div>
+                </div>
+                <!-- Welcome header END -->
+
+                <!-- Stats START -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                </div>
+                                <h4 class="mb-0">8</h4>
+                                <p class="mb-0 small text-muted">Enrolled Courses</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <h4 class="mb-0">3</h4>
+                                <p class="mb-0 small text-muted">Completed Courses</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-circle">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                </div>
+                                <h4 class="mb-0">124h</h4>
+                                <p class="mb-0 small text-muted">Learning Hours</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-info bg-opacity-10 text-info rounded-circle">
+                                        <i class="fas fa-certificate"></i>
+                                    </div>
+                                </div>
+                                <h4 class="mb-0">3</h4>
+                                <p class="mb-0 small text-muted">Certificates</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Stats END -->
+
+                <!-- Continue learning START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0">Continue Learning</h5>
+                            <a href="#" class="btn btn-sm btn-primary">View All</a>
+                        </div>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="card border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">Web Development Bootcamp</h6>
+                                                <p class="mb-2 small text-muted">by John Doe</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" style="width: 65%"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <small class="text-muted">65% Complete</small>
+                                                    <small class="text-muted">26 of 40 lessons</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-primary mt-2">Continue</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-0">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/images/courses/4by3/02.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">React Masterclass</h6>
+                                                <p class="mb-2 small text-muted">by Jane Smith</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-success" style="width: 40%"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <small class="text-muted">40% Complete</small>
+                                                    <small class="text-muted">16 of 40 lessons</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-primary mt-2">Continue</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Continue learning END -->
+
+                <!-- Achievements START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Recent Achievements</h5>
+                        
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <div class="text-center">
+                                    <div class="icon-xl bg-warning bg-opacity-10 text-warning rounded-circle mb-2 mx-auto">
+                                        <i class="fas fa-trophy fa-2x"></i>
+                                    </div>
+                                    <h6 class="mb-1">First Course</h6>
+                                    <p class="mb-0 small text-muted">Completed your first course</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="text-center">
+                                    <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mb-2 mx-auto">
+                                        <i class="fas fa-fire fa-2x"></i>
+                                    </div>
+                                    <h6 class="mb-1">7-Day Streak</h6>
+                                    <p class="mb-0 small text-muted">Learned for 7 days straight</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="text-center">
+                                    <div class="icon-xl bg-success bg-opacity-10 text-success rounded-circle mb-2 mx-auto">
+                                        <i class="fas fa-star fa-2x"></i>
+                                    </div>
+                                    <h6 class="mb-1">Top Student</h6>
+                                    <p class="mb-0 small text-muted">Scored 100% on quiz</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="text-center">
+                                    <div class="icon-xl bg-info bg-opacity-10 text-info rounded-circle mb-2 mx-auto">
+                                        <i class="fas fa-medal fa-2x"></i>
+                                    </div>
+                                    <h6 class="mb-1">Quick Learner</h6>
+                                    <p class="mb-0 small text-muted">Completed course in record time</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Achievements END -->
+
+                <!-- Recent activity START -->
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Recent Activity</h5>
+                        
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-point bg-primary"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Lesson completed</h6>
+                                    <p class="mb-0 text-muted">Completed "JavaScript Basics" in Web Development Bootcamp</p>
+                                    <small class="text-muted">2 hours ago</small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-point bg-success"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Quiz passed</h6>
+                                    <p class="mb-0 text-muted">Scored 95% on React Components quiz</p>
+                                    <small class="text-muted">1 day ago</small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-point bg-warning"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Course enrolled</h6>
+                                    <p class="mb-0 text-muted">Enrolled in "Digital Marketing Complete Course"</p>
+                                    <small class="text-muted">3 days ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Recent activity END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Student Dashboard END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

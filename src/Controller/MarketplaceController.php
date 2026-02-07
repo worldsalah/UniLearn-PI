@@ -364,7 +364,14 @@ class MarketplaceController extends AbstractController
                 // Silently fail
             }
 
-            return $this->redirectToRoute('app_product_show', ['slug' => $product->getSlug()], Response::HTTP_SEE_OTHER);
+
+            // Add success flash message
+            $this->addFlash('order_success', [
+                'product_title' => $product->getTitle(),
+                'order_id' => $order->getId(),
+            ]);
+
+            return $this->redirectToRoute('app_admin_order_index', [], Response::HTTP_SEE_OTHER);
         }
         
         return $this->render('order/new.html.twig', [

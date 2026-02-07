@@ -36,9 +36,17 @@
                             <button type="submit" class="btn btn-lg btn-primary py-3 fw-bold">
                                 <i class="fas fa-check-circle me-2"></i>Confirm & Pay Now
                             </button>
-                            <a href="{{ path('app_product_show', {slug: product.slug}) }}" class="btn btn-link text-muted">Cancel and return</a>
                         </div>
                     {{ form_end(form) }}
+                    
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="{{ path('app_marketplace_index') }}" class="btn btn-outline-primary flex-fill">
+                            <i class="fas fa-shopping-bag me-2"></i>Back to Marketplace
+                        </a>
+                        <a href="{{ path('app_admin_order_index') }}" class="btn btn-outline-secondary flex-fill">
+                            <i class="fas fa-list me-2"></i>View My Orders
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

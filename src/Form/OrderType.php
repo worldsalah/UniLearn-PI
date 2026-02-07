@@ -23,7 +23,7 @@ class OrderType extends AbstractType
                     'Cancelled' => 'cancelled',
                 ],
             ])
-            ->add('price')
+            ->add('totalPrice')
         ;
     }
 

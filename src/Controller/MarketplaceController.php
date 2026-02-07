@@ -32,6 +32,7 @@ class MarketplaceController extends AbstractController
     public function index(
         ProductRepository $productRepository,
         JobRepository $jobRepository,
+        \App\Repository\OrderRepository $orderRepository,
         PaginatorInterface $paginator,
         Request $request
     ): Response {
@@ -39,11 +40,12 @@ class MarketplaceController extends AbstractController
         $category = $request->query->get('category');
         $minPrice = $request->query->get('minPrice');
         $maxPrice = $request->query->get('maxPrice');
+        $sortBy = $request->query->get('sortBy', 'newest');
 
         $queryBuilder = $productRepository->createQueryBuilder('p')
-            ->where('p.deletedAt IS NULL')
-            ->orderBy('p.createdAt', 'DESC');
+            ->where('p.deletedAt IS NULL');
 
+        // Apply filters
         if ($q) {
             $queryBuilder
                 ->andWhere('p.title LIKE :q OR p.description LIKE :q')
@@ -68,12 +70,37 @@ class MarketplaceController extends AbstractController
                 ->setParameter('maxPrice', (float) $maxPrice);
         }
 
+        // Apply sorting
+        switch ($sortBy) {
+            case 'az':
+                $queryBuilder->orderBy('p.title', 'ASC');
+                break;
+            case 'za':
+                $queryBuilder->orderBy('p.title', 'DESC');
+                break;
+            case 'price_asc':
+                $queryBuilder->orderBy('p.price', 'ASC');
+                break;
+            case 'price_desc':
+                $queryBuilder->orderBy('p.price', 'DESC');
+                break;
+            default:
+                $queryBuilder->orderBy('p.createdAt', 'DESC');
+                break;
+        }
+
         $productsQuery = $queryBuilder->getQuery();
 
         $products = $paginator->paginate(
             $productsQuery,
             $request->query->getInt('page', 1),
-            9
+            9,
+            [
+                'sortFieldParameterName' => '___sort',
+                'sortDirectionParameterName' => '___direction',
+                'filterFieldParameterName' => '___filter_field',
+                'filterValueParameterName' => '___filter_value',
+            ]
         );
 
         $jobs = $jobRepository->createQueryBuilder('j')
@@ -93,10 +120,59 @@ class MarketplaceController extends AbstractController
             ->getQuery()
             ->getSingleColumnResult();
 
+        // Clone QueryBuilder for filtered stats and charts
+        $filteredQB = clone $queryBuilder;
+
+        // Chart 1: Category Distribution (Filtered)
+        $chartQB = clone $filteredQB;
+        $catData = $chartQB
+            ->select('p.category, COUNT(p.id) as count')
+            ->groupBy('p.category')
+            ->resetDQLPart('orderBy')
+            ->getQuery()
+            ->getResult();
+        
+        $chartCategories = [];
+        $chartProductCounts = [];
+        foreach ($catData as $item) {
+            $chartCategories[] = $item['category'] ?: 'Uncategorized';
+            $chartProductCounts[] = (int) $item['count'];
+        }
+
+        // Chart 2: Recent Orders (Unfiltered - usually better for revenue trend)
+        $sevenDaysAgo = new \DateTimeImmutable('-7 days');
+        $orderData = $orderRepository->createQueryBuilder('o')
+            ->select('SUBSTRING(o.createdAt, 1, 10) as date, SUM(o.totalPrice) as revenue')
+            ->where('o.createdAt >= :date')
+            ->setParameter('date', $sevenDaysAgo)
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $chartOrderDates = [];
+        $chartOrderRevenue = [];
+        foreach ($orderData as $item) {
+            $chartOrderDates[] = $item['date'];
+            $chartOrderRevenue[] = (float) $item['revenue'];
+        }
+
         return $this->render('marketplace/index.html.twig', [
             'products' => $products,
             'jobs' => $jobs,
             'categories' => $categories,
+            'stats' => [
+                'students' => count($paginator->paginate((clone $filteredQB)->select('DISTINCT IDENTITY(p.freelancer)')->resetDQLPart('orderBy')->getQuery(), 1, 1)),
+                'products' => count($paginator->paginate((clone $filteredQB)->select('p.id')->resetDQLPart('orderBy')->getQuery(), 1, 1)),
+                'jobs' => $jobRepository->count(['status' => 'open', 'deletedAt' => null]),
+                'revenue' => array_sum($chartOrderRevenue),
+            ],
+            'charts' => [
+                'categories' => $chartCategories,
+                'counts' => $chartProductCounts,
+                'dates' => $chartOrderDates,
+                'revenue' => $chartOrderRevenue,
+            ]
         ]);
     }
 
@@ -163,7 +239,7 @@ class MarketplaceController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function deleteProduct(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
-        if ($product->getFreelancer()->getUser() !== $this->getUser()) {
+        if ($product->getFreelancer()->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
              throw $this->createAccessDeniedException('You can only delete your own services.');
         }
 
@@ -231,7 +307,7 @@ class MarketplaceController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function deleteJob(Request $request, Job $job, EntityManagerInterface $entityManager): Response
     {
-        if ($job->getClient() !== $this->getUser()) {
+        if ($job->getClient() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
              throw $this->createAccessDeniedException('You can only delete your own job requests.');
         }
 
@@ -302,12 +378,12 @@ class MarketplaceController extends AbstractController
     public function completeOrder(Request $request, Order $order, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        if ($user && $order->getBuyer() !== $user) {
+        if ($user && $order->getBuyer() !== $user && !$this->isGranted('ROLE_ADMIN')) {
              throw $this->createAccessDeniedException('You can only complete your own orders.');
         }
         
         // If no user, we assume it's the guest user who matches the buyer
-        if (!$user && $order->getBuyer()->getEmail() !== $entityManager->getRepository(\App\Entity\User::class)->findOneBy([])->getEmail()) {
+        if (!$user && $order->getBuyer()->getEmail() !== $entityManager->getRepository(\App\Entity\User::class)->findOneBy([])->getEmail() && !$this->isGranted('ROLE_ADMIN')) {
              throw $this->createAccessDeniedException('You can only complete your own orders.');
         }
 

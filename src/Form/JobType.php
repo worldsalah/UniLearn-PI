@@ -17,6 +17,10 @@ class JobType extends AbstractType
             ->add('title')
             ->add('description')
             ->add('budget')
+            ->add('client', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email',
+            ])
         ;
     }
 

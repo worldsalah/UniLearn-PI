@@ -18,6 +18,10 @@ class ProductType extends AbstractType
             ->add('description')
             ->add('price')
             ->add('category')
+            ->add('freelancer', EntityType::class, [
+                'class' => Student::class,
+                'choice_label' => 'fullName',
+            ])
             ->add('imageFile', \Vich\UploaderBundle\Form\Type\VichImageType::class, [
                 'required' => false,
                 'allow_delete' => true,

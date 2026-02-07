@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/job')]
-#[IsGranted('ROLE_ADMIN')]
+// #[IsGranted('ROLE_ADMIN')]
 class JobController extends AbstractController
 {
     #[Route('/', name: 'app_admin_job_index', methods: ['GET'])]
@@ -24,6 +24,44 @@ class JobController extends AbstractController
 
         return $this->render('admin/job/index.html.twig', [
             'jobs' => $jobs,
+        ]);
+    }
+
+    #[Route('/new', name: 'app_admin_job_new', methods: ['GET', 'POST'], priority: 2)]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $job = new Job();
+        $form = $this->createForm(\App\Form\JobType::class, $job);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($job);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_job_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/job/new.html.twig', [
+            'job' => $job,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_admin_job_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Job $job, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(\App\Form\JobType::class, $job);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_job_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/job/edit.html.twig', [
+            'job' => $job,
+            'form' => $form,
         ]);
     }
 

@@ -15,7 +15,15 @@ class OrderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            // Fields are handled by controller logic (product, buyer, price)
+            ->add('status', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                'choices' => [
+                    'Pending' => 'pending',
+                    'Processing' => 'processing',
+                    'Completed' => 'completed',
+                    'Cancelled' => 'cancelled',
+                ],
+            ])
+            ->add('price')
         ;
     }
 

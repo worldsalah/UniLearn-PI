@@ -17,6 +17,10 @@ class StudentType extends AbstractType
             ->add('fullName')
             ->add('bio')
             ->add('skills')
+            ->add('user', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email',
+            ])
         ;
     }
 

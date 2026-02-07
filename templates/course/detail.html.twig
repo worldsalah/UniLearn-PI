@@ -1,0 +1,402 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Course Detail - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Course detail START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-8">
+                <!-- Course detail START -->
+                <div class="card shadow">
+                    <!-- Image -->
+                    <div class="position-relative">
+                        <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="card-img-top" alt="Course">
+                        <div class="position-absolute top-0 start-0 m-3">
+                            <span class="badge bg-danger">Bestseller</span>
+                        </div>
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <a href="#" class="btn btn-white btn-sm mb-0 rounded-pill" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist">
+                                <i class="fas fa-heart"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card body -->
+                    <div class="card-body p-4">
+                        <!-- Title and info -->
+                        <div class="d-md-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h1 class="mb-2">Complete Web Development Bootcamp 2024</h1>
+                                <ul class="list-inline mb-0">
+                                    <li class="list-inline-item h6 me-3 mb-1 mb-md-0"><i class="fas fa-star text-warning"></i> 4.5 (2,345 reviews)</li>
+                                    <li class="list-inline-item h6 me-3 mb-1 mb-md-0"><i class="fas fa-user-graduate"></i> 45,234 students</li>
+                                    <li class="list-inline-item h6 me-3 mb-1 mb-md-0"><i class="fas fa-clock"></i> 42 hours video</li>
+                                    <li class="list-inline-item h6 mb-1 mb-md-0"><i class="fas fa-certificate"></i> Certificate</li>
+                                </ul>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <h3 class="mb-0 me-2">$89.99</h3>
+                                <span class="text-decoration-line-through text-muted">$199.99</span>
+                            </div>
+                        </div>
+
+                        <!-- Nav tabs START -->
+                        <ul class="nav nav-tabs nav-bottom-line" role="tablist">
+                            <li class="nav-item"> <a class="nav-link active" data-bs-toggle="tab" href="#nav-overview-tab" role="tab" aria-selected="true">Overview</a> </li>
+                            <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#nav-curriculum-tab" role="tab" aria-selected="false">Curriculum</a> </li>
+                            <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#nav-instructor-tab" role="tab" aria-selected="false">Instructor</a> </li>
+                            <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#nav-reviews-tab" role="tab" aria-selected="false">Reviews</a> </li>
+                        </ul>
+                        <!-- Nav tabs END -->
+
+                        <!-- Tab contents START -->
+                        <div class="tab-content pt-4" id="nav-tabContent">
+                            <!-- Overview tab START -->
+                            <div class="tab-pane fade show active" id="nav-overview-tab" role="tabpanel">
+                                <h5 class="mb-3">Description</h5>
+                                <p class="mb-4">Become a full-stack web developer with just ONE course. HTML, CSS, Javascript, Node, React, MongoDB, Web3 and DApps</p>
+                                <p class="mb-4">Welcome to the Complete Web Development Bootcamp, the only course you need to learn web development. There are a lot of options for online developer training, but this course is without a doubt the most comprehensive and effective on the market. Here's why:</p>
+                                
+                                <h6 class="mb-3">What you'll learn</h6>
+                                <ul class="list-group list-group-borderless mb-4">
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Build 16 web development projects for your portfolio
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Learn the latest technologies, including Javascript, React, Node and even Web3 development
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Build fully-fledged websites and web apps for your startup or business
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Master frontend development with React
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Master backend development with Node
+                                    </li>
+                                </ul>
+
+                                <h6 class="mb-3">Requirements</h6>
+                                <ul class="list-group list-group-borderless mb-4">
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-info-circle text-info me-2"></i>
+                                        No programming experience needed - I'll teach you everything you need to know
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-info-circle text-info me-2"></i>
+                                        A computer with access to the internet
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-info-circle text-info me-2"></i>
+                                        No paid software required
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Overview tab END -->
+
+                            <!-- Curriculum tab START -->
+                            <div class="tab-pane fade" id="nav-curriculum-tab" role="tabpanel">
+                                <h5 class="mb-3">Course Content</h5>
+                                <div class="accordion" id="accordionExample">
+                                    <!-- Accordion item 1 -->
+                                    <div class="accordion-item mb-2">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                                <div class="d-flex justify-content-between align-items-center w-100">
+                                                    <span>Section 1: Introduction</span>
+                                                    <span class="badge bg-primary">5 lectures • 25min</span>
+                                                </div>
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <ul class="list-group list-group-borderless">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <i class="fas fa-play-circle text-primary me-2"></i>
+                                                            Welcome to the Course!
+                                                        </div>
+                                                        <span class="text-muted">5:23</span>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <i class="fas fa-play-circle text-primary me-2"></i>
+                                                            Course Structure
+                                                        </div>
+                                                        <span class="text-muted">3:45</span>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <i class="fas fa-play-circle text-primary me-2"></i>
+                                                            Download Course Resources
+                                                        </div>
+                                                        <span class="text-muted">2:10</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Accordion item 2 -->
+                                    <div class="accordion-item mb-2">
+                                        <h2 class="accordion-header" id="headingTwo">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                                <div class="d-flex justify-content-between align-items-center w-100">
+                                                    <span>Section 2: HTML Essentials</span>
+                                                    <span class="badge bg-primary">8 lectures • 1hr 15min</span>
+                                                </div>
+                                            </button>
+                                        </h2>
+                                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <ul class="list-group list-group-borderless">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <i class="fas fa-play-circle text-primary me-2"></i>
+                                                            HTML Basics
+                                                        </div>
+                                                        <span class="text-muted">12:30</span>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <i class="fas fa-play-circle text-primary me-2"></i>
+                                                            HTML Forms and Input
+                                                        </div>
+                                                        <span class="text-muted">15:45</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Curriculum tab END -->
+
+                            <!-- Instructor tab START -->
+                            <div class="tab-pane fade" id="nav-instructor-tab" role="tabpanel">
+                                <div class="d-sm-flex align-items-center">
+                                    <div class="avatar avatar-xl">
+                                        <img class="avatar-img rounded-circle" src="{{ asset('assets/images/instructor/01.jpg') }}" alt="avatar">
+                                    </div>
+                                    <div class="ms-sm-4 mt-3 mt-sm-0">
+                                        <h4 class="mb-1">John Doe</h4>
+                                        <p class="mb-2">Senior Web Developer & Instructor</p>
+                                        <p class="mb-3">I'm John, a professional web developer with years of experience in building scalable web applications. I'm passionate about teaching and helping others learn web development.</p>
+                                        <div class="d-flex gap-2">
+                                            <a href="#" class="btn btn-sm btn-primary">Follow</a>
+                                            <a href="#" class="btn btn-sm btn-outline-primary">Message</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <h5 class="mb-3">About the instructor</h5>
+                                <p class="mb-3">With over 10 years of experience in web development, I've worked with Fortune 500 companies and startups alike. My expertise includes:</p>
+                                <ul class="list-group list-group-borderless mb-4">
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Full-stack web development
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        React and modern JavaScript frameworks
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Node.js and backend development
+                                    </li>
+                                </ul>
+
+                                <div class="row g-4">
+                                    <div class="col-6 col-md-3">
+                                        <h6 class="mb-1">4.5</h6>
+                                        <p class="mb-0 small text-muted">Instructor Rating</p>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <h6 class="mb-1">45,234</h6>
+                                        <p class="mb-0 small text-muted">Students</p>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <h6 class="mb-1">12</h6>
+                                        <p class="mb-0 small text-muted">Courses</p>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <h6 class="mb-1">2,345</h6>
+                                        <p class="mb-0 small text-muted">Reviews</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Instructor tab END -->
+
+                            <!-- Reviews tab START -->
+                            <div class="tab-pane fade" id="nav-reviews-tab" role="tabpanel">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="mb-0">Student Reviews</h5>
+                                    <button class="btn btn-sm btn-primary">Write a Review</button>
+                                </div>
+
+                                <!-- Rating overview -->
+                                <div class="row mb-4">
+                                    <div class="col-md-4 text-center">
+                                        <h2 class="mb-0">4.5</h2>
+                                        <div class="text-warning mb-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <p class="mb-0">Course Rating</p>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <!-- Progress bars -->
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="me-2">5 stars</span>
+                                            <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                <div class="progress-bar bg-success" style="width: 70%"></div>
+                                            </div>
+                                            <span class="small">70%</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="me-2">4 stars</span>
+                                            <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                <div class="progress-bar bg-success" style="width: 20%"></div>
+                                            </div>
+                                            <span class="small">20%</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="me-2">3 stars</span>
+                                            <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                <div class="progress-bar bg-success" style="width: 7%"></div>
+                                            </div>
+                                            <span class="small">7%</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="me-2">2 stars</span>
+                                            <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                <div class="progress-bar bg-success" style="width: 2%"></div>
+                                            </div>
+                                            <span class="small">2%</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-2">1 star</span>
+                                            <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                <div class="progress-bar bg-success" style="width: 1%"></div>
+                                            </div>
+                                            <span class="small">1%</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Reviews -->
+                                <div class="mb-4">
+                                    <div class="d-flex mb-3">
+                                        <div class="avatar avatar-sm">
+                                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/08.jpg') }}" alt="avatar">
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-0">Alex Johnson</h6>
+                                                <small class="text-muted">2 days ago</small>
+                                            </div>
+                                            <div class="text-warning small mb-2">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                            <p class="mb-0">Excellent course! The instructor explains everything clearly and the projects are really helpful for practice.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Reviews tab END -->
+                        </div>
+                        <!-- Tab contents END -->
+                    </div>
+                </div>
+                <!-- Course detail END -->
+            </div>
+
+            <!-- Right sidebar START -->
+            <div class="col-lg-4">
+                <!-- Sticky START -->
+                <div class="sticky-top" style="top: 100px;">
+                    <div class="card shadow">
+                        <!-- Card body -->
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="mb-0">$89.99</h4>
+                                <span class="text-decoration-line-through text-muted">$199.99</span>
+                            </div>
+                            <p class="mb-3"><span class="badge bg-danger me-2">55% OFF</span> <span class="text-muted">2 days left at this price!</span></p>
+                            
+                            <button class="btn btn-primary w-100 mb-2">Buy Now</button>
+                            <button class="btn btn-outline-primary w-100 mb-3">Add to Cart</button>
+                            
+                            <div class="text-center">
+                                <small class="text-muted">30-Day Money-Back Guarantee</small>
+                            </div>
+
+                            <hr>
+
+                            <!-- Course features -->
+                            <h6 class="mb-3">This course includes:</h6>
+                            <ul class="list-group list-group-borderless mb-0">
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-video text-primary me-2"></i>
+                                    42 hours on-demand video
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-file-alt text-primary me-2"></i>
+                                    85 articles
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-download text-primary me-2"></i>
+                                    85 downloadable resources
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-infinity text-primary me-2"></i>
+                                    Full lifetime access
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-mobile-alt text-primary me-2"></i>
+                                    Access on mobile and TV
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="fas fa-certificate text-primary me-2"></i>
+                                    Certificate of completion
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sticky END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Course detail END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

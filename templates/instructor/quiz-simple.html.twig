@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Instructor Quiz Management - Unilearn{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/choices/css/choices.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+    <!-- =======================
+    Instructor Quiz Management START -->
+    <section class="pt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="text-center">
+                        <h1 class="mb-4">My Quiz List</h1>
+                        <p class="lead">Manage and monitor all quizzes you've created</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quiz List -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    {% if quizzes|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Quiz ID</th>
+                                        <th>Title</th>
+                                        <th>Questions</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for quiz in quizzes %}
+                                        <tr>
+                                            <td>{{ quiz.id }}</td>
+                                            <td>{{ quiz.title }}</td>
+                                            <td>{{ quiz.questions|length }}</td>
+                                            <td>{{ quiz.createdAt|date('Y-m-d') }}</td>
+                                            <td>
+                                                <a href="/admin/quiz/{{ quiz.id }}/edit" class="btn btn-sm btn-warning me-1">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </a>
+                                                <a href="/admin/quiz/{{ quiz.id }}/view" class="btn btn-sm btn-info me-1">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                                <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ quiz.id }}, '{{ quiz.title|e('js') }}')">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-clipboard-x fs-1 text-muted mb-3"></i>
+                            <h4 class="text-muted">No Quizzes Created Yet</h4>
+                            <p class="text-muted">You haven't created any quizzes yet. Get started by creating your first quiz!</p>
+                            <a href="{{ path('app_admin_quiz_add') }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Create Your First Quiz
+                            </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Instructor Quiz Management END -->
+    <!-- ======================= -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+
+{% endblock %}

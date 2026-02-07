@@ -1,0 +1,284 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Course List - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Course <span class="text-primary">List View</span></h1>
+                    <p class="lead mb-0">Browse courses in list layout</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Course List START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <!-- Search -->
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body p-3">
+                        <h6 class="mb-3">Search Courses</h6>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="What do you want to learn?">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Categories -->
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body p-3">
+                        <h6 class="mb-3">Categories</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="cat1">
+                            <label class="form-check-label" for="cat1">
+                                Development (2,456)
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="cat2">
+                            <label class="form-check-label" for="cat2">
+                                Design (1,234)
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="cat3">
+                            <label class="form-check-label" for="cat3">
+                                Marketing (856)
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="cat4">
+                            <label class="form-check-label" for="cat4">
+                                Business (1,789)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <!-- Sort and View -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <p class="mb-0">Showing <span class="fw-bold">1-12</span> of <span class="fw-bold">8,456</span> results</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <select class="form-select form-select-sm">
+                            <option selected>Sort by: Relevance</option>
+                            <option>Price: Low to High</option>
+                            <option>Price: High to Low</option>
+                            <option>Rating: High to Low</option>
+                            <option>Newest First</option>
+                        </select>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm active">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course List -->
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Course 1 -->
+                        <div class="card card-hover-shadow border-0 mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="img-fluid rounded" alt="Course">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <span class="badge bg-primary bg-opacity-10 text-primary">Development</span>
+                                                <h5 class="card-title mb-2">Complete Web Development Bootcamp 2024</h5>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="text-warning">
+                                                    <i class="fas fa-star"></i>
+                                                    <span>4.5</span>
+                                                </div>
+                                                <small class="text-muted">(2,345 reviews)</small>
+                                            </div>
+                                        </div>
+                                        <p class="card-text text-muted mb-3">Learn web development from scratch with HTML, CSS, JavaScript, React, Node.js and more. Build real projects and get job-ready skills.</p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                            <div>
+                                                <h6 class="mb-0 small">John Doe</h6>
+                                                <p class="mb-0 small text-muted">Senior Developer</p>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <span class="text-muted small me-3">45,234 students</span>
+                                                <span class="text-muted small">12 hours</span>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h4 class="mb-0">$89.99</h4>
+                                                <span class="text-decoration-line-through text-muted small">$199.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-outline-primary btn-sm me-2">
+                                                    <i class="fas fa-heart"></i>
+                                                </button>
+                                                <button class="btn btn-primary btn-sm">Enroll Now</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Course 2 -->
+                        <div class="card card-hover-shadow border-0 mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <img src="{{ asset('assets/images/courses/4by3/02.jpg') }}" class="img-fluid rounded" alt="Course">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <span class="badge bg-success bg-opacity-10 text-success">Design</span>
+                                                <h5 class="card-title mb-2">UI/UX Design Masterclass</h5>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="text-warning">
+                                                    <i class="fas fa-star"></i>
+                                                    <span>4.8</span>
+                                                </div>
+                                                <small class="text-muted">(1,567 reviews)</small>
+                                            </div>
+                                        </div>
+                                        <p class="card-text text-muted mb-3">Master the principles of user interface and user experience design. Learn industry-standard tools and create stunning designs.</p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <img src="{{ asset('assets/images/avatar/02.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                            <div>
+                                                <h6 class="mb-0 small">Jane Smith</h6>
+                                                <p class="mb-0 small text-muted">UI/UX Designer</p>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <span class="text-muted small me-3">32,456 students</span>
+                                                <span class="text-muted small">8 hours</span>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h4 class="mb-0">$79.99</h4>
+                                                <span class="text-decoration-line-through text-muted small">$149.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-outline-primary btn-sm me-2">
+                                                    <i class="fas fa-heart"></i>
+                                                </button>
+                                                <button class="btn btn-primary btn-sm">Enroll Now</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Course 3 -->
+                        <div class="card card-hover-shadow border-0 mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <img src="{{ asset('assets/images/courses/4by3/03.jpg') }}" class="img-fluid rounded" alt="Course">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <span class="badge bg-warning bg-opacity-10 text-warning">Marketing</span>
+                                                <h5 class="card-title mb-2">Digital Marketing Complete Course</h5>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="text-warning">
+                                                    <i class="fas fa-star"></i>
+                                                    <span>4.7</span>
+                                                </div>
+                                                <small class="text-muted">(987 reviews)</small>
+                                            </div>
+                                        </div>
+                                        <p class="card-text text-muted mb-3">Learn SEO, social media marketing, content marketing, and more. Become a digital marketing expert.</p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <img src="{{ asset('assets/images/avatar/03.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                            <div>
+                                                <h6 class="mb-0 small">Mike Johnson</h6>
+                                                <p class="mb-0 small text-muted">Marketing Expert</p>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <span class="text-muted small me-3">28,789 students</span>
+                                                <span class="text-muted small">10 hours</span>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h4 class="mb-0">$69.99</h4>
+                                                <span class="text-decoration-line-through text-muted small">$129.99</span>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-outline-primary btn-sm me-2">
+                                                    <i class="fas fa-heart"></i>
+                                                </button>
+                                                <button class="btn btn-primary btn-sm">Enroll Now</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Course List END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

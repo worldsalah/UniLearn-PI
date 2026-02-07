@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Instructor Quiz Test{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block body %}
+<div style="padding: 20px;">
+    <h1>Page Instructor Quiz - Test Ultra-Minimal</h1>
+    <p>Cette page fonctionne si vous la voyez !</p>
+    <p>Date: {{ "now"|date("Y-m-d H:i:s") }}</p>
+    <p>Instructeur: {{ instructor.name|default("Non défini") }}</p>
+    <p>Email: {{ instructor.email|default("Non défini") }}</p>
+</div>
+{% endblock %}

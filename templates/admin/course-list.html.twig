@@ -1,0 +1,277 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Course List - Admin{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+<!-- =======================
+Admin Course List START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- Admin profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <!-- Avatar -->
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h6 class="mb-0">Admin User</h6>
+                        <p class="small mb-3">admin@unilearn.com</p>
+                        <hr>
+                        <!-- Admin detail -->
+                        <div class="text-start">
+                            <p class="mb-2"><i class="bi bi-shield-check fa-fw me-2"></i>Administrator</p>
+                            <p class="mb-0"><i class="bi bi-calendar fa-fw me-2"></i>Joined: January 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <ul class="nav nav-pills nav-pills-vertical">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ path('app_admin_dashboard') }}">
+                                    <i class="bi bi-grid fa-fw me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_course_list') }}">
+                                    <i class="bi bi-book fa-fw me-2"></i>Courses
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_student_list') }}">
+                                    <i class="bi bi-people fa-fw me-2"></i>Students
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_instructor_list') }}">
+                                    <i class="bi bi-person-badge fa-fw me-2"></i>Instructors
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_review') }}">
+                                    <i class="bi bi-star fa-fw me-2"></i>Reviews
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_earning') }}">
+                                    <i class="bi bi-currency-dollar fa-fw me-2"></i>Earnings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_setting') }}">
+                                    <i class="bi bi-gear fa-fw me-2"></i>Settings
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Left sidebar END -->
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Page title START -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Course Management</h2>
+                    <div>
+                        <button class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Add New Course
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and filter START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search courses...">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option selected>All Categories</option>
+                                    <option>Development</option>
+                                    <option>Design</option>
+                                    <option>Business</option>
+                                    <option>Marketing</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option selected>All Status</option>
+                                    <option>Published</option>
+                                    <option>Draft</option>
+                                    <option>Pending</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course table START -->
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Instructor</th>
+                                        <th>Category</th>
+                                        <th>Students</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="rounded-2" width="60" alt="course">
+                                                <div class="ms-3">
+                                                    <h6 class="mb-1">Web Design for Beginners</h6>
+                                                    <p class="mb-0 small text-muted">Updated 2 days ago</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded-circle" width="30" alt="instructor">
+                                                <span class="ms-2">Frances Guerrero</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-primary bg-opacity-10 text-primary">Design</span></td>
+                                        <td>1,234</td>
+                                        <td>$45.00</td>
+                                        <td><span class="badge bg-success">Published</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/courses/4by3/02.jpg') }}" class="rounded-2" width="60" alt="course">
+                                                <div class="ms-3">
+                                                    <h6 class="mb-1">JavaScript Advanced</h6>
+                                                    <p class="mb-0 small text-muted">Updated 1 week ago</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/02.jpg') }}" class="rounded-circle" width="30" alt="instructor">
+                                                <span class="ms-2">Dennis Barrett</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-info bg-opacity-10 text-info">Development</span></td>
+                                        <td>892</td>
+                                        <td>$89.00</td>
+                                        <td><span class="badge bg-success">Published</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/courses/4by3/03.jpg') }}" class="rounded-2" width="60" alt="course">
+                                                <div class="ms-3">
+                                                    <h6 class="mb-1">Digital Marketing Masterclass</h6>
+                                                    <p class="mb-0 small text-muted">Updated 3 days ago</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/03.jpg') }}" class="rounded-circle" width="30" alt="instructor">
+                                                <span class="ms-2">Carolyn Ortiz</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-warning bg-opacity-10 text-warning">Marketing</span></td>
+                                        <td>567</td>
+                                        <td>$67.00</td>
+                                        <td><span class="badge bg-warning">Draft</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination START -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <p class="mb-0">Showing 1-10 of 45 courses</p>
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- Pagination END -->
+                    </div>
+                </div>
+                <!-- Course table END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Admin Course List END -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

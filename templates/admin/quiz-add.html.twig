@@ -1,0 +1,435 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add New Quiz - Admin Dashboard{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- Sidebar START -->
+<nav class="navbar sidebar navbar-expand-xl navbar-dark bg-dark">
+
+	<!-- Navbar brand for xl START -->
+	<div class="d-flex align-items-center">
+		<a class="navbar-brand" href="{{ path('app_home') }}">
+			<img class="navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="">
+		</a>
+	</div>
+	<!-- Navbar brand for xl END -->
+	
+	<div class="offcanvas offcanvas-start flex-row custom-scrollbar h-100" data-bs-backdrop="true" tabindex="-1" id="offcanvasSidebar">
+		<div class="offcanvas-body sidebar-content d-flex flex-column bg-dark">
+
+			<!-- Sidebar menu START -->
+			<ul class="navbar-nav flex-column" id="navbar-sidebar">
+				
+				<!-- Menu item 1 -->
+				<li class="nav-item"><a href="{{ path('app_admin_dashboard') }}" class="nav-link"><i class="bi bi-house fa-fw me-2"></i>Dashboard</a></li>
+				
+				<!-- Title -->
+				<li class="nav-item ms-2 my-2">Pages</li>
+
+				<!-- menu item 2 -->
+				<li class="nav-item">
+					<a class="nav-link" data-bs-toggle="collapse" href="#collapsepage" role="button" aria-expanded="false" aria-controls="collapsepage">
+						<i class="bi bi-basket fa-fw me-2"></i>Courses
+					</a>
+					<!-- Submenu -->
+					<ul class="nav collapse flex-column" id="collapsepage" data-bs-parent="#navbar-sidebar">
+						<li class="nav-item"> <a class="nav-link" href="{{ path('app_course_list') }}">All Courses</a></li>
+						<li class="nav-item"> <a class="nav-link" href="#">Course Category</a></li>
+						<li class="nav-item"> <a class="nav-link" href="{{ path('app_course_detail') }}">Course Detail</a></li>
+					</ul>
+				</li>
+
+				<!-- Menu item 3 -->
+				<li class="nav-item">
+					<a class="nav-link active" data-bs-toggle="collapse" href="#collapsequiz" role="button" aria-expanded="true" aria-controls="collapsequiz">
+						<i class="fas fa-question-circle fa-fw me-2"></i>Quiz
+					</a>
+					<!-- Submenu -->
+					<ul class="nav collapse flex-column show" id="collapsequiz" data-bs-parent="#navbar-sidebar">
+						<li class="nav-item"> <a class="nav-link" href="{{ path('app_admin_quizzes') }}">All Quizzes</a></li>
+						<li class="nav-item"> <a class="nav-link active" href="#">Add New Quiz</a></li>
+					</ul>
+				</li>
+
+				<!-- Menu item 4 -->
+				<li class="nav-item"> <a class="nav-link" href="#"><i class="fas fa-user-graduate fa-fw me-2"></i>Students</a></li>
+
+				<!-- Menu item 5 -->
+				<li class="nav-item">
+					<a class="nav-link" data-bs-toggle="collapse" href="#collapseinstructors" role="button" aria-expanded="false" aria-controls="collapseinstructors">
+						<i class="fas fa-user-tie fa-fw me-2"></i>Instructors
+					</a>
+					<!-- Submenu -->
+					<ul class="nav collapse flex-column" id="collapseinstructors" data-bs-parent="#navbar-sidebar">
+						<li class="nav-item"> <a class="nav-link" href="{{ path('app_instructor_list') }}">Instructors</a></li>
+						<li class="nav-item"> <a class="nav-link" href="#">Instructor Detail</a></li>
+						<li class="nav-item"> 
+							<a class="nav-link" href="#">Instructor requests
+								<span class="badge text-bg-success rounded-circle ms-2">2</span>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<!-- Menu item 6 -->
+				<li class="nav-item"> <a class="nav-link" href="#"><i class="bi bi-star fa-fw me-2"></i>Reviews</a></li>
+
+				<!-- Menu item 7 -->
+				<li class="nav-item"> <a class="nav-link" href="#"><i class="fas fa-dollar-sign fa-fw me-2"></i>Earnings</a></li>
+
+				<!-- Menu item 8 -->
+				<li class="nav-item"> <a class="nav-link" href="#"><i class="fas fa-cog fa-fw me-2"></i>Settings</a></li>
+
+				<!-- Menu item 9 -->
+				<li class="nav-item">
+					<a class="nav-link text-danger" href="{{ path('app_sign_in') }}">
+						<i class="fas fa-sign-out-alt fa-fw me-2"></i>Logout
+					</a>
+				</li>
+			</ul>
+			<!-- Sidebar menu END -->
+
+			<!-- Sidebar footer START -->
+			<div class="px-3 mt-auto pt-3">
+				<div class="d-flex align-items-center">
+					<div class="avatar avatar-sm">
+						<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+					</div>
+					<div class="ms-2">
+						<h6 class="mb-0">Admin User</h6>
+						<small class="text-muted">Administrator</small>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar footer END -->
+			
+		</div>
+	</div>
+</nav>
+<!-- Sidebar END -->
+
+<!-- Page content START -->
+<div class="page-content">
+
+	<!-- Top bar START -->
+	<nav class="navbar top-bar navbar-light border-bottom py-0 py-xl-3">
+		<div class="container-fluid p-0">
+			<div class="d-flex align-items-center w-100">
+
+				<!-- Logo START -->
+				<div class="d-flex align-items-center d-xl-none">
+					<a class="navbar-brand" href="{{ path('app_home') }}">
+						<img class="light-mode-item navbar-brand-item h-30px" src="{{ asset('assets/images/logo-mobile.svg') }}" alt="">
+						<img class="dark-mode-item navbar-brand-item h-30px" src="{{ asset('assets/images/logo-mobile-light.svg') }}" alt="">
+					</a>
+				</div>
+				<!-- Logo END -->
+
+				<!-- Toggler for sidebar START -->
+				<div class="navbar-expand-xl sidebar-offcanvas-menu">
+					<button class="navbar-toggler me-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar" aria-expanded="false" aria-label="Toggle navigation" data-bs-auto-close="outside">
+						<i class="bi bi-text-right fa-fw h2 lh-0 mb-0 rtl-flip" data-bs-target="#offcanvasMenu"> </i>
+					</button>
+				</div>
+				<!-- Toggler for sidebar END -->
+				
+				<!-- Top bar left -->
+				<div class="navbar-expand-lg ms-auto ms-xl-0">
+					
+					<!-- Toggler for menubar START -->
+					<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTopContent" aria-controls="navbarTopContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-animation">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</button>
+					<!-- Toggler for menubar END -->
+
+					<!-- Topbar menu START -->
+					<div class="collapse navbar-collapse w-100" id="navbarTopContent">
+						<!-- Top search START -->
+						<div class="nav my-3 my-xl-0 flex-nowrap align-items-center">
+							<div class="nav-item w-100">
+								<form class="position-relative">
+									<input class="form-control pe-5 bg-secondary bg-opacity-10 border-0" type="search" placeholder="Search..." aria-label="Search">
+									<button class="bg-transparent px-2 py-0 border-0 position-absolute top-50 end-0 translate-middle-y" type="submit"><i class="fas fa-search fs-6 text-primary"></i></button>
+								</form>
+							</div>
+						</div>
+						<!-- Top search END -->
+					</div>
+					<!-- Topbar menu END -->
+				</div>
+				<!-- Top bar left END -->
+				
+				<!-- Top bar right START -->
+				<div class="ms-xl-auto">
+					<ul class="navbar-nav flex-row align-items-center">
+
+						<!-- Profile dropdown START -->
+						<li class="nav-item ms-2 ms-md-3 dropdown">
+							<a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+								<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+							</a>
+							<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+								<li class="px-3 mb-3">
+									<div class="d-flex align-items-center">
+										<div class="avatar me-3">
+											<img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+										</div>
+										<div>
+											<a class="h6" href="#">Admin User</a>
+											<p class="small m-0">Administrator</p>
+										</div>
+									</div>
+								</li>
+								<li> <hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+								<li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+								<li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_sign_in') }}"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+							</ul>
+						</li>
+						<!-- Profile dropdown END -->
+					</ul>
+				</div>
+				<!-- Top bar right END -->
+
+			</div>
+		</div>
+	</nav>
+	<!-- Top bar END -->
+
+	<!-- Main content START -->
+	<div class="container-fluid p-4">
+		<!-- Page header START -->
+		<div class="row">
+			<div class="col-12">
+				<div class="d-sm-flex justify-content-between align-items-center mb-4">
+					<div>
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb breadcrumb-dots mb-1">
+								<li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}" class="text-decoration-none">Dashboard</a></li>
+								<li class="breadcrumb-item"><a href="{{ path('app_admin_quizzes') }}" class="text-decoration-none">Quizzes</a></li>
+								<li class="breadcrumb-item active">Add New Quiz</li>
+							</ol>
+						</nav>
+						<h1 class="h3 mb-2">Add New Quiz</h1>
+						<p class="mb-0">Create a new quiz for your courses.</p>
+					</div>
+					<div class="d-flex gap-2">
+						<a href="{{ path('app_admin_quizzes') }}" class="btn btn-primary-soft">
+							<i class="bi bi-arrow-left me-2"></i>Back to Quizzes
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Page header END -->
+
+		<!-- Add quiz form START -->
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="card border-0 shadow">
+					<div class="card-body p-4">
+						<form id="addQuizForm">
+							<div class="row g-3">
+								<div class="col-12">
+									<label class="form-label">Quiz Title <span class="text-danger">*</span></label>
+									<input type="text" class="form-control" name="title" placeholder="Enter quiz title" required>
+									<small class="form-text text-muted">Choose a descriptive title for your quiz</small>
+								</div>
+								
+								<div class="col-12">
+									<label class="form-label">Course (Optional)</label>
+									<select class="form-select" name="courseId">
+										<option value="">Select a course (optional)</option>
+										<option value="1">Web Development Bootcamp</option>
+										<option value="2">JavaScript Masterclass</option>
+										<option value="3">UI/UX Design Fundamentals</option>
+										<option value="4">Python for Beginners</option>
+									</select>
+									<small class="form-text text-muted">Associate this quiz with a specific course</small>
+								</div>
+
+								<div class="col-12">
+									<hr>
+									<div class="d-flex justify-content-between align-items-center mb-3">
+										<h5 class="mb-0">Quiz Settings</h5>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<label class="form-label">Time Limit (minutes)</label>
+									<input type="number" class="form-control" name="timeLimit" placeholder="30" min="1">
+									<small class="form-text text-muted">Leave empty for no time limit</small>
+								</div>
+
+								<div class="col-md-6">
+									<label class="form-label">Passing Score (%)</label>
+									<input type="number" class="form-control" name="passingScore" placeholder="70" min="0" max="100">
+									<small class="form-text text-muted">Minimum score to pass</small>
+								</div>
+
+								<div class="col-12">
+									<hr>
+									<div class="d-flex justify-content-end gap-2">
+										<a href="{{ path('app_admin_quizzes') }}" class="btn btn-secondary">Cancel</a>
+										<button type="submit" class="btn btn-primary">
+											<i class="bi bi-plus-circle me-2"></i>Create Quiz
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-4">
+				<div class="card border-0 shadow">
+					<div class="card-body p-4">
+						<h5 class="mb-3">Quick Tips</h5>
+						<ul class="list-unstyled">
+							<li class="mb-2">
+								<i class="bi bi-check-circle text-success me-2"></i>
+								Choose a clear and descriptive title
+							</li>
+							<li class="mb-2">
+								<i class="bi bi-check-circle text-success me-2"></i>
+								Set appropriate time limits
+							</li>
+							<li class="mb-2">
+								<i class="bi bi-check-circle text-success me-2"></i>
+								Define passing scores clearly
+							</li>
+							<li class="mb-2">
+								<i class="bi bi-check-circle text-success me-2"></i>
+								Associate with relevant courses
+							</li>
+						</ul>
+
+						<hr>
+
+						<h5 class="mb-3">Next Steps</h5>
+						<p class="text-muted small mb-2">After creating the quiz, you'll be able to:</p>
+						<ul class="list-unstyled small">
+							<li class="mb-1">• Add multiple questions</li>
+							<li class="mb-1">• Set correct answers</li>
+							<li class="mb-1">• Configure quiz settings</li>
+							<li class="mb-1">• Monitor quiz results</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Add quiz form END -->
+
+	</div>
+</div>
+<!-- Page content END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Success/Error Alert -->
+<div id="alertContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
+
+<script>
+// Alert function
+function showAlert(message, type = 'success') {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    const alertContainer = document.getElementById('alertContainer');
+    alertContainer.innerHTML = alertHtml;
+    
+    // Auto dismiss after 3 seconds
+    setTimeout(() => {
+        const alert = alertContainer.querySelector('.alert');
+        if (alert) {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }
+    }, 3000);
+}
+
+// Add Quiz Form Handler
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, looking for addQuizForm...');
+    
+    const addQuizForm = document.getElementById('addQuizForm');
+    console.log('addQuizForm found:', addQuizForm);
+    
+    if (addQuizForm) {
+        addQuizForm.addEventListener('submit', function(e) {
+            console.log('Form submitted!');
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                title: formData.get('title'),
+                courseId: formData.get('courseId') || null,
+                timeLimit: formData.get('timeLimit') || null,
+                passingScore: formData.get('passingScore') || 70
+            };
+            
+            console.log('Quiz data to send:', data);
+
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Creating...';
+            submitBtn.disabled = true;
+
+            console.log('Sending request to /admin/quiz/create...');
+            
+            fetch('/admin/quiz/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('Response received:', response);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    showAlert('Quiz created successfully! Redirecting...', 'success');
+                    
+                    // Redirect to edit page to add questions
+                    setTimeout(() => {
+                        window.location.href = `/admin/quiz/${data.quizId}/edit`;
+                    }, 2000);
+                } else {
+                    showAlert(data.message || 'Failed to create quiz', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('An error occurred while creating the quiz', 'danger');
+            })
+            .finally(() => {
+                // Restore button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+    } else {
+        console.error('addQuizForm not found!');
+    }
+});
+</script>
+{% endblock %}

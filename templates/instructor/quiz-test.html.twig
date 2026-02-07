@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Instructor Quiz - Unilearn{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block body %}
+<!-- Header START -->
+<header class="navbar-light navbar-sticky">
+	<nav class="navbar navbar-expand-xl">
+		<div class="container">
+			<a class="navbar-brand" href="{{ path('app_home') }}">
+				<img class="light-mode-item navbar-brand-item" src="{{ asset('assets/images/logo.svg') }}" alt="logo">
+				<img class="dark-mode-item navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="logo">
+			</a>
+			
+			<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+				<span class="navbar-toggler-animation">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+			
+			<div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+				<ul class="navbar-nav navbar-nav-scroll mx-auto">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demos</a>
+						<ul class="dropdown-menu" aria-labelledby="demoMenu">
+							<li> <a class="dropdown-item" href="{{ path('app_home') }}">Home Default</a></li>
+							<li> <a class="dropdown-item" href="{{ path('app_home_variant') }}">Home Education</a></li>
+							<li> <a class="dropdown-item" href="{{ path('app_home_variant_3') }}">Home Academy</a></li>
+							<li> <a class="dropdown-item" href="{{ path('app_home_variant_4') }}">Home Course</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</header>
+
+<!-- Main START -->
+<main>
+	<!-- Container START -->
+	<div class="container">
+		<div class="row g-4">
+			<!-- Left sidebar START -->
+			<div class="col-lg-3">
+				<!-- Advanced filter START -->
+				<div class="card card-body bg-light p-4 mb-4">
+					<h4 class="mb-3">Instructor</h4>
+					
+					<!-- Instructor info START -->
+					<div class="d-flex align-items-center mb-4">
+						<!-- Avatar -->
+						<div class="avatar avatar-lg">
+							<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+						</div>
+						<!-- Info -->
+						<div class="ms-3">
+							<h6 class="mb-0">{{ instructor.name }}</h6>
+							<p class="mb-0">{{ instructor.email }}</p>
+							<div class="d-flex align-items-center">
+								{% if instructor.verified is defined and instructor.verified %}
+									<span class="badge bg-success text-white">Verified</span>
+								{% endif %}
+								<span class="badge bg-primary text-white ms-2">{{ instructor.rating|default(4.5) }}/5.0</span>
+							</div>
+						</div>
+					</div>
+					<!-- Instructor info END -->
+				</div>
+				<!-- Advanced filter END -->
+			</div>
+			<!-- Left sidebar END -->
+			
+			<!-- Main content START -->
+			<div class="col-lg-9">
+				<div class="card border bg-transparent rounded-3 p-4">
+					<div class="card-header bg-transparent border-bottom py-3">
+						<h4 class="mb-0">Quiz</h4>
+					</div>
+					<div class="card-body">
+						<p>Page instructor-quiz fonctionne !</p>
+						<p>Instructeur: {{ instructor.name }}</p>
+						<p>Email: {{ instructor.email }}</p>
+					</div>
+				</div>
+			</div>
+			<!-- Main content END -->
+		</div>
+	</div>
+	<!-- Container END -->
+</main>
+<!-- Main END -->
+
+<!-- Footer START -->
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="text-center">
+					<p class="mb-0">©2024 Unilearn. All rights reserved</p>
+					<p class="mb-0">Follow us</p>
+					<!-- Social START -->
+					<ul class="list-inline">
+						<li class="list-inline-item"><a class="text-decoration-none" href="#"><i class="fab fa-facebook-f text-white"></i></a></li>
+						<li class="list-inline-item"><a class="text-decoration-none" href="#"><i class="fab fa-twitter text-white"></i></a></li>
+						<li class="list-inline-item"><a class="text-decoration-none" href="#"><i class="fab fa-linkedin text-white"></i></a></li>
+						<li class="list-inline-item"><a class="text-decoration-none" href="#"><i class="fab fa-youtube text-white"></i></a></li>
+					</ul>
+					<!-- Social END -->
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<!-- Footer END -->
+
+{% endblock %}

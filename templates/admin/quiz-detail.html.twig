@@ -1,0 +1,361 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz Details - Admin Dashboard{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- Sidebar START -->
+<nav class="navbar sidebar navbar-expand-xl navbar-dark bg-dark">
+
+	<!-- Navbar brand for xl START -->
+	<div class="d-flex align-items-center">
+		<a class="navbar-brand" href="{{ path('app_home') }}">
+			<img class="navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="">
+		</a>
+	</div>
+	<!-- Navbar brand for xl END -->
+	
+	<div class="offcanvas offcanvas-start flex-row custom-scrollbar h-100" data-bs-backdrop="true" tabindex="-1" id="offcanvasSidebar">
+		<div class="offcanvas-body sidebar-content d-flex flex-column bg-dark">
+
+			<!-- Sidebar menu START -->
+			<ul class="navbar-nav flex-column" id="navbar-sidebar">
+				
+				<!-- Menu item 1 -->
+				<li class="nav-item"><a href="{{ path('app_admin_dashboard') }}" class="nav-link"><i class="bi bi-house fa-fw me-2"></i>Dashboard</a></li>
+				
+				<!-- Title -->
+				<li class="nav-item ms-2 my-2">Pages</li>
+
+				<!-- menu item 2 -->
+				<li class="nav-item">
+					<a class="nav-link" data-bs-toggle="collapse" href="#collapsepage" role="button" aria-expanded="false" aria-controls="collapsepage">
+						<i class="bi bi-basket fa-fw me-2"></i>Courses
+					</a>
+					<!-- Submenu -->
+					<ul class="nav collapse flex-column" id="collapsepage" data-bs-parent="#navbar-sidebar">
+						<li class="nav-item"> <a class="nav-link" href="{{ path('app_course_list') }}">All Courses</a></li>
+						<li class="nav-item"> <a class="nav-link" href="#">Course Category</a></li>
+						<li class="nav-item"> <a class="nav-link" href="{{ path('app_course_detail') }}">Course Detail</a></li>
+					</ul>
+				</li>
+
+				<!-- Menu item 3 -->
+				<li class="nav-item">
+					<a class="nav-link active" data-bs-toggle="collapse" href="#collapsequiz" role="button" aria-expanded="true" aria-controls="collapsequiz">
+						<i class="fas fa-question-circle fa-fw me-2"></i>Quiz
+					</a>
+					<!-- Submenu -->
+					<ul class="nav collapse flex-column show" id="collapsequiz" data-bs-parent="#navbar-sidebar">
+						<li class="nav-item"> <a class="nav-link" href="{{ path('app_admin_quizzes') }}">All Quizzes</a></li>
+						<li class="nav-item"> <a class="nav-link active" href="#">Quiz Detail</a></li>
+					</ul>
+				</li>
+
+				<!-- Menu item 4 -->
+				<li class="nav-item"> <a class="nav-link" href="#"><i class="fas fa-user-graduate fa-fw me-2"></i>Students</a></li>
+
+				<!-- Menu item 5 -->
+				<li class="nav-item">
+					<a class="nav-link" data-bs-toggle="collapse" href="#collapseinstructors" role="button" aria-expanded="false" aria-controls="collapseinstructors">
+						<i class="fas fa-user-tie fa-fw me-2"></i>Instructors
+					</a>
+					<!-- Submenu -->
+					<ul class="nav collapse flex-column" id="collapseinstructors" data-bs-parent="#navbar-sidebar">
+						<li class="nav-item"> <a class="nav-link" href="{{ path('app_instructor_list') }}">Instructors</a></li>
+						<li class="nav-item"> <a class="nav-link" href="#">Instructor Detail</a></li>
+						<li class="nav-item"> 
+							<a class="nav-link" href="#">Instructor requests
+								<span class="badge text-bg-success rounded-circle ms-2">2</span>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<!-- Menu item 6 -->
+				<li class="nav-item"> <a class="nav-link" href="#"><i class="bi bi-star fa-fw me-2"></i>Reviews</a></li>
+
+				<!-- Menu item 7 -->
+				<li class="nav-item"> <a class="nav-link" href="#"><i class="fas fa-dollar-sign fa-fw me-2"></i>Earnings</a></li>
+
+				<!-- Menu item 8 -->
+				<li class="nav-item"> <a class="nav-link" href="#"><i class="fas fa-cog fa-fw me-2"></i>Settings</a></li>
+
+				<!-- Menu item 9 -->
+				<li class="nav-item">
+					<a class="nav-link text-danger" href="{{ path('app_sign_in') }}">
+						<i class="fas fa-sign-out-alt fa-fw me-2"></i>Logout
+					</a>
+				</li>
+			</ul>
+			<!-- Sidebar menu END -->
+
+			<!-- Sidebar footer START -->
+			<div class="px-3 mt-auto pt-3">
+				<div class="d-flex align-items-center">
+					<div class="avatar avatar-sm">
+						<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+					</div>
+					<div class="ms-2">
+						<h6 class="mb-0">Admin User</h6>
+						<small class="text-muted">Administrator</small>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar footer END -->
+			
+		</div>
+	</div>
+</nav>
+<!-- Sidebar END -->
+
+<!-- Page content START -->
+<div class="page-content">
+
+	<!-- Top bar START -->
+	<nav class="navbar top-bar navbar-light border-bottom py-0 py-xl-3">
+		<div class="container-fluid p-0">
+			<div class="d-flex align-items-center w-100">
+
+				<!-- Logo START -->
+				<div class="d-flex align-items-center d-xl-none">
+					<a class="navbar-brand" href="{{ path('app_home') }}">
+						<img class="light-mode-item navbar-brand-item h-30px" src="{{ asset('assets/images/logo-mobile.svg') }}" alt="">
+						<img class="dark-mode-item navbar-brand-item h-30px" src="{{ asset('assets/images/logo-mobile-light.svg') }}" alt="">
+					</a>
+				</div>
+				<!-- Logo END -->
+
+				<!-- Toggler for sidebar START -->
+				<div class="navbar-expand-xl sidebar-offcanvas-menu">
+					<button class="navbar-toggler me-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar" aria-expanded="false" aria-label="Toggle navigation" data-bs-auto-close="outside">
+						<i class="bi bi-text-right fa-fw h2 lh-0 mb-0 rtl-flip" data-bs-target="#offcanvasMenu"> </i>
+					</button>
+				</div>
+				<!-- Toggler for sidebar END -->
+				
+				<!-- Top bar left -->
+				<div class="navbar-expand-lg ms-auto ms-xl-0">
+					
+					<!-- Toggler for menubar START -->
+					<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTopContent" aria-controls="navbarTopContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-animation">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</button>
+					<!-- Toggler for menubar END -->
+
+					<!-- Topbar menu START -->
+					<div class="collapse navbar-collapse w-100" id="navbarTopContent">
+						<!-- Top search START -->
+						<div class="nav my-3 my-xl-0 flex-nowrap align-items-center">
+							<div class="nav-item w-100">
+								<form class="position-relative">
+									<input class="form-control pe-5 bg-secondary bg-opacity-10 border-0" type="search" placeholder="Search..." aria-label="Search">
+									<button class="bg-transparent px-2 py-0 border-0 position-absolute top-50 end-0 translate-middle-y" type="submit"><i class="fas fa-search fs-6 text-primary"></i></button>
+								</form>
+							</div>
+						</div>
+						<!-- Top search END -->
+					</div>
+					<!-- Topbar menu END -->
+				</div>
+				<!-- Top bar left END -->
+				
+				<!-- Top bar right START -->
+				<div class="ms-xl-auto">
+					<ul class="navbar-nav flex-row align-items-center">
+
+						<!-- Profile dropdown START -->
+						<li class="nav-item ms-2 ms-md-3 dropdown">
+							<a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+								<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+							</a>
+							<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+								<li class="px-3 mb-3">
+									<div class="d-flex align-items-center">
+										<div class="avatar me-3">
+											<img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+										</div>
+										<div>
+											<a class="h6" href="#">Admin User</a>
+											<p class="small m-0">Administrator</p>
+										</div>
+									</div>
+								</li>
+								<li> <hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+								<li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+								<li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_sign_in') }}"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+							</ul>
+						</li>
+						<!-- Profile dropdown END -->
+					</ul>
+				</div>
+				<!-- Top bar right END -->
+
+			</div>
+		</div>
+	</nav>
+	<!-- Top bar END -->
+
+	<!-- Main content START -->
+	<div class="container-fluid p-4">
+		<!-- Page header START -->
+		<div class="row">
+			<div class="col-12">
+				<div class="d-sm-flex justify-content-between align-items-center mb-4">
+					<div>
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb breadcrumb-dots mb-1">
+								<li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}" class="text-decoration-none">Dashboard</a></li>
+								<li class="breadcrumb-item"><a href="{{ path('app_admin_quizzes') }}" class="text-decoration-none">Quizzes</a></li>
+								<li class="breadcrumb-item active">{{ quiz.title }}</li>
+							</ol>
+						</nav>
+						<h1 class="h3 mb-2">{{ quiz.title }}</h1>
+						<p class="mb-0">Quiz details and questions.</p>
+					</div>
+					<div class="d-flex gap-2">
+						<a href="{{ path('app_admin_quiz_edit', {'id': quiz.id}) }}" class="btn btn-warning">
+							<i class="bi bi-pencil me-2"></i>Edit Quiz
+						</a>
+						<a href="{{ path('app_admin_quizzes') }}" class="btn btn-primary-soft">
+							<i class="bi bi-arrow-left me-2"></i>Back to Quizzes
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Page header END -->
+
+		<!-- Quiz info START -->
+		<div class="row mb-4">
+			<div class="col-12">
+				<div class="card border-0 shadow">
+					<div class="card-body p-4">
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="mb-3">Quiz Information</h5>
+								<table class="table table-borderless">
+									<tr>
+										<td><strong>Title:</strong></td>
+										<td>{{ quiz.title }}</td>
+									</tr>
+									<tr>
+										<td><strong>Total Questions:</strong></td>
+										<td>{{ questions|length }}</td>
+									</tr>
+									<tr>
+										<td><strong>Status:</strong></td>
+										<td><span class="badge bg-success">Active</span></td>
+									</tr>
+								</table>
+							</div>
+							<div class="col-md-6">
+								<h5 class="mb-3">Statistics</h5>
+								<div class="row g-3">
+									<div class="col-6">
+										<div class="text-center">
+											<h4 class="mb-1 text-primary">{{ questions|length }}</h4>
+											<small class="text-muted">Questions</small>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="text-center">
+											<h4 class="mb-1 text-success">0</h4>
+											<small class="text-muted">Attempts</small>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Quiz info END -->
+
+		<!-- Questions START -->
+		<div class="row">
+			<div class="col-12">
+				<div class="card border-0 shadow">
+					<div class="card-header bg-white p-4">
+						<div class="d-flex justify-content-between align-items-center">
+							<h5 class="mb-0">Questions ({{ questions|length }})</h5>
+							<button class="btn btn-sm btn-primary">
+								<i class="bi bi-plus-circle me-2"></i>Add Question
+							</button>
+						</div>
+					</div>
+					<div class="card-body p-4">
+						{% if questions|length > 0 %}
+							<div class="table-responsive">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th width="5%">#</th>
+											<th>Question</th>
+											<th>Options</th>
+											<th>Correct Answer</th>
+											<th width="15%">Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for question in questions %}
+										<tr>
+											<td>{{ loop.index }}</td>
+											<td>
+												<strong>{{ question.question }}</strong>
+											</td>
+											<td>
+												<div class="small">
+													<div>A. {{ question.optionA }}</div>
+													<div>B. {{ question.optionB }}</div>
+													<div>C. {{ question.optionC }}</div>
+													<div>D. {{ question.optionD }}</div>
+												</div>
+											</td>
+											<td>
+												<span class="badge bg-success">{{ question.correctOption }}</span>
+											</td>
+											<td>
+												<button class="btn btn-sm btn-warning me-1" title="Edit">
+													<i class="bi bi-pencil"></i>
+												</button>
+												<button class="btn btn-sm btn-danger" title="Delete">
+													<i class="bi bi-trash"></i>
+												</button>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						{% else %}
+							<div class="text-center py-5">
+								<i class="bi bi-question-circle fs-1 text-muted mb-3"></i>
+								<h5 class="text-muted">No Questions Yet</h5>
+								<p class="text-muted">This quiz doesn't have any questions yet.</p>
+								<button class="btn btn-primary">
+									<i class="bi bi-plus-circle me-2"></i>Add First Question
+								</button>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Questions END -->
+
+	</div>
+</div>
+<!-- Page content END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+{% endblock %}

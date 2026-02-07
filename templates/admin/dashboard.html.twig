@@ -77,8 +77,8 @@ Admin Dashboard START -->
                                     </div>
                                     <span class="badge bg-success">+15%</span>
                                 </div>
-                                <h4 class="mb-0">25,678</h4>
-                                <p class="mb-0 small text-muted">Total Users</p>
+                                <h4 class="mb-0">{{ stats.students }}</h4>
+                                <p class="mb-0 small text-muted">Freelancers</p>
                             </div>
                         </div>
                     </div>
@@ -91,8 +91,8 @@ Admin Dashboard START -->
                                     </div>
                                     <span class="badge bg-success">+22%</span>
                                 </div>
-                                <h4 class="mb-0">1,234</h4>
-                                <p class="mb-0 small text-muted">Total Courses</p>
+                                <h4 class="mb-0">{{ stats.products }}</h4>
+                                <p class="mb-0 small text-muted">Services</p>
                             </div>
                         </div>
                     </div>
@@ -105,8 +105,8 @@ Admin Dashboard START -->
                                     </div>
                                     <span class="badge bg-success">+8%</span>
                                 </div>
-                                <h4 class="mb-0">456</h4>
-                                <p class="mb-0 small text-muted">Instructors</p>
+                                <h4 class="mb-0">{{ stats.jobs }}</h4>
+                                <p class="mb-0 small text-muted">Job Requests</p>
                             </div>
                         </div>
                     </div>
@@ -119,8 +119,8 @@ Admin Dashboard START -->
                                     </div>
                                     <span class="badge bg-success">+28%</span>
                                 </div>
-                                <h4 class="mb-0">$456,789</h4>
-                                <p class="mb-0 small text-muted">Total Revenue</p>
+                                <h4 class="mb-0">${{ stats.revenue|number_format(2) }}</h4>
+                                <p class="mb-0 small text-muted">Total Sales</p>
                             </div>
                         </div>
                     </div>

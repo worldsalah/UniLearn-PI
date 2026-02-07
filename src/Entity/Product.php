@@ -14,6 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[Vich\Uploadable]
+#[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false)]
 class Product
 {
     #[ORM\Id]

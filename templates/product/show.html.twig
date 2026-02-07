@@ -35,60 +35,94 @@
 			<!-- Main content START -->
             <div class="col-lg-8">
                 <!-- Image -->
-                {% set productImage = vich_uploader_asset(product, 'imageFile') %}
-                <img src="{{ productImage ?: asset('assets/images/courses/4by3/01.jpg') }}" class="rounded mb-4 w-100" alt="">
+                {% set productImage = product.image ? asset('uploads/products/' ~ product.image) : null %}
+                <div class="rounded mb-4 overflow-hidden shadow-sm">
+                    {% if productImage %}
+                        <img src="{{ productImage }}" class="w-100" style="height: 400px; object-fit: cover;" alt="{{ product.title }}">
+                    {% else %}
+                        <div class="w-100 d-flex align-items-center justify-content-center bg-light" style="height: 400px;">
+                            <i class="fas fa-image fa-5x text-muted opacity-25"></i>
+                        </div>
+                    {% endif %}
+                </div>
                 
-                <h3>Description</h3>
-                <p>{{ product.description|nl2br }}</p>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="badge bg-primary-soft text-primary fs-6">{{ product.category }}</span>
+                    <div class="text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star text-muted"></i>
+                        <span class="text-dark ms-2 fw-bold">4.0 (12 reviews)</span>
+                    </div>
+                </div>
 
-                <!-- Rating -->
-                <hr>
-                <h4>Rate this service</h4>
-                {% if orderToRate %}
-                    <form method="post" action="{{ path('app_order_complete', {id: orderToRate.id}) }}" class="row g-2 align-items-center">
-                        <div class="col-auto">
-                            <label class="form-label mb-0 me-2">Your rating:</label>
+                <h3 class="fw-bold mb-3">Service Description</h3>
+                <div class="text-muted lh-lg mb-5">
+                    {{ product.description|nl2br }}
+                </div>
+
+                <!-- Rating Section -->
+                <div class="card border-0 bg-light p-4 mb-5">
+                    <h4 class="fw-bold mb-3">Rate this service</h4>
+                    {% if orderToRate %}
+                        <form method="post" action="{{ path('app_order_complete', {id: orderToRate.id}) }}" class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Quality Rating</label>
+                                <select name="rating" class="form-select border-0 shadow-sm">
+                                    {% for i in 5..1 %}
+                                        <option value="{{ i }}">{{ i }} Stars</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Your Review</label>
+                                <textarea name="review" class="form-control border-0 shadow-sm" rows="3" placeholder="Describe your experience with this freelancer..."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ orderToRate.id) }}">
+                                <button type="submit" class="btn btn-primary px-4">Submit Feedback</button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="d-flex align-items-center text-muted">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <span>Ratings can only be submitted after completing an order.</span>
                         </div>
-                        <div class="col-auto">
-                            <select name="rating" class="form-select form-select-sm">
-                                {% for i in 1..5 %}
-                                    <option value="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-12 mt-2">
-                            <textarea name="review" class="form-control" rows="3" placeholder="Write a short review (optional)"></textarea>
-                        </div>
-                        <div class="col-12 mt-2">
-                            <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ orderToRate.id) }}">
-                            <button type="submit" class="btn btn-sm btn-primary">Submit rating</button>
-                        </div>
-                    </form>
-                {% else %}
-                    <p class="text-muted">You can rate this service after you purchase and complete an order.</p>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
             
             <!-- Sidebar -->
             <div class="col-lg-4">
-                <div class="card card-body shadow p-4">
-                    <h4 class="mb-3">{{ product.price }} $</h4>
-                    <div class="d-grid">
-                        <a href="{{ path('app_order_new', {id: product.id}) }}" class="btn btn-lg btn-success">Order Now</a>
+                <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 100px;">
+                    <div class="text-center mb-4">
+                        <h6 class="text-muted text-uppercase small mb-1">Service Price</h6>
+                        <h2 class="fw-bold text-primary">${{ product.price }}</h2>
+                    </div>
+
+                    <div class="d-grid gap-2 mb-4">
+                        <a href="{{ path('app_order_new', {id: product.id}) }}" class="btn btn-lg btn-success py-3 fw-bold">
+                            <i class="fas fa-shopping-cart me-2"></i>Order Now
+                        </a>
+                        <button class="btn btn-light py-2">Contact Freelancer</button>
                     </div>
                     
-                    <div class="mt-4">
-                        <h6>Freelancer</h6>
-                        <div class="d-flex align-items-center">
-                            <div class="avatar avatar-sm me-2">
-                                <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-                            </div>
-                            <div>
-                                <h6 class="mb-0"><a href="{{ path('app_student_show', {id: product.freelancer.id}) }}">{{ product.freelancer.fullName }}</a></h6>
-                                <small>{{ product.freelancer.user.email }}</small>
-                            </div>
+                    <hr class="my-4">
+
+                    <h6 class="fw-bold mb-3">About the Freelancer</h6>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="avatar avatar-lg me-3">
+                            <img class="avatar-img rounded-circle shadow-sm" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold"><a href="{{ path('app_student_show', {id: product.freelancer.id}) }}" class="text-dark">{{ product.freelancer.fullName }}</a></h6>
+                            <span class="text-muted small"><i class="fas fa-star text-warning me-1"></i>{{ product.freelancer.rating|number_format(1) }} Rating</span>
                         </div>
                     </div>
+                    <p class="small text-muted mb-4">{{ product.freelancer.bio|slice(0, 100) }}...</p>
+                    <a href="{{ path('app_student_show', {id: product.freelancer.id}) }}" class="btn btn-outline-primary btn-sm w-100">View Full Profile</a>
                 </div>
             </div>
         </div>

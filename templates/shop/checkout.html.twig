@@ -1,0 +1,279 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Checkout START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Checkout form -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Billing Information</h4>
+                        
+                        <form>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" placeholder="John" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" placeholder="Doe" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" placeholder="john@example.com" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" placeholder="+1 234 567 890">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Address</label>
+                                    <input type="text" class="form-control" placeholder="123 Main St" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">City</label>
+                                    <input type="text" class="form-control" placeholder="New York" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">State</label>
+                                    <select class="form-select" required>
+                                        <option selected>Choose...</option>
+                                        <option>New York</option>
+                                        <option>California</option>
+                                        <option>Texas</option>
+                                        <option>Florida</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">ZIP Code</label>
+                                    <input type="text" class="form-control" placeholder="10001" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Country</label>
+                                    <select class="form-select" required>
+                                        <option selected>United States</option>
+                                        <option>Canada</option>
+                                        <option>United Kingdom</option>
+                                        <option>Australia</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Payment Method -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Payment Method</h4>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
+                            <label class="form-check-label d-flex align-items-center" for="creditCard">
+                                        <i class="fas fa-credit-card me-2"></i>
+                                        Credit Card
+                                    </label>
+                        </div>
+                        
+                        <!-- Credit Card Form -->
+                        <div id="creditCardForm" class="mb-4">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Card Number</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
+                                        <span class="input-group-text">
+                                            <i class="fab fa-cc-visa"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-control" placeholder="MM/YY">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" class="form-control" placeholder="123">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Cardholder Name</label>
+                                    <input type="text" class="form-control" placeholder="John Doe">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
+                            <label class="form-check-label d-flex align-items-center" for="paypal">
+                                        <i class="fab fa-paypal me-2"></i>
+                                        PayPal
+                                    </label>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="applePay">
+                            <label class="form-check-label d-flex align-items-center" for="applePay">
+                                        <i class="fab fa-apple-pay me-2"></i>
+                                        Apple Pay
+                                    </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Review -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Order Review</h4>
+                        
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/book/01.jpg') }}" class="rounded me-3" width="40" alt="Product">
+                                                <div>
+                                                    <h6 class="mb-0 small">Complete JavaScript Guide 2024</h6>
+                                                    <p class="mb-0 small text-muted">Book</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$29.99</td>
+                                        <td>1</td>
+                                        <td>$29.99</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/book/02.jpg') }}" class="rounded me-3" width="40" alt="Product">
+                                                <div>
+                                                    <h6 class="mb-0 small">React Advanced Patterns</h6>
+                                                    <p class="mb-0 small text-muted">Course</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$49.99</td>
+                                        <td>1</td>
+                                        <td>$49.99</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/book/03.jpg') }}" class="rounded me-3" width="40" alt="Product">
+                                                <div>
+                                                    <h6 class="mb-0 small">Code Editor Pro License</h6>
+                                                    <p class="mb-0 small text-muted">Software</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$89.99</td>
+                                        <td>1</td>
+                                        <td>$89.99</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Terms and conditions -->
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <!-- Place order button -->
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            Place Order • $183.57
+                        </button>
+                        
+                        <p class="mb-0 small text-muted text-center mt-2">
+                            <i class="fas fa-lock me-1"></i>Your payment information is secure and encrypted
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Order Summary -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Order Summary</h5>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal (3 items)</span>
+                            <span>$169.97</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax</span>
+                            <span>$13.60</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Discount</span>
+                            <span class="text-danger">-$0.00</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-0">Total</h6>
+                            <h6 class="mb-0">$183.57</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Promo Code -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h6 class="mb-3">Have a promo code?</h6>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter promo code">
+                            <button class="btn btn-outline-secondary" type="button">Apply</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Customer Support -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-headset fa-2x"></i>
+                        </div>
+                        <h6 class="mb-2">Need Help?</h6>
+                        <p class="mb-3 small text-muted">Our customer support team is here to help you 24/7</p>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Checkout END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

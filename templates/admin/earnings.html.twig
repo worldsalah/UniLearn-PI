@@ -1,0 +1,278 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Earnings - Admin{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+<!-- =======================
+Admin Earnings START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- Admin profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <!-- Avatar -->
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h6 class="mb-0">Admin User</h6>
+                        <p class="small mb-3">admin@unilearn.com</p>
+                        <hr>
+                        <!-- Admin detail -->
+                        <div class="text-start">
+                            <p class="mb-2"><i class="bi bi-shield-check fa-fw me-2"></i>Administrator</p>
+                            <p class="mb-0"><i class="bi bi-calendar fa-fw me-2"></i>Joined: January 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <ul class="nav nav-pills nav-pills-vertical">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_dashboard') }}">
+                                    <i class="bi bi-grid fa-fw me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_course_list') }}">
+                                    <i class="bi bi-book fa-fw me-2"></i>Courses
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_student_list') }}">
+                                    <i class="bi bi-people fa-fw me-2"></i>Students
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_instructor_list') }}">
+                                    <i class="bi bi-person-badge fa-fw me-2"></i>Instructors
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_review') }}">
+                                    <i class="bi bi-star fa-fw me-2"></i>Reviews
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ path('app_admin_earning') }}">
+                                    <i class="bi bi-currency-dollar fa-fw me-2"></i>Earnings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_setting') }}">
+                                    <i class="bi bi-gear fa-fw me-2"></i>Settings
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Left sidebar END -->
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Page title START -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Earnings Overview</h2>
+                    <div>
+                        <button class="btn btn-outline-primary me-2">
+                            <i class="bi bi-download me-2"></i>Export Report
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="bi bi-calendar-range me-2"></i>Date Range
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Revenue statistics START -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card shadow text-center">
+                            <div class="card-body">
+                                <h3 class="mb-0 text-success">$124,563</h3>
+                                <p class="mb-0 small">Total Revenue</p>
+                                <small class="text-success"><i class="bi bi-arrow-up"></i> +12.5%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow text-center">
+                            <div class="card-body">
+                                <h3 class="mb-0 text-info">$28,945</h3>
+                                <p class="mb-0 small">This Month</p>
+                                <small class="text-success"><i class="bi bi-arrow-up"></i> +8.3%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow text-center">
+                            <div class="card-body">
+                                <h3 class="mb-0 text-warning">$1,234</h3>
+                                <p class="mb-0 small">Today</p>
+                                <small class="text-danger"><i class="bi bi-arrow-down"></i> -2.1%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow text-center">
+                            <div class="card-body">
+                                <h3 class="mb-0 text-primary">$89.50</h3>
+                                <p class="mb-0 small">Avg. Transaction</p>
+                                <small class="text-success"><i class="bi bi-arrow-up"></i> +5.7%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Revenue statistics END -->
+
+                <!-- Revenue chart START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0">Revenue Trend</h5>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-secondary">Week</button>
+                                <button type="button" class="btn btn-primary">Month</button>
+                                <button type="button" class="btn btn-outline-secondary">Year</button>
+                            </div>
+                        </div>
+                        <!-- Chart placeholder -->
+                        <div class="bg-light rounded-3 p-4 text-center">
+                            <i class="bi bi-graph-up text-primary fs-1 mb-3"></i>
+                            <p class="text-muted">Revenue chart will be displayed here</p>
+                            <small class="text-muted">Integrate Chart.js or similar library for actual charts</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- Revenue chart END -->
+
+                <!-- Recent transactions START -->
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0">Recent Transactions</h5>
+                            <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Student</th>
+                                        <th>Course</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="text-muted">#TRX001234</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded-circle" width="30" alt="student">
+                                                <span class="ms-2">Sarah Johnson</span>
+                                            </div>
+                                        </td>
+                                        <td>Web Design for Beginners</td>
+                                        <td class="text-success fw-bold">$45.00</td>
+                                        <td>Feb 15, 2024</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="text-muted">#TRX001235</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/02.jpg') }}" class="rounded-circle" width="30" alt="student">
+                                                <span class="ms-2">Michael Chen</span>
+                                            </div>
+                                        </td>
+                                        <td>JavaScript Advanced</td>
+                                        <td class="text-success fw-bold">$89.00</td>
+                                        <td>Feb 15, 2024</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="text-muted">#TRX001236</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/03.jpg') }}" class="rounded-circle" width="30" alt="student">
+                                                <span class="ms-2">Emily Davis</span>
+                                            </div>
+                                        </td>
+                                        <td>Digital Marketing Masterclass</td>
+                                        <td class="text-success fw-bold">$67.00</td>
+                                        <td>Feb 14, 2024</td>
+                                        <td><span class="badge bg-warning">Pending</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="text-muted">#TRX001237</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/04.jpg') }}" class="rounded-circle" width="30" alt="student">
+                                                <span class="ms-2">Robert Wilson</span>
+                                            </div>
+                                        </td>
+                                        <td>Python for Data Science</td>
+                                        <td class="text-success fw-bold">$125.00</td>
+                                        <td>Feb 14, 2024</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="text-muted">#TRX001238</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/05.jpg') }}" class="rounded-circle" width="30" alt="student">
+                                                <span class="ms-2">Lisa Anderson</span>
+                                            </div>
+                                        </td>
+                                        <td>UI/UX Design Fundamentals</td>
+                                        <td class="text-danger fw-bold">-$45.00</td>
+                                        <td>Feb 13, 2024</td>
+                                        <td><span class="badge bg-danger">Refunded</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination START -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <p class="mb-0">Showing 1-10 of 1,234 transactions</p>
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- Pagination END -->
+                    </div>
+                </div>
+                <!-- Recent transactions END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Admin Earnings END -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit User - Admin Dashboard{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Admin Dashboard START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">Admin User</h5>
+                        <p class="mb-2">System Administrator</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-primary">Settings</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ path('app_admin_dashboard') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="{{ path('app_admin_users') }}" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-users me-2"></i>Users
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>Courses
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-chalkboard-teacher me-2"></i>Instructors
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-user-graduate me-2"></i>Students
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-dollar-sign me-2"></i>Earnings
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-star me-2"></i>Reviews
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-1">Edit User</h3>
+                                <p class="mb-0">Modify user information and permissions.</p>
+                            </div>
+                            <a href="{{ path('app_admin_users') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Users
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Header END -->
+
+                <!-- Edit Form START -->
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        {{ form_start(form) }}
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.fullName.vars.id }}" class="form-label">Full Name</label>
+                                    {{ form_widget(form.fullName, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.fullName) }}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.email.vars.id }}" class="form-label">Email Address</label>
+                                    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.role.vars.id }}" class="form-label">Role</label>
+                                    {{ form_widget(form.role, {'attr': {'class': 'form-select'}}) }}
+                                    {{ form_errors(form.role) }}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">User ID</label>
+                                    <input type="text" class="form-control" value="{{ user.id }}" readonly>
+                                    <small class="text-muted">User ID cannot be changed</small>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">Created At</label>
+                                    <input type="text" class="form-control" 
+                                           value="{{ user.createdAt ? user.createdAt|date('M d, Y H:i') : 'N/A' }}" readonly>
+                                    <small class="text-muted">Registration date cannot be changed</small>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">Current Role</label>
+                                    <div class="form-control">
+                                        {% if user.role %}
+                                            <span class="badge bg-{{ user.role.name == 'admin' ? 'danger' : user.role.name == 'instructor' ? 'warning' : 'info' }}">
+                                                {{ user.role.name|title }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">No Role</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ path('app_admin_users') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                                <div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+                <!-- Edit Form END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Admin Dashboard END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+
+{% endblock %}

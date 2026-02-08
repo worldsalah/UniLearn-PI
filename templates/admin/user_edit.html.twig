@@ -3,7 +3,7 @@
 {% block title %}Edit User - Admin Dashboard{% endblock %}
 
 {% block body %}
-{% include 'components/header.html.twig' %}
+{% include 'components/header-login.html.twig' %}
 
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
@@ -128,7 +128,7 @@ Admin Dashboard START -->
                             </div>
                             
                             <div class="d-flex justify-content-between">
-                                <a href="{{ path('app_admin_users') }}" class="btn btn-outline-secondary">
+                                <a href="{{ path('app_admin_users_table') }}" class="btn btn-outline-secondary">
                                     <i class="fas fa-times me-2"></i>Cancel
                                 </a>
                                 <div>

@@ -1,0 +1,183 @@
+{# filepath: /c:/Users/omark/OneDrive/Desktop/projectweb/Unilearn/templates/admin/_users_table.html.twig #}
+<!-- Card START -->
+<div class="card border bg-transparent rounded-3">
+    <!-- Card header START -->
+    <div class="card-header bg-transparent border-bottom">
+        <h3 class="mb-0">Users List</h3>
+    </div>
+    <!-- Card header END -->
+
+    <!-- Card body START -->
+    <div class="card-body">
+
+        {# Flash messages #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        <!-- Search and select START -->
+        <div class="row g-3 align-items-center justify-content-between mb-4">
+            <!-- Search -->
+            <div class="col-md-8">
+                <form class="rounded position-relative" method="get">
+                    <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search by name or email..." aria-label="Search" name="search" value="{{ search }}">
+                    <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                        <i class="fas fa-search fs-6"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Select option -->
+            <div class="col-md-3">
+                <!-- Short by filter -->
+                <form>
+                    <select class="form-select js-choice border-0 z-index-9 bg-transparent" aria-label=".form-select-sm" name="sort" onchange="this.form.submit()">
+                        <option value="">Sort by</option>
+                        <option value="id" {{ sortBy == 'id' ? 'selected' : '' }}>ID</option>
+                        <option value="fullName" {{ sortBy == 'fullName' ? 'selected' : '' }}>Name</option>
+                        <option value="email" {{ sortBy == 'email' ? 'selected' : '' }}>Email</option>
+                        <option value="role" {{ sortBy == 'role' ? 'selected' : '' }}>Role</option>
+                        <option value="createdAt" {{ sortBy == 'createdAt' ? 'selected' : '' }}>Date</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+        <!-- Search and select END -->
+
+        <!-- Student list table START -->
+        <div class="table-responsive border-0">
+            <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                <!-- Table head -->
+                <thead>
+                    <tr>
+                        <th scope="col" class="border-0 rounded-start">User name</th>
+                        <th scope="col" class="border-0">Role</th>
+                        <th scope="col" class="border-0">Email</th>
+                        <th scope="col" class="border-0">Joined date</th>
+                        <th scope="col" class="border-0 rounded-end">Action</th>
+                    </tr>
+                </thead>
+
+                <!-- Table body START -->
+                <tbody>
+                    {% for user in users %}
+                    <!-- Table item -->
+                    <tr id="user-row-{{ user.id }}">
+                        <!-- Table data -->
+                        <td>
+                            <div class="d-flex align-items-center position-relative">
+                                <!-- Image -->
+                                <div class="avatar avatar-md mb-2 mb-md-0">
+                                    {% if user.profilePicture %}
+                                        <img src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" class="rounded" alt="{{ user.fullName }}">
+                                    {% else %}
+                                        <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded" alt="{{ user.fullName }}">
+                                    {% endif %}
+                                </div>
+                                <div class="mb-0 ms-2">
+                                    <!-- Title -->
+                                    <h6 class="mb-0"><a href="{{ path('app_admin_user_edit', {'id': user.id}) }}" class="stretched-link">{{ user.fullName }}</a></h6>
+                                    {% if user.username %}
+                                        <span class="text-muted small">@{{ user.username }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Table data -->
+                        <td>
+                            {% if user.role %}
+                                <span class="badge bg-{{ user.role.name == 'admin' ? 'danger' : user.role.name == 'instructor' ? 'warning' : 'info' }}">
+                                    {{ user.role.name|title }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">No Role</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Table data -->
+                        <td>{{ user.email }}</td>
+
+                        <!-- Table data -->
+                        <td>{{ user.createdAt ? user.createdAt|date('d/m/Y') : 'N/A' }}</td>
+
+                        <!-- Table data -->
+                        <td>
+                            <a href="{{ path('app_admin_user_edit', {'id': user.id}) }}" class="btn btn-success-soft btn-round me-1 mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                <i class="far fa-edit"></i>
+                            </a>
+                            <form method="post" action="{{ path('app_admin_user_delete', {'id': user.id}) }}" class="d-inline delete-user-form">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                <button type="submit" class="btn btn-danger-soft btn-round mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4">
+                            <div class="text-muted">
+                                <i class="fas fa-users fa-3x mb-3"></i>
+                                <p class="mb-0">No users found</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <!-- Table body END -->
+            </table>
+        </div>
+        <!-- Student list table END -->
+
+        <!-- Pagination START -->
+        <div class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3">
+            <!-- Content -->
+            <p class="mb-0 text-center text-sm-start">Showing {{ users|length }} of {{ users|length }} entries</p>
+            <!-- Pagination -->
+            <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+                <ul class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0">
+                    <li class="page-item mb-0"><a class="page-link" href="#" tabindex="-1"><i class="fas fa-angle-left"></i></a></li>
+                    <li class="page-item mb-0 active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item mb-0"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item mb-0"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item mb-0"><a class="page-link" href="#"><i class="fas fa-angle-right"></i></a></li>
+                </ul>
+            </nav>
+        </div>
+        <!-- Pagination END -->
+    </div>
+    <!-- Card body END -->
+</div>
+<!-- Card END -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add confirmation dialog for delete buttons
+    const deleteForms = document.querySelectorAll('.delete-user-form');
+    
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>

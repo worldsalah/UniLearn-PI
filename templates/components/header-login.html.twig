@@ -222,7 +222,7 @@
                         {% if is_granted('ROLE_ADMIN') %}
                         <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-gear fa-fw me-2"></i>Admin Panel</a></li>
                         {% endif %}
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_user_edit_profile') }}"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>

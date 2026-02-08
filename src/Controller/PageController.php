@@ -85,7 +85,26 @@ class PageController extends AbstractController
     #[Route('/admin-dashboard', name: 'app_admin_dashboard')]
     public function adminDashboard(): Response
     {
-        return $this->render('admin/dashboard.html.twig');
+        return $this->render('admin/admin_dashboard.html.twig');
+    }
+
+    #[Route('/admin-setting', name: 'app_admin_setting')]
+    public function adminSetting(): Response
+    {
+        return $this->render('admin/setting.html.twig');
+    }
+
+    #[Route('/admin-edit-profile', name: 'app_admin_edit_profile')]
+    public function adminEditProfile(): Response
+    {
+        return $this->render('admin/edit-profile.html.twig');
+    }
+
+    #[Route('/admin-instructors', name: 'app_admin_instructors')]
+    public function adminInstructors(): Response
+    {
+        // You can create a new template for this or redirect
+        return $this->render('admin/instructors.html.twig');
     }
 
     #[Route('/blog-grid', name: 'app_blog_grid')]
@@ -134,6 +153,18 @@ class PageController extends AbstractController
     public function studentCourseList(): Response
     {
         return $this->render('student/course-list.html.twig');
+    }
+
+    #[Route('/student-subscription', name: 'app_student_subscription')]
+    public function studentSubscription(): Response
+    {
+        return $this->render('student/subscription.html.twig');
+    }
+
+    #[Route('/student-bookmark', name: 'app_student_bookmark')]
+    public function studentBookmark(): Response
+    {
+        return $this->render('student/bookmark.html.twig');
     }
 
     #[Route('/coming-soon', name: 'app_coming_soon')]

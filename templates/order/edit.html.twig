@@ -1,6 +1,6 @@
 {% extends 'front_base.html.twig' %}
 
-{% block title %}Create Order - Unilearn{% endblock %}
+{% block title %}Edit Order - {{ order.id }}{% endblock %}
 
 {% block body %}
 <div class="container py-4">
@@ -9,7 +9,7 @@
             <div class="card shadow">
                 <div class="card-header bg-warning text-white">
                     <h4 class="mb-0">
-                        <i class="bi bi-plus-circle me-2"></i>Create New Order
+                        <i class="bi bi-pencil me-2"></i>Edit Order #{{ order.id }}
                     </h4>
                 </div>
                 <div class="card-body">
@@ -24,11 +24,11 @@
                         </div>
                         <div class="col-12">
                             <div class="d-flex justify-content-between">
-                                <a href="{{ path('app_marketplace_index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-arrow-left me-1"></i>Back to Marketplace
+                                <a href="{{ path('app_order_show', {id: order.id}) }}" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i>Back to Order
                                 </a>
                                 <button type="submit" class="btn btn-warning">
-                                    <i class="bi bi-check me-1"></i>Create Order
+                                    <i class="bi bi-check me-1"></i>Update Order
                                 </button>
                             </div>
                         </div>

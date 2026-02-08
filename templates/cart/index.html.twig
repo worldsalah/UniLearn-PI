@@ -1,0 +1,152 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Shopping Cart - Unilearn Marketplace{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-cart3 me-2"></i>Shopping Cart
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if orders is empty %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-cart-x fa-3x text-muted mb-3"></i>
+                        <h4>Your cart is empty</h4>
+                        <p class="text-muted">Add some services or job orders to your cart!</p>
+                        <a href="{{ path('app_marketplace_index') }}" class="btn btn-success">
+                            <i class="bi bi-arrow-left me-1"></i>Continue Shopping
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="row g-4" id="cart-items">
+                        {% for order in orders %}
+                        <div class="col-12">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-2">
+                                            <img src="/assets/images/book/0{{ loop.index % 3 + 1 }}.jpg" class="img-fluid rounded" alt="order">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h5 class="mb-1">Order #{{ order.id }}</h5>
+                                            <p class="mb-1 text-muted">
+                                                {% if order.product %}
+                                                    {{ order.product.title }}
+                                                {% else %}
+                                                    Standalone Order
+                                                {% endif %}
+                                            </p>
+                                            <div class="d-flex gap-2">
+                                                {% if order.status == 'pending' %}
+                                                    <span class="badge bg-warning">⏳ Pending</span>
+                                                {% elseif order.status == 'processing' %}
+                                                    <span class="badge bg-info">🔄 Processing</span>
+                                                {% elseif order.status == 'completed' %}
+                                                    <span class="badge bg-success">✅ Completed</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">❌ Cancelled</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h5 class="text-success mb-0">${{ order.totalPrice }}</h5>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="d-flex gap-1">
+                                                <a href="{{ path('app_order_show', {id: order.id}) }}" class="btn btn-sm btn-info">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <form method="post" action="{{ path('app_order_delete', {id: order.id}) }}" style="display: inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ order.id) }}">
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Remove this item from cart?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calculator me-2"></i>Order Summary
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">${{ subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax (10%):</span>
+                        <span id="tax">${{ tax }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Shipping:</span>
+                        <span>${{ shipping }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5>Total:</h5>
+                        <h5 class="text-success" id="total">${{ total }}</h5>
+                    </div>
+                    
+                    {% if orders is not empty %}
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" onclick="proceedToCheckout()">
+                            <i class="bi bi-credit-card me-1"></i>Proceed to Checkout
+                        </button>
+                        <a href="{{ path('app_marketplace_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Continue Shopping
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card shadow mt-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Cart Info
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Items:</strong> {{ orders|length }}</p>
+                    <p class="mb-0"><strong>Status:</strong> Ready for checkout</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function proceedToCheckout() {
+    // Calculate totals
+    const subtotal = {{ subtotal }};
+    const total = {{ total }};
+    
+    // Redirect to checkout page
+    window.location.href = '/checkout';
+}
+
+// Update totals dynamically if needed
+function updateTotals() {
+    // This would be used if we had dynamic cart updates
+}
+</script>
+{% endblock %}

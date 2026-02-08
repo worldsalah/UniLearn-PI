@@ -1,0 +1,329 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Products - Unilearn Marketplace{% endblock %}
+
+{% block body %}
+
+<!-- =======================
+Page banner START -->
+<section class="bg-primary bg-opacity-10 pt-4 pb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-5 fw-bold mb-3">Browse Products</h1>
+                <p class="lead mb-4">Discover amazing educational resources and courses</p>
+                
+                <!-- Search and Filter -->
+                <form class="bg-white rounded-3 p-3 shadow-sm">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control border-0" placeholder="Search products..." value="{{ search }}">
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select border-0">
+                                <option selected>All Categories</option>
+                                <option>Programming</option>
+                                <option>Design</option>
+                                <option>Marketing</option>
+                                <option>Business</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select border-0">
+                                <option selected>Any Price</option>
+                                <option>$0 - $25</option>
+                                <option>$25 - $50</option>
+                                <option>$50 - $100</option>
+                                <option>$100+</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select border-0">
+                                <option selected>Sort By</option>
+                                <option>Latest</option>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                                <option>Popular</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page banner END -->
+
+<!-- =======================
+Products listing START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>{{ products|length }} Products Found</h4>
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted me-2">View:</span>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary active">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button class="btn btn-outline-primary">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product grid -->
+                <div class="row g-4">
+                    {% for product in products %}
+                    <div class="col-md-4">
+                        <div class="card card-hover border-0 shadow-sm h-100">
+                            <div class="position-relative">
+                                <img src="/assets/images/book/0{{ loop.index % 4 + 1 }}.jpg" class="card-img-top" alt="{{ product.title }}">
+                                <div class="position-absolute top-0 end-0 m-2">
+                                    {% if product.featured %}
+                                        <span class="badge bg-danger">Featured</span>
+                                    {% endif %}
+                                    {% if product.discount %}
+                                        <span class="badge bg-success">Sale</span>
+                                    {% endif %}
+                                </div>
+                                <div class="position-absolute top-0 start-0 m-2">
+                                    {% if product.rating %}
+                                        <div class="bg-white rounded-pill px-2 py-1 small">
+                                            <i class="fas fa-star text-warning"></i> {{ product.rating }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ product.title }}</h5>
+                                <p class="card-text text-muted small">{{ product.description|slice(0, 80) }}...</p>
+                                <div class="d-flex flex-wrap gap-1 mb-3">
+                                    {% if product.tags %}
+                                        {% for tag in product.tags|split(',') %}
+                                            <span class="badge bg-light text-dark">{{ tag|trim }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <div>
+                                        {% if product.discount %}
+                                            <span class="text-primary fw-bold">${{ product.discountPrice }}</span>
+                                            <span class="text-muted text-decoration-line-through small ms-2">${{ product.price }}</span>
+                                        {% else %}
+                                            <span class="text-primary fw-bold">${{ product.price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="btn-group">
+                                        <a href="{{ path('app_product_show', {id: product.id}) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                        <button class="btn btn-sm btn-primary" onclick="addToCart({{ product.id }})">
+                                            <i class="fas fa-cart-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="fas fa-box fa-3x text-muted mb-3"></i>
+                            <h4>No products found</h4>
+                            <p class="text-muted">Try adjusting your search criteria</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if products|length > 0 %}
+                <nav class="d-flex justify-content-center mt-5">
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+            <!-- Main content END -->
+
+            <!-- Sidebar START -->
+            <div class="col-lg-3">
+                <!-- Sell Product Card -->
+                <div class="card border-0 bg-success bg-opacity-10 mb-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-store fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Sell Your Product</h5>
+                        <p class="card-text">Start selling your educational resources</p>
+                        <a href="{{ path('app_product_new') }}" class="btn btn-success">Start Selling</a>
+                    </div>
+                </div>
+
+                <!-- Price Range -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h6 class="card-title mb-0">Price Range</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label small">Min Price</label>
+                            <input type="range" class="form-range" min="0" max="500" value="0" id="minPrice">
+                            <span class="small text-muted">$<span id="minPriceValue">0</span></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Max Price</label>
+                            <input type="range" class="form-range" min="0" max="500" value="500" id="maxPrice">
+                            <span class="small text-muted">$<span id="maxPriceValue">500</span></span>
+                        </div>
+                        <button class="btn btn-primary btn-sm w-100">Apply Filter</button>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h6 class="card-title mb-0">Categories</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="cat1">
+                                        <label class="form-check-label" for="cat1">Programming</label>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">45</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="cat2">
+                                        <label class="form-check-label" for="cat2">Design</label>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">32</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="cat3">
+                                        <label class="form-check-label" for="cat3">Marketing</label>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">28</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="cat4">
+                                        <label class="form-check-label" for="cat4">Business</label>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">19</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rating Filter -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h6 class="card-title mb-0">Customer Rating</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="form-check me-2">
+                                        <input class="form-check-input" type="checkbox" id="rating5">
+                                        <label class="form-check-label" for="rating5"></label>
+                                    </div>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="ms-auto small text-muted">(12)</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="form-check me-2">
+                                        <input class="form-check-input" type="checkbox" id="rating4">
+                                        <label class="form-check-label" for="rating4"></label>
+                                    </div>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <span class="ms-auto small text-muted">(8)</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action border-0 px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="form-check me-2">
+                                        <input class="form-check-input" type="checkbox" id="rating3">
+                                        <label class="form-check-label" for="rating3"></label>
+                                    </div>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <span class="ms-auto small text-muted">(5)</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Products listing END -->
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// Price range sliders
+document.getElementById('minPrice').addEventListener('input', function() {
+    document.getElementById('minPriceValue').textContent = this.value;
+});
+
+document.getElementById('maxPrice').addEventListener('input', function() {
+    document.getElementById('maxPriceValue').textContent = this.value;
+});
+
+// Add to cart function
+function addToCart(productId) {
+    // Implement add to cart logic here
+    alert('Product added to cart!');
+}
+</script>
+{% endblock %}

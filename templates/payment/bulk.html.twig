@@ -1,0 +1,133 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Bulk Payment - Unilearn Marketplace{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-credit-card me-2"></i>Bulk Payment
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Total Orders</h6>
+                            <p class="mb-3"><strong>{{ orderCount }}</strong></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Total Amount</h6>
+                            <p class="mb-3"><strong class="text-success">${ totalAmount }}</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Bulk Payment Gateway Integration</strong><br>
+                        This is a demo bulk payment interface. In production, this would integrate with actual payment providers for processing multiple orders at once.
+                    </div>
+                    
+                    <!-- Order Summary -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">Order Summary:</h6>
+                        <div class="list-group">
+                            {% for order in orders %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Order #{{ order.id }}</span>
+                                <span class="text-success fw-bold">${ order.totalPrice }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <button class="btn btn-primary w-100" onclick="simulateBulkPayment('stripe')">
+                                <i class="bi bi-credit-card me-2"></i>Pay with Stripe
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-warning w-100" onclick="simulateBulkPayment('paypal')">
+                                <i class="bi bi-paypal me-2"></i>Pay with PayPal
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <button class="btn btn-info w-100" onclick="simulateBulkPayment('square')">
+                                <i class="bi bi-credit-card-2-front me-2"></i>Pay with Square
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-secondary w-100" onclick="simulateBulkPayment('cash')">
+                                <i class="bi bi-cash me-2"></i>Pay with Cash
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ path('app_marketplace_index') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Back to Marketplace
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="window.close()">
+                            <i class="bi bi-x-lg"></i>Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function simulateBulkPayment(method) {
+    // Show loading state
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    });
+    
+    // Simulate payment processing
+    setTimeout(() => {
+        // Show success message
+        const cardBody = document.querySelector('.card-body');
+        const successAlert = document.createElement('div');
+        successAlert.className = 'alert alert-success';
+        successAlert.innerHTML = `
+            <i class="bi bi-check-circle me-2"></i>
+            <strong>Bulk Payment Successful!</strong><br>
+            All {{ orderCount }} orders have been paid successfully via ${method.charAt(0).toUpperCase() + method.slice(1)}.
+        `;
+        cardBody.insertBefore(successAlert, cardBody.firstChild);
+        
+        // Re-enable buttons
+        buttons.forEach(btn => {
+            btn.disabled = false;
+            btn.innerHTML = btn.innerHTML.replace('Processing...', btn.innerHTML.replace(/<i class="fas fa-spinner fa-spin me-2"><\/i>/g, '');
+        });
+        
+        // Auto-close after 3 seconds
+        setTimeout(() => {
+            window.close();
+        }, 3000);
+    }, 2000);
+}
+
+// Auto-close window if this is a popup
+if (window.opener && !window.opener.closed) {
+    window.close();
+}
+</script>
+
+<style>
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+</style>
+{% endblock %}

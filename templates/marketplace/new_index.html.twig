@@ -1,0 +1,398 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Marketplace - Unilearn{% endblock %}
+
+{% block body %}
+
+<!-- =======================
+Main banner START -->
+<section class="bg-primary bg-opacity-10 pt-4 pb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-7">
+                <!-- Title -->
+                <h1 class="display-4 fw-bold">Welcome to Unilearn Marketplace</h1>
+                <p class="lead mb-4">Discover amazing educational services and products. Connect with expert tutors and find the perfect learning resources.</p>
+                
+                <!-- Search box -->
+                <form class="bg-white rounded-3 p-3 shadow-sm">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control border-0" placeholder="What are you looking for?">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select border-0">
+                                <option selected>All Categories</option>
+                                <option>Programming</option>
+                                <option>Design</option>
+                                <option>Marketing</option>
+                                <option>Business</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select border-0">
+                                <option selected>Any Price</option>
+                                <option>$0 - $25</option>
+                                <option>$25 - $50</option>
+                                <option>$50 - $100</option>
+                                <option>$100+</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-5 text-center">
+                <img src="/assets/images/hero-banner.svg" alt="hero" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Main banner END -->
+
+<!-- =======================
+Categories START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">Browse Categories</h2>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Category 1 -->
+            <div class="col-md-3">
+                <div class="card card-hover border-0 text-center shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle mb-3">
+                            <i class="fas fa-code fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Programming</h5>
+                        <p class="card-text text-muted">Web development, mobile apps, software engineering</p>
+                        <a href="#" class="btn btn-sm btn-primary">Explore</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category 2 -->
+            <div class="col-md-3">
+                <div class="card card-hover border-0 text-center shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle mb-3">
+                            <i class="fas fa-palette fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Design</h5>
+                        <p class="card-text text-muted">UI/UX, graphic design, illustration</p>
+                        <a href="#" class="btn btn-sm btn-success">Explore</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category 3 -->
+            <div class="col-md-3">
+                <div class="card card-hover border-0 text-center shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-circle mb-3">
+                            <i class="fas fa-bullhorn fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Marketing</h5>
+                        <p class="card-text text-muted">Digital marketing, SEO, social media</p>
+                        <a href="#" class="btn btn-sm btn-warning">Explore</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category 4 -->
+            <div class="col-md-3">
+                <div class="card card-hover border-0 text-center shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="icon-lg bg-info bg-opacity-10 text-info rounded-circle mb-3">
+                            <i class="fas fa-briefcase fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Business</h5>
+                        <p class="card-text text-muted">Business strategy, consulting, finance</p>
+                        <a href="#" class="btn btn-sm btn-info">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Categories END -->
+
+<!-- =======================
+Featured Jobs START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Featured Jobs</h2>
+                    <a href="{{ path('app_job_index') }}" class="btn btn-outline-primary">View All</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Job 1 -->
+            <div class="col-md-4">
+                <div class="card card-hover border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title">Web Developer Needed</h5>
+                                <p class="text-muted small mb-2">Posted 2 days ago</p>
+                            </div>
+                            <span class="badge bg-success">Open</span>
+                        </div>
+                        <p class="card-text">Looking for an experienced web developer to build a responsive e-commerce website...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary fw-bold">$500 - $1000</span>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Job 2 -->
+            <div class="col-md-4">
+                <div class="card card-hover border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title">UI Designer</h5>
+                                <p class="text-muted small mb-2">Posted 3 days ago</p>
+                            </div>
+                            <span class="badge bg-success">Open</span>
+                        </div>
+                        <p class="card-text">Need a creative UI designer for mobile app design project with modern aesthetics...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary fw-bold">$300 - $600</span>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Job 3 -->
+            <div class="col-md-4">
+                <div class="card card-hover border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title">Content Writer</h5>
+                                <p class="text-muted small mb-2">Posted 1 week ago</p>
+                            </div>
+                            <span class="badge bg-warning">Closing Soon</span>
+                        </div>
+                        <p class="card-text">Seeking talented content writer for blog posts and marketing materials...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary fw-bold">$50 - $100</span>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Featured Jobs END -->
+
+<!-- =======================
+Featured Products START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Featured Products</h2>
+                    <a href="{{ path('app_product_index') }}" class="btn btn-outline-primary">View All</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Product 1 -->
+            <div class="col-md-3">
+                <div class="card card-hover border-0 shadow-sm">
+                    <div class="position-relative">
+                        <img src="/assets/images/book/01.jpg" class="card-img-top" alt="Product">
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-danger">Hot</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">JavaScript Mastery</h5>
+                        <p class="card-text text-muted small">Complete JavaScript course from basics to advanced</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary fw-bold">$29.99</span>
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                <a href="#" class="btn btn-sm btn-primary">Buy</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product 2 -->
+            <div class="col-md-3">
+                <div class="card card-hover border-0 shadow-sm">
+                    <div class="position-relative">
+                        <img src="/assets/images/book/02.jpg" class="card-img-top" alt="Product">
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-success">New</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">UI Design Principles</h5>
+                        <p class="card-text text-muted small">Learn modern UI design principles and best practices</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary fw-bold">$39.99</span>
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                <a href="#" class="btn btn-sm btn-primary">Buy</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product 3 -->
+            <div class="col-md-3">
+                <div class="card card-hover border-0 shadow-sm">
+                    <div class="position-relative">
+                        <img src="/assets/images/book/03.jpg" class="card-img-top" alt="Product">
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-warning">Sale</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Marketing Strategy</h5>
+                        <p class="card-text text-muted small">Complete guide to digital marketing strategies</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-primary fw-bold">$19.99</span>
+                                <span class="text-muted text-decoration-line-through small ms-2">$49.99</span>
+                            </div>
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                <a href="#" class="btn btn-sm btn-primary">Buy</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product 4 -->
+            <div class="col-md-3">
+                <div class="card card-hover border-0 shadow-sm">
+                    <div class="position-relative">
+                        <img src="/assets/images/book/04.jpg" class="card-img-top" alt="Product">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Business Basics</h5>
+                        <p class="card-text text-muted small">Essential business concepts for entrepreneurs</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary fw-bold">$24.99</span>
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                <a href="#" class="btn btn-sm btn-primary">Buy</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Featured Products END -->
+
+<!-- =======================
+How it Works START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2>How It Works</h2>
+                <p class="text-muted">Simple steps to get started with Unilearn Marketplace</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Step 1 -->
+            <div class="col-md-3 text-center">
+                <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mb-3 mx-auto">
+                    <i class="fas fa-search fa-2x"></i>
+                </div>
+                <h5>1. Search</h5>
+                <p class="text-muted">Browse through our extensive collection of jobs and products</p>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="col-md-3 text-center">
+                <div class="icon-xl bg-success bg-opacity-10 text-success rounded-circle mb-3 mx-auto">
+                    <i class="fas fa-hand-pointer fa-2x"></i>
+                </div>
+                <h5>2. Choose</h5>
+                <p class="text-muted">Select the perfect job opportunity or learning resource</p>
+            </div>
+            
+            <!-- Step 3 -->
+            <div class="col-md-3 text-center">
+                <div class="icon-xl bg-warning bg-opacity-10 text-warning rounded-circle mb-3 mx-auto">
+                    <i class="fas fa-credit-card fa-2x"></i>
+                </div>
+                <h5>3. Purchase/Apply</h5>
+                <p class="text-muted">Secure payment process or submit your application</p>
+            </div>
+            
+            <!-- Step 4 -->
+            <div class="col-md-3 text-center">
+                <div class="icon-xl bg-info bg-opacity-10 text-info rounded-circle mb-3 mx-auto">
+                    <i class="fas fa-graduation-cap fa-2x"></i>
+                </div>
+                <h5>4. Learn/Earn</h5>
+                <p class="text-muted">Start learning or begin working on your project</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+How it Works END -->
+
+<!-- =======================
+Stats START -->
+<section class="py-5 bg-primary bg-opacity-10">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 text-center mb-4 mb-md-0">
+                <h2 class="text-primary mb-2">10,000+</h2>
+                <p class="text-muted">Active Users</p>
+            </div>
+            <div class="col-md-3 text-center mb-4 mb-md-0">
+                <h2 class="text-primary mb-2">5,000+</h2>
+                <p class="text-muted">Jobs Posted</p>
+            </div>
+            <div class="col-md-3 text-center mb-4 mb-md-0">
+                <h2 class="text-primary mb-2">2,000+</h2>
+                <p class="text-muted">Products Available</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <h2 class="text-primary mb-2">98%</h2>
+                <p class="text-muted">Satisfaction Rate</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Stats END -->
+
+{% endblock %}

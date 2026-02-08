@@ -27,9 +27,13 @@ class Job
     #[Assert\Length(min: 20)]
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Assert\Positive]
     private ?float $budget = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Choice(choices: ['web-development', 'design', 'marketing', 'writing', 'other'])]
+    private ?string $category = null;
 
     #[ORM\Column(length: 20)]
     #[Assert\Choice(choices: ['open', 'assigned', 'completed'])]
@@ -37,6 +41,9 @@ class Job
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $deletedAt = null;
@@ -88,9 +95,21 @@ class Job
         return $this->budget;
     }
 
-    public function setBudget(float $budget): static
+    public function setBudget(?float $budget): static
     {
         $this->budget = $budget;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?string $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
@@ -115,6 +134,18 @@ class Job
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

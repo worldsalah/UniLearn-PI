@@ -1,0 +1,283 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Checkout - Unilearn Marketplace{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-credit-card me-2"></i>Checkout
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if orders is empty %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-cart-x fa-3x text-muted mb-3"></i>
+                        <h4>No items in checkout</h4>
+                        <p class="text-muted">Add some items to your cart first!</p>
+                        <a href="{{ path('app_marketplace_index') }}" class="btn btn-success">
+                            <i class="bi bi-arrow-left me-1"></i>Continue Shopping
+                        </a>
+                    </div>
+                    {% else %}
+                    <!-- Order Summary -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">Order Summary:</h6>
+                        <div class="list-group">
+                            {% for order in orders %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Order #{{ order.id }}</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        {% if order.product %}
+                                            {{ order.product.title }}
+                                        {% else %}
+                                            Standalone Order
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="text-success fw-bold">${{ order.totalPrice }}</span>
+                                    <br>
+                                    <small class="text-muted">
+                                        {% if order.status == 'pending' %}
+                                            <span class="badge bg-warning">⏳ Pending</span>
+                                        {% elseif order.status == 'processing' %}
+                                            <span class="badge bg-info">🔄 Processing</span>
+                                        {% elseif order.status == 'completed' %}
+                                            <span class="badge bg-success">✅ Completed</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">❌ Cancelled</span>
+                                        {% endif %}
+                                    </small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Billing Information -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">Billing Information:</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" placeholder="John">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" placeholder="Doe">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="john@example.com">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="+1234567890">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address" placeholder="123 Main St">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" id="city" placeholder="New York">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control" id="zipCode" placeholder="10001">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">Payment Method:</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-primary w-100 payment-method" data-method="stripe">
+                                    <i class="bi bi-credit-card me-2"></i>Stripe
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-warning w-100 payment-method" data-method="paypal">
+                                    <i class="bi bi-paypal me-2"></i>PayPal
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-info w-100 payment-method" data-method="square">
+                                    <i class="bi bi-credit-card-2-front me-2"></i>Square
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-secondary w-100 payment-method" data-method="cash">
+                                    <i class="bi bi-cash me-2"></i>Cash
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Place Order Button -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ path('app_cart') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Back to Cart
+                        </a>
+                        <button class="btn btn-success btn-lg" onclick="placeOrder()">
+                            <i class="bi bi-credit-card me-1"></i>Place Order
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calculator me-2"></i>Order Summary
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">${{ subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax (10%):</span>
+                        <span id="tax">${{ tax }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping:</span>
+                        <span>${{ shipping }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5>Total:</h5>
+                        <h5 class="text-success" id="total">${{ total }}</h5>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Checkout Information</strong><br>
+                        This is a demo checkout interface. In production, this would integrate with actual payment providers.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow mt-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Checkout Info
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Items:</strong> {{ orders|length }}</p>
+                    <p class="mb-2"><strong>Payment:</strong> Not selected</p>
+                    <p class="mb-0"><strong>Status:</strong> Ready to checkout</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let selectedPaymentMethod = null;
+
+// Payment method selection
+document.querySelectorAll('.payment-method').forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove active state from all buttons
+        document.querySelectorAll('.payment-method').forEach(btn => {
+            btn.classList.remove('btn-primary', 'btn-warning', 'btn-info', 'btn-secondary');
+            btn.classList.add('btn-outline-primary', 'btn-outline-warning', 'btn-outline-info', 'btn-outline-secondary');
+        });
+        
+        // Add active state to clicked button
+        this.classList.remove('btn-outline-primary', 'btn-outline-warning', 'btn-outline-info', 'btn-outline-secondary');
+        const method = this.dataset.method;
+        if (method === 'stripe') {
+            this.classList.add('btn-primary');
+        } else if (method === 'paypal') {
+            this.classList.add('btn-warning');
+        } else if (method === 'square') {
+            this.classList.add('btn-info');
+        } else if (method === 'cash') {
+            this.classList.add('btn-secondary');
+        }
+        
+        selectedPaymentMethod = method;
+        updateCheckoutInfo();
+    });
+});
+
+function updateCheckoutInfo() {
+    const infoCard = document.querySelector('.card-body:last-child');
+    const paymentStatus = infoCard.querySelector('p:nth-child(2) strong').nextSibling;
+    paymentStatus.textContent = selectedPaymentMethod ? selectedPaymentMethod.charAt(0).toUpperCase() + selectedPaymentMethod.slice(1) : 'Not selected';
+}
+
+function placeOrder() {
+    if (!selectedPaymentMethod) {
+        alert('Please select a payment method.');
+        return;
+    }
+    
+    // Validate form
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    const email = document.getElementById('email').value;
+    
+    if (!firstName || !lastName || !email) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+    
+    // Show loading state
+    const placeOrderBtn = document.querySelector('.btn-success.btn-lg');
+    const originalText = placeOrderBtn.innerHTML;
+    placeOrderBtn.disabled = true;
+    placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    
+    // Simulate order processing
+    setTimeout(() => {
+        // Show success message
+        const cardBody = document.querySelector('.card-body');
+        const successAlert = document.createElement('div');
+        successAlert.className = 'alert alert-success';
+        successAlert.innerHTML = `
+            <i class="bi bi-check-circle me-2"></i>
+            <strong>Order Placed Successfully!</strong><br>
+            Your order has been placed and will be processed shortly. You will receive a confirmation email at ${email}.
+        `;
+        cardBody.insertBefore(successAlert, cardBody.firstChild);
+        
+        // Reset button
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.innerHTML = originalText;
+        
+        // Redirect to marketplace after 3 seconds
+        setTimeout(() => {
+            window.location.href = '{{ path('app_marketplace_index') }}';
+        }, 3000);
+    }, 2000);
+}
+</script>
+
+<style>
+.payment-method:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+</style>
+{% endblock %}

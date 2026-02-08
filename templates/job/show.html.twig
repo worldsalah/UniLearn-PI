@@ -1,343 +1,117 @@
-{% extends 'admin/admin_base.html.twig' %}
+{% extends 'front_base.html.twig' %}
 
-{% block title %}{{ job.title }} - Job Details{% endblock %}
+{% block title %}{{ job.title }} - Job Request{% endblock %}
 
-{% block admin_content %}
-<!-- Title -->
-<div class="row mb-4">
-    <div class="col-12">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('app_marketplace_index') }}">Marketplace</a></li>
-                <li class="breadcrumb-item active">{{ job.title }}</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-
-<!-- Job Details Card -->
-<div class="row g-4">
-    <!-- Main Content -->
-    <div class="col-lg-8">
-        <div class="card shadow">
-            <!-- Card Header -->
-            <div class="card-header bg-primary text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">{{ job.title }}</h4>
-                    <span class="badge bg-white text-primary fs-6">${{ job.budget }}</span>
+{% block body %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-briefcase me-2"></i>{{ job.title }}
+                    </h4>
+                    <div>
+                        {% if job.status == 'open' %}
+                            <span class="badge bg-success">📋 Open</span>
+                        {% elseif job.status == 'assigned' %}
+                            <span class="badge bg-warning">🔄 In Progress</span>
+                        {% else %}
+                            <span class="badge bg-secondary">✅ Closed</span>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Card Body -->
-            <div class="card-body">
-                <!-- Job Meta Info -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-md bg-light rounded-circle text-primary me-3">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-0">Client</h6>
-                                <p class="mb-0 text-muted">{{ job.client.email }}</p>
-                            </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Category</h6>
+                            <p class="mb-3"><strong>{{ job.category|default('other')|title }}</strong></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Budget</h6>
+                            <p class="mb-3"><strong class="text-success">${{ job.budget ?? 0 }}</strong></p>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-md bg-light rounded-circle text-success me-3">
-                                <i class="fas fa-calendar"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-0">Posted</h6>
-                                <p class="mb-0 text-muted">{{ job.createdAt|date('M d, Y') }}</p>
-                            </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="text-muted">Description</h6>
+                        <div class="bg-light p-3 rounded">
+                            <p class="mb-0">{{ job.description|nl2br }}</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Status Badge -->
-                <div class="mb-4">
-                    {% if job.status == 'open' %}
-                        <span class="badge bg-success bg-opacity-10 text-success fs-6">
-                            <i class="fas fa-circle me-2"></i>Open for Applications
-                        </span>
-                    {% elseif job.status == 'assigned' %}
-                        <span class="badge bg-warning bg-opacity-10 text-warning fs-6">
-                            <i class="fas fa-clock me-2"></i>Assigned
-                        </span>
-                    {% else %}
-                        <span class="badge bg-secondary bg-opacity-10 text-secondary fs-6">
-                            <i class="fas fa-check me-2"></i>Completed
-                        </span>
-                    {% endif %}
-                </div>
-
-                <!-- Job Description -->
-                <div class="mb-4">
-                    <h5 class="mb-3">Job Description</h5>
-                    <div class="bg-light p-4 rounded">
-                        <p class="mb-0">{{ job.description|nl2br }}</p>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Posted</h6>
+                            <p class="mb-3">{{ job.createdAt|date('M d, Y') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Client</h6>
+                            <p class="mb-3">{{ job.client.email }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('app_job_edit', {id: job.id}) }}" class="btn btn-warning">
+                            <i class="bi bi-pencil me-1"></i>Update Job
+                        </a>
+                        <form method="post" action="{{ path('app_job_delete', {id: job.id}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ job.id) }}">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this job request?')">
+                                <i class="bi bi-trash me-1"></i>Delete Job
+                            </button>
+                        </form>
+                        <a href="{{ path('app_marketplace_index') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Back to Marketplace
+                        </a>
                     </div>
                 </div>
-
-                <!-- Action Buttons -->
-                {% if job.status == 'open' %}
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                        <button class="btn btn-primary btn-lg" onclick="showApplicationForm()">
-                            <i class="fas fa-paper-plane me-2"></i>Apply for this Job
-                        </button>
-                        <button class="btn btn-outline-secondary btn-lg" onclick="saveJob()">
-                            <i class="fas fa-bookmark me-2"></i>Save Job
-                        </button>
-                    </div>
-                {% endif %}
             </div>
         </div>
-
-        <!-- Application Form (Hidden by default) -->
-        <div id="applicationForm" class="card shadow mt-4" style="display: none;">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Apply for this Job</h5>
-            </div>
-            <div class="card-body">
-                <form id="applicationForm" method="POST" action="{{ path('app_job_apply', {'id': job.id}) }}">
+        
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Job Details
+                    </h5>
+                </div>
+                <div class="card-body">
                     <div class="mb-3">
-                        <label for="coverLetter" class="form-label">Cover Letter *</label>
-                        <textarea class="form-control" id="coverLetter" name="coverLetter" rows="5" 
-                                  placeholder="Explain why you're the perfect fit for this job..." required></textarea>
+                        <h6 class="text-muted">Status</h6>
+                        <p class="mb-0">
+                            {% if job.status == 'open' %}
+                                <span class="badge bg-success">📋 Open</span>
+                            {% elseif job.status == 'assigned' %}
+                                <span class="badge bg-warning">🔄 In Progress</span>
+                            {% else %}
+                                <span class="badge bg-secondary">✅ Closed</span>
+                            {% endif %}
+                        </p>
                     </div>
+                    
                     <div class="mb-3">
-                        <label for="proposedBudget" class="form-label">Proposed Budget ($)</label>
-                        <input type="number" class="form-control" id="proposedBudget" name="proposedBudget" 
-                               step="0.01" min="1" placeholder="{{ job.budget }}" required>
+                        <h6 class="text-muted">Category</h6>
+                        <p class="mb-0">{{ job.category|default('other')|title }}</p>
                     </div>
+                    
                     <div class="mb-3">
-                        <label for="timeline" class="form-label">Estimated Timeline</label>
-                        <input type="text" class="form-control" id="timeline" name="timeline" 
-                               placeholder="e.g., 2 weeks, 1 month" required>
+                        <h6 class="text-muted">Budget</h6>
+                        <p class="mb-0 text-success fw-bold">${{ job.budget ?? 0 }}</p>
                     </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                        <button type="submit" class="btn btn-success" id="submitBtn">
-                            <i class="fas fa-check me-2"></i>Submit Application
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="hideApplicationForm()">Cancel</button>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Posted Date</h6>
+                        <p class="mb-0">{{ job.createdAt|date('F d, Y') }}</p>
                     </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="col-lg-4">
-        <!-- Job Summary Card -->
-        <div class="card shadow mb-4">
-            <div class="card-header">
-                <h6 class="mb-0">Job Summary</h6>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled">
-                    <li class="mb-3">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Budget:</span>
-                            <strong>${{ job.budget }}</strong>
-                        </div>
-                    </li>
-                    <li class="mb-3">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Status:</span>
-                            <strong>{{ job.status|title }}</strong>
-                        </div>
-                    </li>
-                    <li class="mb-3">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Posted:</span>
-                            <strong>{{ job.createdAt|date('M d, Y') }}</strong>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Client Info Card -->
-        <div class="card shadow mb-4">
-            <div class="card-header">
-                <h6 class="mb-0">About the Client</h6>
-            </div>
-            <div class="card-body text-center">
-                <div class="avatar avatar-lg mb-3">
-                    <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center">
-                        <i class="fas fa-user fa-2x"></i>
-                    </div>
-                </div>
-                <h6 class="mb-1">{{ job.client.email }}</h6>
-                <p class="text-muted small mb-3">Job Poster</p>
-                <div class="d-flex justify-content-center gap-2">
-                    <span class="badge bg-success bg-opacity-10 text-success">Verified</span>
-                    <span class="badge bg-info bg-opacity-10 text-info">Active</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="card shadow">
-            <div class="card-header">
-                <h6 class="mb-0">Quick Stats</h6>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-6">
-                        <h5 class="mb-1 text-primary">12</h5>
-                        <small class="text-muted">Applicants</small>
-                    </div>
-                    <div class="col-6">
-                        <h5 class="mb-1 text-success">4.8</h5>
-                        <small class="text-muted">Avg. Rating</small>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Job ID</h6>
+                        <p class="mb-0">#{{ job.id }}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-function showApplicationForm() {
-    document.getElementById('applicationForm').style.display = 'block';
-    document.getElementById('applicationForm').scrollIntoView({ behavior: 'smooth' });
-}
-
-function hideApplicationForm() {
-    document.getElementById('applicationForm').style.display = 'none';
-}
-
-function saveJob() {
-    // Placeholder for save job functionality
-    showNotification('Job saved to your favorites!', 'success');
-}
-
-function showNotification(message, type = 'info') {
-    // Remove any existing notifications
-    const existingNotifications = document.querySelectorAll('.notification-toast');
-    existingNotifications.forEach(notification => notification.remove());
-    
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification-toast alert alert-${type === 'success' ? 'success' : 'info'} position-fixed top-0 end-0 m-3`;
-    notification.style.zIndex = '9999';
-    notification.style.minWidth = '300px';
-    notification.innerHTML = `
-        <div class="d-flex align-items-center">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
-            <div class="flex-grow-1">${message}</div>
-            <button type="button" class="btn-close" onclick="this.parentElement.remove()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 5000);
-}
-
-// Handle form submission with AJAX
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('applicationForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.innerHTML;
-            
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
-            
-            // Get form data
-            const formData = new FormData(form);
-            
-            // Submit via AJAX
-            fetch(form.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Show success notification
-                    showNotification(data.message, 'success');
-                    
-                    // Hide form
-                    hideApplicationForm();
-                    
-                    // Reset form
-                    form.reset();
-                    
-                    // Update job status to show it's been applied for
-                    updateJobStatus('applied');
-                    
-                } else {
-                    // Show error notification
-                    showNotification(data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('An error occurred while submitting your application. Please try again.', 'error');
-            })
-            .finally(() => {
-                // Restore button state
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-            });
-        });
-    }
-});
-
-function updateJobStatus(status) {
-    // Update the status badge to show user has applied
-    const statusBadge = document.querySelector('.badge');
-    if (statusBadge && status === 'applied') {
-        statusBadge.className = 'badge bg-info bg-opacity-10 text-info fs-6';
-        statusBadge.innerHTML = '<i class="fas fa-check me-2"></i>Applied';
-    }
-}
-</script>
-
-<style>
-.notification-toast {
-    animation: slideInRight 0.3s ease-out;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border-radius: 8px;
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-.btn-close {
-    background: none;
-    border: none;
-    color: inherit;
-    opacity: 0.7;
-    margin-left: 10px;
-}
-
-.btn-close:hover {
-    opacity: 1;
-}
-</style>
 {% endblock %}

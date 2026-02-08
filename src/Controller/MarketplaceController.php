@@ -331,6 +331,42 @@ class MarketplaceController extends AbstractController
         ]);
     }
 
+    #[Route('/dashboard', name: 'app_dashboard', methods: ['GET'])]
+    public function dashboard(ProductRepository $productRepository, JobRepository $jobRepository, OrderRepository $orderRepository): Response
+    {
+        // Get user's services (for demo, get all services)
+        $services = $productRepository->findBy(['deletedAt' => null]);
+        $servicesCount = count($services);
+        
+        // Get user's jobs (for demo, get all jobs)
+        $jobs = $jobRepository->findBy(['deletedAt' => null]);
+        $jobsCount = count($jobs);
+        
+        // Get user's orders (for demo, get all orders)
+        $orders = $orderRepository->findAll();
+        $ordersCount = count($orders);
+        
+        // Calculate total revenue (sum of all completed orders)
+        $totalRevenue = array_sum(array_map(function($order) {
+            return $order->getStatus() === 'completed' ? $order->getTotalPrice() : 0;
+        }, $orders));
+        
+        // Get recent items (last 5 of each)
+        $recentServices = array_slice($services, -5);
+        $recentJobs = array_slice($jobs, -5);
+        $recentOrders = array_slice($orders, -5);
+        
+        return $this->render('dashboard/index.html.twig', [
+            'totalRevenue' => number_format($totalRevenue, 2),
+            'servicesCount' => $servicesCount,
+            'jobsCount' => $jobsCount,
+            'ordersCount' => $ordersCount,
+            'recentServices' => $recentServices,
+            'recentJobs' => $recentJobs,
+            'recentOrders' => $recentOrders,
+        ]);
+    }
+
     #[Route('/payment/individual/{id}', name: 'app_payment_individual', methods: ['GET'])]
     public function paymentIndividual($id, Request $request, OrderRepository $orderRepository): Response
     {
@@ -365,27 +401,6 @@ class MarketplaceController extends AbstractController
             'totalAmount' => $totalAmount,
         ]);
     }
-
-    #[Route('/dashboard', name: 'app_marketplace_dashboard')]
-    #[IsGranted('ROLE_USER')]
-    public function dashboard(): Response
-    {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        $student = $user->getStudent();
-        if (!$student) {
-             return $this->redirectToRoute('app_freelancer_register');
-        }
-
-        return $this->render('student/dashboard.html.twig', [
-            'student' => $student,
-        ]);
-    }
-
-
 
 
     #[Route('/job/new', name: 'app_job_new', methods: ['GET', 'POST'])]

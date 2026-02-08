@@ -1,0 +1,281 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Dashboard - Unilearn Marketplace{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Revenue Overview -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Revenue</h5>
+                                    <h3 class="mb-0">${{ totalRevenue }}</h3>
+                                    <small>All time earnings</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Services</h5>
+                                    <h3 class="mb-0">{{ servicesCount }}</h3>
+                                    <small>Active services</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Jobs</h5>
+                                    <h3 class="mb-0">{{ jobsCount }}</h3>
+                                    <small>Job requests</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Orders</h5>
+                                    <h3 class="mb-0">{{ ordersCount }}</h3>
+                                    <small>Total orders</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Revenue Chart</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="revenueChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Order Status</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="statusChart" width="200" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Services -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-briefcase me-2"></i>Recent Services
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if recentServices is empty %}
+                                    <p class="text-muted">No services found.</p>
+                                    {% else %}
+                                    {% for service in recentServices %}
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <strong>{{ service.title }}</strong>
+                                            <br>
+                                            <small class="text-muted">${{ service.price }}</small>
+                                        </div>
+                                        <span class="badge bg-success">${{ service.price }}</span>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                    <div class="mt-3">
+                                        <a href="{{ path('app_marketplace_index') }}" class="btn btn-sm btn-primary">
+                                            View All Services
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Jobs -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-briefcase me-2"></i>Recent Jobs
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if recentJobs is empty %}
+                                    <p class="text-muted">No jobs found.</p>
+                                    {% else %}
+                                    {% for job in recentJobs %}
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <strong>{{ job.title }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ job.category|title }}</small>
+                                        </div>
+                                        <span class="badge bg-warning">${{ job.budget ?? 0 }}</span>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                    <div class="mt-3">
+                                        <a href="{{ path('app_marketplace_index') }}" class="btn btn-sm btn-primary">
+                                            View All Jobs
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-cart3 me-2"></i>Recent Orders
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if recentOrders is empty %}
+                                    <p class="text-muted">No orders found.</p>
+                                    {% else %}
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Order ID</th>
+                                                    <th>Product/Service</th>
+                                                    <th>Status</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for order in recentOrders %}
+                                                <tr>
+                                                    <td>#{{ order.id }}</td>
+                                                    <td>
+                                                        {% if order.product %}
+                                                            {{ order.product.title }}
+                                                        {% else %}
+                                                            Standalone Order
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if order.status == 'pending' %}
+                                                            <span class="badge bg-warning">Pending</span>
+                                                        {% elseif order.status == 'processing' %}
+                                                            <span class="badge bg-info">Processing</span>
+                                                        {% elseif order.status == 'completed' %}
+                                                            <span class="badge bg-success">Completed</span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger">Cancelled</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>${{ order.totalPrice }}</td>
+                                                    <td>{{ order.createdAt|date('M d, Y') }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {% endif %}
+                                    <div class="mt-3">
+                                        <a href="{{ path('app_cart') }}" class="btn btn-sm btn-primary">
+                                            View All Orders
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Revenue',
+                data: [1200, 1900, 3000, 2500, 4200, 3800],
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusChart = new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Pending', 'Processing', 'Completed', 'Cancelled'],
+            datasets: [{
+                data: [12, 19, 8, 5],
+                backgroundColor: [
+                    '#FFC107',
+                    '#17A2B8',
+                    '#28A745',
+                    '#DC3545'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

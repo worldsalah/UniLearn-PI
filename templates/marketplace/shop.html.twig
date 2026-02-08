@@ -27,6 +27,11 @@ Page Banner START -->
 							<!-- Title -->
 							<h1 class="mb-3">Welcome to our online marketplace!</h1>
 							<p class="mb-3">Expand knowledge by reading books and courses. Find the perfect educational resources for your needs.</p>
+							<div class="mt-3">
+								<a href="{{ path('app_dashboard') }}" class="btn btn-primary btn-lg">
+									<i class="bi bi-speedometer2 me-2"></i>Dashboard
+								</a>
+							</div>
 						</div>
 
 						<!-- Image -->
@@ -332,70 +337,13 @@ Tab Content START -->
 										</div>
 										<h5 class="card-title">Support</h5>
 										<p class="card-text text-muted">Get help from our support team for any issues or questions.</p>
-										<button class="btn btn-outline-warning">Contact Support</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
-<footer class="bg-dark pt-5 pb-4">
-    <div class="container">
-        <div class="row g-4">
-            <!-- Widget 2 START -->
-            <div class="col-lg-3">
-                <div class="mb-4">
-                    <h5 class="text-white mb-3">
-                        <i class="bi bi-link-45deg me-2"></i>Quick Links
-                    </h5>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><a href="{{ path('app_marketplace_index') }}" class="text-white-50 text-decoration-none">Marketplace</a></li>
-                        <li class="mb-2"><a href="{{ path('app_cart') }}" class="text-white-50 text-decoration-none">Cart</a></li>
-                        <li class="mb-2"><a href="{{ path('app_checkout') }}" class="text-white-50 text-decoration-none">Checkout</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Dashboard</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!-- Widget 2 END -->
-
-            <!-- Widget 3 START -->
-            <div class="col-lg-4">
-                <div class="mb-4">
-                    <h5 class="text-white mb-3">
-                        <i class="bi bi-grid-3x3-gap me-2"></i>Categories
-                    </h5>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Web Development</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Design</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Marketing</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Writing</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!-- Widget 3 END -->
-
-            <!-- Widget 4 START -->
-            <div class="col-lg-5">
-                <div class="mb-4">
-                    <h5 class="text-white mb-3">
-                        <i class="bi bi-envelope me-2"></i>Newsletter
-                    </h5>
-                    <p class="text-white-50 mb-3">Subscribe to get the latest updates and offers.</p>
-                    <form class="mt-3">
-                        <div class="input-group">
-                            <input type="email" class="form-control bg-dark border-secondary text-white" placeholder="Enter your email" required>
-                            <button class="btn btn-primary" type="submit">Subscribe</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <!-- Widget 4 END -->
-        </div>
-    </div>
-</footer>
-<!-- Footer END -->
+	</div>
+</section>
+<!-- =======================
+Tab Content END -->
 
 {% endblock %}
 

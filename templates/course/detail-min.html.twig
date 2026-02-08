@@ -1,0 +1,211 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Course Detail - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Course Detail Minimal START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Main content -->
+            <div class="col-12">
+                <div class="card shadow">
+                    <!-- Course header -->
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center mb-3">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-2">Development</span>
+                                    <div class="text-warning me-2">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.5</span>
+                                    </div>
+                                    <small class="text-muted">(2,345 reviews)</small>
+                                </div>
+                                <h1 class="mb-2">Complete Web Development Bootcamp 2024</h1>
+                                <p class="mb-3 text-muted">Learn web development from scratch with HTML, CSS, JavaScript, React, Node.js and more. Build real projects and get job-ready skills.</p>
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded-circle me-2" width="30" alt="Instructor">
+                                    <div>
+                                        <h6 class="mb-0 small">John Doe</h6>
+                                        <p class="mb-0 small text-muted">Senior Developer</p>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <span class="text-muted small me-3">45,234 students</span>
+                                        <span class="text-muted small">12 hours</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-end">
+                                <h3 class="mb-0">$89.99</h3>
+                                <span class="text-decoration-line-through text-muted">$199.99</span>
+                                <span class="badge bg-danger">55% OFF</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course image -->
+                    <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="card-img-top" alt="Course">
+                    
+                    <!-- Course content -->
+                    <div class="card-body p-4">
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#curriculum">Curriculum</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#instructor">Instructor</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#reviews">Reviews</a>
+                            </li>
+                        </ul>
+                        
+                        <!-- Tab content -->
+                        <div class="tab-content">
+                            <!-- Overview -->
+                            <div class="tab-pane fade show active" id="overview">
+                                <h5 class="mb-3">Description</h5>
+                                <p class="mb-4">Become a full-stack web developer with just ONE course. HTML, CSS, Javascript, Node, React, MongoDB and more. This is the tutorial you've been looking for to become a professional web developer that matches top tech companies.</p>
+                                
+                                <h6 class="mb-3">What you'll learn</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Build 16 web development projects
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Master frontend development with React
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Master backend development with Node
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Learn SQL and NoSQL databases
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h6 class="mb-3">Requirements</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-info-circle text-info me-2"></i>
+                                            No programming experience needed
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-info-circle text-info me-2"></i>
+                                            A computer with internet access
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Curriculum -->
+                            <div class="tab-pane fade" id="curriculum">
+                                <h5 class="mb-3">Course Content</h5>
+                                <div class="accordion" id="curriculumAccordion">
+                                    <div class="accordion-item mb-2">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#section1">
+                                                Section 1: Introduction
+                                            </button>
+                                        </h2>
+                                        <div id="section1" class="accordion-collapse collapse show" data-bs-parent="#curriculumAccordion">
+                                            <div class="accordion-body">
+                                                <ul class="list-group list-group-borderless">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <i class="fas fa-play-circle text-primary me-2"></i>
+                                                            Welcome to the Course!
+                                                        </div>
+                                                        <span class="text-muted">5:23</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Instructor -->
+                            <div class="tab-pane fade" id="instructor">
+                                <div class="d-sm-flex align-items-center">
+                                    <div class="avatar avatar-xl">
+                                        <img class="avatar-img rounded-circle" src="{{ asset('assets/images/instructor/01.jpg') }}" alt="avatar">
+                                    </div>
+                                    <div class="ms-sm-4 mt-3 mt-sm-0">
+                                        <h4 class="mb-1">John Doe</h4>
+                                        <p class="mb-2">Senior Web Developer & Instructor</p>
+                                        <p class="mb-3">I'm John, a professional web developer with years of experience in building scalable web applications.</p>
+                                        <div class="d-flex gap-2">
+                                            <a href="#" class="btn btn-sm btn-primary">Follow</a>
+                                            <a href="#" class="btn btn-sm btn-outline-primary">Message</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Reviews -->
+                            <div class="tab-pane fade" id="reviews">
+                                <h5 class="mb-4">Student Reviews</h5>
+                                <div class="d-flex mb-3">
+                                    <div class="avatar avatar-sm">
+                                        <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/08.jpg') }}" alt="avatar">
+                                    </div>
+                                    <div class="ms-3">
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="mb-0">Alex Johnson</h6>
+                                            <small class="text-muted">2 days ago</small>
+                                        </div>
+                                        <div class="text-warning small mb-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <p class="mb-0">Excellent course! The instructor explains everything clearly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Course Detail Minimal END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Nouvelle Réservation - Eduport{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-plus-circle me-3"></i>Nouvelle Réservation</h1>
+        <p>Créez votre réservation de session</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="mb-4">
+        <a href="{{ path('front_booking_index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.userName) }}
+                            {{ form_widget(form.userName) }}
+                            {{ form_errors(form.userName) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.userEmail) }}
+                            {{ form_widget(form.userEmail) }}
+                            {{ form_errors(form.userEmail) }}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>Créer ma réservation
+                            </button>
+                            <a href="{{ path('front_booking_index') }}" class="btn btn-outline-secondary">
+                                Annuler
+                            </a>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

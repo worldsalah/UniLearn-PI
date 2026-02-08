@@ -1,0 +1,263 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Instructor Dashboard - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Instructor Dashboard START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/instructor/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">John Doe</h5>
+                        <p class="mb-2">Web Development Instructor</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-users me-2"></i>Students
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-chart-line me-2"></i>Earnings
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-star me-2"></i>Reviews
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Welcome header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="mb-1">Welcome back, John!</h3>
+                        <p class="mb-0">Here's what's happening with your courses today.</p>
+                    </div>
+                </div>
+                <!-- Welcome header END -->
+
+                <!-- Stats START -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <span class="badge bg-success">+12%</span>
+                                </div>
+                                <h4 class="mb-0">12</h4>
+                                <p class="mb-0 small text-muted">Total Courses</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <span class="badge bg-success">+25%</span>
+                                </div>
+                                <h4 class="mb-0">8,456</h4>
+                                <p class="mb-0 small text-muted">Total Students</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-circle">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <span class="badge bg-success">+18%</span>
+                                </div>
+                                <h4 class="mb-0">$45,678</h4>
+                                <p class="mb-0 small text-muted">Total Earnings</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-info bg-opacity-10 text-info rounded-circle">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="badge bg-success">+5%</span>
+                                </div>
+                                <h4 class="mb-0">4.8</h4>
+                                <p class="mb-0 small text-muted">Average Rating</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Stats END -->
+
+                <!-- Recent courses START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0">Recent Courses</h5>
+                            <a href="#" class="btn btn-sm btn-primary">View All</a>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Students</th>
+                                        <th>Rating</th>
+                                        <th>Revenue</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="rounded me-3" width="50" alt="Course">
+                                                <div>
+                                                    <h6 class="mb-0">Web Development Bootcamp</h6>
+                                                    <small class="text-muted">Updated 2 days ago</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>2,345</td>
+                                        <td>
+                                            <div class="text-warning">
+                                                <i class="fas fa-star"></i> 4.8
+                                            </div>
+                                        </td>
+                                        <td>$23,456</td>
+                                        <td><span class="badge bg-success">Published</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/courses/4by3/02.jpg') }}" class="rounded me-3" width="50" alt="Course">
+                                                <div>
+                                                    <h6 class="mb-0">React Masterclass</h6>
+                                                    <small class="text-muted">Updated 1 week ago</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>1,234</td>
+                                        <td>
+                                            <div class="text-warning">
+                                                <i class="fas fa-star"></i> 4.9
+                                            </div>
+                                        </td>
+                                        <td>$15,678</td>
+                                        <td><span class="badge bg-success">Published</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/courses/4by3/03.jpg') }}" class="rounded me-3" width="50" alt="Course">
+                                                <div>
+                                                    <h6 class="mb-0">JavaScript Advanced</h6>
+                                                    <small class="text-muted">Updated 2 weeks ago</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>567</td>
+                                        <td>
+                                            <div class="text-warning">
+                                                <i class="fas fa-star"></i> 4.7
+                                            </div>
+                                        </td>
+                                        <td>$6,544</td>
+                                        <td><span class="badge bg-warning">Draft</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Recent courses END -->
+
+                <!-- Recent activity START -->
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Recent Activity</h5>
+                        
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-point bg-primary"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">New student enrolled</h6>
+                                    <p class="mb-0 text-muted">Sarah Johnson enrolled in Web Development Bootcamp</p>
+                                    <small class="text-muted">2 hours ago</small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-point bg-success"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Course review received</h6>
+                                    <p class="mb-0 text-muted">5-star review from Mike Chen for React Masterclass</p>
+                                    <small class="text-muted">5 hours ago</small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-point bg-warning"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Course updated</h6>
+                                    <p class="mb-0 text-muted">Updated content for JavaScript Advanced course</p>
+                                    <small class="text-muted">1 day ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Recent activity END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Instructor Dashboard END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

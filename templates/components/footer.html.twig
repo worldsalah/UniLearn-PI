@@ -1,0 +1,123 @@
+<!-- =======================
+Footer START -->
+<footer class="bg-dark pt-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Widget 1 START -->
+            <div class="col-lg-3">
+                <h5 class="text-white mb-2 mb-md-4">Unilearn</h5>
+                <p class="text-white mb-2">Elevate your skills with our comprehensive online courses.</p>
+                <p class="mb-0 text-white">©{{ "now"|date("Y") }} Unilearn. All rights reserved.</p>
+                
+                <!-- Social media icons -->
+                <ul class="list-inline mt-3">
+                    <li class="list-inline-item"><a class="btn btn-sm btn-light btn-round mb-0" href="#"><i class="fab fa-facebook-f"></i></a></li>
+                    <li class="list-inline-item"><a class="btn btn-sm btn-light btn-round mb-0" href="#"><i class="fab fa-instagram"></i></a></li>
+                    <li class="list-inline-item"><a class="btn btn-sm btn-light btn-round mb-0" href="#"><i class="fab fa-twitter"></i></a></li>
+                    <li class="list-inline-item"><a class="btn btn-sm btn-light btn-round mb-0" href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                </ul>
+            </div>
+            <!-- Widget 1 END -->
+
+            <!-- Widget 2 START -->
+            <div class="col-lg-8 ms-auto">
+                <div class="row g-4 g-lg-2">
+                    <!-- Link block -->
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Company</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link text-white" href="{{ path('app_about') }}">About us</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="{{ path('app_contact') }}">Contact us</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="#">Careers</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="#">Press</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Link block -->
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Community</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link text-white" href="#">Documentation</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="#">Faq</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="#">Forum</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="#">Sitemap</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Link block -->
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Teaching</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link text-white" href="#">Become a teacher</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="#">How to guide</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="#">Terms &amp; Conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Widget 2 END -->
+
+            <!-- Widget 3 START -->
+            <div class="col-lg-3">
+                <h5 class="mb-2 mb-md-4">Contact</h5>
+                <!-- Time -->
+                <p class="mb-2 text-white">
+                    Toll free:<span class="h6 fw-light ms-2">+1234 568 963</span>
+                    <span class="d-block small">(9:AM to 8:PM IST)</span>
+                </p>
+
+                <p class="mb-0 text-white">Email:<span class="h6 fw-light ms-2">info@unilearn.com</span></p>
+
+                <div class="row g-2 mt-2">
+                    <!-- Google play store button -->
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-6">
+                        <a href="#"> <img src="{{ asset('assets/images/client/google-play.svg') }}" alt=""> </a>
+                    </div>
+                    <!-- App store button -->
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-6">
+                        <a href="#"> <img src="{{ asset('assets/images/client/app-store.svg') }}" alt="app-store"> </a>
+                    </div>
+                </div> <!-- Row END -->
+            </div> 
+            <!-- Widget 3 END -->
+        </div><!-- Row END -->
+
+        <!-- Divider -->
+        <hr class="mt-4 mb-0 border-secondary">
+
+        <!-- Bottom footer -->
+        <div class="py-3">
+            <div class="container px-0">
+                <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
+                    <!-- copyright text -->
+                    <div class="text-body text-primary-hover"> Copyrights ©{{ "now"|date("Y") }} Unilearn. Build by <a href="#" target="_blank" class="text-body">Unilearn Team</a></div>
+                    <!-- copyright links-->
+                    <div class="justify-content-center mt-3 mt-lg-0">
+                        <ul class="nav list-inline justify-content-center mb-0">
+                            <li class="list-inline-item">
+                                <!-- Language selector -->
+                                <div class="dropup mt-0 text-center text-sm-end">
+                                    <a class="dropdown-toggle nav-link text-white" href="#" role="button" id="languageSwitcher" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-globe me-2"></i>Language
+                                    </a>
+                                    <ul class="dropdown-menu min-w-auto" aria-labelledby="languageSwitcher">
+                                        <li><a class="dropdown-item me-4" href="#"><img class="fa-fw me-2" src="{{ asset('assets/images/flags/uk.svg') }}" alt="">English</a></li>
+                                        <li><a class="dropdown-item me-4" href="#"><img class="fa-fw me-2" src="{{ asset('assets/images/flags/gr.svg') }}" alt="">German </a></li>
+                                        <li><a class="dropdown-item me-4" href="#"><img class="fa-fw me-2" src="{{ asset('assets/images/flags/sp.svg') }}" alt="">French</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="list-inline-item"><a class="nav-link text-white" href="#">Terms of use</a></li>
+                            <li class="list-inline-item"><a class="nav-link text-white pe-0" href="#">Privacy policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- =======================
+Footer END -->
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>

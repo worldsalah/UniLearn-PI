@@ -1,0 +1,129 @@
+{# templates/front/session/edit.html.twig #}
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Modifier Session - Eduport{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-edit me-3"></i>Modifier la Session</h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="mb-4">
+        <a href="{{ path('front_session_index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.name) }}
+                            {{ form_widget(form.name) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.date) }}
+                            {{ form_widget(form.date) }}
+                            {{ form_errors(form.date) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.duration) }}
+                            {{ form_widget(form.duration) }}
+                            {{ form_errors(form.duration) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.booking) }}
+                            {{ form_widget(form.booking) }}
+                            {{ form_errors(form.booking) }}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                            <a href="{{ path('front_session_index') }}" class="btn btn-outline-secondary">
+                                Annuler
+                            </a>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{# templates/front/session/show.html.twig #}
+{% extends 'front/base.html.twig' %}
+
+{% block title %}{{ session.name }} - Eduport{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-graduation-cap me-3"></i>{{ session.name }}</h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="mb-4">
+        <a href="{{ path('front_session_index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+        <a href="{{ path('front_session_edit', {id: session.id}) }}" class="btn btn-warning">
+            <i class="fas fa-edit me-2"></i>Modifier
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5><i class="fas fa-calendar text-primary me-2"></i>Date et heure</h5>
+                        <p class="ms-4">{{ session.date|date('d/m/Y à H:i') }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5><i class="fas fa-clock text-warning me-2"></i>Durée</h5>
+                        <p class="ms-4">
+                            <span class="badge badge-warning">{{ session.duration }} minutes</span>
+                            ({{ (session.duration / 60)|round(2) }} heures)
+                        </p>
+                    </div>
+
+                    <div>
+                        <h5><i class="fas fa-user text-secondary me-2"></i>Réservation</h5>
+                        <p class="ms-4">
+                            <strong>{{ session.booking.userName }}</strong><br>
+                            <small class="text-muted">{{ session.booking.userEmail }}</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle me-2"></i>Informations
+                </div>
+                <div class="card-body">
+                    <p><strong>Heure de fin estimée:</strong></p>
+                    <p>{{ session.date|date_modify('+' ~ session.duration ~ ' minutes')|date('H:i') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

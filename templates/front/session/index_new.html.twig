@@ -1,0 +1,134 @@
+{# templates/front/session/index.html.twig #}
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Sessions - Eduport{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-clock me-3"></i>Sessions de Formation</h1>
+        <p>Découvrez toutes les sessions disponibles</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="mb-4 text-end">
+        <a href="{{ path('front_session_new') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Créer une Session
+        </a>
+    </div>
+
+    {% if sessions is empty %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-calendar-times fa-4x text-muted mb-4"></i>
+                <h4 class="text-muted">Aucune session disponible</h4>
+                <a href="{{ path('front_session_new') }}" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus me-2"></i>Créer une session
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            {% for session in sessions %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card session-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-graduation-cap text-primary me-2"></i>
+                            {{ session.name }}
+                        </h5>
+                        <div class="session-date mt-3">
+                            <i class="fas fa-calendar me-2"></i>
+                            {{ session.date|date('d/m/Y') }}
+                            <br>
+                            <i class="fas fa-clock me-2"></i>
+                            {{ session.date|date('H:i') }}
+                        </div>
+                        <div class="mt-3">
+                            <span class="badge badge-warning">{{ session.duration }} min</span>
+                        </div>
+                        <p class="mt-3 mb-0 small text-muted">
+                            Par: {{ session.booking.userName }}
+                        </p>
+                    </div>
+                    <div class="card-footer bg-white border-top">
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('front_session_show', {id: session.id}) }}" 
+                               class="btn btn-sm btn-outline-primary flex-fill">
+                                <i class="fas fa-eye me-1"></i>Détails
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{# templates/front/session/new.html.twig #}
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Nouvelle Session - Eduport{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-plus-circle me-3"></i>Créer une Session</h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="mb-4">
+        <a href="{{ path('front_session_index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.name) }}
+                            {{ form_widget(form.name) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.date) }}
+                            {{ form_widget(form.date) }}
+                            {{ form_errors(form.date) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.duration) }}
+                            {{ form_widget(form.duration) }}
+                            {{ form_errors(form.duration) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.booking) }}
+                            {{ form_widget(form.booking) }}
+                            {{ form_errors(form.booking) }}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>Créer la session
+                            </button>
+                            <a href="{{ path('front_session_index') }}" class="btn btn-outline-secondary">
+                                Annuler
+                            </a>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

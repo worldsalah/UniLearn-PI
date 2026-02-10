@@ -1,328 +1,784 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}Student List - Admin{% endblock %}
+{% block title %}Students - Admin{% endblock %}
 
-{% block body %}
-{% include 'components/header.html.twig' %}
+{% block admin_content %}
 
-<!-- **************** MAIN CONTENT START **************** -->
-<main>
-<!-- =======================
-Admin Student List START -->
-<section class="pt-4">
-    <div class="container">
-        <div class="row">
-            <!-- Left sidebar START -->
-            <div class="col-lg-3">
-                <!-- Admin profile START -->
-                <div class="card shadow mb-4">
-                    <div class="card-body text-center p-4">
-                        <!-- Avatar -->
-                        <div class="avatar avatar-xl mb-3">
-                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-                        </div>
-                        <h6 class="mb-0">Admin User</h6>
-                        <hr>
-                        <!-- Admin detail -->
-                        <div class="text-start">
-                            <p class="mb-2"><i class="bi bi-shield-check fa-fw me-2"></i>Administrator</p>
-                            <p class="mb-0"><i class="bi bi-calendar fa-fw me-2"></i>Joined: January 2024</p>
-                        </div>
-                    </div>
-                </div>
+	<!-- Flash Messages -->
+	{% for type, messages in app.session.flashbag.all() %}
+		{% for message in messages %}
+			<div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+				{{ message }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		{% endfor %}
+	{% endfor %}
 
-                <!-- Admin navigation menu START -->
-                <div class="card shadow">
-                    <div class="card-body p-0">
-                        <ul class="nav nav-pills nav-pills-vertical">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_admin_dashboard') }}">
-                                    <i class="bi bi-grid fa-fw me-2"></i>Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_admin_course_list') }}">
-                                    <i class="bi bi-book fa-fw me-2"></i>Courses
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{{ path('app_admin_student_list') }}">
-                                    <i class="bi bi-people fa-fw me-2"></i>Students
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_admin_instructor_list') }}">
-                                    <i class="bi bi-person-badge fa-fw me-2"></i>Instructors
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_admin_review') }}">
-                                    <i class="bi bi-star fa-fw me-2"></i>Reviews
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_admin_earning') }}">
-                                    <i class="bi bi-currency-dollar fa-fw me-2"></i>Earnings
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_admin_setting') }}">
-                                    <i class="bi bi-gear fa-fw me-2"></i>Settings
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- Left sidebar END -->
+	<!-- Custom Delete Confirmation Modal -->
+	<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header bg-danger text-white">
+					<h5 class="modal-title" id="deleteConfirmationModalLabel">
+						<i class="bi bi-exclamation-triangle me-2"></i>Delete User Confirmation
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="text-center mb-4">
+						<div class="icon-lg bg-danger bg-opacity-10 text-danger rounded-circle mx-auto mb-3" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+							<i class="bi bi-person-x fs-1"></i>
+						</div>
+						<h6 class="text-danger mb-3">⚠️ WARNING: This action cannot be undone!</h6>
+					</div>
+					
+					<div class="alert alert-warning border-0 bg-warning bg-opacity-10">
+						<h6 class="alert-heading"><i class="bi bi-info-circle me-2"></i>You are about to permanently delete:</h6>
+						<ul class="mb-0 mt-2">
+							<li><strong>User Profile</strong> - All personal information and account data</li>
+							<li><strong>Courses</strong> - All courses created or owned by this user</li>
+							<li><strong>Enrollments</strong> - All course enrollments and progress</li>
+							<li><strong>Quiz Results</strong> - All quiz attempts and scores</li>
+							<li><strong>Subscriptions</strong> - All active subscriptions and memberships</li>
+							<li><strong>Marketplace Data</strong> - Products, services, and orders</li>
+							<li><strong>Applications & Jobs</strong> - All job applications and postings</li>
+							<li><strong>Favorites & Activity</strong> - All bookmarks and activity history</li>
+						</ul>
+					</div>
+					
+					<div class="bg-light rounded p-3 mb-3">
+						<div class="d-flex align-items-center">
+							<div class="avatar avatar-md me-3">
+								<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+							</div>
+							<div>
+								<h6 class="mb-1" id="deleteUserName">User Name</h6>
+								<p class="text-muted mb-0" id="deleteUserEmail">user@example.com</p>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-check mb-3">
+						<input class="form-check-input" type="checkbox" id="confirmDeleteCheck">
+						<label class="form-check-label" for="confirmDeleteCheck">
+							I understand that this action is permanent and cannot be undone
+						</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<i class="bi bi-x-circle me-2"></i>Cancel
+					</button>
+					<button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+						<i class="bi bi-trash me-2"></i>Delete Forever
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-            <!-- Main content START -->
-            <div class="col-lg-9">
-                <!-- Page title START -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">Student Management</h2>
-                    <div>
-                        <button class="btn btn-primary">
-                            <i class="bi bi-person-plus me-2"></i>Add Student
-                        </button>
-                    </div>
-                </div>
+	<!-- Title -->
+		<div class="row">
+			<div class="col-12 mb-3">
+				<div class="d-flex justify-content-between align-items-center">
+					<h1 class="h3 mb-2 mb-sm-0">Students</h1>
+					<a href="#" class="btn btn-primary mb-0">
+						<i class="fas fa-user-plus me-2"></i>Add a Student
+					</a>
+				</div>
+			</div>
+		</div>
 
-                <!-- Statistics cards START -->
-                <div class="row g-3 mb-4">
-                    <div class="col-md-3">
-                        <div class="card shadow text-center">
-                            <div class="card-body">
-                                <h3 class="mb-0">2,456</h3>
-                                <p class="mb-0 small">Total Students</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card shadow text-center">
-                            <div class="card-body">
-                                <h3 class="mb-0">312</h3>
-                                <p class="mb-0 small">New This Month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card shadow text-center">
-                            <div class="card-body">
-                                <h3 class="mb-0">1,892</h3>
-                                <p class="mb-0 small">Active Students</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card shadow text-center">
-                            <div class="card-body">
-                                <h3 class="mb-0">89%</h3>
-                                <p class="mb-0 small">Retention Rate</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Statistics cards END -->
+		<!-- Counter boxes START -->
+		<div class="row g-4 mb-4">
+			<!-- Counter item -->
+			<div class="col-md-6 col-xxl-3">
+				<div class="card card-body bg-warning bg-opacity-15 p-4 h-100">
+					<div class="d-flex justify-content-between align-items-center">
+						<!-- Digit -->
+						<div>
+							<h2 class="mb-0 fw-bold">{{ users|length }}</h2>
+							<span class="mb-0 h6 fw-light">Total Students</span>
+						</div>
+						<!-- Icon -->
+						<div class="icon-lg rounded-circle bg-warning text-white mb-0"><i class="fas fa-user-graduate fa-fw"></i></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Counter item -->
+			<div class="col-md-6 col-xxl-3">
+				<div class="card card-body bg-success bg-opacity-10 p-4 h-100">
+					<div class="d-flex justify-content-between align-items-center">
+						<!-- Digit -->
+						<div>
+							<h2 class="mb-0 fw-bold">{{ users|filter(u => u.status == 'active')|length }}</h2>
+							<span class="mb-0 h6 fw-light">Active Students</span>
+						</div>
+						<!-- Icon -->
+						<div class="icon-lg rounded-circle bg-success text-white mb-0"><i class="fas fa-check-circle fa-fw"></i></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Counter item -->
+			<div class="col-md-6 col-xxl-3">
+				<div class="card card-body bg-primary bg-opacity-10 p-4 h-100">
+					<div class="d-flex justify-content-between align-items-center">
+						<!-- Digit -->
+						<div>
+							<h2 class="mb-0 fw-bold">{{ users|filter(u => u.role == 'Student')|length }}</h2>
+							<span class="mb-0 h6 fw-light">Students</span>
+						</div>
+						<!-- Icon -->
+						<div class="icon-lg rounded-circle bg-primary text-white mb-0"><i class="fas fa-user-tie fa-fw"></i></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Counter item -->
+			<div class="col-md-6 col-xxl-3">
+				<div class="card card-body bg-danger bg-opacity-10 p-4 h-100">
+					<div class="d-flex justify-content-between align-items-center">
+						<!-- Digit -->
+						<div>
+							<h2 class="mb-0 fw-bold">{{ users|filter(u => u.status != 'active')|length }}</h2>
+							<span class="mb-0 h6 fw-light">Pending Students</span>
+						</div>
+						<!-- Icon -->
+						<div class="icon-lg rounded-circle bg-danger text-white mb-0"><i class="fas fa-clock fa-fw"></i></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Counter boxes END -->
 
                 <!-- Search and filter START -->
-                <div class="card shadow mb-4">
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search students...">
-                                    <button class="btn btn-outline-secondary" type="button">
-                                        <i class="bi bi-search"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-select">
-                                    <option selected>All Status</option>
-                                    <option>Active</option>
-                                    <option>Inactive</option>
-                                    <option>Suspended</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-select">
-                                    <option selected>Join Date</option>
-                                    <option>Last Active</option>
-                                    <option>Name</option>
-                                    <option>Courses Enrolled</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+		<div class="card shadow mb-4">
+			<div class="card-header bg-light border-bottom">
+				<!-- Search and select START -->
+				<div class="row g-3 align-items-center justify-content-between">
+					<!-- Search bar -->
+					<div class="col-md-4">
+						<form method="GET" class="position-relative" onsubmit="return false;">
+							<input class="form-control bg-body pe-5" type="search" name="search" value="{{ search }}" placeholder="Search students..." aria-label="Search">
+							<button type="button" class="bg-transparent px-2 py-0 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" onclick="performSearch()">
+								<i class="fas fa-search fs-6"></i>
+							</button>
+						</form>
+					</div>
 
-                <!-- Student table START -->
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Student</th>
-                                        <th>Email</th>
-                                        <th>Join Date</th>
-                                        <th>Courses</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded-circle" width="40" alt="student">
-                                                <div class="ms-3">
-                                                    <h6 class="mb-0">Sarah Johnson</h6>
-                                                    <p class="mb-0 small text-muted">ID: #STU001</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>sarah.johnson@email.com</td>
-                                        <td>Jan 15, 2024</td>
-                                        <td>12</td>
-                                        <td><span class="badge bg-success">Active</span></td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
-                                                    <i class="bi bi-three-dots-vertical"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-envelope me-2"></i>Send Email</a></li>
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-slash-circle me-2"></i>Suspend</a></li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="{{ asset('assets/images/avatar/02.jpg') }}" class="rounded-circle" width="40" alt="student">
-                                                <div class="ms-3">
-                                                    <h6 class="mb-0">Michael Chen</h6>
-                                                    <p class="mb-0 small text-muted">ID: #STU002</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>michael.chen@email.com</td>
-                                        <td>Jan 20, 2024</td>
-                                        <td>8</td>
-                                        <td><span class="badge bg-success">Active</span></td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
-                                                    <i class="bi bi-three-dots-vertical"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-envelope me-2"></i>Send Email</a></li>
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-slash-circle me-2"></i>Suspend</a></li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="{{ asset('assets/images/avatar/03.jpg') }}" class="rounded-circle" width="40" alt="student">
-                                                <div class="ms-3">
-                                                    <h6 class="mb-0">Emily Davis</h6>
-                                                    <p class="mb-0 small text-muted">ID: #STU003</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>emily.davis@email.com</td>
-                                        <td>Feb 01, 2024</td>
-                                        <td>15</td>
-                                        <td><span class="badge bg-warning">Inactive</span></td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
-                                                    <i class="bi bi-three-dots-vertical"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-envelope me-2"></i>Send Email</a></li>
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-slash-circle me-2"></i>Suspend</a></li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="{{ asset('assets/images/avatar/04.jpg') }}" class="rounded-circle" width="40" alt="student">
-                                                <div class="ms-3">
-                                                    <h6 class="mb-0">Robert Wilson</h6>
-                                                    <p class="mb-0 small text-muted">ID: #STU004</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>robert.wilson@email.com</td>
-                                        <td>Feb 10, 2024</td>
-                                        <td>6</td>
-                                        <td><span class="badge bg-danger">Suspended</span></td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
-                                                    <i class="bi bi-three-dots-vertical"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-envelope me-2"></i>Send Email</a></li>
-                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item text-success" href="#"><i class="bi bi-check-circle me-2"></i>Reactivate</a></li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <!-- Pagination START -->
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <p class="mb-0">Showing 1-10 of 2,456 students</p>
-                            <nav>
-                                <ul class="pagination pagination-sm mb-0">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">Next</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                        <!-- Pagination END -->
-                    </div>
-                </div>
-                <!-- Student table END -->
-            </div>
-            <!-- Main content END -->
-        </div>
-    </div>
-</section>
-<!-- =======================
-Admin Student List END -->
-</main>
-<!-- **************** MAIN CONTENT END **************** -->
+					<!-- Status filter -->
+					<div class="col-md-2">
+						<select class="form-select" name="status" id="statusFilter">
+							<option value="">All Status</option>
+							{% for statusOption in availableStatuses %}
+								<option value="{{ statusOption }}" {% if status == statusOption %}selected{% endif %}>{{ statusOption|capitalize }}</option>
+							{% endfor %}
+						</select>
+					</div>
 
-{% include 'components/footer.html.twig' %}
+					<!-- Role filter -->
+					<div class="col-md-2">
+						<select class="form-select" name="role" id="roleFilter">
+							<option value="">All Roles</option>
+							{% for roleOption in availableRoles %}
+								<option value="{{ roleOption }}" {% if role == roleOption %}selected{% endif %}>{{ roleOption|capitalize }}</option>
+							{% endfor %}
+						</select>
+					</div>
+
+					<!-- Sort filter -->
+					<div class="col-md-2">
+						<select class="form-select" name="sort" id="sortFilter">
+							<option value="createdAt" {% if sortBy == 'createdAt' %}selected{% endif %}>Join Date</option>
+							<option value="fullName" {% if sortBy == 'fullName' %}selected{% endif %}>Name</option>
+							<option value="email" {% if sortBy == 'email' %}selected{% endif %}>Email</option>
+							<option value="status" {% if sortBy == 'status' %}selected{% endif %}>Status</option>
+						</select>
+					</div>
+
+					<!-- Sort order -->
+					<div class="col-md-2">
+						<select class="form-select" name="order" id="orderFilter">
+							<option value="desc" {% if sortOrder == 'desc' %}selected{% endif %}>Newest</option>
+							<option value="asc" {% if sortOrder == 'asc' %}selected{% endif %}>Oldest</option>
+						</select>
+					</div>
+				</div>
+				<!-- Search and select END -->
+			</div>
+		</div>
+		<!-- Search and filter END -->
+
+		<!-- Student table START -->
+		<div class="card bg-transparent border shadow">
+
+			<!-- Card header START -->
+			<div class="card-header bg-light border-bottom">
+				<div class="d-flex justify-content-between align-items-center">
+					<h5 class="mb-0">Student List</h5>
+					<span class="badge bg-primary">{{ users|length }} results</span>
+				</div>
+			</div>
+			<!-- Card header END -->
+
+			<!-- Card body START -->
+			<div class="card-body">
+
+				<!-- Student table START -->
+				<div class="table-responsive border-0 rounded-3">
+					<!-- Table START -->
+					<table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+						<!-- Table head -->
+						<thead>
+							<tr>
+								<th scope="col" class="border-0 rounded-start">
+									<a href="{{ path('admin_student_list', {'search': search, 'status': status, 'role': role, 'sort': 'fullName', 'order': sortBy == 'fullName' and sortOrder == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
+										Student Name 
+										{% if sortBy == 'fullName' %}
+											<i class="fas fa-sort-{{ sortOrder == 'asc' ? 'up' : 'down' }} ms-1"></i>
+										{% endif %}
+									</a>
+								</th>
+								<th scope="col" class="border-0">
+									<a href="{{ path('admin_student_list', {'search': search, 'status': status, 'role': role, 'sort': 'email', 'order': sortBy == 'email' and sortOrder == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
+										Email
+										{% if sortBy == 'email' %}
+											<i class="fas fa-sort-{{ sortOrder == 'asc' ? 'up' : 'down' }} ms-1"></i>
+										{% endif %}
+									</a>
+								</th>
+								<th scope="col" class="border-0">Role</th>
+								<th scope="col" class="border-0">
+									<a href="{{ path('admin_student_list', {'search': search, 'status': status, 'role': role, 'sort': 'status', 'order': sortBy == 'status' and sortOrder == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
+										Status
+										{% if sortBy == 'status' %}
+											<i class="fas fa-sort-{{ sortOrder == 'asc' ? 'up' : 'down' }} ms-1"></i>
+										{% endif %}
+									</a>
+								</th>
+								<th scope="col" class="border-0">
+									<a href="{{ path('admin_student_list', {'search': search, 'status': status, 'role': role, 'sort': 'createdAt', 'order': sortBy == 'createdAt' and sortOrder == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
+										Join Date
+										{% if sortBy == 'createdAt' %}
+											<i class="fas fa-sort-{{ sortOrder == 'asc' ? 'up' : 'down' }} ms-1"></i>
+										{% endif %}
+									</a>
+								</th>
+								<th scope="col" class="border-0">Last Login</th>
+								<th scope="col" class="border-0 rounded-end">Action</th>
+							</tr>
+						</thead>
+						
+						<!-- Table body START -->
+						<tbody>
+							{% for user in users %}
+							<!-- Table row -->
+							<tr>
+								<!-- Table data -->
+								<td>
+									<div class="d-flex align-items-center position-relative">
+										<!-- Avatar -->
+										<div class="avatar avatar-xs flex-shrink-0">
+											<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+										</div>
+										<!-- Title -->
+										<h6 class="table-responsive-title mb-0 ms-2">	
+											<a href="#" class="stretched-link">{{ user.name }}</a>
+										</h6>
+									</div>
+								</td>
+
+								<!-- Table data -->
+								<td>{{ user.email }}</td>
+
+								<!-- Table data -->
+								<td>
+									{% if user.role == 'Student' %}
+										<span class="badge bg-primary">{{ user.role }}</span>
+									{% elseif user.role == 'Instructor' %}
+										<span class="badge bg-success">{{ user.role }}</span>
+									{% else %}
+										<span class="badge bg-secondary">{{ user.role }}</span>
+									{% endif %}
+								</td>
+
+								<!-- Table data -->
+								<td>
+									{% if user.status == 'active' %}
+										<span class="badge bg-success bg-opacity-10 text-success">Active</span>
+									{% elseif user.status == 'inactive' %}
+										<span class="badge bg-warning bg-opacity-15 text-warning">Inactive</span>
+									{% else %}
+										<span class="badge bg-danger bg-opacity-10 text-danger">{{ user.status|capitalize }}</span>
+									{% endif %}
+								</td>
+
+								<!-- Table data -->
+								<td>{{ user.joinedAt }}</td>
+
+								<!-- Table data -->
+								<td>{{ user.lastLogin }}</td>
+
+								<!-- Table data -->
+								<td>
+									<a href="{{ path('admin_user_view', {'id': user.id}) }}" class="btn btn-sm btn-success-soft me-1 mb-1 mb-md-0">View</a>
+									<a href="{{ path('admin_user_edit', {'id': user.id}) }}" class="btn btn-sm btn-secondary-soft me-1 mb-1 mb-md-0">Edit</a>
+									<button type="button" class="btn btn-sm btn-danger-soft mb-0" 
+											onclick="showDeleteConfirmation({{ user.id }}, '{{ user.name|e('js') }}', '{{ user.email|e('js') }}')" 
+											title="Delete User">
+										<i class="bi bi-trash"></i>
+									</button>
+								</td>
+							</tr>
+							{% else %}
+							<tr>
+								<td colspan="7" class="text-center py-5">
+									<div class="text-muted">
+										<i class="bi bi-people fs-1 mb-3"></i>
+										<p class="mb-0">No users found in the database</p>
+										<small class="text-muted">Start by adding users to the system</small>
+									</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+						<!-- Table body END -->
+					</table>
+					<!-- Table END -->
+				</div>
+				
+				<!-- Pagination START -->
+				<div class="d-flex justify-content-between align-items-center mt-4">
+					<p class="mb-0">Showing {{ users|length }} users</p>
+					<nav>
+						<ul class="pagination pagination-sm mb-0">
+							<li class="page-item disabled">
+								<a class="page-link" href="#" tabindex="-1">Previous</a>
+							</li>
+							<li class="page-item active"><a class="page-link" href="#">1</a></li>
+							<li class="page-item"><a class="page-link" href="#">2</a></li>
+							<li class="page-item"><a class="page-link" href="#">3</a></li>
+							<li class="page-item">
+								<a class="page-link" href="#">Next</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+				<!-- Pagination END -->
+			</div>
+			<!-- Card body END -->
+		</div>
+		<!-- Student table END -->
+
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+// AJAX search implementation
+let searchTimeout;
+let currentRequest = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="search"]');
+    const tableBody = document.querySelector('tbody');
+    const resultsBadge = document.querySelector('.badge.bg-primary');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            
+            // Show loading indicator
+            showLoading();
+            
+            searchTimeout = setTimeout(() => {
+                performSearch();
+            }, 300); // Reduced debounce for faster response
+        });
+    }
+    
+    // Handle filter changes with AJAX
+    const statusFilter = document.getElementById('statusFilter');
+    const roleFilter = document.getElementById('roleFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const orderFilter = document.getElementById('orderFilter');
+    
+    [statusFilter, roleFilter, sortFilter, orderFilter].forEach(select => {
+        if (select) {
+            select.addEventListener('change', function() {
+                showLoading();
+                performSearch();
+            });
+        }
+    });
+    
+    // Handle sorting clicks with AJAX
+    const sortLinks = document.querySelectorAll('th a');
+    sortLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoading();
+            
+            const url = new URL(this.href);
+            updateURLParams(url.searchParams);
+            performSearch();
+        });
+    });
+});
+
+function performSearch() {
+    // Cancel previous request if still pending
+    if (currentRequest) {
+        currentRequest.abort();
+    }
+    
+    // Get values from all filter elements
+    const searchInput = document.querySelector('input[name="search"]');
+    const statusFilter = document.getElementById('statusFilter');
+    const roleFilter = document.getElementById('roleFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const orderFilter = document.getElementById('orderFilter');
+    
+    // Build URL parameters
+    const urlParams = new URLSearchParams();
+    
+    // Add search parameter
+    if (searchInput && searchInput.value.trim()) {
+        urlParams.set('search', searchInput.value.trim());
+    }
+    
+    // Add filter parameters
+    if (statusFilter && statusFilter.value) {
+        urlParams.set('status', statusFilter.value);
+    }
+    
+    if (roleFilter && roleFilter.value) {
+        urlParams.set('role', roleFilter.value);
+    }
+    
+    if (sortFilter && sortFilter.value) {
+        urlParams.set('sort', sortFilter.value);
+    }
+    
+    if (orderFilter && orderFilter.value) {
+        urlParams.set('order', orderFilter.value);
+    }
+    
+    // Make AJAX request
+    currentRequest = fetch(`/admin-student-list?${urlParams.toString()}&ajax=1`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        updateTable(data.users);
+        updateResultsCount(data.users.length);
+        updateURLParams(urlParams);
+        highlightSearchTerms();
+    })
+    .catch(error => {
+        if (error.name !== 'AbortError') {
+            console.error('Search error:', error);
+            showError('Search failed. Please try again.');
+        }
+    })
+    .finally(() => {
+        currentRequest = null;
+        hideLoading();
+    });
+}
+
+function updateTable(users) {
+    const tableBody = document.querySelector('tbody');
+    
+    if (users.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-5">
+                    <div class="text-muted">
+                        <i class="bi bi-people fs-1 mb-3"></i>
+                        <p class="mb-0">No users found</p>
+                        <small class="text-muted">Try adjusting your search criteria</small>
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tableBody.innerHTML = users.map(user => `
+        <tr>
+            <td>
+                <div class="d-flex align-items-center position-relative">
+                    <div class="avatar avatar-xs flex-shrink-0">
+                        <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                    </div>
+                    <h6 class="table-responsive-title mb-0 ms-2">    
+                        <a href="#" class="stretched-link">${escapeHtml(user.name)}</a>
+                    </h6>
+                </div>
+            </td>
+            <td>${escapeHtml(user.email)}</td>
+            <td>
+                ${getRoleBadge(user.role)}
+            </td>
+            <td>
+                ${getStatusBadge(user.status)}
+            </td>
+            <td>${user.joinedAt}</td>
+            <td>${user.lastLogin}</td>
+            <td>
+                <a href="/admin/user/${user.id}/view" class="btn btn-sm btn-success-soft me-1 mb-1 mb-md-0">View</a>
+                <a href="/admin/user/${user.id}/edit" class="btn btn-sm btn-secondary-soft me-1 mb-1 mb-md-0">Edit</a>
+                <button type="button" class="btn btn-sm btn-danger-soft mb-0" 
+                        onclick="showDeleteConfirmation(${user.id}, '${escapeHtml(user.name)}', '${escapeHtml(user.email)}')" 
+                        title="Delete User">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    
+    // Re-attach event listeners to new delete buttons
+    attachDeleteButtonListeners();
+}
+
+function getRoleBadge(role) {
+    const badges = {
+        'Student': '<span class="badge bg-primary">Student</span>',
+        'Instructor': '<span class="badge bg-success">Instructor</span>',
+        'Admin': '<span class="badge bg-danger">Admin</span>'
+    };
+    return badges[role] || '<span class="badge bg-secondary">' + escapeHtml(role) + '</span>';
+}
+
+function getStatusBadge(status) {
+    const badges = {
+        'active': '<span class="badge bg-success bg-opacity-10 text-success">Active</span>',
+        'inactive': '<span class="badge bg-warning bg-opacity-15 text-warning">Inactive</span>',
+        'suspended': '<span class="badge bg-danger bg-opacity-10 text-danger">Suspended</span>'
+    };
+    return badges[status] || '<span class="badge bg-secondary bg-opacity-10 text-secondary">' + escapeHtml(status) + '</span>';
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function updateResultsCount(count) {
+    const resultsBadge = document.querySelector('.badge.bg-primary');
+    if (resultsBadge) {
+        resultsBadge.textContent = count + ' results';
+    }
+}
+
+function updateURLParams(params) {
+    const url = new URL(window.location);
+    url.search = params.toString();
+    window.history.pushState({}, '', url);
+}
+
+function showLoading() {
+    const tableBody = document.querySelector('tbody');
+    tableBody.style.opacity = '0.5';
+    
+    // Add loading spinner
+    const existingLoader = document.querySelector('.search-loader');
+    if (!existingLoader) {
+        const loader = document.createElement('div');
+        loader.className = 'search-loader text-center py-4';
+        loader.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+        tableBody.parentNode.insertBefore(loader, tableBody);
+    }
+}
+
+function hideLoading() {
+    const tableBody = document.querySelector('tbody');
+    tableBody.style.opacity = '1';
+    
+    const loader = document.querySelector('.search-loader');
+    if (loader) {
+        loader.remove();
+    }
+}
+
+function showError(message) {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-warning alert-dismissible fade show';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const card = document.querySelector('.card');
+    card.insertBefore(alert, card.firstChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        alert.remove();
+    }, 5000);
+}
+
+function highlightSearchTerms() {
+    const searchParam = new URLSearchParams(window.location.search).get('search');
+    if (!searchParam) return;
+    
+    const searchTerms = searchParam.split(' ').filter(term => term.length > 2);
+    if (searchTerms.length === 0) return;
+    
+    const tableCells = document.querySelectorAll('td:nth-child(1), td:nth-child(2)');
+    
+    tableCells.forEach(cell => {
+        let content = cell.innerHTML;
+        searchTerms.forEach(term => {
+            const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+            content = content.replace(regex, '<mark>$1</mark>');
+        });
+        cell.innerHTML = content;
+    });
+}
+
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function getCsrfToken(tokenName) {
+    // In a real implementation, you would get this from the server
+    // For now, we'll use a placeholder that should be generated by the server
+    return document.querySelector(`meta[name="csrf-token"]`)?.content || 'placeholder-token-' + tokenName;
+}
+
+// Add CSRF token meta tag if not present (this should be generated by the server)
+document.addEventListener('DOMContentLoaded', function() {
+    if (!document.querySelector('meta[name="csrf-token"]')) {
+        const meta = document.createElement('meta');
+        meta.name = 'csrf-token';
+        meta.content = 'placeholder-csrf-token';
+        document.head.appendChild(meta);
+    }
+    
+    // Initialize modal event listeners
+    initializeDeleteModal();
+});
+
+// Custom Delete Confirmation Modal Functions
+function showDeleteConfirmation(userId, userName, userEmail) {
+    const modal = document.getElementById('deleteConfirmationModal');
+    const userNameElement = document.getElementById('deleteUserName');
+    const userEmailElement = document.getElementById('deleteUserEmail');
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    const confirmCheck = document.getElementById('confirmDeleteCheck');
+    
+    // Set user information
+    userNameElement.textContent = userName;
+    userEmailElement.textContent = userEmail;
+    
+    // Reset checkbox and button state
+    confirmCheck.checked = false;
+    confirmBtn.disabled = true;
+    
+    // Store user ID for deletion
+    confirmBtn.dataset.userId = userId;
+    
+    // Show modal
+    const modalInstance = new bootstrap.Modal(modal);
+    modalInstance.show();
+}
+
+function initializeDeleteModal() {
+    const confirmCheck = document.getElementById('confirmDeleteCheck');
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    
+    // Enable/disable delete button based on checkbox
+    confirmCheck.addEventListener('change', function() {
+        confirmBtn.disabled = !this.checked;
+    });
+    
+    // Handle delete confirmation
+    confirmBtn.addEventListener('click', function() {
+        const userId = this.dataset.userId;
+        if (userId) {
+            performDeleteUser(userId);
+        }
+    });
+}
+
+function performDeleteUser(userId) {
+    const modal = document.getElementById('deleteConfirmationModal');
+    const modalInstance = bootstrap.Modal.getInstance(modal);
+    
+    // Show loading state
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    const originalText = confirmBtn.innerHTML;
+    confirmBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Deleting...';
+    confirmBtn.disabled = true;
+    
+    // Create and submit form
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/admin/user/${userId}/delete`;
+    
+    // Add CSRF token
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = getCsrfToken('delete_user_' + userId);
+    form.appendChild(csrfToken);
+    
+    // Submit form
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function attachDeleteButtonListeners() {
+    // This function can be used to attach additional listeners if needed
+    // Currently handled by onclick attributes in the HTML
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + K to focus search
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+        }
+    }
+    
+    // Escape to clear search
+    if (e.key === 'Escape') {
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput && searchInput.value) {
+            searchInput.value = '';
+            performSearch();
+        }
+    }
+});
+
+// Table row hover effects
+document.addEventListener('DOMContentLoaded', function() {
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+        });
+        row.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
+        });
+    });
+});
+</script>
 {% endblock %}

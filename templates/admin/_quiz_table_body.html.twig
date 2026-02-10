@@ -1,0 +1,79 @@
+{% for quiz in quizzes %}
+<!-- Table row -->
+<tr>
+    <!-- Table data -->
+    <td>
+        <div class="d-flex align-items-center position-relative">
+            <!-- Icon -->
+            <div class="avatar avatar-xs flex-shrink-0">
+                <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+            </div>
+            <!-- Title -->
+            <h6 class="table-responsive-title mb-0 ms-2">	
+                <a href="#" class="stretched-link">{{ quiz.title }}</a>
+            </h6>
+        </div>
+    </td>
+
+    <!-- Table data -->
+    <td>
+        {% if quiz.course %}
+            <span class="badge bg-info">{{ quiz.course.title }}</span>
+        {% else %}
+            <span class="text-muted">No Course</span>
+        {% endif %}
+    </td>
+
+    <!-- Table data -->
+    <td>
+        {% set quizQuestions = [] %}
+        {% for quizGroup in allQuestions %}
+            {% if quizGroup.quiz_id == quiz.id %}
+                {% set quizQuestions = quizGroup.questions %}
+            {% endif %}
+        {% endfor %}
+        <span class="badge bg-success">{{ quizQuestions|length }} Questions</span>
+    </td>
+
+    <!-- Table data -->
+    <td>
+        <span class="badge bg-success">Active</span>
+    </td>
+
+    <!-- Table data -->
+    <td>{{ quiz.createdAt|date('M j, Y') }}</td>
+
+    <!-- Table data -->
+    <td>
+        <div class="dropdown dropstart">
+            <a class="btn btn-sm btn-light btn-round mb-0" href="#" role="button" id="dropdownShare{{ quiz.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-ellipsis-v"></i>
+            </a>
+            <!-- Dropdown menu -->
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownShare{{ quiz.id }}">
+                <li><a class="dropdown-item" href="#"><i class="bi bi-eye fa-fw me-2"></i>View</a></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil fa-fw me-2"></i>Edit</a></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-copy fa-fw me-2"></i>Duplicate</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash fa-fw me-2"></i>Delete</a></li>
+            </ul>
+        </div>
+    </td>
+</tr>
+{% else %}
+<!-- No quizzes found -->
+<tr>
+    <td colspan="6" class="text-center py-5">
+        <div class="text-center">
+            <i class="fas fa-question-circle fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No Quizzes Found</h5>
+            <p class="text-muted">No quizzes match your search criteria.</p>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Create New Quiz
+            </button>
+        </div>
+    </td>
+</tr>
+{% endfor %}

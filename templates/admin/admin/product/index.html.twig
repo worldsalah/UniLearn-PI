@@ -1,0 +1,115 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block title %}Manage Services - Admin{% endblock %}
+
+{% block admin_content %}
+<!-- Title -->
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Services (Products)</h1>
+            <a href="{{ path('app_admin_product_new') }}" class="btn btn-primary mb-0">Add New Service</a>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-transparent">
+    <!-- Card header START -->
+    <div class="card-header bg-transparent border-bottom px-0">
+        <!-- Search and select START -->
+        <div class="row g-3 align-items-center justify-content-between">
+            <!-- Search bar -->
+            <div class="col-md-8">
+                <form class="rounded position-relative">
+                    <input class="form-control bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                    <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                        <i class="fas fa-search fs-6 "></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!-- Search and select END -->
+    </div>
+    <!-- Card header END -->
+
+    <!-- Card body START -->
+    <div class="card-body px-0">
+        <div class="table-responsive border-0">
+            <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                <!-- Table head -->
+                <thead>
+                    <tr>
+                        <th scope="col" class="border-0 rounded-start">Service Info</th>
+                        <th scope="col" class="border-0">Freelancer</th>
+                        <th scope="col" class="border-0">Category</th>
+                        <th scope="col" class="border-0">Price</th>
+                        <th scope="col" class="border-0 rounded-end">Action</th>
+                    </tr>
+                </thead>
+
+                <!-- Table body START -->
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <!-- Table data -->
+                            <td>
+                                <div class="d-flex align-items-center position-relative">
+                                    <!-- Image -->
+                                    <div class="w-60px">
+                                        <img src="{{ vich_uploader_asset(product, 'imageFile')|default(asset('assets/images/courses/4by3/08.jpg')) }}" class="rounded" alt="">
+                                    </div>
+                                    <div class="mb-0 ms-3">
+                                        <!-- Title -->
+                                        <h6 class="mb-0"><a href="#" class="stretched-link">{{ product.title }}</a></h6>
+                                        <span class="text-body small"><i class="fas fa-fw fa-calendar-alt me-1 mt-1"></i>{{ product.createdAt|date('d M Y') }}</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Table data -->
+                            <td>{{ product.freelancer.fullName }}</td>
+
+                            <!-- Table data -->
+                            <td>
+                                <span class="badge bg-info bg-opacity-10 text-info">{{ product.category }}</span>
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                <span class="h6 mb-0 fw-light">${{ product.price }}</span>
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                <a href="{{ path('app_product_show', {slug: product.slug}) }}" class="btn btn-sm btn-info-soft me-1" title="View"><i class="bi bi-eye"></i></a>
+                                <a href="{{ path('app_admin_product_edit', {id: product.id}) }}" class="btn btn-sm btn-success-soft me-1" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                                <form method="post" action="{{ path('app_admin_product_delete', {id: product.id}) }}" onsubmit="return confirm('Are you sure?');" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                                    <button class="btn btn-sm btn-danger-soft" title="Delete"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No services found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Card body END -->
+
+    <!-- Card footer START -->
+    <div class="card-footer bg-transparent pt-0">
+        <!-- Pagination -->
+        <div class="d-sm-flex justify-content-between align-items-center">
+            <!-- Content -->
+            <p class="mb-0 text-center text-sm-start">Showing {{ products.currentPageNumber }} of {{ products.getTotalItemCount }}</p>
+            <!-- Pagination -->
+            {{ knp_pagination_render(products) }}
+        </div>
+    </div>
+    <!-- Card footer END -->
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'front_base.html.twig' %}
 
 {% block title %}Create Course - Instructor Dashboard{% endblock %}
 
@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block body %}
-{% include 'components/header.html.twig' %}
 
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
@@ -142,7 +141,7 @@ Steps START -->
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Course Duration (hours) *</label>
-									<input type="number" class="form-control" placeholder="e.g., 10" min="1" required>
+									<input type="text" class="form-control" placeholder="e.g., 10">
 								</div>
 							</div>
 
@@ -150,11 +149,11 @@ Steps START -->
 							<div class="row g-3 mb-4">
 								<div class="col-md-6">
 									<label class="form-label">Price ($) *</label>
-									<input type="number" class="form-control" placeholder="e.g., 49.99" min="0" step="0.01" required>
+									<input type="text" class="form-control" placeholder="e.g., 49.99">
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Discount Price ($)</label>
-									<input type="number" class="form-control" placeholder="e.g., 29.99" min="0" step="0.01">
+									<input type="text" class="form-control" placeholder="e.g., 29.99">
 									<small class="form-text">Optional - leave empty if no discount</small>
 								</div>
 							</div>

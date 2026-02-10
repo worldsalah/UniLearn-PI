@@ -51,6 +51,9 @@ class Course
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: Chapter::class, cascade: ['persist', 'remove'])]
     private Collection $chapters;
 
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Quiz::class, cascade: ['persist', 'remove'])]
+    private Collection $quizzes;
+
     #[ORM\ManyToOne(inversedBy: 'courses')]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
@@ -97,6 +100,7 @@ class Course
     public function __construct()
     {
         $this->chapters = new ArrayCollection();
+        $this->quizzes = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -364,5 +368,64 @@ class Course
             $total += $chapter->getLessons()->count();
         }
         return $total;
+    }
+
+    /**
+     * @return Collection<int, Quiz>
+     */
+    public function getQuizzes(): Collection
+    {
+        return $this->quizzes;
+    }
+
+    public function addQuiz(Quiz $quiz): static
+    {
+        if (!$this->quizzes->contains($quiz)) {
+            $this->quizzes->add($quiz);
+            $quiz->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuiz(Quiz $quiz): static
+    {
+        if ($this->quizzes->removeElement($quiz)) {
+            // set the owning side to null (unless already changed)
+            if ($quiz->getCourse() === $this) {
+                $quiz->setCourse(null);
+            }
+        }
+
+        return $this;
+    }
+
+    // Virtual file handling methods for thumbnail
+    public function getThumbnailFile()
+    {
+        return null; // This is a virtual field
+    }
+
+    public function setThumbnailFile($file): self
+    {
+        // This method is handled by the controller, not the entity
+        return $this;
+    }
+
+    // Virtual file handling methods for video
+    public function getVideoFile()
+    {
+        return null; // This is a virtual field
+    }
+
+    public function setVideoFile($file): self
+    {
+        // This method is handled by the controller, not the entity
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->title ?? '';
     }
 }

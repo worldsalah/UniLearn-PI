@@ -1,120 +1,226 @@
-{% extends 'base.html.twig' %}
+{% extends 'front_base.html.twig' %}
 
 {% block title %}Students - Eduport{% endblock %}
 
-{% block body %}
-<!-- Header START -->
-<header class="navbar-light navbar-sticky">
-	<!-- Logo Nav START -->
-	<nav class="navbar navbar-expand-xl">
-		<div class="container">
-			<!-- Logo START -->
-			<a class="navbar-brand" href="{{ path('app_home') }}">
-				<img class="light-mode-item navbar-brand-item" src="{{ asset('assets/images/logo.svg') }}" alt="logo">
-				<img class="dark-mode-item navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="logo">
-			</a>
-			<!-- Logo END -->
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/choices/css/choices.min.css') }}">
+<style>
+/* Modern Instructor Dashboard Styles */
+.instructor-gradient {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    position: relative;
+    overflow: hidden;
+}
+.instructor-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center;
+    background-size: cover;
+    opacity: 0.1;
+}
+.profile-banner {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+.profile-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(13, 110, 253, 0.05) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+.avatar-enhanced {
+    border: 4px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+.avatar-enhanced:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+.create-course-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+.create-course-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+.verified-badge {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.table-modern {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.table-modern thead th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+    padding: 1rem;
+}
+.table-modern tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f3f5;
+}
+.table-modern tbody tr:hover {
+    background: #f8f9fa;
+}
+.badge-modern {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+.user-info {
+    flex: 1;
+}
+.user-name {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+.user-email {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+.user-meta {
+    color: #6c757d;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+.no-students {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+.no-students i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+.no-students h6 {
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+.no-students p {
+    margin-bottom: 1rem;
+}
+.search-box {
+    position: relative;
+}
+.search-box input {
+    padding-left: 2.5rem;
+    border-radius: 25px;
+    border: 1px solid #dee2e6;
+}
+.search-box i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+.stats-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    border-left: 4px solid #007bff;
+}
+.stats-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #007bff;
+}
+.stats-card p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+.stats-card.active {
+    border-left-color: #28a745;
+}
+.stats-card.active h3 {
+    color: #28a745;
+}
+.stats-card.inactive {
+    border-left-color: #dc3545;
+}
+.stats-card.inactive h3 {
+    color: #dc3545;
+}
+.sidebar-modern {
+    background: #212529;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.sidebar-modern .list-group-item {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    margin: 5px;
+}
+.sidebar-modern .list-group-item:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(5px);
+}
+.sidebar-modern .list-group-item.active {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+</style>
+{% endblock %}
 
-			<!-- Responsive navbar toggler -->
-			<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-animation">
-					<span></span>
-					<span></span>
-					<span></span>
-				</span>
-			</button>
-
-			<!-- Main navbar START -->
-			<div class="navbar-collapse w-100 collapse" id="navbarCollapse">
-				<!-- Nav Main menu START -->
-				<ul class="navbar-nav navbar-nav-scroll mx-auto">
-					<!-- Nav item 1 Demos -->
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demos</a>
-						<ul class="dropdown-menu" aria-labelledby="demoMenu">
-							<li> <a class="dropdown-item" href="{{ path('app_home') }}">Home Default</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_home_variant') }}">Home Education</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_home_variant_3') }}">Home Academy</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_course_grid') }}">Home Course</a></li>
-						</ul>
-					</li>
-
-					<!-- Nav item 2 Pages -->
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
-						<ul class="dropdown-menu" aria-labelledby="pagesMenu">
-							<li> <a class="dropdown-item" href="{{ path('app_about') }}">About Us</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_contact') }}">Contact Us</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_courses') }}">Courses</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_instructor_list') }}">Instructors</a></li>
-						</ul>
-					</li>
-
-					<!-- Nav item 3 Account -->
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-						<ul class="dropdown-menu" aria-labelledby="accounntMenu">
-							<li class="dropdown-submenu dropend">
-								<a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a>
-								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-									<li> <a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
-									<li> <a class="dropdown-item" href="{{ path('app_instructor_manage_courses') }}"><i class="bi bi-basket-fill fa-fw me-1"></i>Courses</a> </li>
-									<li> <a class="dropdown-item" href="#"><i class="bi bi-file-earmark-plus-fill fa-fw me-1"></i>Create Course</a> </li>
-									<li> <a class="dropdown-item" href="{{ path('app_instructor_quiz') }}"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz</a> </li>
-									<li> <a class="dropdown-item" href="{{ path('app_instructor_earnings') }}"><i class="fas fa-chart-line fa-fw me-1"></i>Earnings</a> </li>
-									<li> <a class="dropdown-item" href="{{ path('app_instructor_students') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>Students</a> </li>
-									<li> <a class="dropdown-item" href="#"><i class="bi bi-cart-check-fill fa-fw me-1"></i>Orders</a> </li>
-									<li> <a class="dropdown-item" href="{{ path('app_instructor_reviews') }}"><i class="bi bi-star-fill fa-fw me-1"></i>Reviews</a> </li>
-									<li> <a class="dropdown-item" href="#"><i class="fas fa-wallet fa-fw me-1"></i>Payout</a> </li>
-								</ul>
-							</li>
-							<li> <a class="dropdown-item" href="#"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-							<li> <hr class="dropdown-divider"></li>
-							<li> <a class="dropdown-item" href="#"><i class="fas fa-fw fa-edit me-1"></i>Edit Profile</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_instructor_settings') }}"><i class="fas fa-fw fa-cog me-1"></i>Settings</a></li>
-							<li> <a class="dropdown-item" href="#"><i class="fas fa-fw fa-trash-alt me-1"></i>Delete Profile</a></li>
-							<li> <hr class="dropdown-divider"></li>
-							<li> <a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
-						</ul>
-					</li>
-				</ul>
-				<!-- Nav Main menu END -->
-			</div>
-			<!-- Main navbar END -->
-
-			<!-- Profile START -->
-			<div class="dropdown ms-1 ms-lg-0">
-				<a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
-					<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-				</a>
-				<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
-					<!-- Profile info -->
-					<li class="px-3 mb-3">
-						<div class="d-flex align-items-center">
-							<!-- Avatar -->
-							<div class="avatar me-3">
-								<img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-							</div>
-							<div>
-								<a class="h6" href="#">Lori Ferguson</a>
-								<p class="small m-0">example@gmail.com</p>
-							</div>
-						</div>
-					</li>
-					<li> <hr class="dropdown-divider"></li>
-					<!-- Links -->
-					<li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
-					<li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
-					<li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
-					<li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
-				</ul>
-			</div>
-			<!-- Profile START -->
-		</div>
-	</nav>
-	<!-- Logo Nav END -->
-</header>
-<!-- Header END -->
+{% block content %}
 
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
@@ -131,27 +237,41 @@ Page Banner START -->
 		<div class="row">
 			<!-- Profile banner START -->
 			<div class="col-12">
-				<div class="card bg-transparent card-body p-0">
+				<div class="profile-banner card-body p-4">
 					<div class="row d-flex justify-content-between">
 						<!-- Avatar -->
 						<div class="col-auto mt-4 mt-md-0">
-							<div class="avatar avatar-xxl mt-n3">
-								<img class="avatar-img rounded-circle border border-white border-3 shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+							<div class="avatar avatar-xxl mt-n3 position-relative">
+								<img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+								<div class="position-absolute bottom-0 end-0">
+									<span class="verified-badge">
+										<i class="bi bi-patch-check-fill"></i> Verified
+									</span>
+								</div>
 							</div>
 						</div>
 						<!-- Profile info -->
 						<div class="col d-md-flex justify-content-between align-items-center mt-4">
 							<div>
-								<h1 class="my-1 fs-4">Lori Stevens <i class="bi bi-patch-check-fill text-info small"></i></h1>
-								<ul class="list-inline mb-0">
-									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-star text-warning me-2"></i>4.5/5.0</li>
-									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-user-graduate text-orange me-2"></i>12k Enrolled Students</li>
-									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-book text-purple me-2"></i>25 Courses</li>
-								</ul>
+								<h1 class="my-1 fs-3 fw-bold">{{ teacher.name }}'s Students</h1>
+								<div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+									<span class="badge bg-warning bg-opacity-10 text-warning">
+										<i class="fas fa-envelope me-1"></i>{{ teacher.email }}
+									</span>
+									<span class="badge bg-purple bg-opacity-10 text-purple">
+										<i class="fas fa-users me-1"></i>{{ totalUsers }} Students
+									</span>
+									<span class="badge bg-orange bg-opacity-10 text-orange">
+										<i class="fas fa-user-tag me-1"></i>{{ teacher.role.name|capitalize }}
+									</span>
+								</div>
+								<p class="text-muted mb-0">Professional Instructor | Student Management | Educator</p>
 							</div>
 							<!-- Button -->
 							<div class="d-flex align-items-center mt-2 mt-md-0">
-								<a href="#" class="btn btn-success mb-0">Create a course</a>
+								<a href="{{ path('app_instructor_dashboard') }}" class="create-course-btn">
+									<i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+								</a>
 							</div>
 						</div>
 					</div>
@@ -200,13 +320,135 @@ Page content START -->
 
 			<!-- Main content START -->
 			<div class="col-xl-9">
-				<div class="card bg-transparent border">
-					<div class="card-header bg-light border-bottom">
-						<h5 class="mb-0">Student Management</h5>
+				<div class="vstack gap-4">
+					<!-- Search and select START -->
+					<div class="row g-4 align-items-center">
+						<div class="col-md-6">
+							<div class="search-box">
+								<i class="fas fa-search"></i>
+								<input type="text" class="form-control" id="studentSearch" placeholder="Search students by name or email...">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="d-flex justify-content-end">
+								<div>
+									<select class="form-select" id="sortSelect">
+										<option value="name">Name</option>
+										<option value="email">Email</option>
+										<option value="role">Role</option>
+										<option value="status">Status</option>
+										<option value="date">Registration Date</option>
+									</select>
+								</div>
+							</div>
+						</div>
 					</div>
-					<div class="card-body">
-						<p>Student list and management functionality will be implemented here.</p>
+					<!-- Search and select END -->
+
+					<!-- Statistics Cards -->
+					<div class="row g-4">
+						<div class="col-md-4">
+							<div class="stats-card">
+								<h3>{{ totalUsers }}</h3>
+								<p>Total Students</p>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="stats-card active">
+								<h3>{{ activeUsers }}</h3>
+								<p>Active Students</p>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="stats-card inactive">
+								<h3>{{ inactiveUsers }}</h3>
+								<p>Inactive Students</p>
+							</div>
+						</div>
 					</div>
+
+					<!-- Students list START -->
+					<div class="table-responsive border-0 rounded-3">
+						<table class="table table-modern align-middle mb-0" id="studentsTable">
+							<thead>
+								<tr>
+									<th scope="col" class="border-0 rounded-start">Student Name</th>
+									<th scope="col" class="border-0">Role</th>
+									<th scope="col" class="border-0">Status</th>
+									<th scope="col" class="border-0">Registration Date</th>
+									<th scope="col" class="border-0 rounded-end">Action</th>
+								</tr>
+							</thead>
+							<tbody id="studentsTableBody">
+								{% if users is empty %}
+									<tr>
+										<td colspan="5" class="no-students">
+											<div class="no-students">
+												<i class="fas fa-users"></i>
+												<h6>No students found</h6>
+												<p>There are no students in the system yet</p>
+											</div>
+										</td>
+									</tr>
+								{% else %}
+									{% for user in users %}
+										<tr data-name="{{ user.fullName|lower }}" data-email="{{ user.email|lower }}" data-role="{{ user.role.name|lower }}" data-status="{{ user.status|lower }}" data-date="{{ user.createdAt|date('Y-m-d') }}">
+											<td>
+												<div class="d-flex align-items-center">
+													<div class="me-3">
+														<div class="user-avatar">
+															{{ user.fullName|first|upper }}
+														</div>
+													</div>
+													<div class="user-info">
+														<div class="user-name">{{ user.fullName }}</div>
+														<div class="user-email">{{ user.email }}</div>
+														<div class="user-meta">
+															<i class="fas fa-calendar me-1"></i>Member since {{ user.createdAt|date('M j, Y') }}
+														</div>
+													</div>
+												</div>
+											</td>
+											<td>
+												<div class="d-flex align-items-center">
+													{% set roleClass = user.role.name == 'admin' ? 'bg-danger' : user.role.name == 'instructor' ? 'bg-success' : 'bg-primary' %}
+													<span class="badge badge-modern {{ roleClass }}">
+														{{ user.role.name|capitalize }}
+													</span>
+												</div>
+											</td>
+											<td>
+												{% if user.status == 'active' %}
+													<span class="badge badge-modern bg-success">Active</span>
+												{% elseif user.status == 'inactive' %}
+													<span class="badge badge-modern bg-secondary">Inactive</span>
+												{% else %}
+													<span class="badge badge-modern bg-info">{{ user.status|capitalize }}</span>
+												{% endif %}
+											</td>
+											<td>
+												<div class="d-flex align-items-center">
+													<i class="fas fa-calendar me-2 text-primary"></i>
+													<span>{{ user.createdAt|date('M j, Y') }}</span>
+												</div>
+											</td>
+											<td>
+												<div class="d-flex gap-2">
+													<button type="button" class="btn btn-sm btn-outline-primary" onclick="viewStudentDetails({{ user.id }})">
+														<i class="fas fa-eye"></i>
+													</button>
+													<button type="button" class="btn btn-sm btn-outline-info" onclick="messageStudent({{ user.id }})">
+														<i class="fas fa-envelope"></i>
+													</button>
+												</div>
+											</td>
+										</tr>
+									{% endfor %}
+								{% endif %}
+							</tbody>
+						</table>
+					</div>
+					<!-- Students list END -->
 				</div>
 			</div>
 			<!-- Main content END -->
@@ -219,4 +461,93 @@ Page content END -->
 </main>
 <!-- **************** MAIN CONTENT END **************** -->
 
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Student search functionality
+    const searchInput = document.getElementById('studentSearch');
+    const sortSelect = document.getElementById('sortSelect');
+    const tableBody = document.getElementById('studentsTableBody');
+    
+    if (searchInput && tableBody) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = tableBody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const name = row.getAttribute('data-name') || '';
+                const email = row.getAttribute('data-email') || '';
+                
+                if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    }
+    
+    // Sort functionality
+    if (sortSelect && tableBody) {
+        sortSelect.addEventListener('change', function() {
+            const sortBy = this.value;
+            const rows = Array.from(tableBody.getElementsByTagName('tr'));
+            
+            // Skip the "no students" row
+            const dataRows = rows.filter(row => row.getAttribute('data-name'));
+            
+            dataRows.sort((a, b) => {
+                let aValue, bValue;
+                
+                switch(sortBy) {
+                    case 'name':
+                        aValue = a.getAttribute('data-name');
+                        bValue = b.getAttribute('data-name');
+                        break;
+                    case 'email':
+                        aValue = a.getAttribute('data-email');
+                        bValue = b.getAttribute('data-email');
+                        break;
+                    case 'role':
+                        aValue = a.getAttribute('data-role');
+                        bValue = b.getAttribute('data-role');
+                        break;
+                    case 'status':
+                        aValue = a.getAttribute('data-status');
+                        bValue = b.getAttribute('data-status');
+                        break;
+                    case 'date':
+                        aValue = a.getAttribute('data-date');
+                        bValue = b.getAttribute('data-date');
+                        break;
+                    default:
+                        aValue = a.getAttribute('data-name');
+                        bValue = b.getAttribute('data-name');
+                }
+                
+                if (aValue < bValue) return -1;
+                if (aValue > bValue) return 1;
+                return 0;
+            });
+            
+            // Reorder rows
+            dataRows.forEach(row => tableBody.appendChild(row));
+        });
+    }
+});
+
+function viewStudentDetails(studentId) {
+    console.log('Viewing details for student:', studentId);
+    // You can implement a modal or navigate to a detailed page
+    alert('Student details view would be implemented here. Student ID: ' + studentId);
+}
+
+function messageStudent(studentId) {
+    console.log('Messaging student:', studentId);
+    // You can implement a messaging modal or navigate to messaging page
+    alert('Messaging interface would be implemented here. Student ID: ' + studentId);
+}
+</script>
 {% endblock %}

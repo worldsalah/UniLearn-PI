@@ -33,45 +33,54 @@ Contact START -->
             <div class="col-lg-8">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
+                        <!-- Flash messages -->
+                        {% for type, messages in app.session.flashbag.all() %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        
                         <h4 class="mb-4">Send us a Message</h4>
-                        <form>
+                        {{ form_start(contactForm, {'attr': {'novalidate': 'novalidate'}}) }}
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">First Name</label>
-                                    <input type="text" class="form-control" placeholder="John">
+                                    {{ form_label(contactForm.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.firstName) }}
+                                    {{ form_widget(contactForm.firstName) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" placeholder="Doe">
+                                    {{ form_label(contactForm.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.lastName) }}
+                                    {{ form_widget(contactForm.lastName) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" placeholder="john@example.com">
+                                    {{ form_label(contactForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.email) }}
+                                    {{ form_widget(contactForm.email) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Phone</label>
-                                    <input type="tel" class="form-control" placeholder="+1 234 567 890">
+                                    {{ form_label(contactForm.phone, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.phone) }}
+                                    {{ form_widget(contactForm.phone) }}
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Subject</label>
-                                    <select class="form-select">
-                                        <option selected>Select a topic</option>
-                                        <option>General Inquiry</option>
-                                        <option>Technical Support</option>
-                                        <option>Billing Question</option>
-                                        <option>Course Information</option>
-                                        <option>Partnership</option>
-                                    </select>
+                                    {{ form_label(contactForm.subject, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.subject) }}
+                                    {{ form_widget(contactForm.subject) }}
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Message</label>
-                                    <textarea class="form-control" rows="5" placeholder="Tell us how we can help you..."></textarea>
+                                    {{ form_label(contactForm.message, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.message) }}
+                                    {{ form_widget(contactForm.message) }}
                                 </div>
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary">Send Message</button>
+                                    {{ form_widget(contactForm.submit) }}
                                 </div>
                             </div>
-                        </form>
+                        {{ form_end(contactForm) }}
                     </div>
                 </div>
             </div>

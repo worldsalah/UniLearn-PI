@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\Authentication\Token\TokenInterface;
 
 class SecurityController extends AbstractController
 {
@@ -14,12 +15,12 @@ class SecurityController extends AbstractController
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
-        
-        // last username entered by the user
-        $lastEmail = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', [
-            'last_email' => $lastEmail,
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        return $this->render('auth/sign-in.html.twig', [
+            'last_username' => $lastUsername,
             'error' => $error,
         ]);
     }
@@ -27,7 +28,7 @@ class SecurityController extends AbstractController
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
-        // This method can be blank - it will be intercepted by the logout key on your firewall
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        // controller can be blank: it will be intercepted by the logout key on your firewall
+        throw new \LogicException('This should never be reached!');
     }
 }

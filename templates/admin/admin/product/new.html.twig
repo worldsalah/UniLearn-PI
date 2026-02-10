@@ -1,0 +1,20 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block title %}Add New Service - Admin{% endblock %}
+
+{% block admin_content %}
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">Add New Service</h1>
+            <a href="{{ path('app_admin_product_index') }}" class="btn btn-secondary-soft mb-0">Back to List</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        {{ include('admin/product/_form.html.twig', {'button_label': 'Create Service'}) }}
+    </div>
+</div>
+{% endblock %}

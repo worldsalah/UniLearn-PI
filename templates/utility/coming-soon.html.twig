@@ -14,6 +14,16 @@ Coming Soon START -->
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center">
+                <!-- Flash messages -->
+                {% for type, messages in app.session.flashbag.all() %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                
                 <!-- Logo -->
                 <div class="mb-4">
                     <img src="{{ asset('assets/images/logo.svg') }}" class="h-50px" alt="logo">
@@ -63,14 +73,18 @@ Coming Soon START -->
                 <div class="row justify-content-center">
                     <div class="col-md-8">
                         <h5 class="mb-3">Get notified when we launch</h5>
-                        <form class="row g-2">
-                            <div class="col-md-8">
-                                <input type="email" class="form-control" placeholder="Enter your email address" required>
+                        {{ form_start(notificationForm, {'attr': {'novalidate': 'novalidate'}}) }}
+                            <div class="row g-2">
+                                <div class="col-md-8">
+                                    {{ form_label(notificationForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(notificationForm.email) }}
+                                    {{ form_widget(notificationForm.email) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_widget(notificationForm.submit) }}
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <button type="submit" class="btn btn-primary w-100">Notify Me</button>
-                            </div>
-                        </form>
+                        {{ form_end(notificationForm) }}
                         <p class="mb-0 small text-muted mt-2">We respect your privacy. No spam, ever.</p>
                     </div>
                 </div>

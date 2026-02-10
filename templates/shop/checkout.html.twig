@@ -17,59 +17,67 @@ Checkout START -->
                 <!-- Checkout form -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-4">
+                        <!-- Flash messages -->
+                        {% for type, messages in app.session.flashbag.all() %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        
                         <h4 class="mb-4">Billing Information</h4>
                         
-                        <form>
+                        {{ form_start(checkoutForm, {'attr': {'novalidate': 'novalidate'}}) }}
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">First Name</label>
-                                    <input type="text" class="form-control" placeholder="John" required>
+                                    {{ form_label(checkoutForm.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.firstName) }}
+                                    {{ form_widget(checkoutForm.firstName) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" placeholder="Doe" required>
+                                    {{ form_label(checkoutForm.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.lastName) }}
+                                    {{ form_widget(checkoutForm.lastName) }}
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" placeholder="john@example.com" required>
+                                    {{ form_label(checkoutForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.email) }}
+                                    {{ form_widget(checkoutForm.email) }}
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="tel" class="form-control" placeholder="+1 234 567 890">
+                                    {{ form_label(checkoutForm.phone, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.phone) }}
+                                    {{ form_widget(checkoutForm.phone) }}
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Address</label>
-                                    <input type="text" class="form-control" placeholder="123 Main St" required>
+                                    {{ form_label(checkoutForm.address, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.address) }}
+                                    {{ form_widget(checkoutForm.address) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">City</label>
-                                    <input type="text" class="form-control" placeholder="New York" required>
+                                    {{ form_label(checkoutForm.city, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.city) }}
+                                    {{ form_widget(checkoutForm.city) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">State</label>
-                                    <select class="form-select" required>
-                                        <option selected>Choose...</option>
-                                        <option>New York</option>
-                                        <option>California</option>
-                                        <option>Texas</option>
-                                        <option>Florida</option>
-                                    </select>
+                                    {{ form_label(checkoutForm.state, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.state) }}
+                                    {{ form_widget(checkoutForm.state) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">ZIP Code</label>
-                                    <input type="text" class="form-control" placeholder="10001" required>
+                                    {{ form_label(checkoutForm.zipCode, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.zipCode) }}
+                                    {{ form_widget(checkoutForm.zipCode) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Country</label>
-                                    <select class="form-select" required>
-                                        <option selected>United States</option>
-                                        <option>Canada</option>
-                                        <option>United Kingdom</option>
-                                        <option>Australia</option>
-                                    </select>
+                                    {{ form_label(checkoutForm.country, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.country) }}
+                                    {{ form_widget(checkoutForm.country) }}
                                 </div>
                             </div>
-                        </form>
+                        {{ form_end(checkoutForm) }}
                     </div>
                 </div>
                 
@@ -78,55 +86,35 @@ Checkout START -->
                     <div class="card-body p-4">
                         <h4 class="mb-4">Payment Method</h4>
                         
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
-                            <label class="form-check-label d-flex align-items-center" for="creditCard">
-                                        <i class="fas fa-credit-card me-2"></i>
-                                        Credit Card
-                                    </label>
-                        </div>
+                        {{ form_label(checkoutForm.paymentMethod, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_errors(checkoutForm.paymentMethod) }}
+                        {{ form_widget(checkoutForm.paymentMethod) }}
                         
                         <!-- Credit Card Form -->
-                        <div id="creditCardForm" class="mb-4">
+                        <div class="mb-4">
+                            <h5 class="mb-3">Carte de crédit</h5>
                             <div class="row g-3">
                                 <div class="col-12">
-                                    <label class="form-label">Card Number</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
-                                        <span class="input-group-text">
-                                            <i class="fab fa-cc-visa"></i>
-                                        </span>
-                                    </div>
+                                    {{ form_label(checkoutForm.cardNumber, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.cardNumber) }}
+                                    {{ form_widget(checkoutForm.cardNumber) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Expiry Date</label>
-                                    <input type="text" class="form-control" placeholder="MM/YY">
+                                    {{ form_label(checkoutForm.expiryDate, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.expiryDate) }}
+                                    {{ form_widget(checkoutForm.expiryDate) }}
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">CVV</label>
-                                    <input type="text" class="form-control" placeholder="123">
+                                    {{ form_label(checkoutForm.cvv, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.cvv) }}
+                                    {{ form_widget(checkoutForm.cvv) }}
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Cardholder Name</label>
-                                    <input type="text" class="form-control" placeholder="John Doe">
+                                    {{ form_label(checkoutForm.cardholderName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.cardholderName) }}
+                                    {{ form_widget(checkoutForm.cardholderName) }}
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
-                            <label class="form-check-label d-flex align-items-center" for="paypal">
-                                        <i class="fab fa-paypal me-2"></i>
-                                        PayPal
-                                    </label>
-                        </div>
-                        
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="applePay">
-                            <label class="form-check-label d-flex align-items-center" for="applePay">
-                                        <i class="fab fa-apple-pay me-2"></i>
-                                        Apple Pay
-                                    </label>
                         </div>
                     </div>
                 </div>
@@ -195,16 +183,18 @@ Checkout START -->
                         
                         <!-- Terms and conditions -->
                         <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="terms" required>
-                            <label class="form-check-label" for="terms">
-                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
-                            </label>
+                            {{ form_widget(checkoutForm.agreeTerms) }}
+                            {{ form_label(checkoutForm.agreeTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                        </div>
+                        
+                        <!-- Total amount display -->
+                        <div class="mb-3">
+                            {{ form_label(checkoutForm.totalAmount, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(checkoutForm.totalAmount) }}
                         </div>
                         
                         <!-- Place order button -->
-                        <button type="submit" class="btn btn-primary btn-lg w-100">
-                            Place Order • $183.57
-                        </button>
+                        {{ form_widget(checkoutForm.submit) }}
                         
                         <p class="mb-0 small text-muted text-center mt-2">
                             <i class="fas fa-lock me-1"></i>Your payment information is secure and encrypted

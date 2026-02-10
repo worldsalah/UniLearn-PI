@@ -41,7 +41,9 @@ class InsertUsersCommand extends Command
             $user = new User();
             $user->setName($userData['name']);
             $user->setEmail($userData['email']);
-            $user->setRole($userData['role']);
+            // Set role as entity
+            $userRole = $this->entityManager->getRepository(\App\Entity\Role::class)->findOneBy(['name' => $userData['role']]);
+            $user->setRole($userRole);
             
             // Hash the password
             $hashedPassword = $this->passwordHasher->hashPassword($user, $userData['password']);

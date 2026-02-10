@@ -41,7 +41,9 @@ class CreateAdminCommand extends Command
             $admin = new User();
             $admin->setName('Admin User');
             $admin->setEmail('admin@unilearn.com');
-            $admin->setRole('admin');
+            // Set role as entity
+            $adminRole = $this->entityManager->getRepository(\App\Entity\Role::class)->findOneBy(['name' => 'admin']);
+            $admin->setRole($adminRole);
             
             $hashedPassword = $this->passwordHasher->hashPassword($admin, 'admin123');
             $admin->setPassword($hashedPassword);

@@ -1,12 +1,26 @@
-{% extends 'base.html.twig' %}
+{% extends 'front_base.html.twig' %}
 
-{% block title %}Quiz Management - Eduport{% endblock %}
+{% block title %}Quiz Management - Unilearn{% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/choices/css/choices.min.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/apexcharts/css/apexcharts.css') }}">
 <style>
-/* Modern Instructor Dashboard Styles */
+.clickable-row {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.clickable-row:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.clickable-row:active {
+    background-color: #e9ecef;
+}
+.quiz-actions {
+    pointer-events: none;
+}
+
+/* Dashboard Styles */
 .instructor-gradient {
     background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
     position: relative;
@@ -50,59 +64,6 @@
     transform: scale(1.05);
     box-shadow: 0 15px 40px rgba(0,0,0,0.3);
 }
-.stat-card-instructor {
-    background: white;
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-.stat-card-instructor::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s;
-}
-.stat-card-instructor:hover::before {
-    left: 100%;
-}
-.stat-card-instructor:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-}
-.stat-icon-courses {
-    color: #ffc107;
-}
-.stat-icon-students {
-    color: #6f42c1;
-}
-.stat-icon-earnings {
-    color: #fd7e14;
-}
-.course-card-modern {
-    border-radius: 15px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-}
-.course-card-modern:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-}
-.course-card-modern .card-img-top {
-    height: 200px;
-    object-fit: cover;
-    transition: all 0.3s ease;
-}
-.course-card-modern:hover .card-img-top {
-    transform: scale(1.05);
-}
 .sidebar-modern {
     background: #212529;
     border-radius: 15px;
@@ -140,77 +101,84 @@
     font-size: 0.75rem;
     font-weight: bold;
 }
-.create-course-btn {
-    background: #198754;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
+
+/* Stats Cards */
+.stats-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
-    border: none;
-    display: inline-flex;
-    align-items: center;
+    position: relative;
+    overflow: hidden;
 }
-.create-course-btn:hover {
-    background: #157347;
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+.stats-card:hover::before {
+    left: 100%;
+}
+.stats-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* Tab Navigation */
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    background: transparent;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+.nav-tabs .nav-link.active {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+    border-radius: 10px 10px 0 0;
+}
+.nav-tabs .nav-link:hover {
+    color: #0d6efd;
+}
+
+/* Search and Filter */
+.search-box {
+    position: relative;
+}
+.search-box .form-control {
+    padding-left: 3rem;
+    border-radius: 50px;
+    border: 2px solid #e9ecef;
+}
+.search-box .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Table Enhancements */
+.table-header-gradient {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+.quiz-table tbody tr {
+    transition: all 0.2s ease;
+}
+.quiz-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: translateX(3px);
 }
 </style>
 {% endblock %}
 
-{% block body %}
-<!-- Header START -->
-{% include 'components/header.html.twig' %}
-							</li>
-							<li> <a class="dropdown-item" href="#"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-							<li> <hr class="dropdown-divider"></li>
-							<li> <a class="dropdown-item" href="#"><i class="fas fa-fw fa-edit me-1"></i>Edit Profile</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_instructor_settings') }}"><i class="fas fa-fw fa-cog me-1"></i>Settings</a></li>
-							<li> <a class="dropdown-item" href="#"><i class="fas fa-fw fa-trash-alt me-1"></i>Delete Profile</a></li>
-							<li> <hr class="dropdown-divider"></li>
-							<li> <a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
-						</ul>
-					</li>
-				</ul>
-				<!-- Nav Main menu END -->
-			</div>
-			<!-- Main navbar END -->
-
-			<!-- Profile START -->
-			<div class="dropdown ms-1 ms-lg-0">
-				<a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
-					<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-				</a>
-				<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
-					<!-- Profile info -->
-					<li class="px-3 mb-3">
-						<div class="d-flex align-items-center">
-							<!-- Avatar -->
-							<div class="avatar me-3">
-								<img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-							</div>
-							<div>
-								<a class="h6" href="#">Lori Ferguson</a>
-								<p class="small m-0">example@gmail.com</p>
-							</div>
-						</div>
-					</li>
-					<li> <hr class="dropdown-divider"></li>
-					<!-- Links -->
-					<li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
-					<li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
-					<li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
-					<li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
-				</ul>
-			</div>
-			<!-- Profile START -->
-		</div>
-	</nav>
-	<!-- Logo Nav END -->
-</header>
-<!-- Header END -->
+{% block content %}
 
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
@@ -220,7 +188,7 @@ Page Banner START -->
 <section class="pt-0">
 	<!-- Main banner background image -->
 	<div class="container-fluid px-0">
-		<div class="bg-blue h-100px h-md-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
+		<div class="instructor-gradient h-100px h-md-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
 		</div>
 	</div>
 	<div class="container mt-n4">
@@ -243,25 +211,22 @@ Page Banner START -->
 						<!-- Profile info -->
 						<div class="col d-md-flex justify-content-between align-items-center mt-4">
 							<div>
-								<h1 class="my-1 fs-3 fw-bold">Instructor</h1>
+								<h1 class="my-1 fs-3 fw-bold">{% if teacher.name is defined %}{{ teacher.name }}{% else %}Instructor{% endif %}</h1>
 								<div class="d-flex flex-wrap align-items-center gap-3 mb-2">
 									<span class="badge bg-primary bg-opacity-10 text-primary">
-										<i class="fas fa-tv me-1"></i>0 Courses
+										<i class="fas fa-tv me-1"></i>{% if totalCourses is defined %}{{ totalCourses }}{% else %}12{% endif %} Courses
 									</span>
 									<span class="badge bg-success bg-opacity-10 text-success">
-										<i class="fas fa-user-graduate me-1"></i>0K Students
+										<i class="fas fa-user-graduate me-1"></i>{% if totalStudents is defined %}{{ totalStudents }}{% else %}1250{% endif %}K Students
 									</span>
 									<span class="badge bg-warning bg-opacity-10 text-warning">
-										<i class="fas fa-star me-1"></i>0.0/5.0 Rating
+										<i class="fas fa-star me-1"></i>{% if averageRating is defined %}{{ averageRating }}{% else %}4.8{% endif %}/5.0 Rating
 									</span>
 								</div>
 								<p class="text-muted mb-0">Professional Instructor | Content Creator | Educator</p>
 							</div>
-							<!-- Button -->
 							<div class="d-flex align-items-center mt-2 mt-md-0">
-								<a href="{{ path('app_course_create') }}" class="create-course-btn">
-									<i class="fas fa-plus me-2"></i>Create a course
-								</a>
+								<a href="#" class="btn btn-sm btn-primary mb-0" data-bs-toggle="modal" data-bs-target="#addQuiz">Add New Quiz</a>
 							</div>
 						</div>
 					</div>
@@ -307,17 +272,285 @@ Page content START -->
 				<!-- Responsive offcanvas body END -->
 			</div>
 			<!-- Left sidebar END -->
-
+			
 			<!-- Main content START -->
 			<div class="col-xl-9">
-				<div class="card bg-transparent border">
-					<div class="card-header bg-light border-bottom">
-						<h5 class="mb-0">Quiz Management</h5>
+
+				<!-- Dynamic Header -->
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<div>
+						<h3 class="mb-1">Quiz Management</h3>
+						<p class="text-muted mb-0">
+							<span id="visibleCount">{% if quizzes is defined %}{{ quizzes|length }}{% else %}0{% endif %}</span> of {% if quizzes is defined %}{{ quizzes|length }}{% else %}0{% endif %} quizzes
+						</p>
 					</div>
-					<div class="card-body">
-						<p>Quiz management functionality will be implemented here.</p>
+					<div class="d-flex gap-2">
+						<button class="btn btn-outline-primary btn-sm" onclick="refreshResults()">
+							<i class="bi bi-arrow-clockwise me-1"></i> Refresh
+						</button>
+						<button class="btn btn-outline-secondary btn-sm" onclick="exportResults()">
+							<i class="bi bi-download me-1"></i> Export
+						</button>
+						<button class="btn btn-outline-warning btn-sm" onclick="testSorting()">
+							<i class="bi bi-sort-down me-1"></i> Test Sort
+						</button>
 					</div>
 				</div>
+
+				<!-- Search and Sort Controls -->
+				<div class="row g-3 align-items-center justify-content-between mb-4">
+					<div class="col-md-8">
+						<div class="search-box">
+							<i class="fas fa-search search-icon"></i>
+							<input class="form-control" type="search" id="searchInput" placeholder="Search quizzes..." aria-label="Search">
+						</div>
+					</div>
+					<div class="col-md-3">
+						<select class="form-select" name="sortBy" aria-label="Sort by">
+							<option value="">Sort by</option>
+							<option value="name">Name (A-Z)</option>
+							<option value="name-desc">Name (Z-A)</option>
+							<option value="date-newest">Date (Newest First)</option>
+							<option value="date-oldest">Date (Oldest First)</option>
+							<option value="questions">Most Questions</option>
+							<option value="questions-fewest">Fewest Questions</option>
+							<option value="course">Course Name</option>
+						</select>
+					</div>
+				</div>
+
+				<!-- Dynamic Stats Cards -->
+				<div class="row g-3 mb-4">
+					<div class="col-md-3">
+						<div class="stats-card">
+							<div class="card-body text-center">
+								<h4 class="mb-1">{% if quizzes is defined %}{{ quizzes|length }}{% else %}0{% endif %}</h4>
+								<small class="text-muted">Total Quizzes</small>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="stats-card">
+							<div class="card-body text-center">
+								<h4 class="mb-1 text-success">{% if totalQuestions is defined %}{{ totalQuestions }}{% else %}0{% endif %}</h4>
+								<small class="text-muted">Total Questions</small>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="stats-card">
+							<div class="card-body text-center">
+								<h4 class="mb-1 text-warning">{% if avgScore is defined %}{{ avgScore }}{% else %}0{% endif %}%</h4>
+								<small class="text-muted">Avg Score</small>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="stats-card">
+							<div class="card-body text-center">
+								<h4 class="mb-1 text-info">{% if totalAttempts is defined %}{{ totalAttempts }}{% else %}0{% endif %}</h4>
+								<small class="text-muted">Total Attempts</small>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab Navigation -->
+				<ul class="nav nav-tabs mb-4" id="quizTabs" role="tablist">
+					<li class="nav-item" role="presentation">
+						<button class="nav-link active" id="all-quizzes-tab" data-bs-toggle="tab" data-bs-target="#all-quizzes" type="button" role="tab">
+							<i class="bi bi-list-ul me-2"></i>All Quizzes
+						</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="recent-quizzes-tab" data-bs-toggle="tab" data-bs-target="#recent-quizzes" type="button" role="tab">
+							<i class="bi bi-clock me-2"></i>Recent
+						</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="popular-quizzes-tab" data-bs-toggle="tab" data-bs-target="#popular-quizzes" type="button" role="tab">
+							<i class="bi bi-star me-2"></i>Most Questions
+						</button>
+					</li>
+				</ul>
+
+				<!-- Tab Content -->
+				<div class="tab-content" id="quizTabContent">
+					<!-- All Quizzes Tab -->
+					<div class="tab-pane fade show active" id="all-quizzes" role="tabpanel">
+						<div class="card shadow-sm">
+							<div class="card-body p-0">
+								{% if quizzes is defined and quizzes|length > 0 %}
+								<div class="table-responsive">
+									<table class="table table-hover mb-0 quiz-table">
+										<thead class="table-header-gradient">
+											<tr>
+												<th><i class="bi bi-file-earmark-text me-1"></i>Title</th>
+												<th><i class="bi bi-question-circle me-1"></i>Questions</th>
+												<th><i class="bi bi-book me-1"></i>Course</th>
+												<th><i class="bi bi-calendar me-1"></i>Created</th>
+												<th class="text-center"><i class="bi bi-gear me-1"></i>Actions</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for quiz in quizzes %}
+											<tr class="clickable-row quiz-row" onclick="viewQuizDetails({{ quiz.id }})">
+												<td>
+													<div class="d-flex justify-content-between align-items-center">
+														<div>
+															<strong class="text-dark quiz-title">{{ quiz.title }}</strong>
+															<br>
+															<small class="text-muted">Quiz #{{ quiz.id }}</small>
+														</div>
+														<div class="d-flex align-items-center">
+															<span class="badge bg-primary-subtle text-primary me-2">{{ quiz.questions|length }} Questions</span>
+															<i class="bi bi-chevron-down text-muted" id="chevron-{{ quiz.id }}"></i>
+														</div>
+													</div>
+												</td>
+												<td>
+													<span class="badge bg-info-subtle text-info">{{ quiz.questions|length }}</span>
+												</td>
+												<td>
+													{% if quiz.course %}
+														<span class="badge bg-success-subtle text-success">{{ quiz.course.title }}</span>
+													{% else %}
+														<span class="text-muted">No Course</span>
+													{% endif %}
+												</td>
+												<td>
+													<span class="text-muted small" data-date="{{ quiz.createdAt|date('Y-m-d') }}">{{ quiz.createdAt|date('M d, Y') }}</span>
+												</td>
+												<td>
+													<div class="btn-group btn-group-sm" role="group">
+														<button class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); editQuiz({{ quiz.id }})" title="Edit Quiz">
+															<i class="bi bi-pencil"></i>
+														</button>
+														<button class="btn btn-outline-info btn-sm" onclick="event.stopPropagation(); openAddQuestionModal({{ quiz.id }}, '{{ quiz.title|e('js') }}')" title="Add Question">
+															<i class="bi bi-plus"></i>
+														</button>
+														<button class="btn btn-outline-danger btn-sm" onclick="event.stopPropagation(); deleteQuiz({{ quiz.id }}, '{{ quiz.title|e('js') }}')" title="Delete Quiz">
+															<i class="bi bi-trash"></i>
+														</button>
+													</div>
+												</td>
+											</tr>
+											<!-- Questions Row (Hidden by default) -->
+											<tr id="questions-{{ quiz.id }}" style="display: none;">
+												<td colspan="5" class="p-0">
+													<div class="bg-light p-4">
+														<div class="d-flex justify-content-between align-items-center mb-3">
+															<h6 class="mb-0 fw-bold">
+																<i class="bi bi-list-ul me-2"></i>
+																Questions for {{ quiz.title }}
+															</h6>
+															<span class="badge bg-secondary">{{ quiz.questions|length }} Questions</span>
+														</div>
+														{% if quiz.questions|length > 0 %}
+															<div class="row">
+																{% for question in quiz.questions %}
+																	<div class="col-md-6 mb-3">
+																		<div class="card border-0 shadow-sm">
+																			<div class="card-body">
+																				<div class="d-flex justify-content-between align-items-start mb-2">
+																					<div class="flex-grow-1">
+																						<h6 class="mb-2 text-dark">{{ question.question }}</h6>
+																						<div class="d-flex flex-wrap gap-1 mb-2">
+																							<span class="badge bg-light text-dark">Multiple Choice</span>
+																							<span class="badge bg-success-subtle text-success">Correct: {{ question.correctOption }}</span>
+																						</div>
+																					</div>
+																					<div class="d-flex gap-1">
+																						<button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); editQuestion({{ question.id }}, '{{ question.question|e('js') }}')" title="Edit Question">
+																							<i class="bi bi-pencil"></i>
+																						</button>
+																						<button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteQuestion({{ question.id }}, '{{ question.question|e('js') }}')" title="Delete Question">
+																							<i class="bi bi-trash"></i>
+																						</button>
+																					</div>
+																				</div>
+																				<div class="options-grid">
+																					<div class="row g-2">
+																						<div class="col-6">
+																							<span class="badge bg-light text-dark">A</span> {{ question.optionA }}
+																						</div>
+																						<div class="col-6">
+																							<span class="badge bg-light text-dark">B</span> {{ question.optionB }}
+																						</div>
+																						{% if question.optionC %}
+																							<div class="col-6">
+																								<span class="badge bg-light text-dark">C</span> {{ question.optionC }}
+																							</div>
+																						{% endif %}
+																						{% if question.optionD %}
+																							<div class="col-6">
+																								<span class="badge bg-light text-dark">D</span> {{ question.optionD }}
+																							</div>
+																						{% endif %}
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																{% endfor %}
+															</div>
+														{% else %}
+															<div class="text-center py-5">
+																<i class="bi bi-question-circle fs-1 text-muted mb-3"></i>
+																<p class="text-muted mb-3">No questions added yet</p>
+																<button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openAddQuestionModal({{ quiz.id }}, '{{ quiz.title|e('js') }}')">
+																	<i class="bi bi-plus-circle me-1"></i> Add First Question
+																</button>
+															</div>
+														{% endif %}
+													</div>
+												</td>
+											</tr>
+											{% else %}
+											<tr>
+												<td colspan="5" class="text-center py-5">
+													<div class="text-muted">
+														<i class="bi bi-inbox fs-1 mb-3"></i>
+														<p class="mb-0">No quizzes found in database</p>
+														<small class="text-muted">Create your first quiz to get started</small>
+													</div>
+												</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+								{% else %}
+								<div class="text-center py-5">
+									<i class="bi bi-inbox display-4 text-muted"></i>
+									<h5 class="mt-3">No Quizzes Found</h5>
+									<p class="text-muted">Start by creating your first quiz to engage your students.</p>
+									<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addQuiz">
+										<i class="bi bi-plus-circle me-2"></i>Create Your First Quiz
+									</button>
+								</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+					<!-- Recent Quizzes Tab -->
+					<div class="tab-pane fade" id="recent-quizzes" role="tabpanel">
+						<div class="text-center py-5">
+							<i class="bi bi-clock display-4 text-muted"></i>
+							<h5 class="mt-3">Recent Quizzes</h5>
+							<p class="text-muted">Your most recently created quizzes will appear here.</p>
+						</div>
+					</div>
+					<!-- Popular Quizzes Tab -->
+					<div class="tab-pane fade" id="popular-quizzes" role="tabpanel">
+						<div class="text-center py-5">
+							<i class="bi bi-star display-4 text-muted"></i>
+							<h5 class="mt-3">Most Questions</h5>
+							<p class="text-muted">Quizzes with the most questions will appear here.</p>
+						</div>
+					</div>
+				</div>
+
 			</div>
 			<!-- Main content END -->
 		</div>
@@ -329,9 +562,1688 @@ Page content END -->
 </main>
 <!-- **************** MAIN CONTENT END **************** -->
 
+<!-- Add Quiz Modal -->
+<div class="modal fade" id="addQuiz" tabindex="-1" aria-labelledby="addQuizLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-dark">
+				<h5 class="modal-title text-white" id="addQuizLabel">Add New Quiz</h5>
+				<button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+			</div>
+			<div class="modal-body">
+				<form id="addQuizForm">
+					<div class="mb-3">
+						<label for="quizTitle" class="form-label">Quiz Title</label>
+						<input type="text" class="form-control" id="quizTitle" name="title" required>
+						<div class="invalid-feedback" id="quizTitleError"></div>
+					</div>
+					<div class="mb-3">
+						<label for="quizCourse" class="form-label">Course</label>
+						<select class="form-control" id="quizCourse" name="course_id" required>
+							<option value="">Select a course</option>
+							{% if courses is defined %}
+								{% for course in courses %}
+									<option value="{{ course.id }}">{{ course.title }} {% if course.status == 'active' or course.status == 'live' %}✅ {{ course.status|capitalize }}{% else %}⏸️ {{ course.status|capitalize }}{% endif %}</option>
+								{% endfor %}
+							{% endif %}
+						</select>
+						<div class="invalid-feedback" id="quizCourseError"></div>
+						<small class="form-text text-muted">
+							⚠️ You can create quizzes for inactive courses, but they will only be visible when the course is activated.
+						</small>
+					</div>
+					<div class="mb-3">
+						<label for="quizDescription" class="form-label">Description</label>
+						<textarea class="form-control" id="quizDescription" name="description" rows="3"></textarea>
+						<div class="invalid-feedback" id="quizDescriptionError"></div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" onclick="addQuiz()">Add Quiz</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Add Question Modal -->
+<div class="modal fade" id="addQuestion" tabindex="-1" aria-labelledby="addQuestionLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header bg-dark">
+				<h5 class="modal-title text-white" id="addQuestionLabel">Add Question to Quiz</h5>
+				<button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+			</div>
+			<div class="modal-body">
+				<form id="addQuestionForm">
+					<div class="mb-3">
+						<label for="questionQuiz" class="form-label">Select Quiz</label>
+						<select class="form-control" id="questionQuiz" name="quiz_id" required>
+							<option value="">Select a quiz</option>
+							{% if quizzes is defined %}
+								{% for quiz in quizzes %}
+									<option value="{{ quiz.id }}">{{ quiz.title }}</option>
+								{% endfor %}
+							{% endif %}
+						</select>
+					</div>
+					<div class="mb-3">
+						<label for="questionText" class="form-label">Question</label>
+						<textarea class="form-control" id="questionText" name="question" placeholder="Enter your question here" rows="3" required></textarea>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="optionA" class="form-label">Option A</label>
+								<input type="text" class="form-control" id="optionA" name="option_a" placeholder="Enter option A" required>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="optionB" class="form-label">Option B</label>
+								<input type="text" class="form-control" id="optionB" name="option_b" placeholder="Enter option B" required>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="optionC" class="form-label">Option C</label>
+								<input type="text" class="form-control" id="optionC" name="option_c" placeholder="Enter option C" required>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="optionD" class="form-label">Option D</label>
+								<input type="text" class="form-control" id="optionD" name="option_d" placeholder="Enter option D" required>
+							</div>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label for="correctOption" class="form-label">Correct Option</label>
+						<select class="form-control" id="correctOption" name="correct_option" required>
+							<option value="">Select correct answer</option>
+							<option value="A">Option A</option>
+							<option value="B">Option B</option>
+							<option value="C">Option C</option>
+							<option value="D">Option D</option>
+						</select>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" onclick="addQuestion()">Add Question</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Edit Question Modal -->
+<div class="modal fade" id="editQuestionModal" tabindex="-1" aria-labelledby="editQuestionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="editQuestionModalLabel">Edit Question</h5>
+                <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="editQuestionForm">
+                    <input type="hidden" id="editQuestionId" name="questionId">
+                    <input type="hidden" id="editQuizId" name="quizId">
+                    
+                    <div class="mb-3">
+                        <label for="editQuizTitle" class="form-label">Quiz</label>
+                        <input type="text" class="form-control" id="editQuizTitle" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editQuestionText" class="form-label">Question <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="editQuestionText" name="question" rows="3" required placeholder="Enter your question here..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Question Type</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="editQuestionType" id="editMultipleChoice" value="multiple" checked>
+                            <label class="btn btn-outline-primary" for="editMultipleChoice">Multiple Choice</label>
+                            
+                            <input type="radio" class="btn-check" name="editQuestionType" id="editTrueFalse" value="true_false">
+                            <label class="btn btn-outline-primary" for="editTrueFalse">True/False</label>
+                            
+                            <input type="radio" class="btn-check" name="editQuestionType" id="editShortAnswer" value="short_answer">
+                            <label class="btn btn-outline-primary" for="editShortAnswer">Short Answer</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Multiple Choice Options -->
+                    <div id="editMultipleChoiceOptions">
+                        <div class="mb-3">
+                            <label class="form-label">Options <span class="text-danger">*</span></label>
+                            {% if courses is defined %}
+                                {% for course in courses %}
+                                    <option value="{{ course.id }}">
+                                        {{ course.title }} 
+                                        {% if course.status == 'active' or course.status == 'live' %}
+                                            ✅ {{ course.status|capitalize }}
+                                        {% else %}
+                                            ⏸️ {{ course.status|capitalize }}
+                                        {% endif %}
+                                    </option>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text">A</span>
+                                    <input type="text" class="form-control" name="editOption1" placeholder="Option A">
+                                    <div class="input-group-text">
+                                        <input class="form-check-input" type="radio" name="editCorrectOption" value="A">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text">B</span>
+                                    <input type="text" class="form-control" name="editOption2" placeholder="Option B">
+                                    <div class="input-group-text">
+                                        <input class="form-check-input" type="radio" name="editCorrectOption" value="B">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text">C</span>
+                                    <input type="text" class="form-control" name="editOption3" placeholder="Option C">
+                                    <div class="input-group-text">
+                                        <input class="form-check-input" type="radio" name="editCorrectOption" value="C">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text">D</span>
+                                    <input type="text" class="form-control" name="editOption4" placeholder="Option D">
+                                    <div class="input-group-text">
+                                        <input class="form-check-input" type="radio" name="editCorrectOption" value="D">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- True/False Options -->
+                    <div id="editTrueFalseOptions" style="display: none;">
+                        <div class="mb-3">
+                            <label class="form-label">Correct Answer <span class="text-danger">*</span></label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="editTfAnswer" id="editTrueAnswer" value="true">
+                                <label class="btn btn-outline-success" for="editTrueAnswer">True</label>
+                                
+                                <input type="radio" class="btn-check" name="editTfAnswer" id="editFalseAnswer" value="false">
+                                <label class="btn btn-outline-danger" for="editFalseAnswer">False</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Short Answer -->
+                    <div id="editShortAnswerOptions" style="display: none;">
+                        <div class="mb-3">
+                            <label for="editCorrectAnswer" class="form-label">Correct Answer <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editCorrectAnswer" name="correctAnswer" placeholder="Enter the correct answer">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editPoints" class="form-label">Points</label>
+                        <input type="text" class="form-control" id="editPoints" name="points" value="1">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updateQuestion()">Update Question</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Quiz Modal -->
+<div class="modal fade" id="editQuizModal" tabindex="-1" aria-labelledby="editQuizModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="editQuizModalLabel">Edit Quiz</h5>
+                <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <!-- Quiz Data Display -->
+                <div class="alert alert-info" id="quizDataDisplay">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Quiz Data (Debug)</h6>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleQuizDataDisplay()">
+                            <i class="bi bi-eye-slash" id="quizDataToggleIcon"></i> Hide
+                        </button>
+                    </div>
+                    <div id="quizDataContent">
+                        Loading quiz data...
+                    </div>
+                </div>
+                
+                <form id="editQuizForm">
+                    <input type="hidden" id="editQuizId" name="quiz_id">
+                    
+                    <!-- Quiz Summary -->
+                    <div class="card bg-light mb-4" id="quizSummary">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3">
+                                <i class="bi bi-file-text me-2"></i>Quiz Summary
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <small class="text-muted">Quiz ID:</small>
+                                    <div id="summaryQuizId">-</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <small class="text-muted">Created:</small>
+                                    <div id="summaryCreated">-</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <small class="text-muted">Last Updated:</small>
+                                    <div id="summaryUpdated">-</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <small class="text-muted">Questions:</small>
+                                    <div id="summaryQuestions">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editQuizTitle" class="form-label">Quiz Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="editQuizTitle" name="title" required placeholder="Enter quiz title">
+                        <small class="text-muted" id="editQuizTitleInfo">Loading...</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editQuizCourse" class="form-label">Course</label>
+                        <select class="form-control" id="editQuizCourse" name="course_id">
+                            <option value="">No Course</option>
+                            <!-- Courses will be loaded dynamically -->
+                        </select>
+                        <small class="text-muted" id="editQuizCourseInfo">Loading...</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editQuizDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editQuizDescription" name="description" rows="3" placeholder="Enter quiz description (optional)"></textarea>
+                        <small class="text-muted" id="editQuizDescriptionInfo">Loading...</small>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editQuizTimeLimit" class="form-label">Time Limit (minutes)</label>
+                                <input type="text" class="form-control" id="editQuizTimeLimit" name="time_limit" placeholder="Optional">
+                                <small class="text-muted" id="editQuizTimeLimitInfo">Loading...</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editQuizPassingScore" class="form-label">Passing Score (%)</label>
+                                <input type="text" class="form-control" id="editQuizPassingScore" name="passing_score" value="70">
+                                <small class="text-muted" id="editQuizPassingScoreInfo">Loading...</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editQuizAttempts" class="form-label">Maximum Attempts</label>
+                        <input type="text" class="form-control" id="editQuizAttempts" name="max_attempts" value="3">
+                        <small class="text-muted" id="editQuizAttemptsInfo">Loading...</small>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editQuizRandomize" name="randomize_questions">
+                                    <label class="form-check-label" for="editQuizRandomize">
+                                        Randomize question order
+                                    </label>
+                                </div>
+                                <small class="text-muted" id="editQuizRandomizeInfo">Loading...</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editQuizShowResults" name="show_results" checked>
+                                    <label class="form-check-label" for="editQuizShowResults">
+                                        Show results immediately after completion
+                                    </label>
+                                </div>
+                                <small class="text-muted" id="editQuizShowResultsInfo">Loading...</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Information Fields -->
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3">
+                                <i class="bi bi-info-circle me-2"></i>Quiz Information
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label small text-muted">Quiz ID</label>
+                                    <div class="form-control-plaintext" id="quizIdDisplay">-</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small text-muted">Created Date</label>
+                                    <div class="form-control-plaintext" id="createdDateDisplay">-</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small text-muted">Last Updated</label>
+                                    <div class="form-control-plaintext" id="updatedDateDisplay">-</div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label class="form-label small text-muted">Questions Count</label>
+                                    <div class="form-control-plaintext" id="questionsCountDisplay">-</div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label small text-muted">Course</label>
+                                    <div class="form-control-plaintext" id="courseDisplay">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updateQuiz()">Update Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header bg-danger text-white">
+				<h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+				<button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+			</div>
+			<div class="modal-body text-center">
+				<i class="bi bi-exclamation-triangle text-warning fs-1 mb-3"></i>
+				<p class="mb-0">Are you sure you want to delete this item?</p>
+				<p class="text-muted small mb-0" id="deleteInfo"></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 {% endblock %}
 
 {% block javascripts %}
-<!-- Choices.js -->
-<script src="{{ asset('assets/vendor/choices/js/choices.min.js') }}"></script>
+<script>
+// Notification system
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Load lessons on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-run debug when quiz modal is opened
+    const addQuizModal = document.getElementById('addQuiz');
+    if (addQuizModal) {
+        addQuizModal.addEventListener('shown.bs.modal', function () {
+            console.log('Quiz modal opened');
+        });
+    }
+    
+    // Auto-run debug when edit quiz modal is opened
+    const editQuizModal = document.getElementById('editQuizModal');
+    if (editQuizModal) {
+        editQuizModal.addEventListener('shown.bs.modal', function () {
+            console.log('Edit quiz modal opened');
+        });
+    }
+    // loadCourses(); // Removed to prevent overwriting Twig-rendered courses
+    initializeSearchAndSort();
+});
+
+function initializeSearchAndSort() {
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.querySelector('select[name="sortBy"]');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', filterAndSortQuizzes);
+    }
+    
+    if (sortSelect) {
+        sortSelect.addEventListener('change', filterAndSortQuizzes);
+    }
+}
+
+function filterAndSortQuizzes() {
+    console.log('=== FILTER AND SORT CALLED ===');
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.querySelector('select[name="sortBy"]');
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+    const sortBy = sortSelect ? sortSelect.value : '';
+    
+    console.log('Search term:', searchTerm);
+    console.log('Sort by:', sortBy);
+    
+    // Get all quiz rows
+    const quizRows = document.querySelectorAll('#all-quizzes .quiz-row');
+    const questionsRows = document.querySelectorAll('#all-quizzes .questions-row');
+    
+    console.log('Quiz rows found:', quizRows.length);
+    console.log('Questions rows found:', questionsRows.length);
+    
+    let visibleCount = 0;
+    const quizData = [];
+    
+    // Collect all quiz data
+    quizRows.forEach((row, index) => {
+        const titleElement = row.querySelector('.quiz-title');
+        const title = titleElement ? titleElement.textContent.toLowerCase() : '';
+        
+        // Get course info
+        const courseElements = row.querySelectorAll('.badge');
+        let course = '';
+        let questionsCount = 0;
+        
+        courseElements.forEach(badge => {
+            const text = badge.textContent.toLowerCase();
+            if (text.includes('questions')) {
+                questionsCount = parseInt(text) || 0;
+            } else if (!text.includes('quiz #')) {
+                course = text;
+            }
+        });
+        
+        // Get date info
+        const dateElement = row.querySelector('.text-muted.small');
+        const date = dateElement ? dateElement.textContent : '';
+        const originalDate = dateElement ? dateElement.getAttribute('data-date') || date : '';
+        
+        const questionsRow = questionsRows[index];
+        const questionElements = questionsRow ? questionsRow.querySelectorAll('.question-card') : [];
+        
+        const quizInfo = {
+            row: row,
+            questionsRow: questionsRow,
+            title: title,
+            course: course,
+            date: date,
+            originalDate: originalDate,
+            questionsCount: questionsCount,
+            questionCount: questionElements.length,
+            index: index
+        };
+        
+        quizData.push(quizInfo);
+        console.log('Quiz data collected:', quizInfo);
+    });
+    
+    // Filter quizzes
+    const filteredQuizzes = quizData.filter(quiz => {
+        return quiz.title.includes(searchTerm) ||
+               quiz.course.includes(searchTerm) ||
+               quiz.date.includes(searchTerm) ||
+               quiz.questionCount.toString().includes(searchTerm);
+    });
+    
+    console.log('Filtered quizzes:', filteredQuizzes.length);
+    
+    // Sort filtered quizzes
+    if (sortBy) {
+        console.log('Sorting by:', sortBy);
+        filteredQuizzes.sort((a, b) => {
+            console.log('Comparing:', a.title, 'vs', b.title);
+            switch(sortBy) {
+                case 'name':
+                    return a.title.localeCompare(b.title);
+                case 'name-desc':
+                    return b.title.localeCompare(a.title);
+                case 'date-newest':
+                    const dateA = parseQuizDate(a.originalDate);
+                    const dateB = parseQuizDate(b.originalDate);
+                    console.log('Date comparison:', dateA, dateB, 'Result:', dateB - dateA);
+                    return dateB - dateA; // Newest first
+                case 'date-oldest':
+                    const dateC = parseQuizDate(a.originalDate);
+                    const dateD = parseQuizDate(b.originalDate);
+                    return dateC - dateD; // Oldest first
+                case 'questions':
+                    return b.questionsCount - a.questionsCount; // Most questions first
+                case 'questions-fewest':
+                    return a.questionsCount - b.questionsCount; // Fewest questions first
+                case 'course':
+                    return a.course.localeCompare(b.course);
+                default:
+                    return 0;
+            }
+        });
+        console.log('Sorted quizzes:', filteredQuizzes);
+    }
+    
+    // Hide all rows first
+    quizRows.forEach(row => row.style.display = 'none');
+    questionsRows.forEach(row => row.style.display = 'none');
+    
+    // Get the table body
+    const tableBody = document.querySelector('#all-quizzes tbody');
+    if (!tableBody) {
+        console.error('Table body not found');
+        return;
+    }
+    
+    // Reorder the DOM elements based on sorted data
+    filteredQuizzes.forEach((quiz, index) => {
+        // Show the quiz row
+        quiz.row.style.display = '';
+        
+        // Show the questions row if it exists
+        if (quiz.questionsRow) {
+            quiz.questionsRow.style.display = 'table-row';
+        }
+        
+        // Move the quiz row to the correct position in the DOM
+        if (quiz.row.parentNode === tableBody) {
+            // Move to the end of visible rows
+            tableBody.appendChild(quiz.row);
+            
+            // Move questions row after the quiz row
+            if (quiz.questionsRow && quiz.questionsRow.parentNode === tableBody) {
+                tableBody.appendChild(quiz.questionsRow);
+            }
+        }
+        
+        visibleCount++;
+        console.log('Showing quiz:', quiz.title, 'at DOM position', index);
+    });
+    
+    console.log('Total visible quizzes:', visibleCount);
+    
+    // Update visible count
+    updateVisibleCount(visibleCount, quizData.length);
+}
+
+function parseQuizDate(dateString) {
+    if (!dateString) return new Date(0); // Return epoch date if no date
+    
+    // Handle the format from template: "M d, Y" (e.g., "Feb 7, 2026")
+    const cleanDate = dateString.trim();
+    
+    // Try to parse the date
+    const date = new Date(cleanDate);
+    
+    // If parsing failed, try alternative formats
+    if (isNaN(date.getTime())) {
+        // Try parsing with different formats
+        const formats = [
+            /(\w{3})\s(\d{1,2}),\s(\d{4})/, // "Feb 7, 2026"
+            /(\d{1,2})\/(\d{1,2})\/(\d{4})/, // "2/7/2026"
+            /(\d{4})-(\d{2})-(\d{2})/, // "2026-02-07"
+        ];
+        
+        for (const regex of formats) {
+            const match = cleanDate.match(regex);
+            if (match) {
+                if (regex === formats[0]) {
+                    // "Feb 7, 2026" format
+                    return new Date(match[3], getMonthIndex(match[1]), parseInt(match[2]));
+                } else if (regex === formats[1]) {
+                    // "2/7/2026" format
+                    return new Date(match[3], parseInt(match[1]) - 1, parseInt(match[2]));
+                } else if (regex === formats[2]) {
+                    // "2026-02-07" format
+                    return new Date(match[1], parseInt(match[2]) - 1, parseInt(match[3]));
+                }
+            }
+        }
+    }
+    
+    return isNaN(date.getTime()) ? new Date(0) : date;
+}
+
+function getMonthIndex(monthName) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months.indexOf(monthName);
+}
+
+function updateVisibleCount(visible, total) {
+    const visibleCountElement = document.getElementById('visibleCount');
+    if (visibleCountElement) {
+        visibleCountElement.textContent = visible;
+    }
+    
+    // Update the text showing visible/total
+    const countText = document.querySelector('.text-muted.mb-0');
+    if (countText) {
+        countText.innerHTML = `<span id="visibleCount">${visible}</span> of ${total} quizzes`;
+    }
+    
+    // Show message if no results
+    const tableContainer = document.querySelector('.table-responsive');
+    if (tableContainer) {
+        let noResultsMessage = tableContainer.querySelector('.no-results-message');
+        
+        if (visible === 0) {
+            if (!noResultsMessage) {
+                noResultsMessage = document.createElement('div');
+                noResultsMessage.className = 'no-results-message text-center py-5';
+                noResultsMessage.innerHTML = `
+                    <i class="bi bi-search fs-1 text-muted mb-3"></i>
+                    <p class="text-muted">No quizzes found matching your search criteria.</p>
+                    <button class="btn btn-outline-primary btn-sm mt-2" onclick="clearSearchAndSort()">
+                        <i class="bi bi-x-circle me-1"></i> Clear Filters
+                    </button>
+                `;
+                tableContainer.appendChild(noResultsMessage);
+            }
+        } else {
+            if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
+        }
+    }
+}
+
+function clearSearchAndSort() {
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.querySelector('select[name="sortBy"]');
+    
+    if (searchInput) searchInput.value = '';
+    if (sortSelect) sortSelect.value = '';
+    
+    filterAndSortQuizzes();
+}
+
+function loadCourses() {
+    fetch('/quiz/courses')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const select = document.getElementById('quizCourse');
+                if (select) {
+                    // Only clear if we have new data to add
+                    if (data.courses && data.courses.length > 0) {
+                        select.innerHTML = '<option value="">Select a course</option>';
+                        data.courses.forEach(course => {
+                            const statusIcon = (course.status === 'active' || course.status === 'live') ? '✅ ' + course.status.charAt(0).toUpperCase() + course.status.slice(1) : '⏸️ ' + course.status.charAt(0).toUpperCase() + course.status.slice(1);
+                            select.innerHTML += `<option value="${course.id}">${course.title} - ${statusIcon}</option>`;
+                        });
+                    }
+                }
+            } else {
+                console.warn('Failed to load courses:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading courses:', error);
+            // Don't clear the dropdown if API fails - keep existing Twig-rendered courses
+        });
+}
+
+function addQuiz() {
+    // Clear previous errors
+    clearQuizErrors();
+    
+    const form = document.getElementById('addQuizForm');
+    const formData = new FormData(form);
+    const data = {
+        title: formData.get('title'),
+        course_id: formData.get('course_id'),
+        description: formData.get('description')
+    };
+
+    fetch('/quiz/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Quiz created successfully!', 'success');
+            location.reload();
+        } else {
+            if (data.message === 'Validation failed' && data.errors) {
+                // Display validation errors under each field
+                displayQuizValidationErrors(data.errors);
+            } else {
+                showNotification('Error: ' + data.message, 'danger');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while creating the quiz', 'danger');
+    });
+}
+
+function clearQuizErrors() {
+    // Clear all error messages
+    document.getElementById('quizTitleError').textContent = '';
+    document.getElementById('quizCourseError').textContent = '';
+    document.getElementById('quizDescriptionError').textContent = '';
+    
+    // Remove invalid class from all fields
+    document.getElementById('quizTitle').classList.remove('is-invalid');
+    document.getElementById('quizCourse').classList.remove('is-invalid');
+    document.getElementById('quizDescription').classList.remove('is-invalid');
+}
+
+function displayQuizValidationErrors(errors) {
+    errors.forEach(error => {
+        if (error.includes('Quiz title')) {
+            document.getElementById('quizTitleError').textContent = error;
+            document.getElementById('quizTitle').classList.add('is-invalid');
+        } else if (error.includes('Course') || error.includes('course_id')) {
+            document.getElementById('quizCourseError').textContent = error;
+            document.getElementById('quizCourse').classList.add('is-invalid');
+        } else if (error.includes('Description')) {
+            document.getElementById('quizDescriptionError').textContent = error;
+            document.getElementById('quizDescription').classList.add('is-invalid');
+        }
+    });
+}
+
+// Add event listeners to clear errors when user starts typing
+document.addEventListener('DOMContentLoaded', function() {
+    // Clear title error when user types
+    const titleField = document.getElementById('quizTitle');
+    if (titleField) {
+        titleField.addEventListener('input', function() {
+            document.getElementById('quizTitleError').textContent = '';
+            this.classList.remove('is-invalid');
+        });
+    }
+    
+    // Clear course error when user selects
+    const courseField = document.getElementById('quizCourse');
+    if (courseField) {
+        courseField.addEventListener('change', function() {
+            document.getElementById('quizCourseError').textContent = '';
+            this.classList.remove('is-invalid');
+        });
+    }
+    
+    // Clear description error when user types
+    const descField = document.getElementById('quizDescription');
+    if (descField) {
+        descField.addEventListener('input', function() {
+            document.getElementById('quizDescriptionError').textContent = '';
+            this.classList.remove('is-invalid');
+        });
+    }
+});
+
+function addQuestion() {
+    const form = document.getElementById('addQuestionForm');
+    const formData = new FormData(form);
+    const data = {
+        quiz_id: formData.get('quiz_id'),
+        question: formData.get('question'),
+        option_a: formData.get('option_a'),
+        option_b: formData.get('option_b'),
+        option_c: formData.get('option_c'),
+        option_d: formData.get('option_d'),
+        correct_option: formData.get('correct_option')
+    };
+
+    fetch('/quiz/question/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Question added successfully!', 'success');
+            location.reload();
+        } else {
+            showNotification('Error: ' + data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while adding the question', 'danger');
+    });
+}
+
+function updateQuestion() {
+    const form = document.getElementById('editQuestionForm');
+    const formData = new FormData(form);
+    const questionId = formData.get('question_id');
+    const data = {
+        question: formData.get('question'),
+        optionA: formData.get('option_a'),
+        optionB: formData.get('option_b'),
+        optionC: formData.get('option_c'),
+        optionD: formData.get('option_d'),
+        correctOption: formData.get('correct_option')
+    };
+
+    fetch(`/quiz/question/${questionId}/edit`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Question updated successfully!', 'success');
+            location.reload();
+        } else {
+            showNotification('Error: ' + data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while updating the question', 'danger');
+    });
+}
+
+function editQuestion(questionId, questionText) {
+    // Set question ID immediately
+    document.getElementById('editQuestionId').value = questionId;
+    
+    // Fetch question data
+    fetch(`/quiz/question/${questionId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const question = data.question;
+                
+                // Populate form with question data
+                document.getElementById('editQuestionText').value = question.text;
+                document.getElementById('editQuizTitle').value = question.quiz ? question.quiz.title : 'Unknown Quiz';
+                document.getElementById('editQuizId').value = question.quiz ? question.quiz.id : '';
+                document.getElementById('editPoints').value = 1; // Default points
+                
+                // Set question type options
+                const questionType = 'multiple'; // Since all questions are multiple choice
+                document.querySelector(`input[name="editQuestionType"][value="${questionType}"]`).checked = true;
+                showEditQuestionTypeOptions(questionType);
+                
+                // Set multiple choice options
+                document.querySelector('input[name="editOption1"]').value = question.options.A || '';
+                document.querySelector('input[name="editOption2"]').value = question.options.B || '';
+                document.querySelector('input[name="editOption3"]').value = question.options.C || '';
+                document.querySelector('input[name="editOption4"]').value = question.options.D || '';
+                
+                // Set correct option
+                const correctOption = question.correctOption || 'A';
+                document.querySelector(`input[name="editCorrectOption"][value="${correctOption}"]`).checked = true;
+                
+                // Open modal
+                const modal = new bootstrap.Modal(document.getElementById('editQuestionModal'));
+                modal.show();
+            } else {
+                showNotification('Error: ' + data.message, 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('An error occurred while loading the question', 'danger');
+        });
+}
+
+// Show/Hide Edit Question Type Options
+function showEditQuestionTypeOptions(type) {
+    // Hide all option sections
+    document.getElementById('editMultipleChoiceOptions').style.display = 'none';
+    document.getElementById('editTrueFalseOptions').style.display = 'none';
+    document.getElementById('editShortAnswerOptions').style.display = 'none';
+    
+    // Show selected option section
+    if (type === 'multiple') {
+        document.getElementById('editMultipleChoiceOptions').style.display = 'block';
+    } else if (type === 'true_false') {
+        document.getElementById('editTrueFalseOptions').style.display = 'block';
+    } else if (type === 'short_answer') {
+        document.getElementById('editShortAnswerOptions').style.display = 'block';
+    }
+}
+
+// Handle edit question type change
+document.addEventListener('DOMContentLoaded', function() {
+    const editQuestionTypeRadios = document.querySelectorAll('input[name="editQuestionType"]');
+    editQuestionTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            showEditQuestionTypeOptions(this.value);
+        });
+    });
+});
+
+function updateQuestion() {
+    const form = document.getElementById('editQuestionForm');
+    const questionId = document.getElementById('editQuestionId').value;
+    const quizId = document.getElementById('editQuizId').value;
+    
+    // Validate question ID
+    if (!questionId) {
+        showNotification('Question ID not found', 'warning');
+        return;
+    }
+    
+    // Get question text
+    const questionText = document.getElementById('editQuestionText').value;
+    if (!questionText.trim()) {
+        showNotification('Question text is required', 'warning');
+        document.getElementById('editQuestionText').focus();
+        return;
+    }
+    
+    if (questionText.trim().length < 5) {
+        showNotification('Question must be at least 5 characters long', 'warning');
+        document.getElementById('editQuestionText').focus();
+        return;
+    }
+    
+    // Get question type
+    const questionType = document.querySelector('input[name="editQuestionType"]:checked').value;
+    
+    // Prepare data based on question type
+    let data = {
+        question: questionText,
+        quizId: quizId,
+        type: questionType
+    };
+    
+    if (questionType === 'multiple') {
+        // Multiple choice validation
+        const optionA = document.querySelector('input[name="editOption1"]').value.trim();
+        const optionB = document.querySelector('input[name="editOption2"]').value.trim();
+        const optionC = document.querySelector('input[name="editOption3"]').value.trim();
+        const optionD = document.querySelector('input[name="editOption4"]').value.trim();
+        const correctOption = document.querySelector('input[name="editCorrectOption"]:checked');
+        
+        if (!optionA || !optionB) {
+            showNotification('Options A and B are required for multiple choice questions', 'warning');
+            return;
+        }
+        
+        if (!correctOption) {
+            showNotification('Please select the correct option', 'warning');
+            return;
+        }
+        
+        data.optionA = optionA;
+        data.optionB = optionB;
+        data.optionC = optionC;
+        data.optionD = optionD;
+        data.correctOption = correctOption.value;
+        
+    } else if (questionType === 'true_false') {
+        // True/False validation
+        const tfAnswer = document.querySelector('input[name="editTfAnswer"]:checked');
+        if (!tfAnswer) {
+            showNotification('Please select True or False', 'warning');
+            return;
+        }
+        
+        data.correctAnswer = tfAnswer.value;
+        
+    } else if (questionType === 'short_answer') {
+        // Short answer validation
+        const correctAnswer = document.getElementById('editCorrectAnswer').value.trim();
+        if (!correctAnswer) {
+            showNotification('Correct answer is required for short answer questions', 'warning');
+            document.getElementById('editCorrectAnswer').focus();
+            return;
+        }
+        
+        data.correctAnswer = correctAnswer;
+    }
+    
+    // Get points
+    const points = document.getElementById('editPoints').value;
+    data.points = parseInt(points) || 1;
+    
+    // Send update request
+    fetch(`/quiz/question/${questionId}/edit`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editQuestionModal'));
+            modal.hide();
+            
+            // Show success message
+            showNotification('Question updated successfully!', 'success');
+            
+            // Reload page to show updated question
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification('Error: ' + (data.message || 'Failed to update question'), 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while updating the question', 'danger');
+    });
+}
+
+function deleteQuestion(questionId, questionText) {
+    document.getElementById('deleteInfo').textContent = questionText;
+    document.getElementById('confirmDeleteBtn').onclick = function() {
+        fetch(`/quiz/question/${questionId}/delete`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Question deleted successfully!', 'success');
+                location.reload();
+            } else {
+                showNotification('Error: ' + data.message, 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('An error occurred while deleting the question', 'danger');
+        });
+    };
+    
+    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    modal.show();
+}
+
+function openAddQuestionModal(quizId, quizTitle) {
+    // Pre-select the quiz
+    document.getElementById('questionQuiz').value = quizId;
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('addQuestion'));
+    modal.show();
+}
+
+function viewQuizDetails(quizId) {
+    // Toggle questions visibility
+    const questionsRow = document.getElementById('questions-' + quizId);
+    const chevron = document.getElementById('chevron-' + quizId);
+    
+    if (questionsRow.style.display === 'none') {
+        questionsRow.style.display = 'table-row';
+        chevron.classList.remove('bi-chevron-down');
+        chevron.classList.add('bi-chevron-up');
+    } else {
+        questionsRow.style.display = 'none';
+        chevron.classList.remove('bi-chevron-up');
+        chevron.classList.add('bi-chevron-down');
+    }
+}
+
+function editQuiz(quizId) {
+    // Set quiz ID
+    document.getElementById('editQuizId').value = quizId;
+    
+    // Load courses for dropdown
+    loadCoursesForEdit();
+    
+    // Fetch quiz data
+    fetch(`/quiz/${quizId}/data`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Display all fetched data and populate form fields
+                displayQuizData(data);
+                
+                // Set course selection after courses are loaded and data is processed
+                setTimeout(() => {
+                    if (data.quiz.course && data.quiz.course.id) {
+                        const courseSelect = document.getElementById('editQuizCourse');
+                        if (courseSelect) {
+                            courseSelect.value = data.quiz.course.id;
+                            console.log('Course dropdown set to:', data.quiz.course.id);
+                        }
+                    }
+                }, 1000); // Increased delay to ensure courses are loaded
+                
+                // Open modal
+                const modal = new bootstrap.Modal(document.getElementById('editQuizModal'));
+                modal.show();
+            } else {
+                showNotification('Error: ' + data.message, 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('An error occurred while loading quiz data', 'danger');
+        });
+}
+
+function displayQuizData(data) {
+    console.log('=== DISPLAY QUIZ DATA CALLED ===');
+    console.log('Received data:', data);
+    console.log('Quiz title:', data.quiz?.title);
+    console.log('Quiz course:', data.quiz?.course);
+    
+    const dataContent = document.getElementById('quizDataContent');
+    
+    // Populate summary section
+    document.getElementById('summaryQuizId').textContent = data.quiz.id || 'N/A';
+    document.getElementById('summaryCreated').textContent = data.quiz.createdAt || 'N/A';
+    document.getElementById('summaryUpdated').textContent = data.quiz.updatedAt || 'Never';
+    document.getElementById('summaryQuestions').textContent = data.quiz.questionsCount || '0';
+    
+    // Populate form fields with actual data
+    const titleField = document.getElementById('editQuizTitle');
+    const titleInfo = document.getElementById('editQuizTitleInfo');
+    console.log('Title field element:', titleField);
+    console.log('Title info element:', titleInfo);
+    console.log('Quiz title data:', data.quiz.title);
+    
+    if (titleField && data.quiz.title) {
+        titleField.value = data.quiz.title;
+        titleInfo.textContent = 'Current: ' + data.quiz.title;
+        console.log('Title field set to:', titleField.value);
+        console.log('Title field value after setting:', document.getElementById('editQuizTitle').value);
+    } else {
+        titleInfo.textContent = 'No title set';
+        console.log('Title field not populated - field exists:', !!titleField, 'data exists:', !!data.quiz.title);
+    }
+    
+    const descField = document.getElementById('editQuizDescription');
+    const descInfo = document.getElementById('editQuizDescriptionInfo');
+    console.log('Description field element:', descField);
+    console.log('Quiz description data:', data.quiz.description);
+    
+    if (descField && data.quiz.description) {
+        descField.value = data.quiz.description;
+        descInfo.textContent = 'Current: ' + (data.quiz.description.length > 50 ? data.quiz.description.substring(0, 50) + '...' : data.quiz.description);
+        console.log('Description field set to:', descField.value);
+    } else {
+        descInfo.textContent = 'No description set';
+        console.log('Description field not populated - field exists:', !!descField, 'data exists:', !!data.quiz.description);
+    }
+    
+    const timeLimitField = document.getElementById('editQuizTimeLimit');
+    const timeLimitInfo = document.getElementById('editQuizTimeLimitInfo');
+    if (timeLimitField && data.quiz.timeLimit) {
+        timeLimitField.value = data.quiz.timeLimit;
+        timeLimitInfo.textContent = 'Current: ' + data.quiz.timeLimit + ' minutes';
+        console.log('Time limit field populated with:', data.quiz.timeLimit);
+    } else {
+        timeLimitInfo.textContent = 'No time limit set';
+        console.log('Time limit field not populated - no time limit data');
+    }
+    
+    const passingScoreField = document.getElementById('editQuizPassingScore');
+    const passingScoreInfo = document.getElementById('editQuizPassingScoreInfo');
+    if (passingScoreField) {
+        passingScoreField.value = data.quiz.passingScore || 70;
+        passingScoreInfo.textContent = 'Current: ' + (data.quiz.passingScore || 70) + '%';
+        console.log('Passing score field populated with:', data.quiz.passingScore || 70);
+    }
+    
+    const attemptsField = document.getElementById('editQuizAttempts');
+    const attemptsInfo = document.getElementById('editQuizAttemptsInfo');
+    if (attemptsField) {
+        attemptsField.value = data.quiz.maxAttempts || 3;
+        attemptsInfo.textContent = 'Current: ' + (data.quiz.maxAttempts || 3) + ' attempts';
+        console.log('Attempts field populated with:', data.quiz.maxAttempts || 3);
+    }
+    
+    const randomizeField = document.getElementById('editQuizRandomize');
+    const randomizeInfo = document.getElementById('editQuizRandomizeInfo');
+    if (randomizeField) {
+        randomizeField.checked = data.quiz.randomizeQuestions || false;
+        randomizeInfo.textContent = 'Current: ' + (data.quiz.randomizeQuestions ? 'Enabled' : 'Disabled');
+        console.log('Randomize field populated with:', data.quiz.randomizeQuestions);
+    }
+    
+    const showResultsField = document.getElementById('editQuizShowResults');
+    const showResultsInfo = document.getElementById('editQuizShowResultsInfo');
+    if (showResultsField) {
+        showResultsField.checked = data.quiz.showResults !== false;
+        showResultsInfo.textContent = 'Current: ' + (data.quiz.showResults !== false ? 'Show results' : 'Hide results');
+        console.log('Show results field populated with:', data.quiz.showResults !== false);
+    }
+    
+    // Populate information display fields
+    document.getElementById('quizIdDisplay').textContent = data.quiz.id || 'N/A';
+    document.getElementById('createdDateDisplay').textContent = data.quiz.createdAt || 'N/A';
+    document.getElementById('updatedDateDisplay').textContent = data.quiz.updatedAt || 'Never';
+    document.getElementById('questionsCountDisplay').textContent = data.quiz.questionsCount || '0';
+    
+    const courseDisplay = document.getElementById('courseDisplay');
+    const courseInfo = document.getElementById('editQuizCourseInfo');
+    const courseSelect = document.getElementById('editQuizCourse');
+    
+    console.log('Course display element:', courseDisplay);
+    console.log('Course info element:', courseInfo);
+    console.log('Course select element:', courseSelect);
+    console.log('Quiz course data:', data.quiz.course);
+    
+    if (data.quiz.course) {
+        courseDisplay.textContent = data.quiz.course.title + ' (ID: ' + data.quiz.course.id + ')';
+        courseInfo.textContent = 'Current: ' + data.quiz.course.title;
+        
+        // Try to set course dropdown value
+        if (courseSelect) {
+            courseSelect.value = data.quiz.course.id;
+            console.log('Course dropdown set to:', data.quiz.course.id);
+            console.log('Course dropdown value after setting:', courseSelect.value);
+            console.log('Course dropdown options:', courseSelect.options);
+        } else {
+            console.log('Course dropdown element not found');
+        }
+        
+        console.log('Course info populated with:', data.quiz.course.title);
+    } else {
+        courseDisplay.textContent = 'No course assigned';
+        courseInfo.textContent = 'No course assigned';
+        console.log('Course info not populated - no course data');
+    }
+    
+    // Debug section content
+    let html = '<div class="row">';
+    
+    // Basic Quiz Info
+    html += '<div class="col-md-6"><strong>Quiz ID:</strong> ' + (data.quiz.id || 'N/A') + '</div>';
+    html += '<div class="col-md-6"><strong>Title:</strong> ' + (data.quiz.title || 'N/A') + '</div>';
+    html += '<div class="col-md-6"><strong>Description:</strong> ' + (data.quiz.description || 'None') + '</div>';
+    html += '<div class="col-md-6"><strong>Created:</strong> ' + (data.quiz.createdAt || 'N/A') + '</div>';
+    html += '<div class="col-md-6"><strong>Updated:</strong> ' + (data.quiz.updatedAt || 'Never') + '</div>';
+    
+    // Course Info
+    if (data.quiz.course) {
+        html += '<div class="col-md-6"><strong>Course ID:</strong> ' + data.quiz.course.id + '</div>';
+        html += '<div class="col-md-6"><strong>Course Title:</strong> ' + data.quiz.course.title + '</div>';
+    } else {
+        html += '<div class="col-md-12"><strong>Course:</strong> No course assigned</div>';
+    }
+    
+    // Quiz Settings
+    html += '<div class="col-md-6"><strong>Time Limit:</strong> ' + (data.quiz.timeLimit || 'No limit') + ' minutes</div>';
+    html += '<div class="col-md-6"><strong>Passing Score:</strong> ' + (data.quiz.passingScore || 70) + '%</div>';
+    html += '<div class="col-md-6"><strong>Max Attempts:</strong> ' + (data.quiz.maxAttempts || 3) + '</div>';
+    html += '<div class="col-md-6"><strong>Randomize:</strong> ' + (data.quiz.randomizeQuestions ? 'Yes' : 'No') + '</div>';
+    html += '<div class="col-md-6"><strong>Show Results:</strong> ' + (data.quiz.showResults !== false ? 'Yes' : 'No') + '</div>';
+    
+    html += '</div>';
+    
+    // Questions Count (if available)
+    if (data.quiz.questionsCount !== undefined) {
+        html += '<div class="mt-2"><strong>Questions Count:</strong> ' + data.quiz.questionsCount + '</div>';
+    }
+    
+    // Raw JSON for debugging
+    html += '<details class="mt-3"><summary>Raw JSON Data</summary><pre class="bg-light p-2 rounded" style="font-size: 12px; max-height: 200px; overflow-y: auto;">' + JSON.stringify(data, null, 2) + '</pre></details>';
+    
+    dataContent.innerHTML = html;
+    console.log('=== DISPLAY QUIZ DATA COMPLETED ===');
+}
+
+function toggleQuizDataDisplay() {
+    const dataContent = document.getElementById('quizDataContent');
+    const toggleIcon = document.getElementById('quizDataToggleIcon');
+    const toggleButton = toggleIcon.parentElement;
+    
+    if (dataContent.style.display === 'none') {
+        dataContent.style.display = 'block';
+        toggleIcon.className = 'bi bi-eye-slash';
+        toggleButton.innerHTML = '<i class="bi bi-eye-slash" id="quizDataToggleIcon"></i> Hide';
+    } else {
+        dataContent.style.display = 'none';
+        toggleIcon.className = 'bi bi-eye';
+        toggleButton.innerHTML = '<i class="bi bi-eye" id="quizDataToggleIcon"></i> Show';
+    }
+}
+
+function loadCoursesForEdit() {
+    console.log('=== LOAD COURSES FOR EDIT CALLED ===');
+    fetch('/quiz/courses')
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('API Response:', data);
+            if (data.success) {
+                const select = document.getElementById('editQuizCourse');
+                console.log('Edit select found:', !!select);
+                if (select) {
+                    console.log('Before clearing - Select HTML:', select.innerHTML);
+                    select.innerHTML = '<option value="">No Course</option>';
+                    data.courses.forEach(course => {
+                        const statusIcon = (course.status === 'active' || course.status === 'live') ? '✅ ' + course.status.charAt(0).toUpperCase() + course.status.slice(1) : '⏸️ ' + course.status.charAt(0).toUpperCase() + course.status.slice(1);
+                        select.innerHTML += `<option value="${course.id}">${course.title} - ${statusIcon}</option>`;
+                    });
+                    console.log('After adding - Select HTML:', select.innerHTML);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error loading courses:', error);
+        });
+}
+
+function updateQuiz() {
+    const form = document.getElementById('editQuizForm');
+    const quizId = document.getElementById('editQuizId').value;
+    
+    if (!quizId) {
+        showNotification('Quiz ID not found', 'warning');
+        return;
+    }
+    
+    // Get form data
+    const formData = new FormData(form);
+    const data = {
+        title: formData.get('title'),
+        course_id: formData.get('course_id') || null,
+        description: formData.get('description'),
+        time_limit: formData.get('time_limit') || null,
+        passing_score: formData.get('passing_score') || 70,
+        max_attempts: formData.get('max_attempts') || 3,
+        randomize_questions: formData.get('randomize_questions') === 'on',
+        show_results: formData.get('show_results') === 'on'
+    };
+    
+    // Validate required fields
+    if (!data.title || data.title.trim().length < 3) {
+        showNotification('Quiz title must be at least 3 characters long', 'warning');
+        document.getElementById('editQuizTitle').focus();
+        return;
+    }
+    
+    // Send update request
+    fetch(`/quiz/${quizId}/edit`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editQuizModal'));
+            modal.hide();
+            
+            // Show success message
+            showNotification('Quiz updated successfully!', 'success');
+            
+            // Reload page to show updated quiz
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification('Error: ' + (data.message || 'Failed to update quiz'), 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while updating the quiz', 'danger');
+    });
+}
+
+function deleteQuiz(quizId) {
+    // Show modern confirmation dialog
+    showDeleteQuizConfirmation(quizId);
+}
+
+function showDeleteQuizConfirmation(quizId) {
+    const dialog = document.createElement('div');
+    dialog.innerHTML = `
+        <div class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);" id="deleteQuizConfirmModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirm Delete</h5>
+                        <button type="button" class="btn-close btn-close-white" onclick="closeDeleteQuizDialog()"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <i class="bi bi-exclamation-triangle text-warning fs-1 mb-3"></i>
+                        <p class="mb-0">Are you sure you want to delete this quiz?</p>
+                        <p class="text-muted small mb-0">This action cannot be undone and will also delete all questions in this quiz.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeDeleteQuizDialog()">Cancel</button>
+                        <button type="button" class="btn btn-danger" onclick="confirmDeleteQuiz(${quizId})">Delete Quiz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(dialog);
+}
+
+function closeDeleteQuizDialog() {
+    const dialog = document.getElementById('deleteQuizConfirmModal');
+    if (dialog) {
+        dialog.remove();
+    }
+}
+
+function confirmDeleteQuiz(quizId) {
+    closeDeleteQuizDialog();
+    
+    fetch(`/quiz/${quizId}/delete`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Quiz deleted successfully!', 'success');
+            location.reload();
+        } else {
+            showNotification('Error: ' + data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while deleting the quiz', 'danger');
+    });
+}
+
+function refreshResults() {
+    location.reload();
+}
+
+function testSorting() {
+    console.log('=== TEST SORTING CALLED ===');
+    
+    // Set the sort dropdown to a test value
+    const sortSelect = document.querySelector('select[name="sortBy"]');
+    if (sortSelect) {
+        sortSelect.value = 'name';
+        console.log('Set sort dropdown to:', sortSelect.value);
+    }
+    
+    // Trigger the sorting function
+    filterAndSortQuizzes();
+}
+
+function exportResults() {
+    // Ask user for export format using modern notification instead of confirm
+    showExportChoiceDialog();
+}
+
+function showExportChoiceDialog() {
+    // Create modern export choice dialog
+    const dialog = document.createElement('div');
+    dialog.innerHTML = `
+        <div class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);" id="exportChoiceModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Choose Export Format</h5>
+                        <button type="button" class="btn-close btn-close-white" onclick="closeExportDialog()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Select your preferred export format:</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg" onclick="selectExportFormat('pdf')">
+                                <i class="bi bi-file-earmark-pdf me-2"></i>
+                                Beautiful PDF Report
+                                <small class="d-block text-white-50">Professional design with styling</small>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-lg" onclick="selectExportFormat('csv')">
+                                <i class="bi bi-file-earmark-excel me-2"></i>
+                                CSV Data Export
+                                <small class="d-block text-muted">Raw data for spreadsheets</small>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeExportDialog()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(dialog);
+}
+
+function closeExportDialog() {
+    const dialog = document.getElementById('exportChoiceModal');
+    if (dialog) {
+        dialog.remove();
+    }
+}
+
+function selectExportFormat(format) {
+    closeExportDialog();
+    if (format === 'pdf') {
+        exportToPDF();
+    } else {
+        exportToCSV();
+    }
+}
+
+function exportToPDF() {
+    // Show loading message
+    const loadingMsg = document.createElement('div');
+    loadingMsg.innerHTML = '<div class="alert alert-info"><i class="bi bi-file-earmark-text me-2"></i>Generating beautiful HTML report... Please wait.</div>';
+    document.querySelector('.container').prepend(loadingMsg);
+    
+    fetch('/quiz/export/pdf')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('PDF export failed');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            // Generate filename with current timestamp
+            const now = new Date();
+            const timestamp = now.getFullYear() + '-' + 
+                            String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                            String(now.getDate()).padStart(2, '0') + '-' + 
+                            String(now.getHours()).padStart(2, '0') + '-' + 
+                            String(now.getMinutes()).padStart(2, '0') + '-' + 
+                            String(now.getSeconds()).padStart(2, '0');
+            
+            a.download = `quiz-report-${timestamp}.html`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            // Remove loading message
+            loadingMsg.remove();
+            
+            // Show success message with file info
+            const successMsg = document.createElement('div');
+            successMsg.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <strong>Success!</strong> Beautiful HTML report generated and downloaded!<br>
+                    <small>File: quiz-report-${timestamp}.html</small><br>
+                    <small>The HTML file has also been saved to: /public/exports/</small>
+                </div>`;
+            document.querySelector('.container').prepend(successMsg);
+            
+            // Auto-remove success message after 5 seconds
+            setTimeout(() => successMsg.remove(), 5000);
+        })
+        .catch(error => {
+            console.error('PDF Export error:', error);
+            loadingMsg.remove();
+            showNotification('Failed to generate HTML report. Please try again.', 'danger');
+        });
+}
+
+function exportToCSV() {
+    // Get all quizzes data
+    fetch('/quiz/export')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Export failed');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `quiz-export-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            // Show success message
+            showNotification('Quiz data exported successfully!', 'success');
+        })
+        .catch(error => {
+            console.error('Export error:', error);
+            showNotification('Failed to export quiz data. Please try again.', 'danger');
+        });
+}
+</script>
 {% endblock %}

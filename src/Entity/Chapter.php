@@ -28,6 +28,9 @@ class Chapter
     #[ORM\OneToMany(mappedBy: 'chapter', targetEntity: Lesson::class, cascade: ['persist', 'remove'])]
     private Collection $lessons;
 
+    #[ORM\Column]
+    private int $sortOrder = 0;
+
     public function __construct()
     {
         $this->lessons = new ArrayCollection();
@@ -88,6 +91,18 @@ class Chapter
                 $lesson->setChapter(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSortOrder(): int
+    {
+        return $this->sortOrder;
+    }
+
+    public function setSortOrder(int $sortOrder): static
+    {
+        $this->sortOrder = $sortOrder;
 
         return $this;
     }

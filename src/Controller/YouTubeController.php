@@ -3,28 +3,66 @@
 namespace App\Controller;
 
 use App\Service\YouTubeService;
+use App\Repository\CourseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class YouTubeController extends AbstractController
 {
     private YouTubeService $youTubeService;
+    private Security $security;
 
-    public function __construct(YouTubeService $youTubeService)
+    public function __construct(YouTubeService $youTubeService, Security $security)
     {
         $this->youTubeService = $youTubeService;
+        $this->security = $security;
     }
 
     /**
      * Video search interface page
      */
     #[Route('/instructor/video-search', name: 'instructor_video_search', methods: ['GET'])]
-    public function videoSearchInterface(): Response
+    public function videoSearchInterface(CourseRepository $courseRepository): Response
     {
-        return $this->render('instructor/video-search.html.twig');
+        // Get the currently logged-in user
+        $user = $this->security->getUser();
+        
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Get courses for this instructor
+        $courses = $courseRepository->findBy(['user' => $user]);
+        
+        // Debug: Log course information
+        error_log('Video Search - User ID: ' . $user->getId());
+        error_log('Video Search - Courses found: ' . count($courses));
+        
+        foreach ($courses as $course) {
+            error_log('Video Search - Course: ' . $course->getTitle() . ' (ID: ' . $course->getId() . ')');
+            
+            // Check chapters and lessons for this course
+            $chapters = $course->getChapters();
+            error_log('Video Search - Course ' . $course->getTitle() . ' has ' . $chapters->count() . ' chapters');
+            
+            foreach ($chapters as $chapter) {
+                $lessons = $chapter->getLessons();
+                error_log('Video Search - Chapter ' . $chapter->getTitle() . ' has ' . $lessons->count() . ' lessons');
+                
+                foreach ($lessons as $lesson) {
+                    error_log('Video Search - Lesson: ' . $lesson->getTitle() . ' (Status: ' . $lesson->getStatus() . ')');
+                }
+            }
+        }
+        
+        return $this->render('instructor/video-search.html.twig', [
+            'courses' => $courses,
+            'hasCourses' => count($courses) > 0
+        ]);
     }
 
     /**
@@ -99,22 +137,107 @@ class YouTubeController extends AbstractController
     }
 
     /**
-     * Check if video can be embedded
+     * Debug endpoint to check courses and lessons
      */
-    #[Route('/api/youtube/check/{videoId}', name: 'api_youtube_check', methods: ['GET'])]
-    public function checkVideoEmbeddable(string $videoId): JsonResponse
+    #[Route('/api/debug/courses', name: 'api_debug_courses', methods: ['GET'])]
+    public function debugCourses(CourseRepository $courseRepository): JsonResponse
     {
         try {
-            $isEmbeddable = $this->youTubeService->isVideoEmbeddable($videoId);
+            // Get the currently logged-in user
+            $user = $this->security->getUser();
+            
+            if (!$user) {
+                return new JsonResponse([
+                    'success' => false,
+                    'error' => 'User not authenticated'
+                ], 401);
+            }
+
+            // Get user's courses
+            $courses = $courseRepository->findBy(['user' => $user]);
+            
+            $debugData = [
+                'user_id' => $user->getId(),
+                'user_email' => $user->getEmail(),
+                'courses_count' => count($courses),
+                'courses' => []
+            ];
+            
+            foreach ($courses as $course) {
+                $debugData['courses'][] = [
+                    'id' => $course->getId(),
+                    'title' => $course->getTitle(),
+                    'status' => $course->getStatus(),
+                    'chapters_count' => $course->getChapters()->count(),
+                    'chapters' => []
+                ];
+                
+                foreach ($course->getChapters() as $chapter) {
+                    $debugData['courses'][count($debugData['courses']) - 1]['chapters'][] = [
+                        'id' => $chapter->getId(),
+                        'title' => $chapter->getTitle(),
+                        'lessons_count' => $chapter->getLessons()->count(),
+                        'lessons' => []
+                    ];
+                    
+                    foreach ($chapter->getLessons() as $lesson) {
+                        $debugData['courses'][count($debugData['courses']) - 1]['chapters'][count($debugData['courses'][count($debugData['courses']) - 1]['chapters']) - 1]['lessons'][] = [
+                            'id' => $lesson->getId(),
+                            'title' => $lesson->getTitle(),
+                            'status' => $lesson->getStatus(),
+                            'type' => $lesson->getType()
+                        ];
+                    }
+                }
+            }
             
             return new JsonResponse([
                 'success' => true,
-                'embeddable' => $isEmbeddable
+                'debug_data' => $debugData
             ]);
+            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Failed to check video: ' . $e->getMessage()
+                'error' => 'Debug failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Debug endpoint to check lessons API
+     */
+    #[Route('/api/debug/lessons', name: 'api_debug_lessons', methods: ['GET'])]
+    public function debugLessons(): JsonResponse
+    {
+        try {
+            // Get the currently logged-in user
+            $user = $this->security->getUser();
+            
+            if (!$user) {
+                return new JsonResponse([
+                    'success' => false,
+                    'error' => 'User not authenticated'
+                ], 401);
+            }
+
+            error_log('Debug Lessons API - User ID: ' . $user->getId());
+            
+            // Test the lessons API directly
+            $lessonsController = new \App\Controller\LessonVideoController(
+                $this->youTubeService,
+                $this->security
+            );
+            
+            $response = $lessonsController->getLessons();
+            
+            return $response;
+            
+        } catch (\Exception $e) {
+            error_log('Debug Lessons API Error: ' . $e->getMessage());
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Debug failed: ' . $e->getMessage()
             ], 500);
         }
     }

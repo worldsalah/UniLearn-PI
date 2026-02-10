@@ -1,0 +1,305 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}{{ job.title }} - Job Details - Admin{% endblock %}
+
+{% block admin_content %}
+<!-- Title -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-2">{{ job.title }}</h1>
+                <p class="text-muted mb-0">Job Details - Admin View</p>
+            </div>
+            <div>
+                <a href="{{ path('app_admin_job_index') }}" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left me-1"></i>Back to List
+                </a>
+                <a href="{{ path('app_admin_job_edit', {id: job.id}) }}" class="btn btn-primary">
+                    <i class="fas fa-edit me-1"></i>Edit Job
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Details -->
+<div class="row">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+        <!-- Job Card -->
+        <div class="card bg-transparent mb-4">
+            <div class="card-body">
+                <!-- Job Header -->
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div>
+                        <h2 class="mb-2">{{ job.title }}</h2>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% if job.location %}
+                                <span class="badge bg-info bg-opacity-10 text-info"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
+                            {% endif %}
+                            {% if job.type %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary">{{ job.type }}</span>
+                            {% endif %}
+                            {% if job.experienceLevel %}
+                                <span class="badge bg-warning bg-opacity-10 text-warning">{{ job.experienceLevel }}</span>
+                            {% endif %}
+                            <span class="text-muted small"><i class="fas fa-calendar-alt me-1"></i>{{ job.createdAt|date('d M Y') }}</span>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <h3 class="text-primary mb-0">${{ job.budget|number_format(2) }}</h3>
+                        {% if job.status == 'open' %}
+                            <span class="badge bg-success bg-opacity-10 text-success">Open</span>
+                        {% elseif job.status == 'assigned' %}
+                            <span class="badge bg-warning bg-opacity-10 text-warning">Assigned</span>
+                        {% else %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger">Completed</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Job Description -->
+                <div class="mb-4">
+                    <h5 class="mb-3">Job Description</h5>
+                    <div class="bg-light rounded p-3">
+                        {{ job.description|raw }}
+                    </div>
+                </div>
+                
+                {% if job.requirements %}
+                <!-- Requirements -->
+                <div class="mb-4">
+                    <h5 class="mb-3">Requirements</h5>
+                    <div class="bg-light rounded p-3">
+                        {{ job.requirements|raw }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if job.skills %}
+                <!-- Skills -->
+                <div class="mb-4">
+                    <h5 class="mb-3">Required Skills</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in job.skills|split(',') %}
+                            <span class="badge bg-secondary">{{ skill|trim }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Job Metadata -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="bg-light rounded p-3">
+                            <small class="text-muted d-block">Job ID</small>
+                            <strong>#{{ job.id }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light rounded p-3">
+                            <small class="text-muted d-block">Duration</small>
+                            <strong>{{ job.duration ?? 'Not specified' }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light rounded p-3">
+                            <small class="text-muted d-block">Budget</small>
+                            <strong class="text-primary">${{ job.budget|number_format(2) }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light rounded p-3">
+                            <small class="text-muted d-block">Status</small>
+                            <strong>{{ job.status|title }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Client Information -->
+        <div class="card bg-transparent">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="mb-0">Client Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-lg me-3">
+                        <div class="avatar-img rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center">
+                            <span class="fw-bold fs-4">{{ job.client.name|slice(0, 1)|upper }}</span>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">{{ job.client.name }}</h6>
+                        <p class="text-muted mb-1">{{ job.client.email }}</p>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-primary bg-opacity-10 text-primary">{{ job.client.role.name }}</span>
+                            <span class="badge bg-success bg-opacity-10 text-success">{{ job.client.status }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="{{ path('app_admin_student_show', {id: job.client.id}) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-user me-1"></i>View Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- Quick Actions -->
+        <div class="card bg-transparent mb-4">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ path('app_admin_job_edit', {id: job.id}) }}" class="btn btn-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Job
+                    </a>
+                    <a href="{{ path('app_job_show', {id: job.id}) }}" class="btn btn-outline-primary" target="_blank">
+                        <i class="fas fa-eye me-2"></i>View Public Page
+                    </a>
+                    <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#statusModal">
+                        <i class="fas fa-toggle-on me-2"></i>Change Status
+                    </button>
+                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="fas fa-trash me-2"></i>Delete Job
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Job Statistics -->
+        <div class="card bg-transparent mb-4">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="mb-0">Job Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 text-center">
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3">
+                            <h4 class="text-primary mb-0">{{ job.applications.count }}</h4>
+                            <small class="text-muted d-block">Applications</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3">
+                            <h4 class="text-success mb-0">{{ job.budget|number_format(0) }}</h4>
+                            <small class="text-muted d-block">Budget ($)</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3">
+                            <h4 class="text-info mb-0">{{ job.favorites.count }}</h4>
+                            <small class="text-muted d-block">Favorites</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3">
+                            <h4 class="text-warning mb-0">{{ job.createdAt|date('d M Y') }}</h4>
+                            <small class="text-muted d-block">Posted Date</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Applications -->
+        <div class="card bg-transparent">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="mb-0">Recent Applications</h5>
+            </div>
+            <div class="card-body">
+                {% if job.applications.count > 0 %}
+                    {% for application in job.applications|slice(0, 3) %}
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="avatar avatar-sm me-2">
+                                <div class="avatar-img rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center">
+                                    <span class="fw-bold">{{ application.freelancer.name|slice(0, 1)|upper }}</span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">{{ application.freelancer.name }}</h6>
+                                <small class="text-muted">{{ application.createdAt|date('d M Y') }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-user-plus fa-2x mb-3"></i>
+                        <p class="mb-0">No applications yet</p>
+                        <small class="text-muted">This job hasn't received any applications</small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Job</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fas fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+                    <h6>Are you sure you want to delete this job?</h6>
+                    <p class="text-muted mb-0">{{ job.title }}</p>
+                    <small class="text-danger">This action cannot be undone.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{{ path('app_admin_job_delete', {id: job.id}) }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ job.id) }}">
+                    <button type="submit" class="btn btn-danger">Delete Job</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status Change Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusModalLabel">Change Job Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Current Status</label>
+                    <div>
+                        <span class="badge bg-success bg-opacity-10 text-success">{{ job.status|title }}</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">New Status</label>
+                    <form method="post" action="{{ path('app_admin_job_edit', {id: job.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ job.id) }}">
+                        <select name="status" class="form-select">
+                            <option value="open" {% if job.status == 'open' %}selected{% endif %}>Open</option>
+                            <option value="assigned" {% if job.status == 'assigned' %}selected{% endif %}>Assigned</option>
+                            <option value="completed" {% if job.status == 'completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Status</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

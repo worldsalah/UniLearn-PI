@@ -25,7 +25,7 @@ class CategoryRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
             ->where('c.isActive = :isActive')
-            ->setParameter('isActive', true)
+            ->setParameter('isActive', 1)  // Use integer 1 instead of boolean true
             ->orderBy('c.name', 'ASC')
             ->getQuery()
             ->getResult();

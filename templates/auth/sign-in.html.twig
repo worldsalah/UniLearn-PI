@@ -1,9 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'front_base.html.twig' %}
 
 {% block title %}Sign In - Unilearn{% endblock %}
 
-{% block body %}
-{% include 'components/header.html.twig' %}
+{% block content %}
 
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
@@ -16,11 +15,11 @@
 					<div class="p-3 p-lg-5">
 						<!-- Title -->
 						<div class="text-center">
-							<h2 class="fw-bold">Welcome to our largest community</h2>
-							<p class="mb-0 h6 fw-light">Let's learn something new today!</p>
+							<h2 class="fw-bold">Welcome back!</h2>
+							<p class="mb-0 h6 fw-light">Nice to see you again, please login to your account.</p>
 						</div>
 						<!-- SVG Image -->
-						<img src="{{ asset('assets/images/element/02.svg') }}" class="mt-5" alt="">
+						<img src="{{ asset('assets/images/element/03.svg') }}" class="mt-5" alt="">
 						<!-- Info -->
 						<div class="d-sm-flex mt-5 align-items-center justify-content-center">
 							<!-- Avatar group -->
@@ -50,49 +49,97 @@
 						<div class="col-sm-10 col-xl-8 m-auto">
 							<!-- Title -->
 							<span class="mb-0 fs-1">👋</span>
-							<h1 class="fs-2">Login into Unilearn!</h1>
-							<p class="lead mb-4">Nice to see you! Please log in with your account.</p>
+							<h1 class="fs-2">Sign In into Unilearn!</h1>
+							<p class="lead mb-4">Nice to see you again! Please login to your account.</p>
+							
+							<!-- Alert -->
+							{% if error %}
+								<div class="alert alert-danger">
+									{{ error.messageKey|trans(error.messageData, 'Security') }}
+								</div>
+							{% endif %}
+
+							<!-- Flash messages -->
+							{% for type, messages in app.session.flashbag.all() %}
+								{% for message in messages %}
+									<div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+										{{ message|raw }}
+										<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+									</div>
+								{% endfor %}
+							{% endfor %}
 
 							<!-- Form START -->
-							<form>
-								<!-- Email -->
-								<div class="mb-4">
-									<label for="exampleInputEmail1" class="form-label">Email address *</label>
-									<div class="input-group input-group-lg">
-										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
-										<input type="email" class="form-control border-0 bg-light rounded-end ps-1" placeholder="E-mail" id="exampleInputEmail1">
+							{% if loginForm is defined %}
+								{{ form_start(loginForm, {'method': 'POST', 'action': path('app_login'), 'attr': {'novalidate': 'novalidate'}}) }}
+									{{ form_errors(loginForm) }}
+									<!-- Email -->
+									<div class="mb-4">
+										<label for="{{ loginForm.email.vars.id }}" class="form-label">Email address *</label>
+										<div class="input-group input-group-lg">
+											<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
+											{{ form_widget(loginForm.email, {'attr': {'class': 'form-control border-0 bg-light rounded-end ps-1', 'placeholder': 'Enter your email', 'value': last_username, 'novalidate': 'novalidate'}}) }}
+										</div>
+										{{ form_errors(loginForm.email) }}
 									</div>
-								</div>
-								<!-- Password -->
-								<div class="mb-4">
-									<label for="inputPassword5" class="form-label">Password *</label>
-									<div class="input-group input-group-lg">
-										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
-										<input type="password" class="form-control border-0 bg-light rounded-end ps-1" placeholder="password" id="inputPassword5">
+									<!-- Password -->
+									<div class="mb-4">
+										<label for="{{ loginForm.password.vars.id }}" class="form-label">Password *</label>
+										<div class="input-group input-group-lg">
+											<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
+											{{ form_widget(loginForm.password, {'attr': {'class': 'form-control border-0 bg-light rounded-end ps-1', 'placeholder': 'Enter your password', 'novalidate': 'novalidate'}}) }}
+										</div>
+										{{ form_errors(loginForm.password) }}
 									</div>
-									<div id="passwordHelpBlock" class="form-text">
-										Your password must be 8 characters at least 
+									<!-- Remember me -->
+									<div class="mb-4">
+										<div class="form-check">
+											<input type="checkbox" class="form-check-input" id="rememberme" name="_remember_me">
+											<label class="form-check-label" for="rememberme">Remember me</label>
+										</div>
 									</div>
-								</div>
-								<!-- Check box -->
-								<div class="mb-4 d-flex justify-content-between mb-4">
-									<div class="form-check">
-										<input type="checkbox" class="form-check-input" id="exampleCheck1">
-										<label class="form-check-label" for="exampleCheck1">Remember me</label>
+									<!-- Button -->
+									<div class="align-items-center mt-0">
+										<div class="d-grid">
+											<button type="submit" class="btn btn-primary mb-0">Sign In</button>
+										</div>
 									</div>
-									<div class="text-primary-hover">
-										<a href="{{ path('app_forgot_password') }}" class="text-secondary">
-											<u>Forgot password?</u>
-										</a>
+									<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+								{{ form_end(loginForm) }}
+							{% else %}
+								<form method="post" action="{{ path('app_login') }}" novalidate>
+									<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+									<!-- Email -->
+									<div class="mb-4">
+										<label for="inputEmail" class="form-label">Email address *</label>
+										<div class="input-group input-group-lg">
+											<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
+											<input type="email" class="form-control border-0 bg-light rounded-end ps-1" name="email" id="inputEmail" placeholder="Enter your email" value="{{ last_username is defined ? last_username : '' }}">
+										</div>
 									</div>
-								</div>
-								<!-- Button -->
-								<div class="align-items-center mt-0">
-									<div class="d-grid">
-										<button class="btn btn-primary mb-0" type="button">Login</button>
+									<!-- Password -->
+									<div class="mb-4">
+										<label for="inputPassword" class="form-label">Password *</label>
+										<div class="input-group input-group-lg">
+											<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
+											<input type="password" class="form-control border-0 bg-light rounded-end ps-1" name="password" id="inputPassword" placeholder="Enter your password">
+										</div>
 									</div>
-								</div>
-							</form>
+									<!-- Remember me -->
+									<div class="mb-4">
+										<div class="form-check">
+											<input type="checkbox" class="form-check-input" id="rememberme" name="_remember_me">
+											<label class="form-check-label" for="rememberme">Remember me</label>
+										</div>
+									</div>
+									<!-- Button -->
+									<div class="align-items-center mt-0">
+										<div class="d-grid">
+											<button type="submit" class="btn btn-primary mb-0">Sign In</button>
+										</div>
+									</div>
+								</form>
+							{% endif %}
 							<!-- Form END -->
 
 							<!-- Social buttons and divider -->
@@ -126,5 +173,4 @@
 </main>
 <!-- **************** MAIN CONTENT END **************** -->
 
-{% include 'components/footer.html.twig' %}
 {% endblock %}

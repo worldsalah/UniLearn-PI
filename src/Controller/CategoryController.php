@@ -27,7 +27,7 @@ class CategoryController extends AbstractController
 
     // Admin routes
     #[Route('/categories', name: 'admin_category_list')]
-    #[IsGranted('ROLE_ADMIN')]
+    // #[IsGranted('ROLE_ADMIN')]
     public function list(CategoryRepository $categoryRepository): Response
     {
         $categories = $categoryRepository->findCategoriesWithCourseCount();
@@ -38,7 +38,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/category/new', name: 'admin_category_new')]
-    #[IsGranted('ROLE_ADMIN')]
+    // #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         if ($request->isMethod('POST')) {
@@ -62,7 +62,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/category/{id}/edit', name: 'admin_category_edit')]
-    #[IsGranted('ROLE_ADMIN')]
+    // #[IsGranted('ROLE_ADMIN')]
     public function edit(Category $category, Request $request, EntityManagerInterface $entityManager): Response
     {
         if ($request->isMethod('POST')) {
@@ -84,7 +84,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/category/{id}/delete', name: 'admin_category_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    // #[IsGranted('ROLE_ADMIN')]
     public function delete(Category $category, CategoryRepository $categoryRepository, EntityManagerInterface $entityManager, Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         // Validate CSRF token
@@ -145,33 +145,4 @@ class CategoryController extends AbstractController
         return $this->redirectToRoute('admin_category_list');
     }
 
-    // Public routes
-    #[Route('/categories', name: 'app_categories')]
-    public function publicCategories(CategoryRepository $categoryRepository): Response
-    {
-        $categories = $categoryRepository->findActiveCategories();
-        
-        return $this->render('category/categories.html.twig', [
-            'categories' => $categories,
-        ]);
     }
-
-    #[Route('/category/{slug}', name: 'app_category_detail')]
-    public function categoryDetail(Category $category, CourseRepository $courseRepository): Response
-    {
-        if (!$category->isIsActive()) {
-            throw $this->createNotFoundException('Category not found');
-        }
-
-        // Get active courses in this category
-        $courses = $courseRepository->findBy(
-            ['category' => $category, 'status' => 'live'],
-            ['createdAt' => 'DESC']
-        );
-
-        return $this->render('category/detail.html.twig', [
-            'category' => $category,
-            'courses' => $courses,
-        ]);
-    }
-}

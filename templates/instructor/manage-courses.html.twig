@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'front_base.html.twig' %}
 
 {% block title %}Manage Courses - Eduport{% endblock %}
 
@@ -408,10 +408,7 @@
 </style>
 {% endblock %}
 
-{% block body %}
-<!-- Header START -->
-{% include 'components/header.html.twig' %}
-<!-- Header END -->
+{% block content %}
 
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
@@ -453,7 +450,7 @@ Page Banner START -->
 										<i class="fas fa-book me-1"></i>{{ courses|length }} Courses
 									</span>
 									<span class="badge bg-orange bg-opacity-10 text-orange">
-										<i class="fas fa-user-tag me-1"></i>{{ teacher.role|capitalize }}
+										<i class="fas fa-user-tag me-1"></i>{{ teacher.role.name|capitalize }}
 									</span>
 								</div>
 								<p class="text-muted mb-0">Professional Instructor | Content Creator | Educator</p>
@@ -509,7 +506,8 @@ Page content START -->
 								<a class="list-group-item active" href="{{ path('app_instructor_manage_courses') }}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
 								<a class="list-group-item" href="{{ path('instructor_video_search') }}"><i class="bi bi-youtube fa-fw me-2"></i>Video Search</a>
 								<a class="list-group-item" href="{{ path('app_instructor_quiz') }}"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-								<a class="list-group-item" href="{{ path('app_instructor_earnings') }}"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+								<a class="list-group-item" href="{{ path('all_bookings') }}"><i class="bi bi-calendar-check fa-fw me-2"></i>Booking</a>
+								<a class="list-group-item" href="{{ path('instructor_sessions') }}"><i class="bi bi-calendar-check fa-fw me-2"></i>Session</a>
 								<a class="list-group-item" href="{{ path('app_instructor_students') }}"><i class="bi bi-people fa-fw me-2"></i>Students</a>
 								<a class="list-group-item" href="{{ path('app_instructor_orders') }}"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
 								<a class="list-group-item" href="{{ path('app_instructor_reviews') }}"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
@@ -783,10 +781,6 @@ Page content END -->
 
 </main>
 <!-- **************** MAIN CONTENT END **************** -->
-
-<!-- Footer START -->
-{% include 'components/footer.html.twig' %}
-<!-- Footer END -->
 
 {% endblock %}
 

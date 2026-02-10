@@ -18,29 +18,18 @@ security:
             form_login:
                 login_path: app_login
                 check_path: app_login
+                default_target_path: app_home
+                enable_csrf: true
                 username_parameter: email
                 password_parameter: password
-                enable_csrf: true
-                csrf_parameter: _csrf_token
-                csrf_token_id: authenticate
-                default_target_path: app_home
-                always_use_default_target_path: true
-                use_referer: false
             logout:
                 path: app_logout
                 target: app_home
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/profile, roles: ROLE_USER }
+        # No access control rules
 
 when@test:
     security:

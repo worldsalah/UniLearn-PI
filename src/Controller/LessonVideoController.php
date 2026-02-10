@@ -4,23 +4,29 @@ namespace App\Controller;
 
 use App\Entity\Lesson;
 use App\Repository\LessonRepository;
+use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class LessonVideoController extends AbstractController
 {
     private LessonRepository $lessonRepository;
     private EntityManagerInterface $entityManager;
+    private Security $security;
 
     public function __construct(
         LessonRepository $lessonRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        Security $security
     ) {
         $this->lessonRepository = $lessonRepository;
         $this->entityManager = $entityManager;
+        $this->security = $security;
     }
 
     /**
@@ -82,8 +88,35 @@ class LessonVideoController extends AbstractController
     public function getLessons(): JsonResponse
     {
         try {
-            // Get lessons with their chapters and courses
-            $lessons = $this->lessonRepository->findBy(['status' => 'published'], ['id' => 'DESC']);
+            // Get the currently logged-in user
+            $user = $this->security->getUser();
+            
+            if (!$user) {
+                return new JsonResponse([
+                    'success' => false,
+                    'error' => 'User not authenticated'
+                ], 401);
+            }
+
+            // Debug: Log user info
+            error_log('User ID: ' . $user->getId() . ', Email: ' . $user->getEmail());
+
+            // Get lessons for this instructor's courses only
+            $lessons = $this->lessonRepository->createQueryBuilder('l')
+                ->join('l.chapter', 'c')
+                ->join('c.course', 'co')
+                ->where('co.user = :user')
+                ->andWhere('l.status = :status')
+                ->setParameter('user', $user)
+                ->setParameter('status', 'active')  // Changed from 'published' to 'active'
+                ->orderBy('co.id', 'ASC')
+                ->addOrderBy('c.id', 'ASC')
+                ->addOrderBy('l.id', 'ASC')
+                ->getQuery()
+                ->getResult();
+            
+            // Debug: Log lesson count
+            error_log('Found lessons: ' . count($lessons));
             
             $coursesData = [];
             foreach ($lessons as $lesson) {
@@ -124,17 +157,22 @@ class LessonVideoController extends AbstractController
                 }
             }
             
-            // Convert to indexed array for JSON response
+            // Convert to indexed array for JavaScript compatibility
             $coursesArray = array_values($coursesData);
+            
+            // Debug: Log final courses data
+            error_log('Final courses data: ' . print_r($coursesArray, true));
             
             return new JsonResponse([
                 'success' => true,
                 'courses' => $coursesArray
             ]);
+            
         } catch (\Exception $e) {
+            error_log('Error in getLessons: ' . $e->getMessage());
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Failed to fetch lessons: ' . $e->getMessage()
+                'error' => 'Failed to load lessons: ' . $e->getMessage()
             ], 500);
         }
     }

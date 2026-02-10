@@ -88,30 +88,30 @@
                         </ul>
                     </li>
 
-                    <!-- Nav item 2 Pages -->
+                    <!-- Nav item Pages -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
-                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
-                            <li> <a class="dropdown-item" href="{{ path('app_about') }}">About</a></li>
-                            <li> <a class="dropdown-item" href="{{ path('app_contact') }}">Contact</a></li>
-                            <li> <a class="dropdown-item" href="#">Blog</a></li>
-                            <li> <a class="dropdown-item" href="#">FAQ</a></li>
-                            <li> <a class="dropdown-item" href="#">Error 404</a></li>
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesDropdown">
+                            <li><a class="dropdown-item" href="#">About Us</a></li>
+                            <li><a class="dropdown-item" href="#">Contact</a></li>
+                            <li><a class="dropdown-item" href="#">Blog</a></li>
+                            <li><a class="dropdown-item" href="#">FAQ</a></li>
+                            <li><a class="dropdown-item" href="#">Error 404</a></li>
                         </ul>
                     </li>
 
-                    <!-- Nav item 3 Courses -->
+                    <!-- Nav item Courses -->
                     <li class="nav-item dropdown">
                         <a class="nav-link" href="#" id="coursesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Courses</a>
                         <ul class="dropdown-menu" aria-labelledby="coursesMenu">
                             <li> <a class="dropdown-item" href="#">Course Grid</a></li>
                             <li> <a class="dropdown-item" href="#">Course List</a></li>
                             <li> <a class="dropdown-item" href="#">Course Detail</a></li>
-                            <li> <a class="dropdown-item" href="{{ path('app_categories') }}">Course Categories</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('app_course_categories') }}">Course Categories</a></li>
                         </ul>
                     </li>
 
-                    <!-- Nav item 4 Instructors -->
+                    <!-- Nav item Instructors -->
                     <li class="nav-item dropdown">
                         <a class="nav-link" href="#" id="instructorsMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Instructors</a>
                         <ul class="dropdown-menu" aria-labelledby="instructorsMenu">
@@ -122,7 +122,7 @@
                         </ul>
                     </li>
 
-                    <!-- Nav item 5 Events -->
+                    <!-- Nav item Events -->
                     <li class="nav-item dropdown">
                         <a class="nav-link" href="#" id="eventsMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
                         <ul class="dropdown-menu" aria-labelledby="eventsMenu">
@@ -131,6 +131,14 @@
                         </ul>
                     </li>
 
+                    <!-- Nav item Session -->
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-success btn-sm text-white px-3 py-2 rounded-pill" href="{{ path('all_sessions') }}">
+                            <i class="bi bi-calendar-check me-2"></i>Session
+                        </a>
+                    </li>
+
+                    
                     <!-- Nav item 6 Blog -->
                     <li class="nav-item dropdown">
                         <a class="nav-link" href="#" id="blogMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog</a>
@@ -140,7 +148,8 @@
                             <li> <a class="dropdown-item" href="#">Blog Detail</a></li>
                         </ul>
                     </li>
-                </ul>
+
+                    </ul>
 
                 <!-- Nav Search START -->
                 <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
@@ -231,10 +240,20 @@
                             </li>
                             <li> <hr class="dropdown-divider"></li>
                             <!-- Links -->
-                            <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                            {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                            {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                            {% endif %}
                             <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
                         </ul>
                     </div>

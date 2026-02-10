@@ -152,10 +152,7 @@
                                 {{ form_widget(registrationForm.agreeTerms, {
                                     attr: { class: 'form-check-input' }
                                 }) }}
-                                {{ form_label(registrationForm.agreeTerms,
-                                    'By signing up, you agree to the terms of service',
-                                    { label_attr: { class: 'form-check-label' } }
-                                ) }}
+                                {{ form_label(registrationForm.agreeTerms, null, { label_attr: { class: 'form-check-label' } }) }}
                                 {{ form_errors(registrationForm.agreeTerms) }}
                             </div>
 
@@ -175,7 +172,7 @@
                                 </div>
 
                                 <div class="col-xxl-6 d-grid">
-                                    <a href="#" class="btn bg-google mb-2 mb-xxl-0">
+                                    <a href="{{ path('connect_google') }}" class="btn bg-google mb-2 mb-xxl-0">
                                         <i class="fab fa-fw fa-google text-white me-2"></i>Signup with Google
                                     </a>
                                 </div>

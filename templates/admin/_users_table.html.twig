@@ -160,8 +160,72 @@
 </div>
 <!-- Card END -->
 
+<!-- Inline Edit Form -->
+<div id="editFormContainer" class="card border bg-transparent rounded-3 mb-4" style="display: none;">
+    <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Edit User</h5>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="cancelEdit()">
+            <i class="fas fa-times"></i> Cancel
+        </button>
+    </div>
+    <div class="card-body">
+        <form id="inlineEditForm" method="post">
+            <input type="hidden" id="editUserId" name="userId">
+            <input type="hidden" name="_token" id="editToken">
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="editFullName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="editFullName" name="fullName" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="editEmail" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="editEmail" name="email" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="editRole" class="form-label">Role</label>
+                    <select class="form-select" id="editRole" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="instructor">Instructor</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">User ID</label>
+                    <input type="text" class="form-control" id="editUserIdDisplay" readonly>
+                    <small class="text-muted">User ID cannot be changed</small>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Created At</label>
+                    <input type="text" class="form-control" id="editCreatedAt" readonly>
+                    <small class="text-muted">Registration date cannot be changed</small>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Current Role</label>
+                    <div class="form-control">
+                        <span id="currentRoleDisplay"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary" onclick="cancelEdit()">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    let editingUserId = null;
+    let originalRowContent = null;
+
     // Add confirmation dialog for delete buttons
     const deleteForms = document.querySelectorAll('.delete-user-form');
     
@@ -179,5 +243,142 @@ document.addEventListener('DOMContentLoaded', function() {
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
+
+    // Edit user button click
+    document.querySelectorAll('.edit-user-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const userId = this.dataset.userId;
+            showEditForm(userId);
+        });
+    });
+
+    // Show edit form
+    function showEditForm(userId) {
+        const row = document.getElementById(`user-row-${userId}`);
+        const nameElement = row.querySelector('.user-name a');
+        const emailElement = row.querySelector('td:nth-child(4)');
+        const roleElement = row.querySelector('.badge');
+        
+        // Store original content
+        editingUserId = userId;
+        originalRowContent = row.innerHTML;
+        
+        // Populate form
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editUserIdDisplay').value = userId;
+        document.getElementById('editFullName').value = nameElement.textContent.trim();
+        document.getElementById('editEmail').value = emailElement.textContent.trim();
+        document.getElementById('editRole').value = roleElement.textContent.trim().toLowerCase();
+        document.getElementById('currentRoleDisplay').textContent = roleElement.textContent.trim();
+        document.getElementById('currentRoleDisplay').className = roleElement.className;
+        
+        // Set CSRF token
+        const csrfToken = document.querySelector(`input[name="_token"][value*="${userId}"]`);
+        if (csrfToken) {
+            document.getElementById('editToken').value = csrfToken.value;
+        }
+        
+        // Get created date from the row (assuming it's in the 5th column)
+        const createdAtElement = row.querySelector('td:nth-child(5)');
+        if (createdAtElement) {
+            document.getElementById('editCreatedAt').value = createdAtElement.textContent.trim();
+        }
+        
+        // Hide the row and show edit form
+        row.style.display = 'none';
+        document.getElementById('editFormContainer').style.display = 'block';
+        
+        // Scroll to edit form
+        document.getElementById('editFormContainer').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Cancel edit
+    window.cancelEdit = function() {
+        if (editingUserId) {
+            const row = document.getElementById(`user-row-${editingUserId}`);
+            row.style.display = '';
+            document.getElementById('editFormContainer').style.display = 'none';
+            editingUserId = null;
+            originalRowContent = null;
+        }
+    };
+
+    // Handle form submission
+    document.getElementById('inlineEditForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const userId = document.getElementById('editUserId').value;
+        const fullName = document.getElementById('editFullName').value;
+        const email = document.getElementById('editEmail').value;
+        const role = document.getElementById('editRole').value;
+
+        if (!fullName || !email || !role) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        // Create form data
+        const formData = new FormData();
+        formData.append('fullName', fullName);
+        formData.append('email', email);
+        formData.append('role', role);
+        formData.append('_token', document.getElementById('editToken').value);
+
+        // Submit form via POST
+        fetch(`/admin/users/${userId}/edit`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Update the table row with new data
+                const row = document.getElementById(`user-row-${userId}`);
+                const nameElement = row.querySelector('.user-name a');
+                const emailElement = row.querySelector('td:nth-child(4)');
+                const roleElement = row.querySelector('.badge');
+                
+                nameElement.textContent = fullName;
+                emailElement.textContent = email;
+                roleElement.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+                
+                // Update role badge color
+                roleElement.className = `badge bg-${role === 'admin' ? 'danger' : role === 'instructor' ? 'warning' : 'info'}`;
+                
+                // Show success message
+                showAlert('User updated successfully!', 'success');
+                
+                // Hide edit form and show row
+                row.style.display = '';
+                document.getElementById('editFormContainer').style.display = 'none';
+                editingUserId = null;
+                originalRowContent = null;
+            } else {
+                showAlert('Error updating user', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Error updating user', 'error');
+        });
+    });
+
+    // Show alert function
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        const cardBody = document.querySelector('.card-body');
+        cardBody.insertBefore(alertDiv, cardBody.firstChild);
+        
+        // Auto dismiss after 5 seconds
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
 });
 </script>

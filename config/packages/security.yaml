@@ -44,6 +44,7 @@ security:
         - { path: ^/dashboard, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/welcome, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/courses, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/connect/google, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

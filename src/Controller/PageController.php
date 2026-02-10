@@ -28,6 +28,12 @@ class PageController extends AbstractController
         return $this->render('course/index.html.twig');
     }
     
+    #[Route('/welcome/google', name: 'app_welcome_google')]
+    public function welcomeGoogle(): Response
+    {
+        return $this->render('auth/index-after-login.html.twig');
+    }
+    
     #[Route('/home-variant', name: 'app_home_variant')]
     public function homeVariant(): Response
     {

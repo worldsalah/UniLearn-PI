@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Role;
-use App\Form\EditProfileFormType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -85,42 +84,5 @@ class AdminController extends AbstractController
         }
 
         return $this->redirectToRoute('app_admin_dashboard');
-    }
-
-    #[Route('/edit-profile', name: 'app_admin_edit_profile')]
-    public function editProfile(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $user = $this->getUser();
-        
-        $form = $this->createForm(EditProfileFormType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Handle profile picture upload if provided
-            $profilePictureFile = $form->get('profilePicture')->getData();
-            if ($profilePictureFile) {
-                $newFilename = uniqid().'.'.$profilePictureFile->guessExtension();
-                
-                try {
-                    $profilePictureFile->move(
-                        $this->getParameter('profile_pictures_directory'),
-                        $newFilename
-                    );
-                    $user->setProfilePicture($newFilename);
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Failed to upload profile picture.');
-                }
-            }
-
-            $entityManager->flush();
-            $this->addFlash('success', 'Profile updated successfully!');
-
-            return $this->redirectToRoute('app_admin_edit_profile');
-        }
-
-        return $this->render('admin/edit_profile.html.twig', [
-            'editProfileForm' => $form->createView(),
-            'user' => $user,
-        ]);
     }
 }

@@ -4,11 +4,16 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
+#[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['username'], message: 'This username is already taken.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -16,22 +21,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    #[ORM\Column(name: 'full_name', type: 'string', length: 100)]
+    #[Assert\NotBlank(message: 'Please enter your full name.')]
+    #[Assert\Length(min: 3, minMessage: 'Your full name must be at least {{ limit }} characters long.')]
+    private ?string $fullName = null;
+
     #[ORM\Column(name: 'first_name', type: 'string', length: 50, nullable: true)]
     private ?string $firstName = null;
 
     #[ORM\Column(name: 'last_name', type: 'string', length: 50, nullable: true)]
     private ?string $lastName = null;
 
-    #[ORM\Column(name: 'full_name', type: 'string', length: 100)]
-    private ?string $fullName = null;
+    #[ORM\Column(name: 'profile_picture', type: 'string', length: 255, nullable: true)]
+    private ?string $profilePicture = null;
 
-    #[ORM\Column(type: 'string', length: 50, unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', length: 50, unique: true)]
+    #[Assert\NotBlank(message: 'Please enter a username.')]
+    #[Assert\Length(min: 3, minMessage: 'Your username must be at least {{ limit }} characters long.')]
     private ?string $username = null;
 
     #[ORM\Column(type: 'string', length: 100, unique: true)]
+    #[Assert\NotBlank(message: 'Please enter an email.')]
+    #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column]
     private ?string $password = null;
 
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
@@ -46,9 +60,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $education = [];
 
-    #[ORM\Column(name: 'profile_picture', type: 'string', length: 255, nullable: true)]
-    private ?string $profilePicture = null;
-
     #[ORM\Column(name: 'facebook_username', type: 'string', length: 100, nullable: true)]
     private ?string $facebookUsername = null;
 
@@ -61,16 +72,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'youtube_url', type: 'string', length: 255, nullable: true)]
     private ?string $youtubeUrl = null;
 
-    #[ORM\ManyToOne(targetEntity: Role::class)]
-    #[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')]
+    #[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
+    #[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id', nullable: false)]
     private ?Role $role = null;
 
     #[ORM\Column(name: 'created_at', type: 'datetime')]
     private ?\DateTimeInterface $createdAt = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $agreeTerms = false;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $googleId = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateFullName(): void
+    {
+        // This can be left empty or removed if fullName is set directly.
     }
 
     /* ================= SECURITY ================= */
@@ -97,12 +121,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getId(): ?int { return $this->id; }
 
+    public function getFullName(): ?string { return $this->fullName; }
+
+    public function setFullName(string $fullName): self
+    {
+        $this->fullName = $fullName;
+        return $this;
+    }
+
     public function getFirstName(): ?string { return $this->firstName; }
 
     public function setFirstName(?string $firstName): self
     {
         $this->firstName = $firstName;
-        $this->updateFullName();
         return $this;
     }
 
@@ -111,22 +142,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(?string $lastName): self
     {
         $this->lastName = $lastName;
-        $this->updateFullName();
-        return $this;
-    }
-
-    private function updateFullName(): void
-    {
-        if ($this->firstName || $this->lastName) {
-            $this->fullName = trim(($this->firstName ?? '') . ' ' . ($this->lastName ?? ''));
-        }
-    }
-
-    public function getFullName(): ?string { return $this->fullName; }
-
-    public function setFullName(string $fullName): self
-    {
-        $this->fullName = $fullName;
         return $this;
     }
 
@@ -239,6 +254,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function isAgreeTerms(): bool
+    {
+        return $this->agreeTerms;
+    }
+
+    public function setAgreeTerms(bool $agreeTerms): self
+    {
+        $this->agreeTerms = $agreeTerms;
+        return $this;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): self
+    {
+        $this->googleId = $googleId;
         return $this;
     }
 }

@@ -25,6 +25,29 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Debug: Check what data is being submitted
+            $submittedData = $request->request->all();
+            dump($submittedData); // This will show what's being submitted
+                
+            // Handle firstName and lastName to update fullName
+            $firstName = $form->get('firstName')->getData();
+            $lastName = $form->get('lastName')->getData();
+            
+            if ($firstName || $lastName) {
+                $fullName = trim(($firstName ? $firstName : '') . ' ' . ($lastName ? $lastName : ''));
+                $user->setFullName($fullName);
+            }
+            
+            // Debug: Check entity state before flush
+            dump([
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'fullName' => $user->getFullName(),
+                'phone' => $user->getPhone(),
+                'location' => $user->getLocation(),
+                'aboutMe' => $user->getAboutMe()
+            ]);
+
             // Handle profile picture upload if provided
             $profilePictureFile = $form->get('profilePicture')->getData();
             if ($profilePictureFile) {
@@ -41,8 +64,20 @@ class UserController extends AbstractController
                 }
             }
 
-            $entityManager->flush();
-            $this->addFlash('success', 'Profile updated successfully!');
+            try {
+                $entityManager->flush();
+                $this->addFlash('success', 'Profile updated successfully!');
+                
+                // Debug: Check entity state after flush
+                dump([
+                    'After flush - firstName' => $user->getFirstName(),
+                    'After flush - phone' => $user->getPhone(),
+                    'After flush - location' => $user->getLocation()
+                ]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Error updating profile: ' . $e->getMessage());
+                dump('Flush error: ' . $e->getMessage());
+            }
 
             return $this->redirectToRoute('app_user_edit_profile');
         }

@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Entity\Role;
 use App\Form\RegistrationType;
+use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,39 +14,36 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
-    public function register(
-        Request $request,
-        UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $entityManager
-    ): Response {
+    #[Route('/sign-up', name: 'app_register')]
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, RoleRepository $roleRepository): Response
+    {
         $user = new User();
-
         $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            // Récupérer le rôle STUDENT (id = 3)
-            $role = $entityManager
-                ->getRepository(Role::class)
-                ->find(3);
-
-            $user->setRole($role);
-            $user->setCreatedAt(new \DateTime());
-
-            // Hash du mot de passe
-            $hashedPassword = $passwordHasher->hashPassword(
-                $user,
-                $form->get('password')->getData()
+            // Encode the plain password
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
             );
 
-            $user->setPassword($hashedPassword);
+            // Assign a default role
+            $defaultRole = $roleRepository->findOneBy(['name' => 'USER']);
+            if (!$defaultRole) {
+                // It's better to throw an exception in a dev environment if a core part of the system is missing.
+                throw new \Exception("Default role 'USER' not found. Please add it to the 'role' table.");
+            }
+            $user->setRole($defaultRole);
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Redirection vers la page login
+            // do anything else you need here, like send an email
+            $this->addFlash('success', 'You have successfully registered! Please sign in.');
+
             return $this->redirectToRoute('app_login');
         }
 

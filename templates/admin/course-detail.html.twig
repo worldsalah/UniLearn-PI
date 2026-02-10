@@ -1,0 +1,756 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Course Details - Admin{% endblock %}
+
+{% block admin_styles %}
+<style>
+/* Fresh Modern Course Detail Styles - Clean & Minimalist */
+.course-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    border-radius: 16px;
+    padding: 3rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+.course-header:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+.course-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #f1f5f9;
+    line-height: 1.2;
+}
+.course-title-wrapper {
+    margin-bottom: 1.5rem;
+}
+.course-subtitle {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+.course-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #10b981;
+    margin-bottom: 0.5rem;
+}
+.price-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+.price-info {
+    color: #cbd5e1;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.price-badge {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.course-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+.course-badge {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #e2e8f0;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+.course-badge:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transform: translateY(-1px);
+}
+.category-badge {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+}
+.category-badge:hover {
+    background: rgba(59, 130, 246, 0.3);
+    color: #dbeafe;
+}
+.level-badge {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fcd34d;
+}
+.level-badge:hover {
+    background: rgba(245, 158, 11, 0.3);
+    color: #fde68a;
+}
+.status-badge {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #6ee7b7;
+}
+.status-badge:hover {
+    background: rgba(16, 185, 129, 0.3);
+    color: #a7f3d0;
+}
+
+.course-image-container {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background: #f8fafc;
+}
+.course-image-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+.course-image-container img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+.course-image-container:hover img {
+    transform: scale(1.05);
+}
+
+.info-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    margin-bottom: 2rem;
+}
+.info-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+.info-card .card-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem;
+}
+.info-card .card-header h5 {
+    color: #1f2937;
+    font-weight: 600;
+    margin: 0;
+}
+.info-card .card-body {
+    padding: 2rem;
+}
+
+.description-section {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 2rem;
+}
+.description-text {
+    color: #475569;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    margin-bottom: 1rem;
+}
+.stat-item:hover {
+    background: #f1f5f9;
+    transform: translateX(5px);
+}
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    background: #e2e8f0;
+    color: #64748b;
+}
+.stat-content {
+    flex: 1;
+}
+.stat-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+}
+.stat-value {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.action-btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s ease;
+    border: none;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+.btn-success:hover {
+    background: #059669;
+}
+.btn-warning {
+    background: #f59e0b;
+    color: white;
+}
+.btn-warning:hover {
+    background: #d97706;
+}
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+.btn-danger:hover {
+    background: #dc2626;
+}
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+.btn-secondary:hover {
+    background: #4b5563;
+}
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+.btn-primary:hover {
+    background: #2563eb;
+}
+.btn-info {
+    background: #0ea5e9;
+    color: white;
+}
+.btn-info:hover {
+    background: #0284c7;
+}
+
+.accordion-custom .accordion-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.accordion-custom .accordion-item:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.accordion-custom .accordion-button {
+    background: #f8fafc;
+    border: none;
+    border-radius: 0;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    color: #374151;
+    transition: all 0.2s ease;
+}
+.accordion-custom .accordion-button:not(.collapsed) {
+    background: #3b82f6;
+    color: white;
+}
+.accordion-custom .accordion-body {
+    padding: 1.5rem;
+    background: white;
+    color: #475569;
+    border-top: 1px solid #e5e7eb;
+}
+
+.instructor-card {
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+}
+.instructor-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+.instructor-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.alert {
+    border-radius: 8px;
+    border: none;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert-info {
+    background: #dbeafe;
+    color: #084298;
+    border-left: 4px solid #0ea5e9;
+}
+.alert-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border-left: 4px solid #f59e0b;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .course-title {
+        font-size: 2rem;
+    }
+    .course-price {
+        font-size: 2rem;
+    }
+    .info-card .card-body {
+        padding: 1.5rem;
+    }
+    .course-header {
+        padding: 2rem;
+    }
+    .description-section {
+        padding: 1.5rem;
+    }
+    .stat-item {
+        padding: 1rem;
+    }
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+        margin-right: 0.75rem;
+    }
+}
+
+/* Focus states for accessibility */
+.action-btn:focus,
+.course-badge:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Clean, minimal animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.course-header,
+.info-card,
+.description-section,
+.stat-item {
+    animation: fadeIn 0.6s ease-out;
+}
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<!-- Title -->
+<div class="row mb-4">
+    <div class="col-12 d-sm-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-2 mb-sm-0">Course Details</h1>
+        <div>
+            <a href="{{ path('admin_course_list') }}" class="btn btn-sm btn-secondary mb-0 me-2 action-btn">
+                <i class="bi bi-arrow-left me-1"></i>Back to Courses
+            </a>
+            <a href="{{ path('admin_course_edit', {'id': course.id}) }}" class="btn btn-sm btn-primary mb-0 action-btn">
+                <i class="bi bi-pencil me-1"></i>Edit Course
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Course details START -->
+<div class="row">
+    <!-- Main content START -->
+    <div class="col-lg-8">
+        <!-- Course header card START -->
+        <div class="info-card mb-4">
+            <div class="course-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="course-title-wrapper">
+                            <h1 class="course-title">{{ course.title|default('Untitled Course') }}</h1>
+                            <div class="course-subtitle">
+                                <i class="bi bi-book me-2"></i>Professional Course
+                            </div>
+                        </div>
+                        <div class="course-meta">
+                            <span class="course-badge category-badge">
+                                <i class="bi bi-tag-fill me-1"></i>{{ course.category|default('Uncategorized') }}
+                            </span>
+                            <span class="course-badge level-badge">
+                                <i class="bi bi-bar-chart-fill me-1"></i>{{ course.level|default('Not Specified') }}
+                            </span>
+                            <span class="course-badge status-badge">
+                                <i class="bi bi-circle-fill me-1"></i>{{ course.status|default('unknown')|capitalize }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="price-wrapper">
+                            <div class="course-price">${{ course.price|number_format(2, '.', ',') }}</div>
+                            <div class="price-info">
+                                <i class="bi bi-check-circle me-1"></i>One-time payment
+                            </div>
+                            <div class="price-badge">
+                                <i class="bi bi-shield-check me-1"></i>Secure Payment
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Course header card END -->
+
+        <!-- Course image START -->
+        {% if course.thumbnailUrl %}
+        <div class="course-image-container mb-4">
+            <img src="{{ asset(course.thumbnailUrl) }}" alt="{{ course.title|default('Course') }}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="alert alert-warning m-0" style="display: none;">
+                <i class="bi bi-exclamation-triangle me-2"></i>Image not found or could not be loaded
+            </div>
+        </div>
+        {% endif %}
+        <!-- Course image END -->
+
+        <!-- Course description START -->
+        <div class="description-section mb-4">
+            <h4 class="mb-3">Course Description</h4>
+            <div class="description-text">
+                {{ course.shortDescription|default('No description available for this course.')|raw }}
+            </div>
+        </div>
+        <!-- Course description END -->
+
+        <!-- Course instructor START -->
+        <div class="info-card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-person-badge me-2"></i>Course Instructor
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if course.user %}
+                <div class="d-flex align-items-center">
+                    <div class="instructor-avatar me-3">
+                        <img class="w-100 h-100 rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="Instructor">
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1 fw-bold">{{ course.user.fullName|default('Unknown Instructor') }}</h6>
+                        <p class="text-muted mb-2">{{ course.user.email|default('No email available') }}</p>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-check-circle me-1"></i>Verified Instructor
+                            </span>
+                            <span class="badge bg-info bg-opacity-10 text-info">
+                                <i class="bi bi-star me-1"></i>Expert Level
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>No instructor assigned</strong><br>
+                    <small class="text-muted">This course is currently without an assigned instructor.</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Course instructor END -->
+
+        <!-- Course additional content START -->
+        {% if course.requirements or course.learningOutcomes or course.targetAudience %}
+        <div class="info-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-journal-text me-2"></i>Course Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion accordion-custom" id="courseAccordion">
+                    {% if course.requirements %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#requirementsCollapse">
+                                <i class="bi bi-list-check me-2"></i>Requirements & Prerequisites
+                            </button>
+                        </h2>
+                        <div id="requirementsCollapse" class="accordion-collapse collapse show" data-bs-parent="#courseAccordion">
+                            <div class="accordion-body">
+                                {{ course.requirements|raw|nl2br }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if course.learningOutcomes %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#outcomesCollapse">
+                                <i class="bi bi-trophy me-2"></i>What You'll Learn
+                            </button>
+                        </h2>
+                        <div id="outcomesCollapse" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                            <div class="accordion-body">
+                                {{ course.learningOutcomes|raw|nl2br }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if course.targetAudience %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#audienceCollapse">
+                                <i class="bi bi-people me-2"></i>Target Audience
+                            </button>
+                        </h2>
+                        <div id="audienceCollapse" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                            <div class="accordion-body">
+                                {{ course.targetAudience|raw|nl2br }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <!-- Course additional content END -->
+    </div>
+    <!-- Main content END -->
+
+    <!-- Sidebar START -->
+    <div class="col-lg-4">
+        <!-- Course actions card START -->
+        <div class="info-card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-gear me-2"></i>Course Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ path('admin_course_lessons', {'id': course.id}) }}" class="btn btn-info action-btn">
+                        <i class="bi bi-list-ul me-2"></i>View Lessons
+                    </a>
+                    
+                    {% if course.status == 'live' %}
+                        <button type="button" class="btn btn-warning action-btn" onclick="deactivateCourse({{ course.id }})">
+                            <i class="bi bi-pause-circle me-2"></i>Deactivate Course
+                        </button>
+                    {% elseif course.status == 'pending' or course.status == 'inactive' %}
+                        <button type="button" class="btn btn-success action-btn" onclick="activateCourse({{ course.id }})">
+                            <i class="bi bi-check-circle me-2"></i>Activate Course
+                        </button>
+                    {% endif %}
+                    
+                    <button type="button" class="btn btn-danger action-btn" onclick="deleteCourse({{ course.id }})">
+                        <i class="bi bi-trash me-2"></i>Delete Course
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Course actions card END -->
+
+        <!-- Course stats card START -->
+        <div class="info-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-graph-up me-2"></i>Course Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="stat-item mb-3">
+                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="bi bi-calendar3"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Created</div>
+                        <div class="stat-value">{{ course.createdAt ? course.createdAt|date('M d, Y') : 'Unknown' }}</div>
+                    </div>
+                </div>
+                
+                <div class="stat-item mb-3">
+                    <div class="stat-icon bg-info bg-opacity-10 text-info">
+                        <i class="bi bi-hash"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Course ID</div>
+                        <div class="stat-value">#{{ course.id }}</div>
+                    </div>
+                </div>
+                
+                {% if course.duration %}
+                <div class="stat-item mb-3">
+                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                        <i class="bi bi-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Duration</div>
+                        <div class="stat-value">{{ course.duration }} hours</div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if course.language %}
+                <div class="stat-item mb-3">
+                    <div class="stat-icon bg-success bg-opacity-10 text-success">
+                        <i class="bi bi-globe"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Language</div>
+                        <div class="stat-value">{{ course.language }}</div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="stat-item">
+                    <div class="stat-icon bg-secondary bg-opacity-10 text-secondary">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Students Enrolled</div>
+                        <div class="stat-value">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Course stats card END -->
+    </div>
+    <!-- Sidebar END -->
+</div>
+<!-- Course details END -->
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+// Course action functions
+window.activateCourse = function(courseId) {
+    if (confirm('Are you sure you want to activate this course?')) {
+        fetch(`/api/course/${courseId}/activate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                alert(data.message || 'Failed to activate course');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Network error occurred');
+        });
+    }
+};
+
+window.deactivateCourse = function(courseId) {
+    if (confirm('Are you sure you want to deactivate this course?')) {
+        fetch(`/api/course/${courseId}/deactivate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                alert(data.message || 'Failed to deactivate course');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Network error occurred');
+        });
+    }
+};
+
+window.deleteCourse = function(courseId) {
+    if (confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
+        fetch(`/api/course/${courseId}/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Course deleted successfully');
+                window.location.href = '{{ path("admin_course_list") }}';
+            } else {
+                alert(data.message || 'Failed to delete course');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Network error occurred');
+        });
+    }
+};
+</script>
+{% endblock %}

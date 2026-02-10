@@ -1,0 +1,375 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Course - Instructor Dashboard{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+	
+<!-- =======================
+Page Banner START -->
+<section class="py-0 bg-blue h-100px align-items-center d-flex h-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
+	<!-- Main banner background image -->
+	<div class="container">
+		<div class="row">
+			<div class="col-12 text-center">
+				<!-- Title -->
+				<h1 class="text-white">Submit a new Course</h1>
+				<p class="text-white mb-0">Read our <a href="#" class="text-white"><u>"Before you create a course"</u></a> article before submitting!</p>	
+			</div>
+		</div>
+	</div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Course Form START -->
+<section>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 mx-auto text-center">
+				<!-- Content -->
+				<p class="text-center">Use this interface to add a new Course to the portal. Once you are done adding the item it will be reviewed for quality. If approved, your course will appear for sale and you will be informed by email that your course has been accepted.</p>
+			</div>
+		</div>
+
+		<div class="card bg-transparent border rounded-3 mb-5">
+			<div class="card-header bg-light border-bottom px-lg-5">
+				<!-- Simple Step Indicators -->
+				<div class="d-flex justify-content-center align-items-center py-3">
+					<div class="text-center">
+						<div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+							<span class="fw-bold">1</span>
+						</div>
+						<small class="d-block mt-1">Course details</small>
+					</div>
+					<div class="mx-3">
+						<div class="border-top border-3 border-primary" style="width: 50px;"></div>
+					</div>
+					<div class="text-center">
+						<div class="bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+							<span class="fw-bold">2</span>
+						</div>
+						<small class="d-block mt-1">Course media</small>
+					</div>
+					<div class="mx-3">
+						<div class="border-top border-3 border-muted" style="width: 50px;"></div>
+					</div>
+					<div class="text-center">
+						<div class="bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+							<span class="fw-bold">3</span>
+						</div>
+						<small class="d-block mt-1">Review</small>
+					</div>
+				</div>
+			</div>
+
+			<!-- Card body START -->
+			<div class="card-body px-lg-5">
+				<!-- Step 1: Course details -->
+				<div id="step1">
+					<h5 class="mb-4">Course details</h5>
+
+					<!-- Course title -->
+					<div class="mb-4">
+						<label class="form-label">Course title *</label>
+						<input type="text" class="form-control" placeholder="Enter course title" required>
+						<small class="form-text">A great title is short and descriptive</small>
+					</div>
+
+					<!-- Course description -->
+					<div class="mb-4">
+						<label class="form-label">Course description *</label>
+						<textarea class="form-control" rows="4" placeholder="Describe your course" required></textarea>
+						<small class="form-text">Provide a clear and comprehensive description of your course</small>
+					</div>
+
+					<!-- Category and Level -->
+					<div class="row g-3 mb-4">
+						<div class="col-md-6">
+							<label class="form-label">Category *</label>
+							<select class="form-select" required>
+								<option selected>Select category</option>
+								<option>Development</option>
+								<option>Design</option>
+								<option>Business</option>
+								<option>Marketing</option>
+								<option>Photography & Video</option>
+								<option>Music</option>
+								<option>Health & Fitness</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Level *</label>
+							<select class="form-select" required>
+								<option selected>Select level</option>
+								<option>Beginner</option>
+								<option>Intermediate</option>
+								<option>Advanced</option>
+							</select>
+						</div>
+					</div>
+
+					<!-- Language and Duration -->
+					<div class="row g-3 mb-4">
+						<div class="col-md-6">
+							<label class="form-label">Language *</label>
+							<select class="form-select" required>
+								<option selected>English</option>
+								<option>Spanish</option>
+								<option>French</option>
+								<option>German</option>
+								<option>Chinese</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Course Duration (hours) *</label>
+							<input type="text" class="form-control" placeholder="e.g., 10">
+						</div>
+					</div>
+
+					<!-- Price -->
+					<div class="row g-3 mb-4">
+						<div class="col-md-6">
+							<label class="form-label">Price ($) *</label>
+							<input type="text" class="form-control" placeholder="e.g., 49.99">
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Discount Price ($)</label>
+							<input type="text" class="form-control" placeholder="e.g., 29.99">
+							<small class="form-text">Optional - leave empty if no discount</small>
+						</div>
+					</div>
+
+					<!-- Learning Objectives -->
+					<div class="mb-4">
+						<label class="form-label">Learning Objectives *</label>
+						<div id="objectives-container">
+							<div class="input-group mb-2">
+								<input type="text" class="form-control" placeholder="What will students learn?" required>
+								<button type="button" class="btn btn-outline-danger" onclick="removeObjective(this)">
+									<i class="bi bi-trash"></i>
+								</button>
+							</div>
+						</div>
+						<button type="button" class="btn btn-outline-primary btn-sm" onclick="addObjective()">
+							<i class="bi bi-plus-circle me-1"></i>Add Objective
+						</button>
+					</div>
+
+					<!-- Requirements -->
+					<div class="mb-4">
+						<label class="form-label">Course Requirements *</label>
+						<div id="requirements-container">
+							<div class="input-group mb-2">
+								<input type="text" class="form-control" placeholder="What are the prerequisites?" required>
+								<button type="button" class="btn btn-outline-danger" onclick="removeRequirement(this)">
+									<i class="bi bi-trash"></i>
+								</button>
+							</div>
+						</div>
+						<button type="button" class="btn btn-outline-primary btn-sm" onclick="addRequirement()">
+							<i class="bi bi-plus-circle me-1"></i>Add Requirement
+						</button>
+					</div>
+
+					<!-- Target Audience -->
+					<div class="mb-4">
+						<label class="form-label">Target Audience *</label>
+						<textarea class="form-control" rows="3" placeholder="Who is this course for?" required></textarea>
+					</div>
+
+					<!-- Buttons -->
+					<div class="d-flex justify-content-between">
+						<button class="btn btn-secondary disabled">Previous</button>
+						<button class="btn btn-primary" onclick="showStep2()">Next</button>
+					</div>
+				</div>
+
+				<!-- Step 2: Course media (hidden by default) -->
+				<div id="step2" style="display: none;">
+					<h5 class="mb-4">Course media</h5>
+
+					<!-- Course Image -->
+					<div class="mb-4">
+						<label class="form-label">Course Image *</label>
+						<div class="border-dashed rounded-3 p-4 text-center">
+							<div class="mb-3">
+								<i class="bi bi-cloud-upload fs-1 text-primary"></i>
+							</div>
+							<h6>Drop course image here or click to upload</h6>
+							<p class="text-muted small mb-3">Upload a high-quality image (1280x720px recommended)</p>
+							<input type="file" class="form-control" accept="image/*" required>
+						</div>
+					</div>
+
+					<!-- Course Video -->
+					<div class="mb-4">
+						<label class="form-label">Course Introduction Video</label>
+						<div class="border-dashed rounded-3 p-4 text-center">
+							<div class="mb-3">
+								<i class="bi bi-camera-video fs-1 text-primary"></i>
+							</div>
+							<h6>Upload introduction video</h6>
+							<p class="text-muted small mb-3">MP4, WebM or OGG (Max. 800MB)</p>
+							<input type="file" class="form-control" accept="video/*">
+						</div>
+					</div>
+
+					<!-- Course Materials -->
+					<div class="mb-4">
+						<label class="form-label">Course Materials</label>
+						<div class="border-dashed rounded-3 p-4 text-center">
+							<div class="mb-3">
+								<i class="bi bi-file-earmark fs-1 text-primary"></i>
+							</div>
+							<h6>Upload course materials</h6>
+							<p class="text-muted small mb-3">PDF, DOC, PPT, ZIP (Max. 100MB)</p>
+							<input type="file" class="form-control" multiple>
+						</div>
+					</div>
+
+					<!-- Buttons -->
+					<div class="d-flex justify-content-between">
+						<button class="btn btn-secondary" onclick="showStep1()">Previous</button>
+						<button class="btn btn-primary" onclick="showStep3()">Next</button>
+					</div>
+				</div>
+
+				<!-- Step 3: Review and Submit (hidden by default) -->
+				<div id="step3" style="display: none;">
+					<h5 class="mb-4">Review and Submit</h5>
+
+					<!-- Review Summary -->
+					<div class="card bg-light mb-4">
+						<div class="card-body">
+							<h6 class="mb-3">Course Summary</h6>
+							<div id="course-summary">
+								<p><strong>Course Title:</strong> <span id="summary-title">Not provided</span></p>
+								<p><strong>Category:</strong> <span id="summary-category">Not selected</span></p>
+								<p><strong>Level:</strong> <span id="summary-level">Not selected</span></p>
+								<p><strong>Price:</strong> $<span id="summary-price">Not set</span></p>
+							</div>
+						</div>
+					</div>
+
+					<!-- Terms and Conditions -->
+					<div class="mb-4">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="terms" required>
+							<label class="form-check-label" for="terms">
+								I agree to the <a href="#" class="text-primary">Terms and Conditions</a> and <a href="#" class="text-primary">Content Guidelines</a>
+							</label>
+						</div>
+					</div>
+
+					<!-- Submit buttons -->
+					<div class="d-flex justify-content-between">
+						<button class="btn btn-secondary" onclick="showStep2()">Previous</button>
+						<button type="submit" class="btn btn-success">
+							<i class="bi bi-check-circle me-2"></i>Submit Course
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- =======================
+Course Form END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+
+<!-- Simple JavaScript for step navigation -->
+<script>
+function showStep1() {
+	document.getElementById('step1').style.display = 'block';
+	document.getElementById('step2').style.display = 'none';
+	document.getElementById('step3').style.display = 'none';
+	updateStepIndicators(1);
+}
+
+function showStep2() {
+	document.getElementById('step1').style.display = 'none';
+	document.getElementById('step2').style.display = 'block';
+	document.getElementById('step3').style.display = 'none';
+	updateStepIndicators(2);
+	updateSummary();
+}
+
+function showStep3() {
+	document.getElementById('step1').style.display = 'none';
+	document.getElementById('step2').style.display = 'none';
+	document.getElementById('step3').style.display = 'block';
+	updateStepIndicators(3);
+	updateSummary();
+}
+
+function updateStepIndicators(currentStep) {
+	const indicators = document.querySelectorAll('.border-top');
+	indicators.forEach((indicator, index) => {
+		if (index < currentStep - 1) {
+			indicator.classList.remove('border-muted');
+			indicator.classList.add('border-primary');
+		} else {
+			indicator.classList.remove('border-primary');
+			indicator.classList.add('border-muted');
+		}
+	});
+}
+
+function updateSummary() {
+	// Update summary with form data
+	const title = document.querySelector('input[placeholder="Enter course title"]').value;
+	const category = document.querySelector('select[required] option:checked').text;
+	const level = document.querySelectorAll('select[required]')[1].querySelector('option:checked').text;
+	const price = document.querySelector('input[placeholder="e.g., 49.99"]').value;
+	
+	document.getElementById('summary-title').textContent = title || 'Not provided';
+	document.getElementById('summary-category').textContent = category || 'Not selected';
+	document.getElementById('summary-level').textContent = level || 'Not selected';
+	document.getElementById('summary-price').textContent = price || 'Not set';
+}
+
+// Dynamic form fields
+function addObjective() {
+    const container = document.getElementById('objectives-container');
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2';
+    div.innerHTML = `
+        <input type="text" class="form-control" placeholder="What will students learn?" required>
+        <button type="button" class="btn btn-outline-danger" onclick="removeObjective(this)">
+            <i class="bi bi-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
+function removeObjective(button) {
+    button.parentElement.remove();
+}
+
+function addRequirement() {
+    const container = document.getElementById('requirements-container');
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2';
+    div.innerHTML = `
+        <input type="text" class="form-control" placeholder="What are the prerequisites?" required>
+        <button type="button" class="btn btn-outline-danger" onclick="removeRequirement(this)">
+            <i class="bi bi-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
+function removeRequirement(button) {
+    button.parentElement.remove();
+}
+</script>
+{% endblock %}

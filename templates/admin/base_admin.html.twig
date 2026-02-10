@@ -1,0 +1,160 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<style>
+/* Admin Dashboard Styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    background: #212529;
+    z-index: 1000;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+}
+.sidebar .navbar-brand {
+    padding: 1rem;
+    color: white;
+    font-weight: bold;
+}
+.sidebar-content {
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+.page-content {
+    margin-left: 280px;
+    min-height: 100vh;
+    background: #f8f9fa;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.top-bar {
+    background: white;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(10px);
+}
+.page-content-wrapper {
+    padding: 2rem;
+}
+.custom-scrollbar {
+    overflow-y: auto;
+}
+
+/* Admin specific styles */
+.counter-card {
+    border-radius: 10px;
+    border: none;
+    transition: all 0.3s ease;
+}
+.counter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.icon-lg {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.25rem;
+}
+.bg-purple {
+    background-color: #6f42c1 !important;
+}
+.text-purple {
+    color: #6f42c1 !important;
+}
+.bg-orange {
+    background-color: #fd7e14 !important;
+}
+.text-orange {
+    color: #fd7e14 !important;
+}
+.h-300px {
+    height: 300px;
+}
+.rounded-2 {
+    border-radius: 0.5rem;
+}
+.stretched-link {
+    position: relative;
+}
+.stretched-link::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Notification badge animation */
+.notif-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #dc3545;
+}
+.animation-blink {
+    animation: blink 2s infinite;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    .page-content {
+        margin-left: 0;
+    }
+}
+
+/* Additional admin page specific styles will be inserted here by child templates */
+{% block admin_styles %}{% endblock %}
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+    
+    {% include 'admin/components/navbar.html.twig' %}
+
+    <!-- Page content START -->
+    <div class="page-content">
+        
+        {% include 'admin/components/topbar.html.twig' %}
+
+        <!-- Page main content START -->
+        <div class="page-content-wrapper border">
+            
+            {% block admin_content %}{% endblock %}
+
+        </div>
+        <!-- Page main content END -->
+    </div>
+    <!-- Page content END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% block admin_scripts %}{% endblock %}
+{% endblock %}

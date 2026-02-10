@@ -1,0 +1,395 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Course - {{ course.title }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Custom styles for edit form */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0b5ed7 0%, #0baccc 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.row.g-3 > * {
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Header START -->
+<header class="navbar-light navbar-sticky">
+    <!-- Logo Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('app_home') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('assets/images/logo.svg') }}" alt="logo">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                <!-- Nav Main menu START -->
+                <ul class="navbar-nav navbar-nav-scroll mx-auto">
+                    <!-- Nav item 1 Demos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demos</a>
+                        <ul class="dropdown-menu" aria-labelledby="demoMenu">
+                            <li> <a class="dropdown-item" href="{{ path('app_home') }}">Home Default</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('app_home_variant') }}">Home Education</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('app_home_variant_3') }}">Home Academy</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('app_course_grid') }}">Home Course</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item 2 Pages -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
+                            <li> <a class="dropdown-item" href="{{ path('app_about') }}">About Us</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('app_contact') }}">Contact Us</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('app_courses') }}">Courses</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('app_instructor_list') }}">Instructors</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item 3 Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+                        <ul class="dropdown-menu" aria-labelledby="accounntMenu">
+                            <li class="dropdown-submenu dropend">
+                                <a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a>
+                                <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+                                    <li> <a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
+                                    <li> <a class="dropdown-item" href="{{ path('app_instructor_manage_courses') }}"><i class="bi bi-basket-fill fa-fw me-1"></i>Courses</a> </li>
+                                    <li> <a class="dropdown-item" href="{{ path('app_course_create') }}"><i class="bi bi-file-earmark-plus-fill fa-fw me-1"></i>Create Course</a> </li>
+                                    <li> <a class="dropdown-item" href="{{ path('app_instructor_quiz') }}"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz</a> </li>
+                                    <li> <a class="dropdown-item" href="{{ path('app_instructor_earnings') }}"><i class="fas fa-chart-line fa-fw me-1"></i>Earnings</a> </li>
+                                    <li> <a class="dropdown-item" href="{{ path('app_instructor_students') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>Students</a> </li>
+                                    <li> <a class="dropdown-item" href="{{ path('app_instructor_orders') }}"><i class="bi bi-cart-check-fill fa-fw me-1"></i>Orders</a> </li>
+                                    <li> <a class="dropdown-item" href="{{ path('app_instructor_reviews') }}"><i class="bi bi-star-fill fa-fw me-1"></i>Reviews</a> </li>
+                                    <li> <a class="dropdown-item" href="#"><i class="fas fa-wallet fa-fw me-1"></i>Payout</a> </li>
+                                </ul>
+                            </li>
+                            <li> <a class="dropdown-item" href="#"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
+                            <li> <hr class="dropdown-divider"></li>
+                            <li> <a class="dropdown-item" href="#"><i class="fas fa-fw fa-edit me-1"></i>Edit Profile</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('app_instructor_settings') }}"><i class="fas fa-fw fa-cog me-1"></i>Settings</a></li>
+                            <li> <a class="dropdown-item" href="#"><i class="fas fa-fw fa-trash-alt me-1"></i>Delete Profile</a></li>
+                            <li> <hr class="dropdown-divider"></li>
+                            <li> <a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Nav Main menu END -->
+            </div>
+            <!-- Main navbar END -->
+
+            <!-- Profile START -->
+            <div class="dropdown ms-1 ms-lg-0">
+                <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                </a>
+                <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                    <!-- Profile info -->
+                    <li class="px-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <!-- Avatar -->
+                            <div class="avatar me-3">
+                                <img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                            </div>
+                            <div>
+                                <a class="h6" href="#">{{ teacher.name }}</a>
+                                <p class="small m-0">{{ teacher.email }}</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li> <hr class="dropdown-divider"></li>
+                    <!-- Links -->
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                    <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                </ul>
+            </div>
+            <!-- Profile START -->
+        </div>
+    </nav>
+    <!-- Logo Nav END -->
+</header>
+<!-- Header END -->
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+    
+<!-- =======================
+Page Banner START -->
+<section class="pt-0">
+    <!-- Main banner background image -->
+    <div class="container-fluid px-0">
+        <div class="bg-blue h-100px h-md-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
+        </div>
+    </div>
+    <div class="container mt-n4">
+        <div class="row">
+            <!-- Profile banner START -->
+            <div class="col-12">
+                <div class="card bg-transparent card-body p-0">
+                    <div class="row d-flex justify-content-between">
+                        <!-- Avatar -->
+                        <div class="col-auto mt-4 mt-md-0">
+                            <div class="avatar avatar-xxl mt-n3">
+                                <img class="avatar-img rounded-circle border border-white border-3 shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+                            </div>
+                        </div>
+                        <!-- Profile info -->
+                        <div class="col d-md-flex justify-content-between align-items-center mt-4">
+                            <div>
+                                <h1 class="my-1 fs-4">Edit Course: {{ course.title }} <i class="bi bi-pencil-fill text-info small"></i></h1>
+                                <ul class="list-inline mb-0">
+                                    <li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-envelope text-warning me-2"></i>{{ teacher.email }}</li>
+                                    <li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-book text-purple me-2"></i>{{ teacher.role.name|capitalize }}</li>
+                                </ul>
+                            </div>
+                            <!-- Button -->
+                            <div class="d-flex align-items-center mt-2 mt-md-0">
+                                <a href="{{ path('app_instructor_manage_courses') }}" class="btn btn-secondary mb-0 me-2">
+                                    <i class="fas fa-arrow-left me-1"></i>Back to Courses
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Profile banner END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Page content START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-xl-3">
+                <!-- Responsive offcanvas body START -->
+                <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
+                    <!-- Offcanvas header -->
+                    <div class="offcanvas-header bg-light">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+                        <button  type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+                    </div>
+                    <!-- Offcanvas body -->
+                    <div class="offcanvas-body p-3 p-xl-0">
+                        <div class="bg-dark border rounded-3 pb-0 p-3 w-100">
+                            <!-- Dashboard menu -->
+                            <div class="list-group list-group-dark list-group-borderless">
+                                <a class="list-group-item" href="{{ path('app_instructor_dashboard') }}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+                                <a class="list-group-item active" href="{{ path('app_instructor_manage_courses') }}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
+                                <a class="list-group-item" href="{{ path('app_course_create') }}"><i class="bi bi-file-earmark-plus-fill fa-fw me-2"></i>Create Course</a>
+                                <a class="list-group-item" href="{{ path('app_instructor_quiz') }}"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
+                                <a class="list-group-item" href="{{ path('app_instructor_earnings') }}"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+                                <a class="list-group-item" href="{{ path('app_instructor_students') }}"><i class="bi bi-people fa-fw me-2"></i>Students</a>
+                                <a class="list-group-item" href="{{ path('app_instructor_orders') }}"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
+                                <a class="list-group-item" href="{{ path('app_instructor_reviews') }}"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
+                                <a class="list-group-item" href="{{ path('app_instructor_edit_profile') }}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+                                <a class="list-group-item" href="{{ path('app_instructor_payout') }}"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
+                                <a class="list-group-item" href="{{ path('app_instructor_settings') }}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                <a class="list-group-item" href="{{ path('app_instructor_delete_account') }}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+                                <a class="list-group-item text-danger bg-danger-soft-hover" href="{{ path('app_login') }}"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Responsive offcanvas body END -->
+            </div>
+            <!-- Left sidebar END -->
+
+            <!-- Main content START -->
+            <div class="col-xl-9">
+                <!-- Card START -->
+                <div class="card bg-transparent border">
+                    <!-- Card header START -->
+                    <div class="card-header bg-light border-bottom">
+                        <h5 class="mb-0">Edit Course Information</h5>
+                    </div>
+                    <!-- Card header END -->
+
+                    <!-- Card body START -->
+                    <div class="card-body">
+                        <form method="POST" action="{{ path('app_instructor_edit_course', {'id': course.id}) }}">
+                            <!-- Flash messages -->
+                            {% for message in app.flashes('course_updated') %}
+                                <div data-flash-type="success" 
+                                     data-flash-title="{{ message.title }}" 
+                                     data-flash-message="{{ message.message }}"
+                                     style="display: none;">
+                                    {{ message.message }}
+                                </div>
+                            {% endfor %}
+
+                            <!-- Basic Information -->
+                            <div class="mb-5">
+                                <h6 class="mb-4">Basic Information</h6>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label">Course title *</label>
+                                        <input type="text" class="form-control" name="course_title" value="{{ course.title }}" required>
+                                        <small class="form-text">A great title is short and descriptive</small>
+                                    </div>
+                                    
+                                    <div class="col-md-12">
+                                        <label class="form-label">Short description *</label>
+                                        <textarea class="form-control" name="short_description" rows="3" required>{{ course.shortDescription }}</textarea>
+                                        <small class="form-text">Brief description of your course (max 200 characters)</small>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Category *</label>
+                                        <select class="form-select" name="course_category" required>
+                                            <option value="">Select category</option>
+                                            <option value="Programming" {{ course.category == 'Programming' ? 'selected' : '' }}>Programming</option>
+                                            <option value="Design" {{ course.category == 'Design' ? 'selected' : '' }}>Design</option>
+                                            <option value="Business" {{ course.category == 'Business' ? 'selected' : '' }}>Business</option>
+                                            <option value="Marketing" {{ course.category == 'Marketing' ? 'selected' : '' }}>Marketing</option>
+                                            <option value="Data Science" {{ course.category == 'Data Science' ? 'selected' : '' }}>Data Science</option>
+                                            <option value="Photography" {{ course.category == 'Photography' ? 'selected' : '' }}>Photography</option>
+                                            <option value="Music" {{ course.category == 'Music' ? 'selected' : '' }}>Music</option>
+                                            <option value="Database" {{ course.category == 'Database' ? 'selected' : '' }}>Database</option>
+                                            <option value="Mobile Development" {{ course.category == 'Mobile Development' ? 'selected' : '' }}>Mobile Development</option>
+                                            <option value="Security" {{ course.category == 'Security' ? 'selected' : '' }}>Security</option>
+                                            <option value="DevOps" {{ course.category == 'DevOps' ? 'selected' : '' }}>DevOps</option>
+                                            <option value="Creative" {{ course.category == 'Creative' ? 'selected' : '' }}>Creative</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Level *</label>
+                                        <select class="form-select" name="course_level" required>
+                                            <option value="">Select level</option>
+                                            <option value="Beginner" {{ course.level == 'Beginner' ? 'selected' : '' }}>Beginner</option>
+                                            <option value="Intermediate" {{ course.level == 'Intermediate' ? 'selected' : '' }}>Intermediate</option>
+                                            <option value="Advanced" {{ course.level == 'Advanced' ? 'selected' : '' }}>Advanced</option>
+                                            <option value="All Levels" {{ course.level == 'All Levels' ? 'selected' : '' }}>All Levels</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label class="form-label">Price ($) *</label>
+                                        <input type="text" class="form-control" name="course_price" value="{{ course.price }}">
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label class="form-label">Duration (hours) *</label>
+                                        <input type="text" class="form-control" name="duration" value="{{ course.duration }}">
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label class="form-label">Language *</label>
+                                        <select class="form-select" name="language">
+                                            <option value="">Select language</option>
+                                            <option value="English" {{ course.language == 'English' ? 'selected' : '' }}>English</option>
+                                            <option value="Spanish" {{ course.language == 'Spanish' ? 'selected' : '' }}>Spanish</option>
+                                            <option value="French" {{ course.language == 'French' ? 'selected' : '' }}>French</option>
+                                            <option value="German" {{ course.language == 'German' ? 'selected' : '' }}>German</option>
+                                            <option value="Chinese" {{ course.language == 'Chinese' ? 'selected' : '' }}>Chinese</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Information -->
+                            <div class="mb-5">
+                                <h6 class="mb-4">Additional Information</h6>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label">Requirements</label>
+                                        <textarea class="form-control" name="requirements" rows="3">{{ course.requirements }}</textarea>
+                                        <small class="form-text">What students should know before taking this course</small>
+                                    </div>
+                                    
+                                    <div class="col-md-12">
+                                        <label class="form-label">Learning outcomes</label>
+                                        <textarea class="form-control" name="learning_outcomes" rows="3">{{ course.learningOutcomes }}</textarea>
+                                        <small class="form-text">What students will learn after completing this course</small>
+                                    </div>
+                                    
+                                    <div class="col-md-12">
+                                        <label class="form-label">Target audience</label>
+                                        <textarea class="form-control" name="target_audience" rows="3">{{ course.targetAudience }}</textarea>
+                                        <small class="form-text">Who this course is for</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ path('app_instructor_manage_courses') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times me-1"></i>Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Card body END -->
+                </div>
+                <!-- Card END -->
+
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page content END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% endblock %}

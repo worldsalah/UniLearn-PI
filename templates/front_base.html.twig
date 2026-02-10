@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<!-- =======================
+Header START -->
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Logo Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('app_home') }}">
+                <img class="navbar-brand-item" src="{{ asset('assets/images/logo.svg') }}" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto icon-md btn btn-outline-secondary p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <!-- Nav item Home -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" href="{{ path('app_home') }}">
+                            Home
+                        </a>
+                    </li>
+
+                    <!-- Nav item Courses -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_courses' %}active{% endif %}" href="#" id="courseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Courses
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="courseDropdown">
+                            <li><h6 class="dropdown-header">Learning</h6></li>
+                            <li><a class="dropdown-item" href="{{ path('app_courses') }}">Browse Courses</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_categories') }}">Course Categories</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Student</h6></li>
+                            <li><a class="dropdown-item" href="#">My Certificates</a></li>
+                            <li><a class="dropdown-item" href="#">My Bookmarks</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Sessions -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'session' %}active{% endif %}" href="#" id="sessionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Sessions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="sessionDropdown">
+                            <li><h6 class="dropdown-header">Schedule</h6></li>
+                            <li><a class="dropdown-item" href="{{ path('all_sessions') }}">All Sessions</a></li>
+                            <li><a class="dropdown-item" href="{{ path('all_sessions') }}">Book a Session</a></li>
+                            <li><a class="dropdown-item" href="{{ path('all_bookings') }}">My Bookings</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Marketplace -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_marketplace' or app.request.attributes.get('_route') starts with 'app_product' or app.request.attributes.get('_route') starts with 'app_job' %}active{% endif %}" href="#" id="marketplaceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Marketplace
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="marketplaceDropdown">
+                            <li><h6 class="dropdown-header">Services</h6></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_marketplace_shop' %}active{% endif %}" href="{{ path('app_marketplace_shop') }}">Browse Marketplace</a></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_product_new_public' %}active{% endif %}" href="{{ path('app_product_new_public') }}">Offer Service</a></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') starts with 'app_job' %}active{% endif %}" href="#">Job Requests</a></li>
+                        </ul>
+                    </li>
+
+
+                    <!-- Nav item Support -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Support
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="supportDropdown">
+                            <li><h6 class="dropdown-header">Help</h6></li>
+                            <li><a class="dropdown-item" href="#">Help Center</a></li>
+                            <li><a class="dropdown-item" href="#">Contact Support</a></li>
+                            <li><a class="dropdown-item" href="#">FAQ</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">About</h6></li>
+                            <li><a class="dropdown-item" href="#">About Us</a></li>
+                            <li><a class="dropdown-item" href="#">Contact</a></li>
+                            <li><a class="dropdown-item" href="#">Privacy Policy</a></li>
+                            <li><a class="dropdown-item" href="#">Terms of Service</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Search bar START -->
+                <div class="nav-item mx-2">
+                    <form class="position-relative" method="get" action="{{ path('app_courses') }}">
+                        <input class="form-control pe-5 form-control-sm" type="search" name="search" placeholder="Search..." aria-label="Search" style="width: 200px;">
+                        <button class="bg-transparent p-1 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                            <i class="fas fa-search fs-6"></i>
+                        </button>
+                    </form>
+                </div>
+                <!-- Search bar END -->
+
+                <!-- Nav right side START -->
+                <ul class="nav flex-row align-items-center list-unstyled ms-xl-auto">
+                    <!-- Authentication START -->
+                    {% if app.user %}
+                        <!-- Profile dropdown START -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                            </a>
+                            <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                                <!-- Profile info -->
+                                <li class="px-3 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar me-3">
+                                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                                        </div>
+                                        <div>
+                                            <a class="h6 mt-2 mt-sm-0" href="#">{{ app.user.name|default(app.user.email) }}</a>
+                                            <p class="small m-0">{{ app.user.email }}</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <!-- Links -->
+                                {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="fas fa-chalkboard-teacher fa-fw me-2"></i>Dashboard</a></li>
+                                {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_student_dashboard') }}"><i class="fas fa-graduation-cap fa-fw me-2"></i>Dashboard</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="fas fa-tachometer-alt fa-fw me-2"></i>Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <!-- Sign in button -->
+                        <li class="nav-item">
+                            <a class="btn btn-sm btn-primary me-2" href="{{ path('app_login') }}">Sign In</a>
+                        </li>
+                        <!-- Sign up button -->
+                        <li class="nav-item">
+                            <a class="btn btn-sm btn-outline-primary" href="{{ path('app_register') }}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                    <!-- Authentication END -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Logo Nav END -->
+</header>
+<!-- =======================
+Header END -->
+
+{% block content %}{% endblock %}
+
+{% endblock %}

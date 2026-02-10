@@ -1,0 +1,281 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}About Us - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">About <span class="text-primary">Unilearn</span></h1>
+                    <p class="lead mb-0">Empowering learners worldwide with quality education</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+About START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="mb-4">Welcome to <span class="text-primary">Unilearn</span></h2>
+                <p class="mb-4">Unilearn is a leading online learning platform dedicated to providing high-quality education to learners worldwide. We believe that education should be accessible, affordable, and effective for everyone.</p>
+                <p class="mb-4">Our mission is to empower individuals with the knowledge and skills they need to succeed in their personal and professional lives. We partner with industry experts and top institutions to bring you the best courses available.</p>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">25,000+</h5>
+                                <p class="mb-0 small text-muted">Online Courses</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle me-3">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">980,000+</h5>
+                                <p class="mb-0 small text-muted">Active Learners</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-circle me-3">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">15,000+</h5>
+                                <p class="mb-0 small text-muted">Expert Instructors</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-info bg-opacity-10 text-info rounded-circle me-3">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">120+</h5>
+                                <p class="mb-0 small text-muted">Countries</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{{ asset('assets/images/about/01.jpg') }}" class="img-fluid rounded" alt="About Us">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+About END -->
+
+<!-- =======================
+Mission START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="text-center">
+                    <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-bullseye fa-2x"></i>
+                    </div>
+                    <h4 class="mb-3">Our Mission</h4>
+                    <p>To make quality education accessible to everyone, everywhere, at any time. We strive to break down barriers to learning and create opportunities for personal and professional growth.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="text-center">
+                    <div class="icon-xl bg-success bg-opacity-10 text-success rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-eye fa-2x"></i>
+                    </div>
+                    <h4 class="mb-3">Our Vision</h4>
+                    <p>To be the world's most trusted online learning platform, empowering millions of learners to achieve their goals and transform their lives through education.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="icon-xl bg-warning bg-opacity-10 text-warning rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-heart fa-2x"></i>
+                    </div>
+                    <h4 class="mb-3">Our Values</h4>
+                    <p>Excellence, innovation, accessibility, and integrity. We are committed to providing the best learning experience while maintaining the highest standards of quality and ethics.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Mission END -->
+
+<!-- =======================
+Features START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mb-5">
+                    <h2 class="mb-3">Why Choose <span class="text-primary">Unilearn</span></h2>
+                    <p class="mb-0">Discover what makes us the best choice for your learning journey</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-hover-shadow border-0 text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <h5 class="mb-3">Certified Courses</h5>
+                        <p class="mb-0 small text-muted">All our courses are certified and recognized by industry leaders</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-hover-shadow border-0 text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h5 class="mb-3">Learn at Your Pace</h5>
+                        <p class="mb-0 small text-muted">Flexible learning schedule that fits your lifestyle</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-hover-shadow border-0 text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h5 class="mb-3">24/7 Support</h5>
+                        <p class="mb-0 small text-muted">Get help whenever you need it from our dedicated support team</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-hover-shadow border-0 text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="icon-lg bg-info bg-opacity-10 text-info rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h5 class="mb-3">Mobile Learning</h5>
+                        <p class="mb-0 small text-muted">Learn on the go with our mobile app</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Features END -->
+
+<!-- =======================
+Team START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mb-5">
+                    <h2 class="mb-3">Meet Our <span class="text-primary">Leadership Team</span></h2>
+                    <p class="mb-0">The passionate people behind Unilearn</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-hover-shadow border-0 text-center">
+                    <div class="card-body p-4">
+                        <img src="{{ asset('assets/images/instructor/01.jpg') }}" class="rounded-circle mb-3" width="100" alt="Team Member">
+                        <h5 class="mb-1">John Anderson</h5>
+                        <p class="mb-2 small text-muted">CEO & Founder</p>
+                        <p class="mb-3 small">Visionary leader with 15+ years in EdTech</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-light"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="btn btn-sm btn-light"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-hover-shadow border-0 text-center">
+                    <div class="card-body p-4">
+                        <img src="{{ asset('assets/images/instructor/02.jpg') }}" class="rounded-circle mb-3" width="100" alt="Team Member">
+                        <h5 class="mb-1">Sarah Mitchell</h5>
+                        <p class="mb-2 small text-muted">Chief Learning Officer</p>
+                        <p class="mb-3 small">Expert in curriculum design and educational psychology</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-light"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="btn btn-sm btn-light"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-hover-shadow border-0 text-center">
+                    <div class="card-body p-4">
+                        <img src="{{ asset('assets/images/instructor/03.jpg') }}" class="rounded-circle mb-3" width="100" alt="Team Member">
+                        <h5 class="mb-1">Michael Chen</h5>
+                        <p class="mb-2 small text-muted">CTO</p>
+                        <p class="mb-3 small">Tech innovator with expertise in AI and machine learning</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-light"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="btn btn-sm btn-light"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-hover-shadow border-0 text-center">
+                    <div class="card-body p-4">
+                        <img src="{{ asset('assets/images/instructor/04.jpg') }}" class="rounded-circle mb-3" width="100" alt="Team Member">
+                        <h5 class="mb-1">Emily Rodriguez</h5>
+                        <p class="mb-2 small text-muted">Head of Operations</p>
+                        <p class="mb-3 small">Operational excellence and customer experience expert</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-light"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="btn btn-sm btn-light"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Team END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

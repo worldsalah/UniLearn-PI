@@ -1,0 +1,602 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Quizzes - Admin{% endblock %}
+
+{% block admin_content %}
+
+	<!-- Flash Messages -->
+	{% for type, messages in app.session.flashbag.all() %}
+		{% for message in messages %}
+			<div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+				{{ message }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		{% endfor %}
+	{% endfor %}
+
+	<!-- Title -->
+	<div class="row">
+		<div class="col-12 mb-3">
+			<div class="d-flex justify-content-between align-items-center">
+				<h1 class="h3 mb-2 mb-sm-0">Quizzes</h1>
+				<a href="{{ path('app_admin_quiz_add') }}" class="btn btn-primary mb-0">
+					<i class="fas fa-plus me-2"></i>Add New Quiz
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Counter boxes START -->
+	<div class="row g-4 mb-4">
+		<!-- Counter item -->
+		<div class="col-md-6 col-xxl-3">
+			<div class="card card-body bg-warning bg-opacity-15 p-4 h-100">
+				<div class="d-flex justify-content-between align-items-center">
+					<!-- Digit -->
+					<div>
+						<h2 class="mb-0 fw-bold">{{ quizzes|length }}</h2>
+						<span class="mb-0 h6 fw-light">Total Quizzes</span>
+					</div>
+					<!-- Icon -->
+					<div class="icon-lg rounded-circle bg-warning text-white mb-0"><i class="fas fa-question-circle fa-fw"></i></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Counter item -->
+		<div class="col-md-6 col-xxl-3">
+			<div class="card card-body bg-success bg-opacity-10 p-4 h-100">
+				<div class="d-flex justify-content-between align-items-center">
+					<!-- Digit -->
+					<div>
+						{% set totalQuestions = 0 %}
+						{% for quizGroup in allQuestions %}
+							{% set totalQuestions = totalQuestions + quizGroup.questions|length %}
+						{% endfor %}
+						<h2 class="mb-0 fw-bold">{{ totalQuestions }}</h2>
+						<span class="mb-0 h6 fw-light">Total Questions</span>
+					</div>
+					<!-- Icon -->
+					<div class="icon-lg rounded-circle bg-success text-white mb-0"><i class="fas fa-list-check fa-fw"></i></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Counter item -->
+		<div class="col-md-6 col-xxl-3">
+			<div class="card card-body bg-primary bg-opacity-10 p-4 h-100">
+				<div class="d-flex justify-content-between align-items-center">
+					<!-- Digit -->
+					<div>
+						{% set quizzesWithQuestions = 0 %}
+						{% for quizGroup in allQuestions %}
+							{% if quizGroup.questions|length > 0 %}
+								{% set quizzesWithQuestions = quizzesWithQuestions + 1 %}
+							{% endif %}
+						{% endfor %}
+						<h2 class="mb-0 fw-bold">{{ quizzesWithQuestions }}</h2>
+						<span class="mb-0 h6 fw-light">With Questions</span>
+					</div>
+					<!-- Icon -->
+					<div class="icon-lg rounded-circle bg-primary text-white mb-0"><i class="fas fa-check-circle fa-fw"></i></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Counter item -->
+		<div class="col-md-6 col-xxl-3">
+			<div class="card card-body bg-danger bg-opacity-10 p-4 h-100">
+				<div class="d-flex justify-content-between align-items-center">
+					<!-- Digit -->
+					<div>
+						{% set emptyQuizzes = 0 %}
+						{% for quizGroup in allQuestions %}
+							{% if quizGroup.questions|length == 0 %}
+								{% set emptyQuizzes = emptyQuizzes + 1 %}
+							{% endif %}
+						{% endfor %}
+						<h2 class="mb-0 fw-bold">{{ emptyQuizzes }}</h2>
+						<span class="mb-0 h6 fw-light">Empty Quizzes</span>
+					</div>
+					<!-- Icon -->
+					<div class="icon-lg rounded-circle bg-danger text-white mb-0"><i class="fas fa-exclamation-triangle fa-fw"></i></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Counter boxes END -->
+
+	<!-- Search and filter START -->
+	<div class="card shadow mb-4">
+		<div class="card-header bg-light border-bottom">
+			<!-- Search and select START -->
+			<div class="row g-3 align-items-center justify-content-between">
+				<!-- Search bar -->
+				<div class="col-md-4">
+					<form method="GET" class="position-relative" onsubmit="return false;">
+						<input class="form-control bg-body pe-5" type="search" name="search" value="{{ search }}" placeholder="Search quizzes..." aria-label="Search" id="searchInput">
+						<button type="button" class="bg-transparent px-2 py-0 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" onclick="performSearch()">
+							<i class="fas fa-search fs-6"></i>
+						</button>
+					</form>
+				</div>
+
+				<!-- Status filter -->
+				<div class="col-md-2">
+					<select class="form-select" name="status" id="statusFilter">
+						<option value="">All Status</option>
+						<option value="active" {% if status == 'active' %}selected{% endif %}>Active</option>
+						<option value="inactive" {% if status == 'inactive' %}selected{% endif %}>Inactive</option>
+					</select>
+				</div>
+
+				<!-- Sort filter -->
+				<div class="col-md-2">
+					<select class="form-select" name="sort" id="sortFilter">
+						<option value="createdAt" {% if sortBy == 'createdAt' %}selected{% endif %}>Created Date</option>
+						<option value="title" {% if sortBy == 'title' %}selected{% endif %}>Title</option>
+						<option value="questions" {% if sortBy == 'questions' %}selected{% endif %}>Questions</option>
+					</select>
+				</div>
+
+				<!-- Sort order -->
+				<div class="col-md-2">
+					<select class="form-select" name="order" id="orderFilter">
+						<option value="desc" {% if sortOrder == 'desc' %}selected{% endif %}>Newest</option>
+						<option value="asc" {% if sortOrder == 'asc' %}selected{% endif %}>Oldest</option>
+					</select>
+				</div>
+			</div>
+			<!-- Search and select END -->
+		</div>
+	</div>
+	<!-- Search and filter END -->
+
+	<!-- Quiz table START -->
+	<div class="card bg-transparent border shadow">
+
+		<!-- Card header START -->
+		<div class="card-header bg-light border-bottom">
+			<div class="d-flex justify-content-between align-items-center">
+				<h5 class="mb-0">Quiz List</h5>
+				<span class="badge bg-primary">{{ quizzes|length }} results</span>
+			</div>
+		</div>
+		<!-- Card header END -->
+
+		<!-- Card body START -->
+		<div class="card-body">
+
+			<!-- Quiz table START -->
+			<div class="table-responsive border-0 rounded-3">
+				<!-- Table START -->
+				<table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+					<!-- Table head -->
+					<thead>
+						<tr>
+							<th scope="col" class="border-0 rounded-start">Quiz Title</th>
+							<th scope="col" class="border-0">Course</th>
+							<th scope="col" class="border-0">Questions</th>
+							<th scope="col" class="border-0">Status</th>
+							<th scope="col" class="border-0">Created Date</th>
+							<th scope="col" class="border-0 rounded-end">Action</th>
+						</tr>
+					</thead>
+					
+					<!-- Table body START -->
+					<tbody>
+						{% for quiz in quizzes %}
+						<!-- Table row -->
+						<tr>
+							<!-- Table data -->
+							<td>
+								<div class="d-flex align-items-center position-relative">
+									<!-- Icon -->
+									<div class="avatar avatar-xs flex-shrink-0">
+										<div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center">
+											<i class="fas fa-question-circle"></i>
+										</div>
+									</div>
+									<!-- Title -->
+									<h6 class="table-responsive-title mb-0 ms-2">	
+										<a href="#" class="stretched-link">{{ quiz.title }}</a>
+									</h6>
+								</div>
+							</td>
+
+							<!-- Table data -->
+							<td>
+								{% if quiz.course %}
+									<span class="badge bg-info">{{ quiz.course.title }}</span>
+								{% else %}
+									<span class="text-muted">No Course</span>
+								{% endif %}
+							</td>
+
+							<!-- Table data -->
+							<td>
+								{% set quizQuestions = [] %}
+								{% for quizGroup in allQuestions %}
+									{% if quizGroup.quiz_id == quiz.id %}
+										{% set quizQuestions = quizGroup.questions %}
+									{% endif %}
+								{% endfor %}
+								<span class="badge bg-success">{{ quizQuestions|length }} Questions</span>
+							</td>
+
+							<!-- Table data -->
+							<td>
+								<span class="badge bg-success">Active</span>
+							</td>
+
+							<!-- Table data -->
+							<td>{{ quiz.createdAt|date('M j, Y') }}</td>
+
+							<!-- Table data -->
+							<td>
+								<div class="dropdown dropstart">
+									<a class="btn btn-sm btn-light btn-round mb-0" href="#" role="button" id="dropdownShare{{ quiz.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fas fa-ellipsis-v"></i>
+									</a>
+									<!-- Dropdown menu -->
+									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownShare{{ quiz.id }}">
+										<li><a class="dropdown-item" href="{{ path('app_admin_quiz_view', {'id': quiz.id}) }}"><i class="bi bi-eye fa-fw me-2"></i>View</a></li>
+										<li><a class="dropdown-item" href="{{ path('app_admin_quiz_edit', {'id': quiz.id}) }}"><i class="bi bi-pencil fa-fw me-2"></i>Edit</a></li>
+										<li><a class="dropdown-item" href="#" onclick="duplicateQuiz({{ quiz.id }}, '{{ quiz.title|e('js') }}')"><i class="bi bi-copy fa-fw me-2"></i>Duplicate</a></li>
+										<li><hr class="dropdown-divider"></li>
+										<li><a class="dropdown-item text-danger" href="#" onclick="deleteQuiz({{ quiz.id }}, '{{ quiz.title|e('js') }}')"><i class="bi bi-trash fa-fw me-2"></i>Delete</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						{% else %}
+						<!-- No quizzes found -->
+						<tr>
+							<td colspan="6" class="text-center py-5">
+								<div class="text-center">
+									<i class="fas fa-question-circle fa-3x text-muted mb-3"></i>
+									<h5 class="text-muted">No Quizzes Found</h5>
+									<p class="text-muted">There are no quizzes in the system yet.</p>
+									<a href="{{ path('app_admin_quiz_add') }}" class="btn btn-primary">
+										<i class="fas fa-plus me-2"></i>Create First Quiz
+									</a>
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<!-- Table END -->
+
+		</div>
+		<!-- Card body END -->
+	</div>
+	<!-- Quiz table END -->
+
+<script>
+// Real-time search and filtering
+let searchTimeout;
+let currentFilters = {
+    search: '{{ search|e('js') }}',
+    status: '{{ status|e('js') }}',
+    sort: '{{ sortBy|e('js') }}',
+    order: '{{ sortOrder|e('js') }}'
+};
+
+// Perform real-time search
+function performSearch() {
+    const searchValue = document.getElementById('searchInput').value.trim();
+    const statusValue = document.getElementById('statusFilter').value;
+    const sortValue = document.getElementById('sortFilter').value;
+    const orderValue = document.getElementById('orderFilter').value;
+    
+    // Update current filters
+    currentFilters = {
+        search: searchValue,
+        status: statusValue,
+        sort: sortValue,
+        order: orderValue
+    };
+    
+    // Build URL with parameters
+    const params = new URLSearchParams();
+    if (searchValue) params.append('search', searchValue);
+    if (statusValue) params.append('status', statusValue);
+    params.append('sort', sortValue);
+    params.append('order', orderValue);
+    params.append('ajax', '1'); // Match student list pattern
+    
+    // Show loading state
+    showLoadingState();
+    
+    // Make AJAX request to filter quizzes
+    fetch(`/admin-quizzes?${params.toString()}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Update table with new data
+            updateQuizTable(data.quizzes);
+            
+            // Update results count
+            const resultsBadge = document.querySelector('.badge.bg-primary');
+            if (resultsBadge) {
+                resultsBadge.textContent = `${data.quizzes.length} results`;
+            }
+            
+            // Update URL without page reload
+            const newUrl = window.location.pathname + (params.toString().replace('&ajax=1', '') ? '?' + params.toString().replace('&ajax=1', '') : '');
+            window.history.pushState({}, '', newUrl);
+            
+            hideLoadingState();
+        } else {
+            throw new Error(data.message || 'Unknown error occurred');
+        }
+    })
+    .catch(error => {
+        console.error('Search error:', error);
+        hideLoadingState();
+        showAlert('Search failed. Please try again.', 'danger');
+    });
+}
+
+// Update quiz table with new data
+function updateQuizTable(quizzes) {
+    const tableBody = document.querySelector('tbody');
+    if (!tableBody) return;
+    
+    if (quizzes.length === 0) {
+        // Show no results message
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center py-5">
+                    <div class="text-center">
+                        <i class="fas fa-question-circle fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Quizzes Found</h5>
+                        <p class="text-muted">No quizzes match your search criteria.</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create New Quiz
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    // Generate table rows
+    let tableHtml = '';
+    quizzes.forEach(quiz => {
+        const courseBadge = quiz.course ? 
+            `<span class="badge bg-info">${quiz.course.title}</span>` : 
+            '<span class="text-muted">No Course</span>';
+        
+        const questionsBadge = `<span class="badge bg-success">${quiz.questions.length} Questions</span>`;
+        const createdDate = quiz.createdAt ? new Date(quiz.createdAt).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        }) : 'Unknown';
+        
+        tableHtml += `
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center position-relative">
+                        <div class="avatar avatar-xs flex-shrink-0">
+                            <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                        </div>
+                        <h6 class="table-responsive-title mb-0 ms-2">	
+                            <a href="#" class="stretched-link">${quiz.title}</a>
+                        </h6>
+                    </div>
+                </td>
+                <td>${courseBadge}</td>
+                <td>${questionsBadge}</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>${createdDate}</td>
+                <td>
+                    <div class="dropdown dropstart">
+                        <a class="btn btn-sm btn-light btn-round mb-0" href="#" role="button" id="dropdownShare${quiz.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownShare${quiz.id}">
+                            <li><a class="dropdown-item" href="/admin/quiz/${quiz.id}/view"><i class="bi bi-eye fa-fw me-2"></i>View</a></li>
+                            <li><a class="dropdown-item" href="/admin/quiz/${quiz.id}/edit"><i class="bi bi-pencil fa-fw me-2"></i>Edit</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="duplicateQuiz(${quiz.id}, '${quiz.title.replace(/'/g, "\\'")}')"><i class="bi bi-copy fa-fw me-2"></i>Duplicate</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="deleteQuiz(${quiz.id}, '${quiz.title.replace(/'/g, "\\'")}')"><i class="bi bi-trash fa-fw me-2"></i>Delete</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tableBody.innerHTML = tableHtml;
+}
+
+// Show loading state
+function showLoadingState() {
+    const tableBody = document.querySelector('tbody');
+    if (tableBody) {
+        tableBody.style.opacity = '0.5';
+        tableBody.style.pointerEvents = 'none';
+    }
+    
+    // Show loading in search input
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.style.backgroundImage = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\' viewBox=\'0 0 24 24\'%3E%3Cpath fill=\'%23666\' d=\'M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z\'%3E%3C/path%3E%3CanimateTransform attributeName=\'transform\' type=\'rotate\' from=\'0 12 12\' to=\'360 12 12\' dur=\'1s\' repeatCount=\'indefinite\'/%3E%3C/svg%3E")';
+        searchInput.style.backgroundRepeat = 'no-repeat';
+        searchInput.style.backgroundPosition = 'right 10px center';
+    }
+}
+
+// Hide loading state
+function hideLoadingState() {
+    const tableBody = document.querySelector('tbody');
+    if (tableBody) {
+        tableBody.style.opacity = '1';
+        tableBody.style.pointerEvents = 'auto';
+    }
+    
+    // Hide loading in search input
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.style.backgroundImage = 'none';
+    }
+}
+
+// Show alert message
+function showAlert(message, type = 'info') {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Insert alert at the top of the content
+    const adminContent = document.querySelector('[class*="admin_content"]') || document.querySelector('.card-body');
+    if (adminContent) {
+        adminContent.insertAdjacentHTML('afterbegin', alertHtml);
+        
+        // Auto dismiss after 3 seconds
+        setTimeout(() => {
+            const alert = adminContent.querySelector('.alert');
+            if (alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }
+        }, 3000);
+    }
+}
+
+// Event listeners for real-time filtering
+document.addEventListener('DOMContentLoaded', function() {
+    // Search input with debouncing
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(performSearch, 300); // 300ms debounce
+        });
+        
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(searchTimeout);
+                performSearch();
+            }
+        });
+    }
+    
+    // Filter dropdowns
+    const statusFilter = document.getElementById('statusFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const orderFilter = document.getElementById('orderFilter');
+    
+    [statusFilter, sortFilter, orderFilter].forEach(filter => {
+        if (filter) {
+            filter.addEventListener('change', performSearch);
+        }
+    });
+    
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function() {
+        window.location.reload();
+    });
+});
+
+// Duplicate quiz function
+function duplicateQuiz(quizId, quizTitle) {
+    if (!confirm(`Are you sure you want to duplicate "${quizTitle}"?`)) {
+        return;
+    }
+    
+    fetch(`/admin/quiz/${quizId}/duplicate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert(`Quiz "${quizTitle}" duplicated successfully!`, 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showAlert(data.message || 'Failed to duplicate quiz', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Duplicate error:', error);
+        showAlert('Failed to duplicate quiz. Please try again.', 'danger');
+    });
+}
+
+// Delete quiz function
+function deleteQuiz(quizId, quizTitle) {
+    if (!confirm(`Are you sure you want to delete "${quizTitle}"? This action cannot be undone.`)) {
+        return;
+    }
+    
+    fetch(`/admin/quiz/${quizId}/delete`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert(`Quiz "${quizTitle}" deleted successfully!`, 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showAlert(data.message || 'Failed to delete quiz', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Delete error:', error);
+        showAlert('Failed to delete quiz. Please try again.', 'danger');
+    });
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + K to focus search
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.focus();
+    }
+    
+    // Escape to clear search
+    if (e.key === 'Escape') {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput && searchInput.value.trim() !== '') {
+            searchInput.value = '';
+            performSearch();
+        }
+    }
+});
+</script>
+
+{% endblock %}

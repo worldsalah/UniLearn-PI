@@ -1,0 +1,353 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Unilearn - Education Platform - Variant 3{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Hero START -->
+<section class="position-relative overflow-hidden">
+    <!-- SVG decoration -->
+    <figure class="position-absolute top-0 start-0 mt-n3 ms-n3">
+        <svg width="400.5px" height="400.5px">
+            <path class="fill-primary opacity-1" d="M400.5,0.5 L0.5,400.5 L0.5,0.5 L400.5,0.5z"></path>
+        </svg>
+    </figure>
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-5">
+                <!-- Title -->
+                <h1 class="display-3 fw-bold mb-4" data-aos="fade-up">Build Your <span class="text-primary">Dream Career</span></h1>
+                <p class="lead mb-4" data-aos="fade-up" data-aos-delay="200">Learn from industry experts and get job-ready skills. Join millions of learners worldwide.</p>
+                
+                <!-- Search -->
+                <div class="bg-white rounded p-3 shadow-sm" data-aos="fade-up" data-aos-delay="300">
+                    <form class="row g-2">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control border-0" placeholder="What do you want to learn?">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Stats -->
+                <div class="row mt-5" data-aos="fade-up" data-aos-delay="400">
+                    <div class="col-6 col-md-3">
+                        <h3 class="mb-0"><span class="counter" data-target="120">0</span>+</h3>
+                        <p class="mb-0">Countries</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h3 class="mb-0"><span class="counter" data-target="25">0</span>M+</h3>
+                        <p class="mb-0">Learners</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h3 class="mb-0"><span class="counter" data-target="15">0</span>K+</h3>
+                        <p class="mb-0">Courses</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h3 class="mb-0"><span class="counter" data-target="98">0</span>%</h3>
+                        <p class="mb-0">Success Rate</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image -->
+            <div class="col-lg-7">
+                <img src="{{ asset('assets/images/about/02.jpg') }}" class="img-fluid rounded" alt="Hero" data-aos="fade-left">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Hero END -->
+
+<!-- =======================
+Categories START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mb-5">
+                    <h2 class="mb-3">Browse <span class="text-primary">Categories</span></h2>
+                    <p class="mb-0">Choose from our wide range of courses</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="card card-hover-shadow border-0 text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-code fa-2x"></i>
+                        </div>
+                        <h5 class="mb-2">Development</h5>
+                        <p class="mb-0 small text-muted">2,456 Courses</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="card card-hover-shadow border-0 text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="icon-xl bg-success bg-opacity-10 text-success rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-palette fa-2x"></i>
+                        </div>
+                        <h5 class="mb-2">Design</h5>
+                        <p class="mb-0 small text-muted">1,234 Courses</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="card card-hover-shadow border-0 text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="icon-xl bg-info bg-opacity-10 text-info rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-bullhorn fa-2x"></i>
+                        </div>
+                        <h5 class="mb-2">Marketing</h5>
+                        <p class="mb-0 small text-muted">856 Courses</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="card card-hover-shadow border-0 text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="icon-xl bg-warning bg-opacity-10 text-warning rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-briefcase fa-2x"></i>
+                        </div>
+                        <h5 class="mb-2">Business</h5>
+                        <p class="mb-0 small text-muted">1,789 Courses</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Categories END -->
+
+<!-- =======================
+Courses START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mb-5">
+                    <h2 class="mb-3">Popular <span class="text-primary">Courses</span></h2>
+                    <p class="mb-0">Most enrolled courses this month</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card card-hover-shadow border-0 h-100">
+                    <div class="position-relative">
+                        <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="card-img-top" alt="Course">
+                        <div class="position-absolute top-0 start-0 m-3">
+                            <span class="badge bg-danger">Bestseller</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary bg-opacity-10 text-primary">Development</span>
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <span>4.5</span>
+                            </div>
+                        </div>
+                        <h5 class="card-title mb-2">Complete Web Development Bootcamp</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">$89.99</h4>
+                            <span class="text-decoration-line-through text-muted">$199.99</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card card-hover-shadow border-0 h-100">
+                    <div class="position-relative">
+                        <img src="{{ asset('assets/images/courses/4by3/02.jpg') }}" class="card-img-top" alt="Course">
+                        <div class="position-absolute top-0 start-0 m-3">
+                            <span class="badge bg-warning">Hot</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-success bg-opacity-10 text-success">Design</span>
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                        <h5 class="card-title mb-2">UI/UX Design Masterclass</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">$79.99</h4>
+                            <span class="text-decoration-line-through text-muted">$149.99</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card card-hover-shadow border-0 h-100">
+                    <div class="position-relative">
+                        <img src="{{ asset('assets/images/courses/4by3/03.jpg') }}" class="card-img-top" alt="Course">
+                        <div class="position-absolute top-0 start-0 m-3">
+                            <span class="badge bg-info">New</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-warning bg-opacity-10 text-warning">Marketing</span>
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <span>4.7</span>
+                            </div>
+                        </div>
+                        <h5 class="card-title mb-2">Digital Marketing Complete Course</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">$69.99</h4>
+                            <span class="text-decoration-line-through text-muted">$129.99</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Courses END -->
+
+<!-- =======================
+Testimonial START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mb-5">
+                    <h2 class="mb-3">What Our <span class="text-primary">Students Say</span></h2>
+                    <p class="mb-0">Real stories from our learners</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card card-hover-shadow border-0 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <div class="text-warning me-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="mb-4">"Unilearn has transformed my career. The courses are comprehensive and the instructors are amazing!"</p>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ asset('assets/images/avatar/08.jpg') }}" class="rounded-circle me-3" width="50" alt="Student">
+                            <div>
+                                <h6 class="mb-0">Alex Johnson</h6>
+                                <p class="mb-0 small text-muted">Web Developer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card card-hover-shadow border-0 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <div class="text-warning me-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="mb-4">"The quality of courses and the support from instructors is outstanding. I've learned so much!"</p>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ asset('assets/images/avatar/09.jpg') }}" class="rounded-circle me-3" width="50" alt="Student">
+                            <div>
+                                <h6 class="mb-0">Maria Garcia</h6>
+                                <p class="mb-0 small text-muted">UI Designer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card card-hover-shadow border-0 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <div class="text-warning me-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <p class="mb-4">"Great platform for learning new skills. The courses are well-structured and easy to follow."</p>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ asset('assets/images/avatar/10.jpg') }}" class="rounded-circle me-3" width="50" alt="Student">
+                            <div>
+                                <h6 class="mb-0">James Chen</h6>
+                                <p class="mb-0 small text-muted">Data Analyst</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Testimonial END -->
+
+<!-- =======================
+CTA START -->
+<section class="py-5 bg-primary bg-opacity-10">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="mb-3">Start Your Learning Journey Today</h2>
+                <p class="mb-4">Join millions of learners and unlock your potential with our expert-led courses.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="#" class="btn btn-primary btn-lg mb-0">Get Started</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+CTA END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+
+<!-- AOS Animation -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: true
+    });
+</script>
+{% endblock %}

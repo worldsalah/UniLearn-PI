@@ -1,0 +1,1197 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Book Your Session - UniLearn{% endblock %}
+
+{% block content %}
+<!-- =======================
+Booking Section START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <div class="pe-lg-5">
+                    <span class="badge bg-success mb-3">Book Your Session</span>
+                    <h1 class="display-5 fw-bold mb-4">Learn from Expert Instructors</h1>
+                    <p class="lead text-muted mb-4">Schedule personalized one-on-one sessions with our experienced instructors and accelerate your learning journey.</p>
+                    
+                    <!-- Features -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Expert Tutors</h6>
+                                    <small class="text-muted">Learn from the best</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-clock-fill text-info fs-5"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Flexible Timing</h6>
+                                    <small class="text-muted">Schedule at your convenience</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-person-video3 text-warning fs-5"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Live Sessions</h6>
+                                    <small class="text-muted">Interactive learning</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-award-fill text-danger fs-5"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Certificate</h6>
+                                    <small class="text-muted">Get certified</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="bg-white rounded-4 shadow-sm p-4">
+                    <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Learning Session" class="img-fluid rounded-3">
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="bg-white rounded-4 shadow-enhanced border-0 overflow-hidden">
+                    <div class="row g-0">
+                        <!-- Form Section -->
+                        <div class="col-lg-8">
+                            <div class="p-4 p-lg-5">
+                                {% if app.user %}
+                                <div class="bg-success bg-opacity-10 border border-success p-3 mb-4 rounded-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person-check-fill me-3 fs-4 text-success"></i>
+                                        <div>
+                                            <strong>Welcome back, {{ app.user.fullName }}!</strong><br>
+                                            <small class="opacity-75">Your information has been pre-filled for your convenience.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <h3 class="mb-4 display-6">Book Your Learning Session</h3>
+                                
+                                <form method="post" action="{{ path('booking_create') }}" id="bookingForm">
+                                    <div class="row g-3">
+                                        <!-- Name Fields -->
+                                        <div class="col-md-12">
+                                            <div class="feature-highlight">
+                                                <label class="form-label fw-semibold">Full Name</label>
+                                                <input type="text" class="form-control form-control-lg" name="firstName" placeholder="John Doe" value="{{ app.user ? app.user.fullName : (formData.firstName is defined ? formData.firstName : '') }}" {% if app.user %}readonly{% endif %} required>
+                                                {% if errors.firstName is defined %}
+                                                    <div class="error-message text-danger mt-2">
+                                                        <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.firstName }}</small>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- Contact Fields -->
+                                        <div class="col-md-6">
+                                            <div class="feature-highlight">
+                                                <label class="form-label fw-semibold">Email Address</label>
+                                                <input type="email" class="form-control form-control-lg" name="userEmail" placeholder="john@example.com" value="{{ app.user ? app.user.email : (formData.userEmail is defined ? formData.userEmail : '') }}" {% if app.user %}readonly{% endif %} required>
+                                                {% if errors.userEmail is defined %}
+                                                    <div class="error-message text-danger mt-2">
+                                                        <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.userEmail }}</small>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="feature-highlight">
+                                                {% if app.user and app.user.role.name == 'student' %}
+                                                    {% if not selectedSession %}
+                                                        <!-- Show Instructors for Students only if no session is pre-selected -->
+                                                        <label class="form-label fw-semibold">Select Instructor</label>
+                                                        <div class="searchable-dropdown">
+                                                            <div class="dropdown-input-wrapper">
+                                                                <input type="text" class="form-control form-control-lg" id="instructorSearchInput" placeholder="Search instructors..." autocomplete="off" value="{{ formData.instructor_id is defined ? formData.instructor_id : '' }}">
+                                                                <div class="dropdown-arrow">▼</div>
+                                                            </div>
+                                                            <div class="dropdown-options" id="instructorDropdown">
+                                                                {% if instructors is defined and instructors is not empty %}
+                                                                    {% for instructor in instructors %}
+                                                                        <div class="dropdown-option" data-value="{{ instructor.id }}" data-name="{{ instructor.fullName|lower }}" data-email="{{ instructor.email|lower }}">
+                                                                            <div class="option-name">{{ instructor.fullName }}</div>
+                                                                            <div class="option-email">{{ instructor.email }}</div>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <div class="dropdown-option disabled">No instructors available</div>
+                                                                {% endif %}
+                                                            </div>
+                                                            <input type="hidden" name="instructor_id" id="instructorSelected" value="{{ formData.instructor_id is defined ? formData.instructor_id : '' }}">
+                                                        </div>
+                                                        {% if errors.instructor_id is defined %}
+                                                            <div class="error-message text-danger mt-2">
+                                                                <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.instructor_id }}</small>
+                                                            </div>
+                                                        {% endif %}
+                                                        <small class="text-muted">Search and select an instructor for your session</small>
+                                                    {% else %}
+                                                        <!-- Show instructor info when session is pre-selected -->
+                                                        <label class="form-label fw-semibold">Session Instructor</label>
+                                                        <div class="text-muted">
+                                                            <small>Instructor will be assigned based on session availability</small>
+                                                        </div>
+                                                    {% endif %}
+                                                {% elseif app.user and app.user.role.name == 'instructor' %}
+                                                    <!-- Instructor booking - no student selection needed -->
+                                                {% else %}
+                                                    <!-- Show All Users for Guests/Other Roles -->
+                                                    <label class="form-label fw-semibold">All Users</label>
+                                                    <div class="searchable-dropdown">
+                                                        <div class="dropdown-input-wrapper">
+                                                            <input type="text" class="form-control form-control-lg" id="allUsersSearchInput" placeholder="Search users..." autocomplete="off" value="{{ formData.all_users is defined ? formData.all_users : '' }}">
+                                                            <div class="dropdown-arrow">▼</div>
+                                                        </div>
+                                                        <div class="dropdown-options" id="allUsersDropdown">
+                                                            {% if allUsers is defined and allUsers is not empty %}
+                                                                {% for user in allUsers %}
+                                                                    <div class="dropdown-option" data-value="{{ user.id }}" data-name="{{ user.fullName|lower }}" data-email="{{ user.email|lower }}">
+                                                                        <div class="option-name">{{ user.fullName }}</div>
+                                                                        <div class="option-email">{{ user.email }}</div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <div class="dropdown-option disabled">No users available</div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <input type="hidden" name="all_users" id="allUsersSelected" value="{{ formData.all_users is defined ? formData.all_users : '' }}">
+                                                    </div>
+                                                    {% if errors.all_users is defined %}
+                                                        <div class="error-message text-danger mt-2">
+                                                            <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.all_users }}</small>
+                                                        </div>
+                                                    {% endif %}
+                                                    <small class="text-muted">Search and select a user</small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- Session Selection -->
+                                        <div class="col-md-6">
+                                            <div class="feature-highlight">
+                                                <label class="form-label fw-semibold">Select Session</label>
+                                                {% set currentSession = null %}
+                                                {% set currentSessionId = null %}
+                                                
+                                                {% if selectedSession or (formData.session_id is defined and formData.session_id) %}
+                                                    {% set currentSessionId = selectedSession ? selectedSession.id : formData.session_id %}
+                                                    {% set currentSession = selectedSession ?: (sessions|filter(s => s.id == currentSessionId)|first) %}
+                                                    
+                                                    <!-- Show selected session as disabled -->
+                                                    <select class="form-select form-select-lg" name="session_id" id="sessionSelect" disabled>
+                                                        {% if currentSession %}
+                                                            <option value="{{ currentSession.id }}" selected>
+                                                                {{ currentSession.name }} - {{ currentSession.level }}
+                                                                {% if currentSession.startDate and currentSession.endDate %}
+                                                                    ({{ currentSession.startDate|date('M d') }} - {{ currentSession.endDate|date('M d, Y') }})
+                                                                {% endif %}
+                                                            </option>
+                                                        {% endif %}
+                                                    </select>
+                                                    <input type="hidden" name="session_id" value="{{ currentSessionId }}">
+                                                    <div class="text-muted mt-2">
+                                                        <small>Session "{{ currentSession.name }}" pre-selected from session list</small>
+                                                    </div>
+                                                {% else %}
+                                                    <!-- Show normal session selection -->
+                                                    <select class="form-select form-select-lg" name="session_id" id="sessionSelect" required>
+                                                        <option value="">Choose a session...</option>
+                                                        {% if sessions is defined and sessions is not empty %}
+                                                            {% for session in sessions %}
+                                                                <option value="{{ session.id }}" 
+                                                                        data-start-date="{{ session.startDate ? session.startDate|date('Y-m-d') : '' }}"
+                                                                        data-end-date="{{ session.endDate ? session.endDate|date('Y-m-d') : '' }}">
+                                                                    {{ session.name }} - {{ session.level }}
+                                                                    {% if session.startDate and session.endDate %}
+                                                                        ({{ session.startDate|date('M d') }} - {{ session.endDate|date('M d, Y') }})
+                                                                    {% endif %}
+                                                                </option>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            <option value="" disabled>No sessions available</option>
+                                                        {% endif %}
+                                                    </select>
+                                                {% endif %}
+                                                {% if errors.session_id is defined %}
+                                                    <div class="error-message text-danger mt-2">
+                                                        <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.session_id }}</small>
+                                                    </div>
+                                                {% endif %}
+                                                <small class="text-muted">Select the session you want to book</small>
+                                            </div>
+                                        </div>
+
+                                        <!-- Date Selection -->
+                                        <div class="col-md-6">
+                                            <div class="feature-highlight">
+                                                <label class="form-label fw-semibold">Preferred Date</label>
+                                                <input type="date" class="form-control form-control-lg" name="preferred_date" id="preferredDate" required 
+                                                       {% if currentSession and currentSession.startDate and currentSession.endDate %}
+                                                           min="{{ currentSession.startDate|date('Y-m-d') }}" 
+                                                           max="{{ currentSession.endDate|date('Y-m-d') }}"
+                                                       {% else %}
+                                                           min="2026-02-09"
+                                                       {% endif %}
+                                                       value="{{ formData.preferred_date is defined ? formData.preferred_date : '' }}">
+                                                {% if errors.preferred_date is defined %}
+                                                    <div class="error-message text-danger mt-2">
+                                                        <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.preferred_date }}</small>
+                                                    </div>
+                                                {% endif %}
+                                                {% if currentSession and currentSession.startDate and currentSession.endDate %}
+                                                    <small class="text-muted">Select a date between {{ currentSession.startDate|date('M d, Y') }} and {{ currentSession.endDate|date('M d, Y') }}</small>
+                                                {% endif %}
+                                                <div id="bookedDatesInfo" class="text-muted mt-2" style="display: none;">
+                                                    <small><i class="bi bi-info-circle me-1"></i><span id="bookedDatesCount"></span> date(s) already booked for this session</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selection Info -->
+                                        <div class="col-12">
+                                            <div class="bg-light border d-none p-2 rounded" id="categoryInfo">
+                                                <i class="bi bi-tag me-2"></i>
+                                                <strong>Selected Category:</strong> <span id="categoryDetails"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Date Info -->
+                                        <div class="col-12">
+                                            <div class="bg-light border d-none p-2 rounded" id="dateInfo">
+                                                <i class="bi bi-calendar-event me-2"></i>
+                                                <strong>Preferred Date:</strong> <span id="selectedDate"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Message -->
+                                        <div class="col-12">
+                                            <div class="feature-highlight">
+                                                <label class="form-label fw-semibold">Tell us about your learning goals</label>
+                                                <textarea class="form-control" name="message" rows="4" placeholder="What would you like to learn? Any specific topics or skills you want to focus on?"></textarea>
+                                                {% if form_errors.message is defined %}
+                                                    <div class="error-message text-danger mt-2">
+                                                        <small><i class="bi bi-exclamation-circle me-1"></i>{{ form_errors.message }}</small>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- Terms and Submit -->
+                                        <div class="col-12">
+                                            <div class="feature-highlight">
+                                                <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="termsCheck" name="termsCheck" value="1" {{ formData.termsCheck is defined ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="termsCheck">
+                                                    I agree to terms and conditions and understand that session times are subject to availability.
+                                                </label>
+                                                {% if errors.terms is defined %}
+                                                    <div class="error-message text-danger mt-2">
+                                                        <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.terms }}</small>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                                <button type="submit" class="btn btn-success btn-lg px-5">
+                                                    <i class="bi bi-calendar-check me-2"></i>
+                                                    Book Session Now
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar Info -->
+                        <div class="col-lg-4 bg-gradient-info text-white">
+                            <div class="p-4 p-lg-5 h-100 d-flex flex-column justify-content-center">
+                                <h4 class="mb-4 fw-bold">Why Choose Our Sessions?</h4>
+                                
+                                <div class="mb-4">
+                                    <div class="sidebar-feature">
+                                        <i class="bi bi-star-fill mb-2"></i>
+                                        <h6 class="mb-1 fw-bold">Top-Rated Instructors</h6>
+                                        <small>Learn from industry experts with proven track records</small>
+                                    </div>
+                                    
+                                    <div class="sidebar-feature">
+                                        <i class="bi bi-person-check-fill mb-2"></i>
+                                        <h6 class="mb-1 fw-bold">Personalized Learning</h6>
+                                        <small>Customized curriculum tailored to your specific needs</small>
+                                    </div>
+                                    
+                                    <div class="sidebar-feature">
+                                        <i class="bi bi-graph-up mb-2"></i>
+                                        <h6 class="mb-1 fw-bold">Track Progress</h6>
+                                        <small>Monitor your improvement with detailed analytics</small>
+                                    </div>
+                                    
+                                    <div class="sidebar-feature">
+                                        <i class="bi bi-shield-check mb-2"></i>
+                                        <h6 class="mb-1 fw-bold">Satisfaction Guaranteed</h6>
+                                        <small>100% satisfaction or your money back</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-auto">
+                                    <div class="bg-white bg-opacity-10 rounded-3 p-3" style="backdrop-filter: blur(10px);">
+                                        <h6 class="mb-2 fw-bold">Need Help?</h6>
+                                        <p class="small mb-0">Contact our support team for assistance with booking your session.</p>
+                                        <a href="#" class="btn btn-light btn-sm mt-2 rounded-pill">Get Support</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- Booking Section END -->
+
+<style>
+.bg-gradient-info {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+}
+
+.form-control-lg,
+.form-select-lg {
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    padding: 12px 16px;
+}
+
+.form-control-lg:focus,
+.form-select-lg:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    transform: translateY(-1px);
+}
+
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.alert {
+    border-radius: 12px;
+    border: none;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d5f4e6 0%, #c8e6c9 100%);
+    color: #1b5e20;
+}
+
+.alert-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6 !important;
+}
+
+.form-check-input:checked {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.form-check-input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.shadow-enhanced {
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.feature-highlight {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.feature-highlight:hover {
+    border-color: #3498db;
+    box-shadow: 0 0.125rem 0.25rem rgba(52, 152, 219, 0.15);
+}
+
+.sidebar-feature {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.sidebar-feature:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+}
+
+.btn-light {
+    border-radius: 20px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-light:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+}
+
+.display-6 {
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+/* Custom Dropdown Styles */
+.custom-dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.dropdown-toggle:hover {
+    border-color: #3498db;
+}
+
+.dropdown-toggle:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    outline: none;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none;
+    margin-top: 4px;
+}
+
+.dropdown-menu.show {
+    display: block !important;
+}
+
+.search-container {
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.search-container input {
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+}
+
+.search-container input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    outline: none;
+}
+
+.options-container {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.dropdown-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.selected {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item.d-none {
+    display: none;
+}
+
+/* Error Message Styles */
+.error-message {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    animation: slideIn 0.3s ease;
+}
+
+.error-message small {
+    color: #721c24;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.error-message i {
+    margin-right: 6px;
+    font-size: 0.875rem;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Searchable Dropdown Styles */
+.searchable-dropdown {
+    position: relative;
+}
+
+.dropdown-input-wrapper {
+    position: relative;
+}
+
+.dropdown-input-wrapper .form-control {
+    padding-right: 40px;
+}
+
+.dropdown-arrow {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
+    transition: transform 0.3s ease;
+}
+
+.searchable-dropdown.open .dropdown-arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.dropdown-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.searchable-dropdown.open .dropdown-options {
+    display: block;
+}
+
+.dropdown-option {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.dropdown-option:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-option.selected {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.dropdown-option.disabled {
+    color: #999;
+    cursor: not-allowed;
+    font-style: italic;
+}
+
+.dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.option-name {
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 2px;
+}
+
+.option-email {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.dropdown-option.hidden {
+    display: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Session selection and date range handling
+    const sessionSelect = document.getElementById('sessionSelect');
+    const preferredDate = document.getElementById('preferredDate');
+    
+    if (sessionSelect && preferredDate) {
+        sessionSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const startDate = selectedOption.getAttribute('data-start-date');
+            const endDate = selectedOption.getAttribute('data-end-date');
+            
+            if (startDate && endDate) {
+                preferredDate.min = startDate;
+                preferredDate.max = endDate;
+                preferredDate.placeholder = `Select date between ${startDate} and ${endDate}`;
+                
+                // Clear current date if it's outside the new range
+                if (preferredDate.value && (preferredDate.value < startDate || preferredDate.value > endDate)) {
+                    preferredDate.value = '';
+                }
+            } else {
+                // Reset to default constraints if no session selected
+                preferredDate.min = '2026-02-09';
+                preferredDate.max = '';
+                preferredDate.placeholder = 'Select your preferred date';
+            }
+        });
+    }
+
+    // Immediate logging - outside DOMContentLoaded
+console.log('=== SCRIPT START ===');
+console.log('Checking user data immediately...');
+
+{% if app.user %}
+    console.log('✅ USER FOUND:');
+    console.log('ID:', {{ app.user.id }});
+    console.log('Name:', '{{ app.user.fullName|e('js') }}');
+    console.log('Email:', '{{ app.user.email|e('js') }}');
+    console.log('Role:', '{{ app.user.role.name|e('js') }}');
+    console.log('Role ID:', {{ app.user.role.id }});
+{% else %}
+    console.log('❌ NO USER FOUND');
+{% endif %}
+
+console.log('DOM Content Loaded - Starting initialization...');
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== DOM READY ===');
+    console.log('JavaScript initialization started');
+    
+    // Check if elements exist
+    console.log('Checking DOM elements...');
+    const elements = {
+        instructorSearch: document.getElementById('instructorSearch'),
+        instructorDetails: document.getElementById('instructorDetails'),
+        studentSelect: document.getElementById('studentSelect'),
+        studentSearch: document.getElementById('studentSearch'),
+        studentInfo: document.getElementById('studentInfo'),
+        studentDetails: document.getElementById('studentDetails'),
+        categorySelect: document.getElementById('categorySelect'),
+        categoryInfo: document.getElementById('categoryInfo'),
+        categoryDetails: document.getElementById('categoryDetails'),
+        preferredDate: document.getElementById('preferredDate'),
+        dateInfo: document.getElementById('dateInfo'),
+        selectedDate: document.getElementById('selectedDate'),
+        bookingForm: document.getElementById('bookingForm'),
+        termsCheck: document.getElementById('termsCheck'),
+        instructorSelect: document.getElementById('instructorSelect'),
+        studentSelect: document.getElementById('studentSelect'),
+        allUsersSelect: document.getElementById('allUsersSelect')
+    };
+    
+    // Simple user data check
+    {% if app.user %}
+        console.log('🔥 USER DATA IN DOM READY:');
+        console.log('- ID:', {{ app.user.id }});
+        console.log('- Name:', '{{ app.user.fullName|e('js') }}');
+        console.log('- Email:', '{{ app.user.email|e('js') }}');
+        console.log('- Role:', '{{ app.user.role.name|e('js') }}');
+    {% else %}
+        console.log('🔥 NO USER IN DOM READY');
+    {% endif %}
+    
+    const preferredDate = document.getElementById('preferredDate');
+    const dateInfo = document.getElementById('dateInfo');
+    const selectedDate = document.getElementById('selectedDate');
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    preferredDate.setAttribute('min', today);
+
+    // Searchable Dropdown Functionality
+    function initSearchableDropdown(inputId, dropdownId, hiddenInputId) {
+        const input = document.getElementById(inputId);
+        const dropdown = document.getElementById(dropdownId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        const options = dropdown.querySelectorAll('.dropdown-option:not(.disabled)');
+        const container = input.closest('.searchable-dropdown');
+        
+        if (!input || !dropdown || !hiddenInput) return;
+
+        // Toggle dropdown
+        input.addEventListener('focus', function() {
+            container.classList.add('open');
+            dropdown.style.display = 'block';
+        });
+
+        input.addEventListener('click', function() {
+            container.classList.add('open');
+            dropdown.style.display = 'block';
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!container.contains(e.target)) {
+                container.classList.remove('open');
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Search functionality
+        input.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            options.forEach(option => {
+                const name = option.getAttribute('data-name') || '';
+                const email = option.getAttribute('data-email') || '';
+                const isVisible = name.includes(searchTerm) || email.includes(searchTerm);
+                
+                if (isVisible) {
+                    option.classList.remove('hidden');
+                } else {
+                    option.classList.add('hidden');
+                }
+            });
+        });
+
+        // Option selection
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                const name = this.querySelector('.option-name').textContent;
+                const email = this.querySelector('.option-email').textContent;
+                
+                // Update input value
+                input.value = `${name} - ${email}`;
+                
+                // Update hidden input
+                hiddenInput.value = value;
+                
+                // Update selected state
+                options.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Close dropdown
+                container.classList.remove('open');
+                dropdown.style.display = 'none';
+            });
+        });
+    }
+
+    // Initialize all searchable dropdowns
+    {% if app.user and app.user.role.name == 'student' %}
+        initSearchableDropdown('instructorSearchInput', 'instructorDropdown', 'instructorSelected');
+    {% elseif app.user and app.user.role.name == 'instructor' %}
+        initSearchableDropdown('studentSearchInput', 'studentDropdown', 'studentSelected');
+    {% else %}
+        initSearchableDropdown('allUsersSearchInput', 'allUsersDropdown', 'allUsersSelected');
+    {% endif %}
+
+    console.log('=== TEMPLATE DATA DEBUG ===');
+    console.log('Students count:', {{ students|length }});
+    console.log('Instructors count:', {{ instructors|length }});
+    console.log('All Users count:', {{ allUsers|length }});
+    console.log('Current user role:', '{{ app.user ? app.user.role.name : 'No user' }}');
+    
+    // Debug students data
+    {% if students is not empty %}
+        console.log('Students details:');
+        {% for student in students %}
+            console.log('- Student: {{ student.fullName }} (ID: {{ student.id }})');
+        {% endfor %}
+    {% else %}
+        console.log('No students found');
+    {% endif %}
+    
+    // Debug instructors data  
+    {% if instructors is not empty %}
+        console.log('Instructors details:');
+        {% for instructor in instructors %}
+            console.log('- Instructor: {{ instructor.fullName }} (ID: {{ instructor.id }})');
+        {% endfor %}
+    {% else %}
+        console.log('No instructors found');
+    {% endif %}
+    
+    console.log('========================');
+
+    // Debug: Log all available user data
+    console.log('=== COMPLETE USER DATA ===');
+    {% if app.user %}
+        console.log('User ID:', {{ app.user.id }});
+        console.log('Full Name:', '{{ app.user.fullName|e('js') }}');
+        console.log('Email:', '{{ app.user.email|e('js') }}');
+        console.log('Role:', '{{ app.user.role.name|e('js') }}');
+        console.log('Role ID:', {{ app.user.role.id }});
+        console.log('Created At:', '{{ app.user.createdAt|date('Y-m-d H:i:s') }}');
+        console.log('Complete User Object:', {
+            id: {{ app.user.id }},
+            fullName: '{{ app.user.fullName|e('js') }}',
+            email: '{{ app.user.email|e('js') }}',
+            role: {
+                name: '{{ app.user.role.name|e('js') }}',
+                id: {{ app.user.role.id }}
+            },
+            createdAt: '{{ app.user.createdAt|date('Y-m-d H:i:s') }}'
+        });
+        console.log('User Entity Methods:', {
+            getId: 'function() - returns {{ app.user.id }}',
+            getFullName: 'function() - returns "{{ app.user.fullName|e('js') }}"',
+            getEmail: 'function() - returns "{{ app.user.email|e('js') }}"',
+            getRole: 'function() - returns role object',
+            getCreatedAt: 'function() - returns "{{ app.user.createdAt|date('Y-m-d H:i:s') }}"'
+        });
+    {% else %}
+        console.log('No user is logged in');
+    {% endif %}
+    console.log('========================');
+
+    // Category selection handler (for non-logged-in users)
+    if (categorySelect) {
+        categorySelect.addEventListener('change', function() {
+            if (this.value) {
+                const selectedOption = this.options[this.selectedIndex];
+                categoryDetails.textContent = selectedOption.text;
+                categoryInfo.classList.remove('d-none');
+            } else {
+                categoryInfo.classList.add('d-none');
+            }
+        });
+    }
+
+    // Date selection handler
+    preferredDate.addEventListener('change', function() {
+        if (this.value) {
+            const selectedDateObj = new Date(this.value);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = selectedDateObj.toLocaleDateString('en-US', options);
+            selectedDate.textContent = formattedDate;
+            dateInfo.classList.remove('d-none');
+        } else {
+            dateInfo.classList.add('d-none');
+        }
+    });
+
+    // Form validation
+    const form = document.getElementById('bookingForm');
+    form.addEventListener('submit', function(e) {
+        const termsCheck = document.getElementById('termsCheck');
+        
+        // Check if terms are accepted
+        if (!termsCheck.checked) {
+            e.preventDefault();
+            alert('Please accept terms and conditions to proceed.');
+            return;
+        }
+        
+        // Role-based validation
+        {% if app.user and app.user.role.name == 'student' %}
+        // Check if instructor is selected (for students)
+        const instructorSelected = document.getElementById('instructorSelected');
+        if (!instructorSelected.value) {
+            e.preventDefault();
+            alert('Please select an instructor for your session.');
+            return;
+        }
+        {% elseif app.user and app.user.role.name == 'instructor' %}
+        // Instructors don't need to select students - students book directly
+        // No validation needed for instructors
+        {% else %}
+        // Check if a user is selected from the All Users dropdown (for guests/other roles)
+        const allUsersSelected = document.getElementById('allUsersSelected');
+        if (!allUsersSelected.value) {
+            e.preventDefault();
+            alert('Please select a user from the All Users dropdown.');
+            return;
+        }
+        {% endif %}
+        
+        // Check if date is selected
+        if (!preferredDate.value) {
+            e.preventDefault();
+            alert('Please select your preferred date for the session.');
+            return;
+        }
+
+        // Check if selected date is not in the past
+        const selectedDate = new Date(preferredDate.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        if (selectedDate < today) {
+            e.preventDefault();
+            alert('Please select a date that is today or in the future.');
+            return;
+        }
+
+        // Optional: Check if selected date is too far in future (e.g., more than 6 months)
+        const maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 6);
+        
+        if (selectedDate > maxDate) {
+            e.preventDefault();
+            alert('Please select a date within the next 6 months.');
+            return;
+        }
+    });
+
+    // Add date formatting enhancement
+    preferredDate.addEventListener('focus', function() {
+        this.showPicker?.();
+    });
+
+    // Handle session-based date restrictions
+    const sessionSelect = document.getElementById('sessionSelect');
+    const preferredDateInput = document.getElementById('preferredDate');
+    
+    // Function to fetch booked dates for a session
+    async function fetchBookedDates(sessionId) {
+        try {
+            console.log('DEBUG: Fetching booked dates for session:', sessionId);
+            const response = await fetch(`/api/session/${sessionId}/booked-dates`);
+            console.log('DEBUG: API response status:', response.status);
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('DEBUG: API response data:', data);
+                return data.bookedDates || [];
+            } else {
+                console.error('DEBUG: API response not ok:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching booked dates:', error);
+        }
+        return [];
+    }
+    
+    // Function to disable booked dates
+    function disableBookedDates(bookedDates) {
+        console.log('DEBUG: disableBookedDates called with:', bookedDates);
+        
+        if (!preferredDateInput) {
+            console.log('DEBUG: preferredDateInput not found');
+            return;
+        }
+        
+        // Create a set of booked dates for faster lookup
+        const bookedDatesSet = new Set(bookedDates);
+        console.log('DEBUG: Booked dates set created:', Array.from(bookedDatesSet));
+        
+        // Show booked dates info
+        const bookedDatesInfo = document.getElementById('bookedDatesInfo');
+        const bookedDatesCount = document.getElementById('bookedDatesCount');
+        
+        if (bookedDatesInfo && bookedDatesCount) {
+            if (bookedDates.length > 0) {
+                bookedDatesCount.textContent = bookedDates.length;
+                bookedDatesInfo.style.display = 'block';
+                console.log('DEBUG: Showing booked dates info:', bookedDates.length);
+            } else {
+                bookedDatesInfo.style.display = 'none';
+                console.log('DEBUG: Hiding booked dates info');
+            }
+        }
+        
+        // Add input event listener to validate selected date
+        preferredDateInput.addEventListener('input', function() {
+            const selectedDate = this.value;
+            
+            if (bookedDatesSet.has(selectedDate)) {
+                // Show error message for booked date
+                this.setCustomValidity('This date is already booked. Please select another date.');
+                
+                // Show user-friendly message
+                const existingError = this.parentNode.querySelector('.booked-date-error');
+                if (!existingError) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'booked-date-error text-danger mt-2';
+                    errorDiv.innerHTML = '<small><i class="bi bi-exclamation-circle me-1"></i>This date is already booked. Please select another date.</small>';
+                    this.parentNode.appendChild(errorDiv);
+                }
+                
+                // Add visual indication - red border
+                this.classList.add('is-invalid');
+            } else {
+                // Clear any previous error
+                this.setCustomValidity('');
+                const existingError = this.parentNode.querySelector('.booked-date-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // Remove visual indication
+                this.classList.remove('is-invalid');
+            }
+        });
+        
+        // Add change event listener for additional validation
+        preferredDateInput.addEventListener('change', function() {
+            const selectedDate = this.value;
+            
+            if (bookedDatesSet.has(selectedDate)) {
+                // Prevent selection by clearing the value
+                this.value = '';
+                this.setCustomValidity('This date is already booked. Please select another date.');
+                
+                // Show error message
+                const existingError = this.parentNode.querySelector('.booked-date-error');
+                if (!existingError) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'booked-date-error text-danger mt-2';
+                    errorDiv.innerHTML = '<small><i class="bi bi-exclamation-circle me-1"></i>This date is already booked. Please select another date.</small>';
+                    this.parentNode.appendChild(errorDiv);
+                }
+                
+                // Add visual indication
+                this.classList.add('is-invalid');
+                
+                // Focus back to the date input
+                this.focus();
+            } else {
+                // Clear any previous error
+                this.setCustomValidity('');
+                const existingError = this.parentNode.querySelector('.booked-date-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // Remove visual indication
+                this.classList.remove('is-invalid');
+            }
+        });
+    }
+    
+    // Update date constraints when session changes
+    sessionSelect?.addEventListener('change', async function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const startDate = selectedOption.getAttribute('data-start-date');
+        const endDate = selectedOption.getAttribute('data-end-date');
+        const sessionId = this.value;
+        
+        if (startDate && endDate) {
+            preferredDateInput.min = startDate;
+            preferredDateInput.max = endDate;
+            
+            // Fetch and disable booked dates for this session
+            if (sessionId) {
+                const bookedDates = await fetchBookedDates(sessionId);
+                disableBookedDates(bookedDates);
+            }
+        } else {
+            // Reset to default constraints
+            preferredDateInput.min = '2026-02-09';
+            preferredDateInput.max = '';
+        }
+    });
+    
+    // Initialize booked dates for pre-selected session or form data
+    {% if selectedSession %}
+        (async function() {
+            const bookedDates = await fetchBookedDates('{{ selectedSession.id }}');
+            disableBookedDates(bookedDates);
+        })();
+    {% elseif formData.session_id is defined and formData.session_id %}
+        (async function() {
+            const bookedDates = await fetchBookedDates('{{ formData.session_id }}');
+            disableBookedDates(bookedDates);
+        })();
+    {% endif %}
+});
+</script>
+{% endblock %}

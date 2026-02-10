@@ -1,0 +1,141 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Sign Up - Unilearn{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Join <span class="text-primary">Unilearn</span></h1>
+                    <p class="lead mb-0">Create your account and start your learning journey today</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Register START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="text-center mb-4">
+                            <h4 class="mb-2">Create Account</h4>
+                            <p class="mb-0 small text-muted">Join thousands of learners worldwide</p>
+                        </div>
+                        
+                        <form>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" placeholder="John" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" placeholder="Doe" required>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="form-label">Email address</label>
+                                    <input type="email" class="form-control" placeholder="john@example.com" required>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" placeholder="Create a strong password" required>
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">Password must be at least 8 characters long</small>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="form-label">Confirm Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" placeholder="Confirm your password" required>
+                                        <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="form-label">Account Type</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="accountType" id="student" checked>
+                                        <label class="form-check-label" for="student">
+                                            <i class="fas fa-user-graduate me-2"></i>Student - I want to learn
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="accountType" id="instructor">
+                                        <label class="form-check-label" for="instructor">
+                                            <i class="fas fa-chalkboard-teacher me-2"></i>Instructor - I want to teach
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="terms" required>
+                                        <label class="form-check-label" for="terms">
+                                            I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary w-100 mb-3">Create Account</button>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="text-center">
+                                        <p class="mb-0">Already have an account? <a href="{{ path('app_login') }}" class="text-primary text-decoration-none">Sign in</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="divider my-4">
+                            <span class="px-3 bg-white text-muted small">OR</span>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" type="button">
+                                <i class="fab fa-google me-2"></i>Sign up with Google
+                            </button>
+                            <button class="btn btn-outline-primary" type="button">
+                                <i class="fab fa-facebook-f me-2"></i>Sign up with Facebook
+                            </button>
+                            <button class="btn btn-outline-primary" type="button">
+                                <i class="fab fa-linkedin-in me-2"></i>Sign up with LinkedIn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Register END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

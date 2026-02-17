@@ -84,11 +84,23 @@ class CourseLifecycleServiceTest extends TestCase
     public function testValidateCourseForSubmissionMinimumLessons(): void
     {
         $course = $this->createValidCourse();
-        // Mock getTotalLessons to return less than 3
-        $course = $this->createMock(Course::class);
-        $course->method('getTotalLessons')->willReturn(2);
         
-        $errors = $this->service->validateCourseForSubmission($course);
+        // Mock the course to return less than 3 lessons
+        $mockCourse = $this->createMock(Course::class);
+        $mockCourse->method('getTitle')->willReturn('Valid Course Title');
+        $mockCourse->method('getShortDescription')->willReturn('This is a valid short description that meets minimum requirements');
+        $mockCourse->method('getRequirements')->willReturn('Course requirements');
+        $mockCourse->method('getLearningOutcomes')->willReturn('Learning outcomes');
+        $mockCourse->method('getTargetAudience')->willReturn('Target audience');
+        $mockCourse->method('getThumbnailUrl')->willReturn('/path/to/thumbnail.jpg');
+        $mockCourse->method('getDuration')->willReturn(2.0);
+        $mockCourse->method('getPrice')->willReturn(99.99);
+        $mockCourse->method('getCategory')->willReturn('Programming');
+        $mockCourse->method('getLevel')->willReturn('Beginner');
+        $mockCourse->method('getTotalLessons')->willReturn(2); // Less than required 3
+        $mockCourse->method('getChapters')->willReturn(new \Doctrine\Common\Collections\ArrayCollection());
+        
+        $errors = $this->service->validateCourseForSubmission($mockCourse);
         
         $this->assertContains('Course must have at least 3 lessons', $errors);
     }
@@ -112,20 +124,15 @@ class CourseLifecycleServiceTest extends TestCase
         $course->setLearningOutcomes('Learning outcomes');
         $course->setTargetAudience('Target audience');
         $course->setThumbnailUrl('/path/to/thumbnail.jpg');
-        $course->setDuration(2.0);
+        $course->setDuration(2.0); // 2 hours
         $course->setPrice(99.99);
+        $course->setCategory('Programming');
+        $course->setLevel('Beginner');
         
-        // Mock chapters and lessons
-        $course = $this->createMock(Course::class);
-        $course->method('getTitle')->willReturn('Valid Course Title');
-        $course->method('getShortDescription')->willReturn('This is a valid short description that meets minimum requirements');
-        $course->method('getRequirements')->willReturn('Course requirements');
-        $course->method('getLearningOutcomes')->willReturn('Learning outcomes');
-        $course->method('getTargetAudience')->willReturn('Target audience');
-        $course->method('getThumbnailUrl')->willReturn('/path/to/thumbnail.jpg');
-        $course->method('getDuration')->willReturn(2.0);
-        $course->method('getTotalLessons')->willReturn(5);
-        $course->method('getChapters')->willReturn(new \Doctrine\Common\Collections\ArrayCollection());
+        // Add at least 1 chapter to satisfy validation
+        $chapter = new \App\Entity\Chapter();
+        $chapter->setTitle('Test Chapter');
+        $course->addChapter($chapter);
         
         return $course;
     }

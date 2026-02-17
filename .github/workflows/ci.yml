@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, setup/ci-pr ]
   push:
-    branches: [ setup/ci-pr, main ]
+    branches: [ setup/ci-pr, main, feature/*, fix/*, student/* ]
 
 jobs:
   test:

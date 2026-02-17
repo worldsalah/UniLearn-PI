@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Enum\CourseStatus;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
 class Course
@@ -54,6 +55,12 @@ class Course
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: Quiz::class, cascade: ['persist', 'remove'])]
     private Collection $quizzes;
 
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: \App\Entity\CourseAuditLog::class)]
+    private Collection $auditLogs;
+
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: \App\Entity\CourseVersion::class)]
+    private Collection $versions;
+
     #[ORM\ManyToOne(inversedBy: 'courses')]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
@@ -79,8 +86,33 @@ class Course
     #[Assert\Length(max: 2000, maxMessage: 'L\'audience ne peut pas dépasser {{ limit }} caractères')]
     private ?string $targetAudience = null;
 
-    #[ORM\Column(length: 20, options: ["default" => "inactive"])]
-    private ?string $status = 'inactive';
+    #[ORM\Column(length: 20, options: ["default" => "draft"])]
+    private ?string $status = 'draft';
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $submittedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $reviewedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $publishedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $archivedAt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $rejectionReason = null;
+
+    #[ORM\Column(options: ["default" => 1])]
+    private int $versionNumber = 1;
+
+    #[ORM\Column(options: ["default" => false])]
+    private bool $isLocked = false;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'last_modified_by', referencedColumnName: 'id', nullable: true)]
+    private ?User $lastModifiedBy = null;
 
     #[ORM\Column(length: 20, options: ["default" => "pending"])]
     private string $imageStatus = 'pending';
@@ -101,6 +133,8 @@ class Course
     {
         $this->chapters = new ArrayCollection();
         $this->quizzes = new ArrayCollection();
+        $this->auditLogs = new ArrayCollection();
+        $this->versions = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -112,7 +146,153 @@ class Course
     public function setStatus(string $status): static
     {
         $this->status = $status;
+        return $this;
+    }
 
+    public function getStatusEnum(): ?CourseStatus
+    {
+        return CourseStatus::tryFrom($this->status);
+    }
+
+    public function getSubmittedAt(): ?\DateTimeImmutable
+    {
+        return $this->submittedAt;
+    }
+
+    public function setSubmittedAt(?\DateTimeImmutable $submittedAt): static
+    {
+        $this->submittedAt = $submittedAt;
+        return $this;
+    }
+
+    public function getReviewedAt(): ?\DateTimeImmutable
+    {
+        return $this->reviewedAt;
+    }
+
+    public function setReviewedAt(?\DateTimeImmutable $reviewedAt): static
+    {
+        $this->reviewedAt = $reviewedAt;
+        return $this;
+    }
+
+    public function getPublishedAt(): ?\DateTimeImmutable
+    {
+        return $this->publishedAt;
+    }
+
+    public function setPublishedAt(?\DateTimeImmutable $publishedAt): static
+    {
+        $this->publishedAt = $publishedAt;
+        return $this;
+    }
+
+    public function getArchivedAt(): ?\DateTimeImmutable
+    {
+        return $this->archivedAt;
+    }
+
+    public function setArchivedAt(?\DateTimeImmutable $archivedAt): static
+    {
+        $this->archivedAt = $archivedAt;
+        return $this;
+    }
+
+    public function getRejectionReason(): ?string
+    {
+        return $this->rejectionReason;
+    }
+
+    public function setRejectionReason(?string $rejectionReason): static
+    {
+        $this->rejectionReason = $rejectionReason;
+        return $this;
+    }
+
+    public function getVersionNumber(): int
+    {
+        return $this->versionNumber;
+    }
+
+    public function setVersionNumber(int $versionNumber): static
+    {
+        $this->versionNumber = $versionNumber;
+        return $this;
+    }
+
+    public function isLocked(): bool
+    {
+        return $this->isLocked;
+    }
+
+    public function setLocked(bool $isLocked): static
+    {
+        $this->isLocked = $isLocked;
+        return $this;
+    }
+
+    public function getLastModifiedBy(): ?User
+    {
+        return $this->lastModifiedBy;
+    }
+
+    public function setLastModifiedBy(?User $lastModifiedBy): static
+    {
+        $this->lastModifiedBy = $lastModifiedBy;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, \App\Entity\CourseAuditLog>
+     */
+    public function getAuditLogs(): Collection
+    {
+        return $this->auditLogs;
+    }
+
+    public function addAuditLog(\App\Entity\CourseAuditLog $auditLog): static
+    {
+        if (!$this->auditLogs->contains($auditLog)) {
+            $this->auditLogs->add($auditLog);
+            $auditLog->setCourse($this);
+        }
+        return $this;
+    }
+
+    public function removeAuditLog(\App\Entity\CourseAuditLog $auditLog): static
+    {
+        if ($this->auditLogs->removeElement($auditLog)) {
+            if ($auditLog->getCourse() === $this) {
+                $auditLog->setCourse(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, \App\Entity\CourseVersion>
+     */
+    public function getVersions(): Collection
+    {
+        return $this->versions;
+    }
+
+    public function addVersion(\App\Entity\CourseVersion $version): static
+    {
+        if (!$this->versions->contains($version)) {
+            $this->versions->add($version);
+            $version->setCourse($this);
+        }
+        return $this;
+    }
+
+    public function removeVersion(\App\Entity\CourseVersion $version): static
+    {
+        if ($this->versions->removeElement($version)) {
+            if ($version->getCourse() === $this) {
+                $version->setCourse(null);
+            }
+        }
         return $this;
     }
 

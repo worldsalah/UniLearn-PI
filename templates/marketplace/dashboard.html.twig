@@ -1,0 +1,192 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Marketplace Dashboard - Unilearn{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Marketplace <span class="text-primary">Dashboard</span></h1>
+                    <p class="lead mb-0">Manage your products, jobs, and orders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Dashboard START -->
+<section class="py-5">
+    <div class="container">
+        <!-- Flash messages -->
+        {% for type, messages in app.session.flashbag.all() %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-primary mb-2">
+                            <i class="fas fa-box fa-2x"></i>
+                        </div>
+                        <h3 class="mb-1">{{ stats.totalProducts }}</h3>
+                        <p class="text-muted mb-0">Total Products</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-success mb-2">
+                            <i class="fas fa-briefcase fa-2x"></i>
+                        </div>
+                        <h3 class="mb-1">{{ stats.totalJobs }}</h3>
+                        <p class="text-muted mb-0">Total Jobs</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-info mb-2">
+                            <i class="fas fa-shopping-cart fa-2x"></i>
+                        </div>
+                        <h3 class="mb-1">{{ stats.totalOrders }}</h3>
+                        <p class="text-muted mb-0">Total Orders</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-warning mb-2">
+                            <i class="fas fa-dollar-sign fa-2x"></i>
+                        </div>
+                        <h3 class="mb-1">${{ stats.totalRevenue|number_format(2, '.', ',') }}</h3>
+                        <p class="text-muted mb-0">Total Revenue</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row g-4">
+            <!-- Recent Products -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Recent Products</h5>
+                        {% if products|length > 0 %}
+                            {% for product in products %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="flex-shrink-0">
+                                        <img src="{{ asset('uploads/products/' ~ product.image) }}" class="rounded" width="40" height="40" alt="{{ product.title }}">
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-1">{{ product.title }}</h6>
+                                        <p class="text-muted mb-0 small">${{ product.price }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No products yet.</p>
+                        {% endif %}
+                        <div class="mt-3">
+                            <a href="{{ path('app_marketplace_index') }}" class="btn btn-sm btn-outline-primary">View All Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Jobs -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Recent Jobs</h5>
+                        {% if jobs|length > 0 %}
+                            {% for job in jobs %}
+                                <div class="mb-3">
+                                    <h6 class="mb-1">{{ job.title }}</h6>
+                                    <p class="text-muted mb-0 small">${{ job.budget }} • {{ job.status }}</p>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No jobs posted yet.</p>
+                        {% endif %}
+                        <div class="mt-3">
+                            <a href="{{ path('app_marketplace_index') }}" class="btn btn-sm btn-outline-primary">View All Jobs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Recent Orders</h5>
+                        {% if orders|length > 0 %}
+                            {% for order in orders %}
+                                <div class="mb-3">
+                                    <h6 class="mb-1">{{ order.product.title }}</h6>
+                                    <p class="text-muted mb-0 small">${{ order.totalPrice }} • {{ order.status }}</p>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No orders yet.</p>
+                        {% endif %}
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary">View All Orders</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row g-4 mt-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Quick Actions</h5>
+                        <div class="d-flex gap-3">
+                            <a href="{{ path('app_marketplace_index') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Add Product
+                            </a>
+                            <a href="{{ path('app_marketplace_index') }}" class="btn btn-success">
+                                <i class="fas fa-briefcase me-2"></i>Post Job
+                            </a>
+                            <a href="#" class="btn btn-info">
+                                <i class="fas fa-chart-line me-2"></i>View Analytics
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Dashboard END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

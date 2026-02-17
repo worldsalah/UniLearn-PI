@@ -1,0 +1,614 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Course Categories - Unilearn{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css">
+<style>
+/* Page Banner Styles */
+.page-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-banner::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 822.2 301.9'%3E%3Cpath fill='%23ffffff20' d='M752.5,51.9c-4.5,3.9-8.9,7.8-13.4,11.8c-51.5,45.3-104.8,92.2-171.7,101.4c-39.9,5.5-80.2-3.4-119.2-12.1 c-32.3-7.2-65.6-14.6-98.9-13.9c-66.5,1.3-128.9,35.2-175.7,64.6c-11.9,7.5-23.9,15.3-35.5,22.8c-40.5,26.4-82.5,53.8-128.4,70.7 c-2.1,0.8-4.2,1.5-6.2,2.2L0,301.9c3.3-1.1,6.7-2.3,10.2-3.5c46.1-17,88.1-44.4,128.7-70.9c11.6-7.6,23.6-15.4,35.4-22.8 c46.7-29.3,108.9-63.1,175.1-64.4c33.1-0.6,66.4,6.8,98.6,13.9c39.1,8.7,79.6,17.7,119.7,12.1C634.8,157,688.3,110,740,64.6 c4.5-3.9,9-7.9,13.4-11.8C773.8,35,797,16.4,822.2,1l-0.7-1C796.2,15.4,773,34,752.5,51.9z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom center;
+    background-size: cover;
+    opacity: 0.1;
+}
+
+.banner-content {
+    position: relative;
+    z-index: 2;
+}
+
+.banner-decoration {
+    position: absolute;
+    top: 0;
+    start: 0;
+}
+
+.banner-search {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+/* Category Card Styles */
+.category-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: inherit;
+}
+
+.category-card.bg-success-opacity-10 {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.category-card.bg-orange-opacity-10 {
+    background-color: rgba(253, 126, 20, 0.1);
+}
+
+.category-card.bg-danger-opacity-10 {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.category-card.bg-purple-opacity-10 {
+    background-color: rgba(111, 66, 193, 0.1);
+}
+
+.category-card.bg-info-opacity-10 {
+    background-color: rgba(13, 202, 240, 0.1);
+}
+
+.category-card.bg-blue-opacity-10 {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.category-card.bg-warning-opacity-15 {
+    background-color: rgba(255, 193, 7, 0.15);
+}
+
+.category-card.bg-dark-opacity-10 {
+    background-color: rgba(33, 37, 41, 0.1);
+}
+
+.category-card.bg-primary-opacity-10 {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.category-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.category-icon img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.category-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.category-title a {
+    text-decoration: none;
+    color: #2c3e50;
+    transition: color 0.3s ease;
+}
+
+.category-title a:hover {
+    color: #007bff;
+}
+
+.category-count {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Language Section Styles */
+.language-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.language-card:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: #007bff;
+}
+
+.language-flag {
+    height: 40px;
+    margin-right: 1rem;
+}
+
+.language-name {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-banner {
+        padding: 3rem 0;
+    }
+    
+    .banner-title {
+        font-size: 2rem;
+    }
+    
+    .category-card {
+        padding: 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- =======================
+Header START -->
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Logo Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('app_home') }}">
+                <img class="navbar-brand-item" src="{{ asset('assets/images/logo.svg') }}" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto icon-md btn btn-outline-secondary p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <!-- Nav item Home -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" href="{{ path('app_home') }}">
+                            Home
+                        </a>
+                    </li>
+
+                    <!-- Nav item Courses -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_courses' %}active{% endif %}" href="#" id="courseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Courses
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="courseDropdown">
+                            <li><h6 class="dropdown-header">Learning</h6></li>
+                            <li><a class="dropdown-item" href="{{ path('app_courses') }}">Browse Courses</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_categories') }}">Course Categories</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}">Instructor Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Student</h6></li>
+                            <li><a class="dropdown-item" href="{{ path('app_student_dashboard') }}">Student Dashboard</a></li>
+                            <li><a class="dropdown-item" href="#">My Certificates</a></li>
+                            <li><a class="dropdown-item" href="#">My Bookmarks</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Sessions -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'session' %}active{% endif %}" href="#" id="sessionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Sessions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="sessionDropdown">
+                            <li><h6 class="dropdown-header">Schedule</h6></li>
+                            <li><a class="dropdown-item" href="{{ path('session_data_display') }}">All Sessions</a></li>
+                            <li><a class="dropdown-item" href="{{ path('booking_create') }}">Book a Session</a></li>
+                            <li><a class="dropdown-item" href="{{ path('all_bookings') }}">My Bookings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Instructor</h6></li>
+                            <li><a class="dropdown-item" href="{{ path('instructor_create_session') }}">Create Session</a></li>
+                            <li><a class="dropdown-item" href="{{ path('instructor_sessions') }}">My Sessions</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Marketplace -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_marketplace' or app.request.attributes.get('_route') starts with 'app_product' or app.request.attributes.get('_route') starts with 'app_job' %}active{% endif %}" href="#" id="marketplaceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Marketplace
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="marketplaceDropdown">
+                            <li><h6 class="dropdown-header">Services</h6></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_marketplace_shop' %}active{% endif %}" href="{{ path('app_marketplace_shop') }}">Browse Marketplace</a></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_product_new_public' %}active{% endif %}" href="{{ path('app_product_new_public') }}">Offer Service</a></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') starts with 'app_job' %}active{% endif %}" href="#">Job Requests</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Account</h6></li>
+                            {% if app.user %}
+                            <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}">Seller Dashboard</a></li>
+                            <li><a class="dropdown-item" href="#">My Orders</a></li>
+                            <li><a class="dropdown-item" href="#">My Favorites</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Community -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="communityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Community
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="communityDropdown">
+                            <li><h6 class="dropdown-header">Connect</h6></li>
+                            <li><a class="dropdown-item" href="#">Discussion Forum</a></li>
+                            <li><a class="dropdown-item" href="#">Study Groups</a></li>
+                            <li><a class="dropdown-item" href="#">Events</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Social</h6></li>
+                            <li><a class="dropdown-item" href="#">Blog</a></li>
+                            <li><a class="dropdown-item" href="#">News</a></li>
+                            <li><a class="dropdown-item" href="#">Success Stories</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Resources -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Resources
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
+                            <li><h6 class="dropdown-header">Learning</h6></li>
+                            <li><a class="dropdown-item" href="#">Download Materials</a></li>
+                            <li><a class="dropdown-item" href="#">Video Tutorials</a></li>
+                            <li><a class="dropdown-item" href="#">Documentation</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Tools</h6></li>
+                            <li><a class="dropdown-item" href="#">Calculators</a></li>
+                            <li><a class="dropdown-item" href="#">Templates</a></li>
+                            <li><a class="dropdown-item" href="#">Code Examples</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Support -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Support
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="supportDropdown">
+                            <li><h6 class="dropdown-header">Help</h6></li>
+                            <li><a class="dropdown-item" href="#">Help Center</a></li>
+                            <li><a class="dropdown-item" href="#">Contact Support</a></li>
+                            <li><a class="dropdown-item" href="#">FAQ</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">About</h6></li>
+                            <li><a class="dropdown-item" href="#">About Us</a></li>
+                            <li><a class="dropdown-item" href="#">Contact</a></li>
+                            <li><a class="dropdown-item" href="#">Privacy Policy</a></li>
+                            <li><a class="dropdown-item" href="#">Terms of Service</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Nav right side START -->
+                <ul class="nav flex-row align-items-center list-unstyled ms-xl-auto">
+                    <!-- Authentication START -->
+                    {% if app.user %}
+                        <!-- Profile dropdown START -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                            </a>
+                            <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                                <!-- Profile info -->
+                                <li class="px-3 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar me-3">
+                                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                                        </div>
+                                        <div>
+                                            <a class="h6 mt-2 mt-sm-0" href="#">{{ app.user.name|default(app.user.email) }}</a>
+                                            <p class="small m-0">{{ app.user.email }}</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <!-- Links -->
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-heart fa-fw me-2"></i>Favorites</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="fas fa-chalkboard-teacher fa-fw me-2"></i>Instructor Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}"><i class="fas fa-store fa-fw me-2"></i>Marketplace Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_student_dashboard') }}"><i class="fas fa-graduation-cap fa-fw me-2"></i>Student Dashboard</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <!-- Sign in button -->
+                        <li class="nav-item">
+                            <a class="btn btn-sm btn-primary me-2" href="{{ path('app_login') }}">Sign In</a>
+                        </li>
+                        <!-- Sign up button -->
+                        <li class="nav-item">
+                            <a class="btn btn-sm btn-outline-primary" href="{{ path('app_register') }}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                    <!-- Authentication END -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Logo Nav END -->
+</header>
+<!-- =======================
+Header END -->
+
+<!-- Page Banner START -->
+<section class="page-banner">
+    <div class="container position-relative">
+        <div class="row">
+            <div class="col-12">
+                <div class="row align-items-center">
+                    <!-- Left Image -->
+                    <div class="col-6 col-md-3 text-center order-1">
+                        <img src="https://img.icons8.com/color/96/000000/graduation-cap.png" alt="Education Icon" class="img-fluid">
+                    </div>
+
+                    <!-- Content -->
+                    <div class="col-md-6 px-md-5 text-center position-relative order-md-2 mb-5 mb-md-0">
+                        <!-- Decorative elements -->
+                        <div class="banner-decoration">
+                            <svg width="22px" height="22px" viewBox="0 0 22 22">
+                                <polygon fill="#FFA500" points="22,8.3 13.7,8.3 13.7,0 8.3,0 8.3,8.3 0,8.3 0,13.7 8.3,13.7 8.3,22 13.7,22 13.7,13.7 22,13.7"></polygon>
+                            </svg>
+                        </div>
+
+                        <!-- Title -->
+                        <h1 class="banner-title mb-3">What do you want to learn?</h1>
+                        <p class="banner-subtitle mb-3">Grow your skill with the most reliable online courses and certifications</p>
+
+                        <!-- Search -->
+                        <form class="banner-search rounded p-2">
+                            <div class="input-group">
+                                <input class="form-control border-0 me-1" type="search" placeholder="Search course">
+                                <button type="button" class="btn btn-dark mb-0 rounded">Search</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Right Image -->
+                    <div class="col-6 col-md-3 text-center order-3">
+                        <img src="https://img.icons8.com/color/96/000000/books.png" alt="Books Icon" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Page Banner END -->
+
+<!-- Categories START -->
+<section>
+    <div class="container">
+        <!-- Title -->
+        <div class="row mb-4">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2>Choose a Categories</h2>
+                <p class="mb-0">Perceived end knowledge certainly day sweetness why cordially</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% set colors = ['bg-success-opacity-10', 'bg-orange-opacity-10', 'bg-danger-opacity-10', 'bg-purple-opacity-10', 'bg-info-opacity-10', 'bg-blue-opacity-10', 'bg-warning-opacity-15', 'bg-dark-opacity-10', 'bg-primary-opacity-10'] %}
+            {% set icon_mapping = {
+                'code': 'bi-code',
+                'palette': 'bi-palette',
+                'megaphone': 'bi-megaphone',
+                'pen': 'bi-pen',
+                'briefcase': 'bi-briefcase',
+                'data-science': 'bi-bar-chart-line',
+                'online': 'bi-globe',
+                'engineering': 'bi-tools',
+                'coding': 'bi-code-square',
+                'profit': 'bi-cash',
+                'medical': 'bi-first-aid',
+                'home': 'bi-house',
+                'artist': 'bi-palette',
+                'account': 'bi-person'
+            } %}
+            {% set fallback_icons = ['bi-bar-chart-line', 'bi-globe', 'bi-tools', 'bi-code-square', 'bi-cash', 'bi-first-aid', 'bi-house', 'bi-palette', 'bi-person'] %}
+            
+            {% for category in categories %}
+                <div class="col-sm-6 col-md-4 col-xl-3">
+                    <div class="category-card {{ colors[(loop.index0 % 9)|default(0)] }} position-relative btn-transition p-4">
+                        <!-- Icon -->
+                        <div class="category-icon">
+                            {% if category.icon and category.icon starts with 'http' %}
+                                <img src="{{ category.icon }}" alt="{{ category.name }}" style="width: 50px; height: 50px; object-fit: contain;">
+                            {% elseif category.icon and category.icon starts with 'bi-' %}
+                                <i class="{{ category.icon }} fs-1"></i>
+                            {% elseif category.icon and icon_mapping[category.icon] is defined and icon_mapping[category.icon] starts with 'bi-' %}
+                                <i class="{{ icon_mapping[category.icon] }} fs-1"></i>
+                            {% elseif category.icon and icon_mapping[category.icon] is defined %}
+                                <img src="https://img.icons8.com/color/96/{{ icon_mapping[category.icon] }}.png" alt="{{ category.name }}" style="width: 50px; height: 50px; object-fit: contain;">
+                            {% else %}
+                                <i class="{{ fallback_icons[(loop.index0 % 9)|default(0)] }} fs-1"></i>
+                            {% endif %}
+                        </div>
+                        <!-- Title -->
+                        <h5 class="category-title mb-2">
+                            <a href="{{ path('app_category_detail', {'slug': category.slug}) }}" class="stretched-link">{{ category.name }}</a>
+                        </h5>
+                        <h6 class="category-count mb-0">
+                            {% if category.courseCount is defined %}
+                                {{ category.courseCount }} Courses
+                            {% else %}
+                                {{ random(10, 50) }} Courses
+                            {% endif %}
+                        </h6>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Fallback categories if none exist -->
+                {% for i in 0..11 %}
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="category-card {{ colors[i] }} position-relative btn-transition p-4">
+                            <!-- Icon -->
+                            <div class="category-icon">
+                                <img src="https://img.icons8.com/color/96/{{ fallback_icons[i] }}.png" alt="Category {{ i + 1 }}" style="width: 50px; height: 50px; object-fit: contain;">
+                            </div>
+                            <!-- Title -->
+                            <h5 class="category-title mb-2">
+                                <a href="#" class="stretched-link">Category {{ i + 1 }}</a>
+                            </h5>
+                            <h6 class="category-count mb-0">{{ random(10, 50) }} Courses</h6>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- Categories END -->
+
+<!-- Languages START -->
+<section class="py-5">
+    <div class="container">
+        <!-- Title -->
+        <div class="row mb-4 mx-auto text-center">
+            <div class="col-12">
+                <h2 class="mb-0">Choose Languages</h2>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Language items -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="#" class="language-card">
+                    <span class="fi fi-fr language-flag"></span>
+                    <h5 class="language-name">French</h5>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="#" class="language-card">
+                    <span class="fi fi-de language-flag"></span>
+                    <h5 class="language-name">German</h5>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="#" class="language-card">
+                    <span class="fi fi-es language-flag"></span>
+                    <h5 class="language-name">Spanish</h5>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="#" class="language-card">
+                    <span class="fi fi-gb language-flag"></span>
+                    <h5 class="language-name">English</h5>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="#" class="language-card">
+                    <span class="fi fi-it language-flag"></span>
+                    <h5 class="language-name">Italian</h5>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="#" class="language-card">
+                    <span class="fi fi-pt language-flag"></span>
+                    <h5 class="language-name">Portuguese</h5>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="#" class="language-card">
+                    <span class="fi fi-cn language-flag"></span>
+                    <h5 class="language-name">Chinese</h5>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="#" class="language-card">
+                    <span class="fi fi-ja language-flag"></span>
+                    <h5 class="language-name">Japanese</h5>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Languages END -->
+
+<!-- Footer -->
+{% include 'components/footer.html.twig' %}
+
+{% block vendor_scripts %}
+<!-- Vendors -->
+<script src="{{ asset('assets/vendor/tiny-slider/tiny-slider.js') }}"></script>
+<script src="{{ asset('assets/vendor/glightbox/js/glightbox.js') }}"></script>
+<script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/apexcharts/apexcharts.js') }}"></script>
+<script src="{{ asset('assets/vendor/choices/js/choices.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/stepper/js/bs-stepper.min.js') }}"></script>
+{% endblock %}
+
+{% block theme_scripts %}
+<!-- Theme Functions -->
+<script src="{{ asset('assets/js/functions.js') }}"></script>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// Categories page specific JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any category-specific functionality here
+    console.log('Categories page loaded');
+});
+</script>
+{% endblock %}
+
+{% endblock %}

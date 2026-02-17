@@ -1,0 +1,140 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block title %}Manage Orders - Admin{% endblock %}
+
+{% block admin_content %}
+<!-- Success Message START -->
+{% for message in app.flashes('order_success') %}
+<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+    <div class="d-flex align-items-start">
+        <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle me-3">
+            <i class="fas fa-check-circle fa-lg"></i>
+        </div>
+        <div class="flex-grow-1">
+            <h5 class="alert-heading mb-2">Order Placed Successfully!</h5>
+            <p class="mb-3">Your order for <strong>{{ message.product_title }}</strong> has been confirmed. Order ID: #{{ message.order_id }}</p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ path('app_product_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-shopping-bag me-2"></i>Browse Services
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="alert">
+                    <i class="fas fa-list me-2"></i>View My Orders
+                </button>
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+{% endfor %}
+<!-- Success Message END -->
+
+<!-- Title -->
+<div class="row">
+    <div class="col-12 mb-3">
+        <h1 class="h3 mb-2 mb-sm-0">Orders</h1>
+    </div>
+</div>
+
+<div class="card bg-transparent">
+    <!-- Card header START -->
+    <div class="card-header bg-transparent border-bottom px-0">
+        <!-- Search and select START -->
+        <div class="row g-3 align-items-center justify-content-between">
+            <!-- Search bar -->
+            <div class="col-md-8">
+                <form class="rounded position-relative">
+                    <input class="form-control bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                    <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                        <i class="fas fa-search fs-6 "></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!-- Search and select END -->
+    </div>
+    <!-- Card header END -->
+
+    <!-- Card body START -->
+    <div class="card-body px-0">
+        <div class="table-responsive border-0">
+            <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                <!-- Table head -->
+                <thead>
+                    <tr>
+                        <th scope="col" class="border-0 rounded-start">Order ID</th>
+                        <th scope="col" class="border-0">Product</th>
+                        <th scope="col" class="border-0">Buyer</th>
+                        <th scope="col" class="border-0">Amount</th>
+                        <th scope="col" class="border-0">Status</th>
+                        <th scope="col" class="border-0">Date</th>
+                        <th scope="col" class="border-0 rounded-end">Action</th>
+                    </tr>
+                </thead>
+
+                <!-- Table body START -->
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <!-- Table data -->
+                            <td>#{{ order.id }}</td>
+
+                            <!-- Table data -->
+                            <td>
+                                {% if order.product %}
+                                    <h6 class="mb-0">{{ order.product.title }}</h6>
+                                    <span class="text-body small">${{ order.product.price }}</span>
+                                {% else %}
+                                    <h6 class="mb-0 text-muted">Product Deleted</h6>
+                                    <span class="text-body small text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Table data -->
+                            <td>{{ order.buyer.email }}</td>
+
+                            <!-- Table data -->
+                            <td>
+                                <span class="h6 mb-0 fw-light">${{ order.totalPrice }}</span>
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                {% if order.status == 'pending' %}<span class="badge bg-warning bg-opacity-10 text-warning">Pending</span>
+                                {% elseif order.status == 'paid' %}<span class="badge bg-success bg-opacity-10 text-success">Paid</span>
+                                {% else %}<span class="badge bg-danger bg-opacity-10 text-danger">Cancelled</span>{% endif %}
+                            </td>
+
+                            <!-- Table data -->
+                             <td>{{ order.createdAt|date('d M Y') }}</td>
+                             <td>
+                                <a href="{{ path('app_admin_order_edit', {id: order.id}) }}" class="btn btn-sm btn-success-soft me-1" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                                <form method="post" action="{{ path('app_admin_order_delete', {id: order.id}) }}" onsubmit="return confirm('Are you sure?');" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ order.id) }}">
+                                    <button class="btn btn-sm btn-danger-soft" title="Delete"><i class="bi bi-trash"></i></button>
+                                </form>
+                             </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No orders found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Card body END -->
+
+    <!-- Card footer START -->
+    <div class="card-footer bg-transparent pt-0">
+        <!-- Pagination -->
+        <div class="d-sm-flex justify-content-between align-items-center">
+            <!-- Content -->
+            <p class="mb-0 text-center text-sm-start">Showing {{ orders.currentPageNumber }} of {{ orders.getTotalItemCount }}</p>
+            <!-- Pagination -->
+            {{ knp_pagination_render(orders) }}
+        </div>
+    </div>
+    <!-- Card footer END -->
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block title %}Edit Service - Admin{% endblock %}
+
+{% block admin_content %}
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">Edit Service: {{ product.title }}</h1>
+            <a href="{{ path('app_admin_product_index') }}" class="btn btn-secondary-soft mb-0">Back to List</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        {{ include('admin/product/_form.html.twig', {'button_label': 'Update Service'}) }}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8 mx-auto text-end">
+        <form method="post" action="{{ path('app_admin_product_delete', {id: product.id}) }}" onsubmit="return confirm('Are you sure you want to delete this service?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+            <button class="btn btn-danger">Delete This Service</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

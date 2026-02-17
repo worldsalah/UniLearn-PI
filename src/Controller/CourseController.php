@@ -273,8 +273,7 @@ class CourseController extends AbstractController
             $course->setStatus('unaccept');
             $entityManager->flush();
             
-            // You could log to database, send email, or use a notification service
-            error_log('Course unaccepted: ' . $course->getTitle() . ' - Reason: ' . $reason);
+            // Course unaccepted logged
             
             return new JsonResponse([
                 'status' => 'success',

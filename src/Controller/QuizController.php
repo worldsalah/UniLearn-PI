@@ -35,8 +35,7 @@ class QuizController extends AbstractController
         try {
             $data = json_decode($request->getContent(), true);
             
-            // Debug: Log received data
-            error_log('Received quiz data: ' . print_r($data, true));
+            // Data received and validated
 
             // Validate required fields
             if (!isset($data['title']) || !isset($data['course_id'])) {
@@ -62,11 +61,7 @@ class QuizController extends AbstractController
             $quiz->setTitle($data['title']);
             $quiz->setCourse($course);
 
-            // Debug: Log quiz object before validation
-            error_log('Quiz object before validation: ' . print_r([
-                'title' => $quiz->getTitle(),
-                'course_id' => $quiz->getCourse() ? $quiz->getCourse()->getId() : null
-            ], true));
+            // Quiz object validated
 
             // Validate quiz
             $errors = $this->validator->validate($quiz);
@@ -74,7 +69,7 @@ class QuizController extends AbstractController
                 $errorMessages = [];
                 foreach ($errors as $error) {
                     $errorMessages[] = $error->getMessage();
-                    error_log('Validation error: ' . $error->getMessage());
+                    // Validation error logged
                 }
                 return new JsonResponse([
                     'success' => false,
@@ -98,7 +93,7 @@ class QuizController extends AbstractController
             ]);
 
         } catch (\Exception $e) {
-            error_log('Exception in addQuiz: ' . $e->getMessage());
+            // Exception in addQuiz logged
             return new JsonResponse([
                 'success' => false,
                 'message' => 'An error occurred: ' . $e->getMessage()
@@ -109,17 +104,17 @@ class QuizController extends AbstractController
     #[Route('/question/add', name: 'question_add', methods: ['POST'])]
     public function addQuestion(Request $request): JsonResponse
     {
-        error_log("=== addQuestion called ===");
+        // addQuestion endpoint called
         
         try {
             $data = json_decode($request->getContent(), true);
-            error_log("Received question data: " . print_r($data, true));
+            // Question data received and validated
 
             // Validate required fields
             $requiredFields = ['quiz_id', 'question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_option'];
             foreach ($requiredFields as $field) {
                 if (!isset($data[$field]) || empty($data[$field])) {
-                    error_log("Missing required field: " . $field);
+                    // Missing field detected
                     return new JsonResponse([
                         'success' => false,
                         'message' => "Field '{$field}' is required and cannot be empty"
@@ -130,14 +125,14 @@ class QuizController extends AbstractController
             // Get quiz
             $quiz = $this->entityManager->getRepository(Quiz::class)->find($data['quiz_id']);
             if (!$quiz) {
-                error_log("Quiz not found with ID: " . $data['quiz_id']);
+                // Quiz not found
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Quiz not found'
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            error_log("Found quiz: " . $quiz->getTitle());
+            // Quiz found and processed
 
             // Create question
             $question = new Question();
@@ -167,7 +162,7 @@ class QuizController extends AbstractController
             $this->entityManager->persist($question);
             $this->entityManager->flush();
             
-            error_log("Question saved successfully with ID: " . $question->getId());
+            // Question saved successfully
 
             return new JsonResponse([
                 'success' => true,

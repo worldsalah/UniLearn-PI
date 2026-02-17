@@ -568,9 +568,7 @@ class SessionController extends AbstractController {
             }
         }
 
-        // Debug logging
-        error_log('DEBUG: Session ID: ' . $id . ' - Found ' . count($bookings) . ' bookings');
-        error_log('DEBUG: Booked dates: ' . implode(', ', $bookedDates));
+        // Session data processed
 
         return $this->json([
             'sessionId' => $id,

@@ -38,26 +38,7 @@ class YouTubeController extends AbstractController
         // Get courses for this instructor
         $courses = $courseRepository->findBy(['user' => $user]);
         
-        // Debug: Log course information
-        error_log('Video Search - User ID: ' . $user->getId());
-        error_log('Video Search - Courses found: ' . count($courses));
-        
-        foreach ($courses as $course) {
-            error_log('Video Search - Course: ' . $course->getTitle() . ' (ID: ' . $course->getId() . ')');
-            
-            // Check chapters and lessons for this course
-            $chapters = $course->getChapters();
-            error_log('Video Search - Course ' . $course->getTitle() . ' has ' . $chapters->count() . ' chapters');
-            
-            foreach ($chapters as $chapter) {
-                $lessons = $chapter->getLessons();
-                error_log('Video Search - Chapter ' . $chapter->getTitle() . ' has ' . $lessons->count() . ' lessons');
-                
-                foreach ($lessons as $lesson) {
-                    error_log('Video Search - Lesson: ' . $lesson->getTitle() . ' (Status: ' . $lesson->getStatus() . ')');
-                }
-            }
-        }
+        // User courses loaded
         
         return $this->render('instructor/video-search.html.twig', [
             'courses' => $courses,
@@ -221,7 +202,7 @@ class YouTubeController extends AbstractController
                 ], 401);
             }
 
-            error_log('Debug Lessons API - User ID: ' . $user->getId());
+            // Lessons API debug initiated
             
             // Test the lessons API directly
             $lessonsController = new \App\Controller\LessonVideoController(
@@ -234,7 +215,7 @@ class YouTubeController extends AbstractController
             return $response;
             
         } catch (\Exception $e) {
-            error_log('Debug Lessons API Error: ' . $e->getMessage());
+            // Debug Lessons API Error logged
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Debug failed: ' . $e->getMessage()

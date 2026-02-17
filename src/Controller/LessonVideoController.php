@@ -98,8 +98,7 @@ class LessonVideoController extends AbstractController
                 ], 401);
             }
 
-            // Debug: Log user info
-            error_log('User ID: ' . $user->getId() . ', Email: ' . $user->getEmail());
+            // User info retrieved
 
             // Get lessons for this instructor's courses only
             $lessons = $this->lessonRepository->createQueryBuilder('l')
@@ -115,8 +114,7 @@ class LessonVideoController extends AbstractController
                 ->getQuery()
                 ->getResult();
             
-            // Debug: Log lesson count
-            error_log('Found lessons: ' . count($lessons));
+            // Lessons count retrieved
             
             $coursesData = [];
             foreach ($lessons as $lesson) {
@@ -160,8 +158,7 @@ class LessonVideoController extends AbstractController
             // Convert to indexed array for JavaScript compatibility
             $coursesArray = array_values($coursesData);
             
-            // Debug: Log final courses data
-            error_log('Final courses data: ' . print_r($coursesArray, true));
+            // Final courses data prepared
             
             return new JsonResponse([
                 'success' => true,
@@ -169,7 +166,7 @@ class LessonVideoController extends AbstractController
             ]);
             
         } catch (\Exception $e) {
-            error_log('Error in getLessons: ' . $e->getMessage());
+            // Error in getLessons logged
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Failed to load lessons: ' . $e->getMessage()

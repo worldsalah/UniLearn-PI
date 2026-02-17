@@ -298,25 +298,18 @@ final class InstructorController extends AbstractController
         // Get courses for this instructor (both active and inactive for quiz creation)
         $courses = $entityManager->getRepository('App\Entity\Course')->findBy(['user' => $user]);
         
-        // Debug: Log course information
-        error_log('Quiz Page - User ID: ' . $user->getId());
-        error_log('Quiz Page - Courses found: ' . count($courses));
-        
-        foreach ($courses as $course) {
-            error_log('Quiz Page - Course: ' . $course->getTitle() . ' (Status: ' . $course->getStatus() . ', ID: ' . $course->getId() . ')');
-        }
+        // User courses loaded
         
         // Get quizzes for this instructor's courses (from all courses for debugging)
         $quizzes = [];
         foreach ($courses as $course) {
-            // Get quizzes from all courses (remove status restriction for debugging)
-            error_log('Processing course: ' . $course->getTitle() . ' (Status: ' . $course->getStatus() . ')');
+            // Processing course for quizzes
             $courseQuizzes = $entityManager->getRepository('App\Entity\Quiz')->findBy(['course' => $course]);
-            error_log('Found ' . count($courseQuizzes) . ' quizzes for course ' . $course->getTitle());
+            // Quizzes found for course
             $quizzes = array_merge($quizzes, $courseQuizzes);
         }
         
-        error_log('Total quizzes found: ' . count($quizzes));
+        // Total quizzes calculated
         
         // Calculate statistics
         $totalQuestions = 0;

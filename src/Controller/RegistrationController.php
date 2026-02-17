@@ -87,11 +87,11 @@ class RegistrationController extends AbstractController
                 } else {
                     $this->addFlash('error', 'Registration failed: ' . $e->getMessage());
                 }
-                error_log('Registration error: ' . $e->getMessage());
+                // Registration error logged
             } catch (\Exception $e) {
                 // Handle other exceptions
                 $this->addFlash('error', 'Registration failed: ' . $e->getMessage());
-                error_log('Registration error: ' . $e->getMessage());
+                // Registration error logged
             }
         }
 

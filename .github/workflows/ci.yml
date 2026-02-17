@@ -49,6 +49,10 @@ jobs:
 
     - name: Set up environment for tests
       run: |
+        echo "APP_ENV=test" > .env
+        echo "APP_DEBUG=0" >> .env
+        echo "APP_SECRET=test-secret-for-ci" >> .env
+        echo "DATABASE_URL=mysql://root:root@127.0.0.1:3306/unilearn_test?serverVersion=8.0&charset=utf8mb4" >> .env
         echo "APP_ENV=test" > .env.local
         echo "APP_DEBUG=0" >> .env.local
         echo "APP_SECRET=test-secret-for-ci" >> .env.local

@@ -1,4 +1,6 @@
 {
+    "name": "worldsalah/unilearn-pi",
+    "description": "UniLearn - Professional Learning Management System built with Symfony 6.4",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",

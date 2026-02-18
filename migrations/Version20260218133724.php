@@ -36,7 +36,39 @@ final class Version20260218133724 extends AbstractMigration
         if ($schema->hasTable('contact')) {
             $this->addSql('ALTER TABLE contact CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
         }
-        $this->addSql('ALTER TABLE course DROP submitted_at, DROP reviewed_at, DROP published_at, DROP archived_at, DROP rejection_reason, DROP version_number, DROP is_locked, DROP last_modified_by, CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
+        // Handle course table - add created_at if missing, then modify it
+        $courseTable = $schema->getTable('course');
+        if (!$courseTable->hasColumn('created_at')) {
+            $this->addSql('ALTER TABLE course ADD created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
+        } else {
+            $this->addSql('ALTER TABLE course CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
+        }
+        
+        // Drop columns from course table if they exist
+        if ($courseTable->hasColumn('submitted_at')) {
+            $this->addSql('ALTER TABLE course DROP submitted_at');
+        }
+        if ($courseTable->hasColumn('reviewed_at')) {
+            $this->addSql('ALTER TABLE course DROP reviewed_at');
+        }
+        if ($courseTable->hasColumn('published_at')) {
+            $this->addSql('ALTER TABLE course DROP published_at');
+        }
+        if ($courseTable->hasColumn('archived_at')) {
+            $this->addSql('ALTER TABLE course DROP archived_at');
+        }
+        if ($courseTable->hasColumn('rejection_reason')) {
+            $this->addSql('ALTER TABLE course DROP rejection_reason');
+        }
+        if ($courseTable->hasColumn('version_number')) {
+            $this->addSql('ALTER TABLE course DROP version_number');
+        }
+        if ($courseTable->hasColumn('is_locked')) {
+            $this->addSql('ALTER TABLE course DROP is_locked');
+        }
+        if ($courseTable->hasColumn('last_modified_by')) {
+            $this->addSql('ALTER TABLE course DROP last_modified_by');
+        }
         if ($schema->hasTable('favorite')) {
             $this->addSql('ALTER TABLE favorite CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
         }

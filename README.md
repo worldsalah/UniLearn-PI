@@ -1,4 +1,4 @@
-🎓 UniLearn — Plateforme d'Apprentissage Intelligente (Projet PI Java & Web)
+🎓  — Plateforme d'Apprentissage Intelligente (Projet PI Java & Web)
 
 <!-- CI workflow test trigger -->
 

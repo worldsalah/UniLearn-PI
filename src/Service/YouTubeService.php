@@ -31,7 +31,7 @@ class YouTubeService
     {
         try {
             // Clean and format the search query
-            $searchQuery = trim($query);
+            $searchQuery = $query !== null ? trim($query) : '';
             
             // Make sure the query is not empty
             if (empty($searchQuery)) {

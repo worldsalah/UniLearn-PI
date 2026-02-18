@@ -406,7 +406,7 @@ class Course
         return null; // This is a virtual field
     }
 
-    public function setThumbnailFile($file): self
+    public function setThumbnailFile(mixed $file): self
     {
         // This method is handled by the controller, not the entity
         return $this;
@@ -418,7 +418,7 @@ class Course
         return null; // This is a virtual field
     }
 
-    public function setVideoFile($file): self
+    public function setVideoFile(mixed $file): self
     {
         // This method is handled by the controller, not the entity
         return $this;

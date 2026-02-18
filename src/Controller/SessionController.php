@@ -78,7 +78,7 @@ class SessionController extends AbstractController {
             $errors = [];
             
             // Validate session name
-            $name = trim($request->request->get('name'));
+            $name = trim($request->request->get('name') ?? '');
             if (empty($name)) {
                 $errors['name'] = 'Session name is required.';
             } elseif (strlen($name) < 3) {
@@ -151,7 +151,7 @@ class SessionController extends AbstractController {
             }
 
             // Validate description
-            $description = trim($request->request->get('sessionDescription'));
+            $description = trim($request->request->get('sessionDescription') ?? '');
             if (empty($description)) {
                 $errors['sessionDescription'] = 'Session description is required.';
             } elseif (strlen($description) < 10) {
@@ -238,7 +238,7 @@ class SessionController extends AbstractController {
             $errors = [];
             
             // Validate session name
-            $name = trim($request->request->get('name'));
+            $name = trim($request->request->get('name') ?? '');
             if (empty($name)) {
                 $errors['name'] = 'Session name is required.';
             } elseif (strlen($name) < 3) {
@@ -311,7 +311,7 @@ class SessionController extends AbstractController {
             }
 
             // Validate description
-            $description = trim($request->request->get('sessionDescription'));
+            $description = trim($request->request->get('sessionDescription') ?? '');
             if (empty($description)) {
                 $errors['sessionDescription'] = 'Session description is required.';
             } elseif (strlen($description) < 10) {

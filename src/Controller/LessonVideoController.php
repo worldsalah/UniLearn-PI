@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Lesson;
 use App\Repository\LessonRepository;
 use App\Repository\CourseRepository;
+use App\Service\YouTubeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,12 +22,16 @@ class LessonVideoController extends AbstractController
 
     public function __construct(
         LessonRepository $lessonRepository,
+        CourseRepository $courseRepository,
         EntityManagerInterface $entityManager,
-        Security $security
+        Security $security,
+        YouTubeService $youTubeService
     ) {
         $this->lessonRepository = $lessonRepository;
+        $this->courseRepository = $courseRepository;
         $this->entityManager = $entityManager;
         $this->security = $security;
+        $this->youTubeService = $youTubeService;
     }
 
     /**

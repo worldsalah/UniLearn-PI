@@ -20,12 +20,34 @@ final class Version20260208170518 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP TABLE booking');
-        $this->addSql('DROP TABLE booking_slot');
-        $this->addSql('DROP TABLE certificate');
-        $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
-        $this->addSql('ALTER TABLE job ADD slug VARCHAR(255) NOT NULL');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_FBD8E0F8989D9B62 ON job (slug)');
+        
+        // Drop tables only if they exist
+        if ($schema->hasTable('booking')) {
+            $this->addSql('DROP TABLE booking');
+        }
+        if ($schema->hasTable('booking_slot')) {
+            $this->addSql('DROP TABLE booking_slot');
+        }
+        if ($schema->hasTable('certificate')) {
+            $this->addSql('DROP TABLE certificate');
+        }
+        
+        // Only modify columns if they exist
+        $courseTable = $schema->getTable('course');
+        if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
+            $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        }
+        
+        // Add slug column to job table only if it doesn't exist
+        $jobTable = $schema->getTable('job');
+        if (!$jobTable->hasColumn('slug')) {
+            $this->addSql('ALTER TABLE job ADD slug VARCHAR(255) NOT NULL');
+        }
+        
+        // Add index only if it doesn't exist
+        if (!$jobTable->hasIndex('UNIQ_FBD8E0F8989D9B62')) {
+            $this->addSql('CREATE UNIQUE INDEX UNIQ_FBD8E0F8989D9B62 ON job (slug)');
+        }
     }
 
     public function down(Schema $schema): void

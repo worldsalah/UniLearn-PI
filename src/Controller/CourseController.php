@@ -303,7 +303,7 @@ class CourseController extends AbstractController
             $course->setStatus('deleted');
             
             // Update category if provided
-            if (isset($data['category'])) {
+            if (isset($data['category']) && $data['category'] !== null && $data['category'] !== '') {
                 $category = $entityManager->getRepository(Category::class)->find($data['category']);
                 if ($category) {
                     $course->setCategory($category);

@@ -20,7 +20,7 @@ class SellerReputationService
     /**
      * Calculate comprehensive seller reputation score
      */
-    public function calculateReputationScore(User $seller): array
+    public function calculateReputationScore(\Symfony\Component\Security\Core\User\UserInterface $seller): array
     {
         $stats = $this->getSellerStats($seller);
         
@@ -130,7 +130,7 @@ class SellerReputationService
     /**
      * Get comprehensive seller statistics
      */
-    public function getSellerStats(User $seller): array
+    public function getSellerStats(\Symfony\Component\Security\Core\User\UserInterface $seller): array
     {
         // Total orders
         $totalOrders = $this->orderRepository->count(['freelancer' => $seller]);
@@ -181,7 +181,7 @@ class SellerReputationService
     /**
      * Get seller performance metrics for dashboard
      */
-    public function getPerformanceMetrics(User $seller): array
+    public function getPerformanceMetrics(\Symfony\Component\Security\Core\User\UserInterface $seller): array
     {
         $stats = $this->getSellerStats($seller);
         $reputation = $this->calculateReputationScore($seller);

@@ -293,9 +293,10 @@ class PriceIntelligenceService
     {
         $recommendations = [];
         $category = $product->getCategory();
+        $categoryName = $category?->getName() ?? '';
         
         // Web Development specific
-        if ($category !== null && (strpos(strtolower($category ?? ''), 'web') !== false || strpos(strtolower($category ?? ''), 'development') !== false)) {
+        if ($categoryName !== '' && (strpos(strtolower($categoryName), 'web') !== false || strpos(strtolower($categoryName), 'development') !== false)) {
             if ($product->getPrice() < 50) {
                 $recommendations[] = [
                     'type' => 'category_specific',
@@ -309,7 +310,7 @@ class PriceIntelligenceService
         }
         
         // Design specific
-        if ($category !== null && strpos(strtolower($category ?? ''), 'design') !== false) {
+        if ($categoryName !== '' && strpos(strtolower($categoryName), 'design') !== false) {
             if ($product->getPrice() > 200) {
                 $recommendations[] = [
                     'type' => 'category_specific',

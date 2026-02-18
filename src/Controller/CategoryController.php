@@ -37,10 +37,10 @@ class CategoryController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $category = new Category();
-            $category->setName($request->request->get('name'));
-            $category->setDescription($request->request->get('description'));
-            $category->setIcon($request->request->get('icon'));
-            $category->setColor($request->request->get('color'));
+            $category->setName((string) $request->request->get('name'));
+            $category->setDescription((string) $request->request->get('description'));
+            $category->setIcon((string) $request->request->get('icon'));
+            $category->setColor((string) $request->request->get('color'));
             $category->setIsActive($request->request->getBoolean('is_active', true));
             
             $entityManager->persist($category);
@@ -60,10 +60,10 @@ class CategoryController extends AbstractController
     public function edit(Category $category, Request $request, EntityManagerInterface $entityManager): Response
     {
         if ($request->isMethod('POST')) {
-            $category->setName($request->request->get('name'));
-            $category->setDescription($request->request->get('description'));
-            $category->setIcon($request->request->get('icon'));
-            $category->setColor($request->request->get('color'));
+            $category->setName((string) $request->request->get('name'));
+            $category->setDescription((string) $request->request->get('description'));
+            $category->setIcon((string) $request->request->get('icon'));
+            $category->setColor((string) $request->request->get('color'));
             $category->setIsActive($request->request->getBoolean('is_active', true));
             
             $entityManager->flush();

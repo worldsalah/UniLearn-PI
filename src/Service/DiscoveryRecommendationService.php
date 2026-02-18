@@ -109,7 +109,7 @@ class DiscoveryRecommendationService
     /**
      * Get personalized recommendations for a user
      */
-    public function getPersonalizedRecommendations(?User $user, int $limit = 10): array
+    public function getPersonalizedRecommendations(\Symfony\Component\Security\Core\User\UserInterface|null $user, int $limit = 10): array
     {
         if (!$user) {
             return $this->getPopularListings($limit);

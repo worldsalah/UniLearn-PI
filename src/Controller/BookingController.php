@@ -161,11 +161,11 @@ class BookingController extends AbstractController {
             if ($this->getUser()) {
                 $user = $this->getUser();
                 $booking->setUser($user instanceof \App\Entity\User ? $user : null);
-                $booking->setFirstName($request->request->get('firstName') ?: $user->getFullName());
-                $booking->setUserEmail($request->request->get('userEmail') ?: $user->getEmail());
+                $booking->setFirstName((string) ($request->request->get('firstName') ?: $user->getFullName()));
+                $booking->setUserEmail((string) ($request->request->get('userEmail') ?: $user->getEmail()));
             } else {
-                $booking->setFirstName($request->request->get('firstName'));
-                $booking->setUserEmail($request->request->get('userEmail'));
+                $booking->setFirstName((string) $request->request->get('firstName'));
+                $booking->setUserEmail((string) $request->request->get('userEmail'));
             }
 
             // Set preferred date
@@ -252,9 +252,9 @@ class BookingController extends AbstractController {
             throw $this->createNotFoundException('Booking not found');
         }
 
-        $booking->setFirstName($request->request->get('firstName'));
-        $booking->setLastName($request->request->get('lastName'));
-        $booking->setUserEmail($request->request->get('userEmail'));
+        $booking->setFirstName((string) $request->request->get('firstName'));
+        $booking->setLastName((string) $request->request->get('lastName'));
+        $booking->setUserEmail((string) $request->request->get('userEmail'));
         $booking->setPhoneNumber($request->request->get('phoneNumber'));
 
         $bookingRepository->save($booking, true);
@@ -427,9 +427,9 @@ class BookingController extends AbstractController {
             }
 
             // Update booking
-            $booking->setFirstName($firstName);
-            $booking->setUserEmail($userEmail);
-            $booking->setPhoneNumber($request->request->get('phoneNumber'));
+            $booking->setFirstName((string) $firstName);
+            $booking->setUserEmail((string) $userEmail);
+            $booking->setPhoneNumber((string) $request->request->get('phoneNumber'));
             
             // Set preferred date
             if ($preferredDate) {
@@ -443,7 +443,7 @@ class BookingController extends AbstractController {
                 $booking->setFirstName($nameParts[0]);
                 $booking->setLastName($nameParts[1] ?? '');
             } else {
-                $booking->setFirstName($firstName);
+                $booking->setFirstName((string) $firstName);
                 $booking->setLastName($lastName);
             }
 

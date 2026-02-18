@@ -122,7 +122,8 @@ class TransactionPredictor
         $score = 100.0;
         
         // Description quality
-        $descLength = strlen($product->getDescription());
+        $description = $product->getDescription();
+        $descLength = $description !== null ? strlen($description) : 0;
         if ($descLength < 50) {
             $score -= 40;
         } elseif ($descLength < 100) {
@@ -130,7 +131,8 @@ class TransactionPredictor
         }
         
         // Title quality
-        $titleLength = strlen($product->getTitle());
+        $title = $product->getTitle();
+        $titleLength = $title !== null ? strlen($title) : 0;
         if ($titleLength < 10) {
             $score -= 20;
         }

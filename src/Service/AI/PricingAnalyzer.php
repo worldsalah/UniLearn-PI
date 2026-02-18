@@ -159,7 +159,7 @@ class PricingAnalyzer
         $price = $product->getPrice();
         
         // Detect suspiciously round numbers (potential lazy pricing)
-        if ($price > 100 && $price % 100 == 0) {
+        if ($price > 100 && $price % 100 === 0) {
             return [
                 'score' => 85.0,
                 'is_outlier' => true,
@@ -197,7 +197,8 @@ class PricingAnalyzer
         $score = 100.0;
         
         // Value = Quality of description + Seller rating vs Price
-        $descriptionLength = strlen($product->getDescription());
+        $description = $product->getDescription();
+        $descriptionLength = $description !== null ? strlen($description) : 0;
         $sellerRating = $product->getFreelancer()->getRating();
         $price = $product->getPrice();
 

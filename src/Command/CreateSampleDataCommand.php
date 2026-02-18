@@ -18,7 +18,7 @@ use App\Entity\User;
 )]
 class CreateSampleDataCommand extends Command
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {

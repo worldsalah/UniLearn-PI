@@ -89,12 +89,16 @@ class ContentValidationService
 
     private function checkPlagiarism(?string $text): array
     {
-        // Simulated plagiarism check
-        // In production, use OpenAI or dedicated plagiarism API
+        if ($text === null) {
+            return [
+                'score' => 0.0,
+                'message' => 'No text provided'
+            ];
+        }
         
         $wordCount = str_word_count($text);
         
-        if (is_string($text) && $wordCount < 20) {
+        if ($wordCount < 20) {
             return [
                 'score' => 60.0,
                 'message' => 'Description too short'
@@ -133,31 +137,36 @@ class ContentValidationService
         $description = $product->getDescription();
         
         // Title quality
-        if (is_string($title) && strlen($title) < 10) {
+        if ($title === null || strlen($title) < 10) {
             $score -= 20;
             $suggestion = 'Add more descriptive title (at least 10 characters)';
         }
         
-        if (is_string($title) && strlen($title) > 100) {
+        if ($title !== null && strlen($title) > 100) {
             $score -= 10;
             $suggestion = 'Shorten title for better readability';
         }
         
         // Description quality
-        $wordCount = str_word_count($description);
-        if (is_string($description) && $wordCount < 30) {
+        if ($description === null) {
+            $wordCount = 0;
+        } else {
+            $wordCount = str_word_count($description);
+        }
+        if ($wordCount < 30) {
             $score -= 30;
             $suggestion = 'Expand description with more details (minimum 30 words recommended)';
         }
         
         // Check for proper capitalization
-        if (is_string($title) && ($title === strtoupper($title) || $title === strtolower($title))) {
+        if ($title !== null && ($title === strtoupper($title) || $title === strtolower($title))) {
             $score -= 15;
             $suggestion = 'Use proper capitalization in title';
         }
         
         // Check for special characters spam
-        if (is_string($title . $description) && preg_match('/[!@#$%^&*]{3,}/', $title . $description)) {
+        $combinedText = ($title ?? '') . ($description ?? '');
+        if (preg_match('/[!@#$%^&*]{3,}/', $combinedText)) {
             $score -= 20;
             $suggestion = 'Remove excessive special characters';
         }
@@ -195,7 +204,7 @@ class ContentValidationService
             'scam', 'fake', 'illegal', 'hack', 'cheat'
         ];
         
-        $text = strtolower($product->getTitle() . ' ' . $product->getDescription());
+        $text = strtolower(($product->getTitle() ?? '') . ' ' . ($product->getDescription() ?? ''));
         
         foreach ($inappropriateKeywords as $keyword) {
             if (strpos($text, $keyword) !== false) {

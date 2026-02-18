@@ -231,9 +231,9 @@ class MarketplaceController extends AbstractController
             'totalProducts' => count($userProducts),
             'totalJobs' => count($userJobs),
             'totalOrders' => count($userOrders),
-            'totalRevenue' => array_sum(array_map(fn($order) => $order->getTotalPrice(), $userOrders)),
-            'activeProducts' => count(array_filter($userProducts, fn($product) => $product->getDeletedAt() === null)),
-            'pendingOrders' => count(array_filter($userOrders, fn($order) => $order->getStatus() === 'pending')),
+            'totalRevenue' => array_sum(array_map(fn($order): float => $order->getTotalPrice(), $userOrders)),
+            'activeProducts' => count(array_filter($userProducts, fn($product): bool => $product->getDeletedAt() === null)),
+            'pendingOrders' => count(array_filter($userOrders, fn($order): bool => $order->getStatus() === 'pending')),
         ];
         
         return $this->render('marketplace/dashboard.html.twig', [

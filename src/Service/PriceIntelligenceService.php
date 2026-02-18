@@ -294,7 +294,7 @@ class PriceIntelligenceService
         $category = $product->getCategory();
         
         // Web Development specific
-        if (strpos(strtolower($category), 'web') !== false || strpos(strtolower($category), 'development') !== false) {
+        if ($category !== null && (strpos(strtolower($category), 'web') !== false || strpos(strtolower($category), 'development') !== false)) {
             if ($product->getPrice() < 50) {
                 $recommendations[] = [
                     'type' => 'category_specific',
@@ -308,7 +308,7 @@ class PriceIntelligenceService
         }
         
         // Design specific
-        if (strpos(strtolower($category), 'design') !== false) {
+        if ($category !== null && strpos(strtolower($category), 'design') !== false) {
             if ($product->getPrice() > 200) {
                 $recommendations[] = [
                     'type' => 'category_specific',
@@ -415,7 +415,7 @@ class PriceIntelligenceService
         sort($arr);
         $index = ($percentile / 100) * (count($arr) - 1);
         
-        if (floor($index) == $index) {
+        if (floor($index) === (int)$index) {
             return $arr[$index];
         } else {
             $lower = $arr[floor($index)];
@@ -432,7 +432,7 @@ class PriceIntelligenceService
         $count = count($arr);
         $middle = floor($count / 2);
         
-        if ($count % 2 == 0) {
+        if ($count % 2 === 0) {
             return ($arr[$middle - 1] + $arr[$middle]) / 2;
         } else {
             return $arr[$middle];

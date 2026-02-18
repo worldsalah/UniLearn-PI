@@ -102,7 +102,7 @@ class ReputationAggregator
             $totalOrders = 0;
         }
 
-        if ($totalOrders == 0) {
+        if ($totalOrders === 0) {
             return 50.0;
         }
 
@@ -156,10 +156,6 @@ class ReputationAggregator
         // Number of products (engagement indicator)
         $productCount = $seller->getProducts()->count();
         $score += min(30, $productCount * 5);
-        
-        // Skills diversity
-        $skillCount = count($skills);
-        $score += min(20, $skillCount * 4);
         
         return min(100, $score);
     }

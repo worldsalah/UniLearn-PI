@@ -15,7 +15,7 @@ use App\Entity\Category;
 )]
 class CreateCategoriesCommand extends Command
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {

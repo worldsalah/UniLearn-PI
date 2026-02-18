@@ -180,7 +180,7 @@ class SellerBehaviorAnalyzer
             $totalOrders = 0;
         }
 
-        if ($totalOrders == 0) {
+        if ($totalOrders === 0) {
             return 100.0;
         }
 

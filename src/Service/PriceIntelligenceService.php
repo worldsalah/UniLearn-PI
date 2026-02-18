@@ -397,15 +397,11 @@ class PriceIntelligenceService
         
         // More listings = higher confidence
         if ($marketData['total_listings'] > 100) $confidence += 20;
-        elseif ($marketData['total_listings'] > 50) $confidence += 10;
-        elseif ($marketData['total_listings'] > 20) $confidence += 5;
-        
-        // Price closer to median = higher confidence
-        $percentile = $this->calculatePercentile($price, $marketData);
-        if ($percentile >= 40 && $percentile <= 60) $confidence += 15;
-        elseif ($percentile >= 25 && $percentile <= 75) $confidence += 10;
-        
-        return min($confidence, 95);
+        return $confidence;
+    }
+
+    /**
+     * Calculate median
      */
     private function median(array $arr): float
     {
@@ -413,9 +409,9 @@ class PriceIntelligenceService
         $middle = floor($count / 2);
         
         if ($count % 2 === 0) {
-            return ($arr[$middle - 1] + $arr[$middle]) / 2;
+            return (float)(($arr[$middle - 1] + $arr[$middle]) / 2);
         } else {
-            return $arr[$middle];
+            return (float)$arr[$middle];
         }
     }
 }

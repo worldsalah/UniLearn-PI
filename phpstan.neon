@@ -44,21 +44,9 @@ parameters:
         switchConditionsMatchingType: true
         noImplicitWildcard: true
     
-    extensions:
-        - PHPStan\Rules\DeadCode\UnusedPrivatePropertyRule
-        - PHPStan\Rules\DeadCode\UnusedPrivateMethodRule
-        - PHPStan\Rules\Classes\RequireImplementsRule
-    
     typeAliases:
         UserId: 'int'
         Email: 'string'
-    
-    services:
-        -
-            class: PHPStan\Rules\DeadCode\UnusedPrivatePropertyRule
-            tags:
-                - phpstan.rules.rule
-        -
-            class: PHPStan\Rules\DeadCode\UnusedPrivateMethodRule
-            tags:
-                - phpstan.rules.rule
+
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon

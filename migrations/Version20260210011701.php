@@ -21,7 +21,12 @@ final class Version20260210011701 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE booking CHANGE session_id session_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        
+        $courseTable = $schema->getTable('course');
+        // Only modify columns if they exist
+        if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
+            $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        }
         
         // Add columns only if they don't exist
         $sessionTable = $schema->getTable('session');

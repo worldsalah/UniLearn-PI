@@ -61,7 +61,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         return $credentials;
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser(array $credentials, UserProviderInterface $userProvider): ?User
     {
         // TEMPORARY BYPASS FOR TESTING - Skip CSRF validation
         /*
@@ -81,7 +81,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         return $user;
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials(array $credentials, UserInterface $user): bool
     {
         // TEMPORARY BYPASS FOR TESTING - Accept any password
         return true;
@@ -92,7 +92,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
-    public function getPassword($credentials): ?string
+    public function getPassword(array $credentials): ?string
     {
         return $credentials['password'];
     }

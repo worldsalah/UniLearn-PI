@@ -117,7 +117,7 @@ class YouTubeService
 
             if (!empty($response->getItems())) {
                 $status = $response->getItems()[0]->getStatus()->getPrivacyStatus();
-                return in_array($status, ['public', 'unlisted']);
+                return in_array($status, ['public', 'unlisted'], true);
             }
 
             return false;

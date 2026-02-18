@@ -42,6 +42,7 @@ class Favorite
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -53,6 +54,7 @@ class Favorite
     public function setJob(?Job $job): static
     {
         $this->job = $job;
+
         return $this;
     }
 
@@ -64,6 +66,7 @@ class Favorite
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 }

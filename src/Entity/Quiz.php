@@ -17,12 +17,12 @@ class Quiz
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Quiz title cannot be empty")]
+    #[Assert\NotBlank(message: 'Quiz title cannot be empty')]
     #[Assert\Length(
         min: 3,
         max: 255,
-        minMessage: "Quiz title must be at least {{ limit }} characters long",
-        maxMessage: "Quiz title cannot be longer than {{ limit }} characters"
+        minMessage: 'Quiz title must be at least {{ limit }} characters long',
+        maxMessage: 'Quiz title cannot be longer than {{ limit }} characters'
     )]
     private ?string $title = null;
 
@@ -40,7 +40,7 @@ class Quiz
     private Collection $quizSettings;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: "Creation date is required")]
+    #[Assert\NotNull(message: 'Creation date is required')]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]

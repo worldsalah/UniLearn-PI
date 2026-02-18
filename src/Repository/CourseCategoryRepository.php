@@ -16,4 +16,3 @@ class CourseCategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, CourseCategory::class);
     }
 }
-

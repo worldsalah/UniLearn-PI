@@ -2,14 +2,12 @@
 
 namespace App\Service;
 
-use App\Service\YouTubeService;
-
 class ServiceLocator
 {
     private YouTubeService $youTubeService;
 
     public function __construct(
-        YouTubeService $youTubeService
+        YouTubeService $youTubeService,
     ) {
         $this->youTubeService = $youTubeService;
     }

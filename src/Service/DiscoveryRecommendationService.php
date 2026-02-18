@@ -2,14 +2,12 @@
 
 namespace App\Service;
 
-use App\Entity\Product;
 use App\Entity\Job;
+use App\Entity\Product;
 use App\Entity\User;
-use App\Repository\ProductRepository;
 use App\Repository\JobRepository;
-use App\Repository\UserRepository;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DiscoveryRecommendationService
 {
@@ -20,7 +18,7 @@ class DiscoveryRecommendationService
     public function __construct(
         ProductRepository $productRepository,
         JobRepository $jobRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ) {
         $this->productRepository = $productRepository;
         $this->jobRepository = $jobRepository;
@@ -28,25 +26,25 @@ class DiscoveryRecommendationService
     }
 
     /**
-     * Get autocomplete suggestions for search
+     * Get autocomplete suggestions for search.
      */
     public function getAutocompleteSuggestions(string $query, string $type = 'all'): array
     {
         $suggestions = [];
         $query = strtolower(trim($query));
-        
+
         if (strlen($query) < 2) {
             return $suggestions;
         }
 
         // Search products
-        if ($type === 'all' || $type === 'products') {
+        if ('all' === $type || 'products' === $type) {
             $products = $this->productRepository->createQueryBuilder('p')
                 ->where('LOWER(p.title) LIKE :query')
                 ->orWhere('LOWER(p.description) LIKE :query')
                 ->orWhere('LOWER(p.category) LIKE :query')
                 ->andWhere('p.deletedAt IS NULL')
-                ->setParameter('query', '%' . $query . '%')
+                ->setParameter('query', '%'.$query.'%')
                 ->setMaxResults(5)
                 ->getQuery()
                 ->getResult();
@@ -59,19 +57,19 @@ class DiscoveryRecommendationService
                     'category' => $product->getCategory() ?? 'Uncategorized',
                     'price' => $product->getPrice(),
                     'rating' => $this->calculateProductRating($product),
-                    'url' => '/product/' . $product->getId()
+                    'url' => '/product/'.$product->getId(),
                 ];
             }
         }
 
         // Search jobs
-        if ($type === 'all' || $type === 'jobs') {
+        if ('all' === $type || 'jobs' === $type) {
             $jobs = $this->jobRepository->createQueryBuilder('j')
                 ->where('LOWER(j.title) LIKE :query')
                 ->orWhere('LOWER(j.description) LIKE :query')
                 ->andWhere('j.status = :status')
                 ->andWhere('j.deletedAt IS NULL')
-                ->setParameter('query', '%' . $query . '%')
+                ->setParameter('query', '%'.$query.'%')
                 ->setParameter('status', 'open')
                 ->setMaxResults(5)
                 ->getQuery()
@@ -84,22 +82,26 @@ class DiscoveryRecommendationService
                     'type' => 'job',
                     'category' => 'Job Request',
                     'budget' => $job->getBudget(),
-                    'url' => '/job/' . $job->getId()
+                    'url' => '/job/'.$job->getId(),
                 ];
             }
         }
 
         // Sort by relevance (title matches first, then description)
-        usort($suggestions, function($a, $b) use ($query) {
+        usort($suggestions, function ($a, $b) use ($query) {
             $aTitle = strtolower($a['title']);
             $bTitle = strtolower($b['title']);
-            
-            $aStarts = strpos($aTitle, $query) === 0;
-            $bStarts = strpos($bTitle, $query) === 0;
-            
-            if ($aStarts && !$bStarts) return -1;
-            if (!$aStarts && $bStarts) return 1;
-            
+
+            $aStarts = 0 === strpos($aTitle, $query);
+            $bStarts = 0 === strpos($bTitle, $query);
+
+            if ($aStarts && !$bStarts) {
+                return -1;
+            }
+            if (!$aStarts && $bStarts) {
+                return 1;
+            }
+
             return strcmp($aTitle, $bTitle);
         });
 
@@ -107,19 +109,19 @@ class DiscoveryRecommendationService
     }
 
     /**
-     * Get personalized recommendations for a user
+     * Get personalized recommendations for a user.
      */
-    public function getPersonalizedRecommendations(\Symfony\Component\Security\Core\User\UserInterface|null $user, int $limit = 10): array
+    public function getPersonalizedRecommendations(?\Symfony\Component\Security\Core\User\UserInterface $user, int $limit = 10): array
     {
         if (!$user) {
             return $this->getPopularListings($limit);
         }
 
         $recommendations = [];
-        
+
         // Get user's interests based on their orders and favorites
         $userCategories = $this->getUserInterests($user);
-        
+
         // Get products in user's preferred categories
         if (!empty($userCategories)) {
             $products = $this->productRepository->createQueryBuilder('p')
@@ -141,7 +143,7 @@ class DiscoveryRecommendationService
                     'rating' => $this->calculateProductRating($product),
                     'image' => $product->getImage(),
                     'reason' => 'Based on your interests',
-                    'url' => '/product/' . $product->getId()
+                    'url' => '/product/'.$product->getId(),
                 ];
             }
         }
@@ -149,7 +151,7 @@ class DiscoveryRecommendationService
         // Get similar jobs based on user's job postings
         $userJobs = $this->jobRepository->findBy(['client' => $user], ['createdAt' => 'DESC'], 5);
         $jobCategories = [];
-        
+
         foreach ($userJobs as $job) {
             $jobCategories[] = $this->extractJobCategory($job->getTitle());
         }
@@ -174,7 +176,7 @@ class DiscoveryRecommendationService
                     'category' => 'Job Request',
                     'budget' => $job->getBudget(),
                     'reason' => 'Similar to your job requests',
-                    'url' => '/job/' . $job->getId()
+                    'url' => '/job/'.$job->getId(),
                 ];
             }
         }
@@ -189,15 +191,15 @@ class DiscoveryRecommendationService
     }
 
     /**
-     * Get trending services
+     * Get trending services.
      */
     public function getTrendingServices(int $limit = 10): array
     {
         $trending = [];
-        
+
         // Get products with most views/orders in last 7 days
         $sevenDaysAgo = new \DateTime('-7 days');
-        
+
         $products = $this->productRepository->createQueryBuilder('p')
             ->leftJoin('p.orders', 'o')
             ->where('o.createdAt >= :date OR p.createdAt >= :date')
@@ -220,7 +222,7 @@ class DiscoveryRecommendationService
                 'rating' => $this->calculateProductRating($product),
                 'image' => $product->getImage(),
                 'trend_score' => $this->calculateTrendScore($product),
-                'url' => '/product/' . $product->getId()
+                'url' => '/product/'.$product->getId(),
             ];
         }
 
@@ -228,12 +230,12 @@ class DiscoveryRecommendationService
     }
 
     /**
-     * Get similar listings for a product
+     * Get similar listings for a product.
      */
     public function getSimilarListings(Product $product, int $limit = 6): array
     {
         $similar = [];
-        
+
         // Get products in same category
         $categoryProducts = $this->productRepository->createQueryBuilder('p')
             ->where('p.category = :category')
@@ -248,7 +250,7 @@ class DiscoveryRecommendationService
 
         foreach ($categoryProducts as $similarProduct) {
             $similarity = $this->calculateSimilarity($product, $similarProduct);
-            
+
             $similar[] = [
                 'id' => $similarProduct->getId(),
                 'title' => $similarProduct->getTitle(),
@@ -258,12 +260,12 @@ class DiscoveryRecommendationService
                 'rating' => $this->calculateProductRating($similarProduct),
                 'image' => $similarProduct->getImage(),
                 'similarity_score' => $similarity,
-                'url' => '/product/' . $similarProduct->getId()
+                'url' => '/product/'.$similarProduct->getId(),
             ];
         }
 
         // Sort by similarity score
-        usort($similar, function($a, $b) {
+        usort($similar, function ($a, $b) {
             return $b['similarity_score'] <=> $a['similarity_score'];
         });
 
@@ -271,12 +273,12 @@ class DiscoveryRecommendationService
     }
 
     /**
-     * Get popular listings (for non-logged in users)
+     * Get popular listings (for non-logged in users).
      */
     private function getPopularListings(int $limit): array
     {
         $popular = [];
-        
+
         $products = $this->productRepository->createQueryBuilder('p')
             ->where('p.deletedAt IS NULL')
             ->orderBy('p.createdAt', 'DESC')
@@ -294,7 +296,7 @@ class DiscoveryRecommendationService
                 'rating' => $this->calculateProductRating($product),
                 'image' => $product->getImage(),
                 'reason' => 'Popular on marketplace',
-                'url' => '/product/' . $product->getId()
+                'url' => '/product/'.$product->getId(),
             ];
         }
 
@@ -302,12 +304,12 @@ class DiscoveryRecommendationService
     }
 
     /**
-     * Get user's interests based on their activity
+     * Get user's interests based on their activity.
      */
     private function getUserInterests(User $user): array
     {
         $categories = [];
-        
+
         // Get categories from user's orders
         $orders = $this->entityManager->createQuery('
             SELECT DISTINCT p.category 
@@ -327,7 +329,7 @@ class DiscoveryRecommendationService
     }
 
     /**
-     * Calculate product rating
+     * Calculate product rating.
      */
     private function calculateProductRating(Product $product): float
     {
@@ -337,7 +339,7 @@ class DiscoveryRecommendationService
     }
 
     /**
-     * Calculate trend score for a product
+     * Calculate trend score for a product.
      */
     private function calculateTrendScore(Product $product): int
     {
@@ -347,17 +349,17 @@ class DiscoveryRecommendationService
     }
 
     /**
-     * Calculate similarity between two products
+     * Calculate similarity between two products.
      */
     private function calculateSimilarity(Product $product1, Product $product2): int
     {
         $score = 0;
-        
+
         // Same category
         if ($product1->getCategory() === $product2->getCategory()) {
             $score += 50;
         }
-        
+
         // Similar price range
         $priceDiff = abs($product1->getPrice() - $product2->getPrice());
         if ($priceDiff < 20) {
@@ -365,18 +367,18 @@ class DiscoveryRecommendationService
         } elseif ($priceDiff < 50) {
             $score += 15;
         }
-        
+
         // Similar title keywords
         $title1 = strtolower($product1->getTitle());
         $title2 = strtolower($product2->getTitle());
         $commonWords = array_intersect(explode(' ', $title1), explode(' ', $title2));
         $score += count($commonWords) * 10;
-        
+
         return min($score, 100);
     }
 
     /**
-     * Extract category from job title
+     * Extract category from job title.
      */
     private function extractJobCategory(string $title): string
     {
@@ -385,19 +387,19 @@ class DiscoveryRecommendationService
             'design' => ['design', 'logo', 'graphic', 'ui', 'ux', 'designer'],
             'marketing' => ['marketing', 'seo', 'social media', 'advertising'],
             'writing' => ['writing', 'content', 'blog', 'article', 'copy'],
-            'mobile' => ['mobile', 'app', 'android', 'ios', 'application']
+            'mobile' => ['mobile', 'app', 'android', 'ios', 'application'],
         ];
 
         $title = strtolower($title);
-        
+
         foreach ($categories as $category => $keywords) {
             foreach ($keywords as $keyword) {
-                if (strpos($title, $keyword) !== false) {
+                if (false !== strpos($title, $keyword)) {
                     return $category;
                 }
             }
         }
-        
+
         return 'general';
     }
 }

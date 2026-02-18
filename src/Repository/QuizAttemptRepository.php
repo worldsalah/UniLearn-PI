@@ -16,4 +16,3 @@ class QuizAttemptRepository extends ServiceEntityRepository
         parent::__construct($registry, QuizAttempt::class);
     }
 }
-

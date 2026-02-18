@@ -21,21 +21,21 @@ final class Version20260207173304 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $categoryTable = $schema->getTable('category');
-        
+
         if (!$categoryTable->hasColumn('slug')) {
             $this->addSql('ALTER TABLE category ADD slug VARCHAR(255) DEFAULT NULL');
-            
+
             // Populate slug for existing categories with unique slugs
             $this->addSql("UPDATE category SET slug = CONCAT(LOWER(REPLACE(REPLACE(REPLACE(name, ' ', '-'), ',', '-'), '/', '-')), '-', id) WHERE slug IS NULL");
-            
+
             // Make slug NOT NULL after populating
             $this->addSql('ALTER TABLE category CHANGE slug slug VARCHAR(255) NOT NULL');
         }
-        
+
         if (!$categoryTable->hasIndex('UNIQ_64C19C1989D9B62')) {
             $this->addSql('CREATE UNIQUE INDEX UNIQ_64C19C1989D9B62 ON category (slug)');
         }
-        
+
         $courseTable = $schema->getTable('course');
         // Only modify columns if they exist
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
@@ -47,15 +47,15 @@ final class Version20260207173304 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $categoryTable = $schema->getTable('category');
-        
+
         if ($categoryTable->hasIndex('UNIQ_64C19C1989D9B62')) {
             $this->addSql('DROP INDEX UNIQ_64C19C1989D9B62 ON category');
         }
-        
+
         if ($categoryTable->hasColumn('slug')) {
             $this->addSql('ALTER TABLE category DROP slug');
         }
-        
+
         $courseTable = $schema->getTable('course');
         // Only modify columns if they exist
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {

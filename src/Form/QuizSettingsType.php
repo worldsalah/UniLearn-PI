@@ -18,36 +18,36 @@ class QuizSettingsType extends AbstractType
                 'label' => 'Points',
                 'attr' => [
                     'class' => 'form-control',
-                    'value' => 1
-                ]
+                    'value' => 1,
+                ],
             ])
             ->add('timeLimit', NumberType::class, [
                 'label' => 'Limite de temps (minutes)',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Optionnel'
-                ]
+                    'placeholder' => 'Optionnel',
+                ],
             ])
             ->add('passingScore', NumberType::class, [
                 'label' => 'Score de réussite (%)',
                 'attr' => [
                     'class' => 'form-control',
-                    'value' => 70
-                ]
+                    'value' => 70,
+                ],
             ])
             ->add('maxAttempts', NumberType::class, [
                 'label' => 'Nombre maximum de tentatives',
                 'attr' => [
                     'class' => 'form-control',
-                    'value' => 3
-                ]
+                    'value' => 3,
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Enregistrer les paramètres',
                 'attr' => [
-                    'class' => 'btn btn-primary'
-                ]
+                    'class' => 'btn btn-primary',
+                ],
             ])
         ;
     }

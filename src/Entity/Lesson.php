@@ -15,13 +15,13 @@ class Lesson
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le titre de la leçon est obligatoire.")]
+    #[Assert\NotBlank(message: 'Le titre de la leçon est obligatoire.')]
     #[Assert\Length(min: 3, max: 100, minMessage: 'Le titre de la leçon doit contenir au moins {{ limit }} caractères', maxMessage: 'Le titre de la leçon ne peut pas dépasser {{ limit }} caractères')]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "La durée de la leçon est obligatoire.")]
-    #[Assert\Regex(pattern: '/^\d+:[0-5]\d$/', message: "Format invalide. Utilisez HH:MM (ex: 0:45 ou 1:30).")]
+    #[Assert\NotBlank(message: 'La durée de la leçon est obligatoire.')]
+    #[Assert\Regex(pattern: '/^\d+:[0-5]\d$/', message: 'Format invalide. Utilisez HH:MM (ex: 0:45 ou 1:30).')]
     private ?string $duration = null;
 
     #[ORM\Column(length: 50)]
@@ -98,6 +98,7 @@ class Lesson
     public function setType(string $type): static
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -109,6 +110,7 @@ class Lesson
     public function setContent(?string $content): static
     {
         $this->content = $content;
+
         return $this;
     }
 
@@ -120,6 +122,7 @@ class Lesson
     public function setAttachmentUrl(?string $attachmentUrl): static
     {
         $this->attachmentUrl = $attachmentUrl;
+
         return $this;
     }
 
@@ -131,6 +134,7 @@ class Lesson
     public function setIsPreview(bool $isPreview): static
     {
         $this->isPreview = $isPreview;
+
         return $this;
     }
 
@@ -142,6 +146,7 @@ class Lesson
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -153,6 +158,7 @@ class Lesson
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -164,6 +170,7 @@ class Lesson
     public function setSortOrder(int $sortOrder): static
     {
         $this->sortOrder = $sortOrder;
+
         return $this;
     }
 }

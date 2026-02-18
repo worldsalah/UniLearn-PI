@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\Entity\Course;
-use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -30,9 +29,10 @@ class CreateSampleCoursesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $teachers = $this->userRepository->findBy(['role' => 'teacher']);
-        
+
         if (empty($teachers)) {
             $output->writeln('<error>No teachers found. Please run app:insert-users first.</error>');
+
             return Command::FAILURE;
         }
 
@@ -48,7 +48,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Basic computer skills',
                 'learningOutcomes' => 'Understand JavaScript syntax and concepts',
                 'targetAudience' => 'Beginners in programming',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'Advanced React Development',
@@ -61,7 +61,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'JavaScript and React basics',
                 'learningOutcomes' => 'Build scalable React applications',
                 'targetAudience' => 'Intermediate React developers',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'Python for Beginners',
@@ -74,7 +74,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Basic computer skills',
                 'learningOutcomes' => 'Write Python programs confidently',
                 'targetAudience' => 'Programming beginners',
-                'status' => 'inactive'
+                'status' => 'inactive',
             ],
             [
                 'title' => 'Database Design with SQL',
@@ -87,7 +87,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Basic programming knowledge',
                 'learningOutcomes' => 'Design and query databases effectively',
                 'targetAudience' => 'Developers who want to learn databases',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'Web Design with HTML & CSS',
@@ -100,7 +100,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'No prior experience needed',
                 'learningOutcomes' => 'Build modern, responsive websites',
                 'targetAudience' => 'Aspiring web designers',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'Node.js Backend Development',
@@ -113,7 +113,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'JavaScript knowledge required',
                 'learningOutcomes' => 'Create RESTful APIs and backend services',
                 'targetAudience' => 'JavaScript developers',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'Machine Learning Basics',
@@ -126,7 +126,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Python programming and basic math',
                 'learningOutcomes' => 'Understand and implement ML algorithms',
                 'targetAudience' => 'Data science enthusiasts',
-                'status' => 'pending'
+                'status' => 'pending',
             ],
             [
                 'title' => 'Digital Marketing Mastery',
@@ -139,7 +139,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Basic computer skills',
                 'learningOutcomes' => 'Create effective digital marketing campaigns',
                 'targetAudience' => 'Business owners and marketers',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'Mobile App Development with Flutter',
@@ -152,7 +152,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Programming basics required',
                 'learningOutcomes' => 'Create iOS and Android apps with one codebase',
                 'targetAudience' => 'Mobile app developers',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'Cybersecurity Fundamentals',
@@ -165,7 +165,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Basic IT knowledge',
                 'learningOutcomes' => 'Understand security threats and protection measures',
                 'targetAudience' => 'IT professionals and students',
-                'status' => 'inactive'
+                'status' => 'inactive',
             ],
             [
                 'title' => 'Vue.js Complete Guide',
@@ -178,7 +178,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'HTML, CSS, and JavaScript basics',
                 'learningOutcomes' => 'Build dynamic web applications with Vue.js',
                 'targetAudience' => 'Web developers',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'Data Science with Python',
@@ -191,7 +191,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Python programming knowledge',
                 'learningOutcomes' => 'Perform data analysis and visualization',
                 'targetAudience' => 'Data analysts and scientists',
-                'status' => 'pending'
+                'status' => 'pending',
             ],
             [
                 'title' => 'UI/UX Design Principles',
@@ -204,7 +204,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'No design experience needed',
                 'learningOutcomes' => 'Create user-friendly interfaces and experiences',
                 'targetAudience' => 'Design beginners and developers',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'DevOps with Docker and Kubernetes',
@@ -217,7 +217,7 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Linux and command-line experience',
                 'learningOutcomes' => 'Deploy and manage containerized applications',
                 'targetAudience' => 'System administrators and DevOps engineers',
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'title' => 'Photography for Beginners',
@@ -230,8 +230,8 @@ class CreateSampleCoursesCommand extends Command
                 'requirements' => 'Any camera (even smartphone)',
                 'learningOutcomes' => 'Take stunning photographs and edit them',
                 'targetAudience' => 'Photography enthusiasts',
-                'status' => 'inactive'
-            ]
+                'status' => 'inactive',
+            ],
         ];
 
         foreach ($sampleCourses as $index => $courseData) {
@@ -247,19 +247,19 @@ class CreateSampleCoursesCommand extends Command
             $course->setLearningOutcomes($courseData['learningOutcomes']);
             $course->setTargetAudience($courseData['targetAudience']);
             $course->setStatus($courseData['status']);
-            
+
             // Assign to a teacher (round-robin)
             $teacher = $teachers[$index % count($teachers)];
             $course->setUser($teacher);
-            
+
             $this->entityManager->persist($course);
-            
+
             $output->writeln("Created course '{$courseData['title']}' for teacher '{$teacher->getName()}'");
         }
 
         $this->entityManager->flush();
-        
-        $output->writeln('<info>Successfully created ' . count($sampleCourses) . ' sample courses.</info>');
+
+        $output->writeln('<info>Successfully created '.count($sampleCourses).' sample courses.</info>');
 
         return Command::SUCCESS;
     }

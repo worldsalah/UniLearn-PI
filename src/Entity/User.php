@@ -40,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\IsTrue(message: 'Vous devez accepter les conditions générales pour vous inscrire.')]
-    #[ORM\Column(type: 'boolean', options: ["default" => false])]
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $agreeTerms = false;
 
     #[ORM\ManyToOne(targetEntity: Role::class)]
@@ -50,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'created_at', type: 'datetime')]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(length: 20, options: ["default" => "active"])]
+    #[ORM\Column(length: 20, options: ['default' => 'active'])]
     private ?string $status = 'active';
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -118,6 +118,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFullName(string $fullName): self
     {
         $this->fullName = $fullName;
+
         return $this;
     }
 
@@ -130,6 +131,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(string $name): self
     {
         $this->fullName = $name;
+
         return $this;
     }
 
@@ -141,6 +143,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -152,6 +155,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -163,6 +167,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(?Role $role): self
     {
         $this->role = $role;
+
         return $this;
     }
 
@@ -174,6 +179,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -185,6 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -198,12 +205,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         if ($this->role) {
-            return ['ROLE_' . strtoupper($this->role->getName())];
+            return ['ROLE_'.strtoupper($this->role->getName())];
         }
+
         return ['ROLE_USER'];
     }
 
-    public function eraseCredentials() {}
+    public function eraseCredentials()
+    {
+    }
 
     public function getPasswordHasherName(): ?string
     {
@@ -486,6 +496,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBio(?string $bio): self
     {
         $this->bio = $bio;
+
         return $this;
     }
 
@@ -497,6 +508,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
+
         return $this;
     }
 
@@ -508,6 +520,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLocation(?string $location): self
     {
         $this->location = $location;
+
         return $this;
     }
 
@@ -519,6 +532,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setWebsite(?string $website): self
     {
         $this->website = $website;
+
         return $this;
     }
 
@@ -530,6 +544,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfileImage(?string $profileImage): self
     {
         $this->profileImage = $profileImage;
+
         return $this;
     }
 }

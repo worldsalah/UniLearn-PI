@@ -8,13 +8,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[Vich\Uploadable]
-#[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false)]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
 class Product
 {
     #[ORM\Id]
@@ -88,6 +88,7 @@ class Product
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -99,6 +100,7 @@ class Product
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -110,6 +112,7 @@ class Product
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
         return $this;
     }
 
@@ -121,6 +124,7 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -132,6 +136,7 @@ class Product
     public function setImage(?string $image): static
     {
         $this->image = $image;
+
         return $this;
     }
 
@@ -157,6 +162,7 @@ class Product
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -168,6 +174,7 @@ class Product
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -179,6 +186,7 @@ class Product
     public function setDeletedAt(?\DateTimeImmutable $deletedAt): static
     {
         $this->deletedAt = $deletedAt;
+
         return $this;
     }
 
@@ -190,6 +198,7 @@ class Product
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -201,6 +210,7 @@ class Product
     public function setFreelancer(?User $freelancer): static
     {
         $this->freelancer = $freelancer;
+
         return $this;
     }
 

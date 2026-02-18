@@ -34,7 +34,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * Count courses by user
+     * Count courses by user.
      */
     public function countCoursesByUser(int $userId): int
     {
@@ -45,12 +45,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->setParameter('userId', $userId)
             ->getQuery()
             ->getSingleScalarResult();
-        
+
         return (int) $result;
     }
 
     /**
-     * Count quiz results by user
+     * Count quiz results by user.
      */
     public function countQuizResultsByUser(int $userId): int
     {
@@ -61,7 +61,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->setParameter('userId', $userId)
             ->getQuery()
             ->getSingleScalarResult();
-        
+
         return (int) $result;
     }
 

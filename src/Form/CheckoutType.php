@@ -22,58 +22,58 @@ class CheckoutType extends AbstractType
                 'label' => 'Prénom',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Jean'
-                ]
+                    'placeholder' => 'Jean',
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom de famille',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Dupont'
-                ]
+                    'placeholder' => 'Dupont',
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Adresse email',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'jean.dupont@example.com'
-                ]
+                    'placeholder' => 'jean.dupont@example.com',
+                ],
             ])
             ->add('phone', TelType::class, [
                 'label' => 'Numéro de téléphone',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '+33 1 23 45 67 89'
-                ]
+                    'placeholder' => '+33 1 23 45 67 89',
+                ],
             ])
             ->add('address', TextType::class, [
                 'label' => 'Adresse',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '123 Rue Principale'
-                ]
+                    'placeholder' => '123 Rue Principale',
+                ],
             ])
             ->add('city', TextType::class, [
                 'label' => 'Ville',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Paris'
-                ]
+                    'placeholder' => 'Paris',
+                ],
             ])
             ->add('state', TextType::class, [
                 'label' => 'État/Province',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Île-de-France'
-                ]
+                    'placeholder' => 'Île-de-France',
+                ],
             ])
             ->add('zipCode', TextType::class, [
                 'label' => 'Code postal',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '75001'
-                ]
+                    'placeholder' => '75001',
+                ],
             ])
             ->add('country', ChoiceType::class, [
                 'label' => 'Pays',
@@ -88,36 +88,36 @@ class CheckoutType extends AbstractType
                     'Italie' => 'Italy',
                 ],
                 'attr' => [
-                    'class' => 'form-select'
-                ]
+                    'class' => 'form-select',
+                ],
             ])
             ->add('cardNumber', TextType::class, [
                 'label' => 'Numéro de carte',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '1234 5678 9012 3456'
-                ]
+                    'placeholder' => '1234 5678 9012 3456',
+                ],
             ])
             ->add('expiryDate', TextType::class, [
                 'label' => 'Date d\'expiration',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'MM/AA'
-                ]
+                    'placeholder' => 'MM/AA',
+                ],
             ])
             ->add('cvv', TextType::class, [
                 'label' => 'CVV',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '123'
-                ]
+                    'placeholder' => '123',
+                ],
             ])
             ->add('cardholderName', TextType::class, [
                 'label' => 'Nom du titulaire de la carte',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Jean Dupont'
-                ]
+                    'placeholder' => 'Jean Dupont',
+                ],
             ])
             ->add('paymentMethod', ChoiceType::class, [
                 'label' => 'Méthode de paiement',
@@ -127,26 +127,26 @@ class CheckoutType extends AbstractType
                     'Apple Pay' => 'apple_pay',
                 ],
                 'attr' => [
-                    'class' => 'form-select'
-                ]
+                    'class' => 'form-select',
+                ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'label' => 'J\'accepte les conditions générales et la politique de confidentialité',
-                'required' => false
+                'required' => false,
             ])
             ->add('totalAmount', TextType::class, [
                 'label' => 'Montant total',
                 'attr' => [
                     'class' => 'form-control',
                     'readonly' => true,
-                    'value' => $options['total_amount'] ?? '0.00'
-                ]
+                    'value' => $options['total_amount'] ?? '0.00',
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Passer la commande',
                 'attr' => [
-                    'class' => 'btn btn-primary btn-lg w-100'
-                ]
+                    'class' => 'btn btn-primary btn-lg w-100',
+                ],
             ])
         ;
     }
@@ -155,7 +155,7 @@ class CheckoutType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Checkout::class,
-            'total_amount' => '0.00'
+            'total_amount' => '0.00',
         ]);
     }
 }

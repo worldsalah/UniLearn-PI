@@ -16,9 +16,8 @@ class DashboardController extends AbstractController
         \App\Repository\StudentRepository $studentRepository,
         \App\Repository\ProductRepository $productRepository,
         \App\Repository\JobRepository $jobRepository,
-        \App\Repository\OrderRepository $orderRepository
-    ): Response
-    {
+        \App\Repository\OrderRepository $orderRepository,
+    ): Response {
         return $this->render('admin/dashboard.html.twig', [
             'stats' => [
                 'students' => $studentRepository->count([]),
@@ -30,8 +29,8 @@ class DashboardController extends AbstractController
                     ->where('o.status = :status')
                     ->setParameter('status', 'completed')
                     ->getQuery()
-                    ->getSingleScalarResult() ?: 0
-            ]
+                    ->getSingleScalarResult() ?: 0,
+            ],
         ]);
     }
 }

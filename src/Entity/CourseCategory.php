@@ -43,6 +43,7 @@ class CourseCategory
     public function setCourse(?Course $course): self
     {
         $this->course = $course;
+
         return $this;
     }
 
@@ -54,6 +55,7 @@ class CourseCategory
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -65,6 +67,7 @@ class CourseCategory
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 }

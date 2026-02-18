@@ -24,7 +24,7 @@ class LessonController extends AbstractController
     {
         $chapter = $lesson->getChapter();
         $course = $chapter ? $chapter->getCourse() : null;
-        
+
         if (!$course) {
             throw $this->createNotFoundException('Course not found for this lesson');
         }
@@ -65,7 +65,7 @@ class LessonController extends AbstractController
             ->where('c.course = :course')
             ->setParameter('course', $course);
 
-        if ($direction === 'next') {
+        if ('next' === $direction) {
             $qb->andWhere('(c.id > :chapterId) OR (c.id = :chapterId AND l.sortOrder > :lessonOrder)')
                ->orderBy('c.id', 'ASC')
                ->addOrderBy('l.sortOrder', 'ASC');

@@ -21,28 +21,28 @@ class QuizResultRepository extends ServiceEntityRepository
         parent::__construct($registry, QuizResult::class);
     }
 
-//    /**
-//     * @return QuizResult[] Returns an array of QuizResult objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('qr')
-//            ->andWhere('qr.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('qr.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return QuizResult[] Returns an array of QuizResult objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('qr')
+    //            ->andWhere('qr.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('qr.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
-//    public function findOneBySomeField($value): ?QuizResult
-//    {
-//        return $this->createQueryBuilder('qr')
-//            ->andWhere('qr.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?QuizResult
+    //    {
+    //        return $this->createQueryBuilder('qr')
+    //            ->andWhere('qr.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

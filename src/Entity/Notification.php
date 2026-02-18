@@ -23,7 +23,7 @@ class Notification
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 20, options: ["default" => "active"])]
+    #[ORM\Column(length: 20, options: ['default' => 'active'])]
     private ?string $status = 'active';
 
     public function __construct()
@@ -44,6 +44,7 @@ class Notification
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -55,6 +56,7 @@ class Notification
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -66,6 +68,7 @@ class Notification
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 }

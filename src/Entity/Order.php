@@ -65,6 +65,7 @@ class Order
     public function setTotalPrice(float $totalPrice): static
     {
         $this->totalPrice = $totalPrice;
+
         return $this;
     }
 
@@ -76,6 +77,7 @@ class Order
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -87,6 +89,7 @@ class Order
     public function setRating(?int $rating): static
     {
         $this->rating = $rating;
+
         return $this;
     }
 
@@ -98,6 +101,7 @@ class Order
     public function setReview(?string $review): static
     {
         $this->review = $review;
+
         return $this;
     }
 
@@ -109,6 +113,7 @@ class Order
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -120,6 +125,7 @@ class Order
     public function setProduct(?Product $product): static
     {
         $this->product = $product;
+
         return $this;
     }
 
@@ -131,6 +137,7 @@ class Order
     public function setBuyer(?User $buyer): static
     {
         $this->buyer = $buyer;
+
         return $this;
     }
 }

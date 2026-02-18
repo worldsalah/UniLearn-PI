@@ -3,16 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Product;
-use App\Entity\Order;
 use App\Form\Form\ProductType;
-use App\Repository\OrderRepository;
-use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/product')]
 class ProductController extends AbstractController
@@ -24,7 +20,7 @@ class ProductController extends AbstractController
             // Redirect to login if not authenticated
             return $this->redirectToRoute('app_login');
         }
-        
+
         // Redirect to the actual new product form if authenticated
         return $this->redirectToRoute('app_product_new');
     }
@@ -33,7 +29,7 @@ class ProductController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $product = new Product();
-        
+
         // Set the freelancer before form creation to avoid validation issues
         $user = $this->getUser();
         if (!$user) {
@@ -52,19 +48,20 @@ class ProductController extends AbstractController
                 $entityManager->flush();
             }
         }
-        
+
         $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
-        
+
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $product->setCreatedAt(new \DateTimeImmutable());
-            
+
             $entityManager->persist($product);
             $entityManager->flush();
-            
+
             $this->addFlash('success', 'Le produit a été créé avec succès.');
+
             return $this->redirectToRoute('app_product_show', ['slug' => $product->getSlug()]);
         }
 
@@ -74,7 +71,7 @@ class ProductController extends AbstractController
         }
 
         return $this->render('product/new.html.twig', [
-            'form' => $form
+            'form' => $form,
         ]);
     }
 
@@ -86,7 +83,7 @@ class ProductController extends AbstractController
         }
 
         return $this->render('product/show.html.twig', [
-            'product' => $product
+            'product' => $product,
         ]);
     }
 
@@ -119,22 +116,23 @@ class ProductController extends AbstractController
                     $entityManager->flush();
                 }
             }
-            
+
             // Ensure the product has a freelancer
             if (!$product->getFreelancer()) {
                 $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
             }
-            
+
             $product->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
             $this->addFlash('success', 'Product updated successfully.');
+
             return $this->redirectToRoute('app_product_show', ['slug' => $product->getSlug()]);
         }
 
         return $this->render('product/edit.html.twig', [
             'product' => $product,
-            'form' => $form
+            'form' => $form,
         ]);
     }
 
@@ -150,6 +148,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Product deleted successfully.');
+
         return $this->redirectToRoute('app_marketplace_shop');
     }
 }

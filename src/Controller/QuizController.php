@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Course;
-use App\Entity\Quiz;
 use App\Entity\Question;
+use App\Entity\Quiz;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,16 +34,16 @@ class QuizController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            
+
             // Debug: Log received data
-            error_log('Received quiz data: ' . print_r($data, true));
+            error_log('Received quiz data: '.print_r($data, true));
 
             // Validate required fields
             if (!isset($data['title']) || !isset($data['course_id'])) {
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Quiz title and course ID are required',
-                    'received_data' => $data
+                    'received_data' => $data,
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -53,7 +53,7 @@ class QuizController extends AbstractController
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Course not found',
-                    'course_id' => $data['course_id']
+                    'course_id' => $data['course_id'],
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -63,9 +63,9 @@ class QuizController extends AbstractController
             $quiz->setCourse($course);
 
             // Debug: Log quiz object before validation
-            error_log('Quiz object before validation: ' . print_r([
+            error_log('Quiz object before validation: '.print_r([
                 'title' => $quiz->getTitle(),
-                'course_id' => $quiz->getCourse() ? $quiz->getCourse()->getId() : null
+                'course_id' => $quiz->getCourse() ? $quiz->getCourse()->getId() : null,
             ], true));
 
             // Validate quiz
@@ -74,12 +74,13 @@ class QuizController extends AbstractController
                 $errorMessages = [];
                 foreach ($errors as $error) {
                     $errorMessages[] = $error->getMessage();
-                    error_log('Validation error: ' . $error->getMessage());
+                    error_log('Validation error: '.$error->getMessage());
                 }
+
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Validation failed',
-                    'errors' => $errorMessages
+                    'errors' => $errorMessages,
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -93,15 +94,15 @@ class QuizController extends AbstractController
                 'quiz' => [
                     'id' => $quiz->getId(),
                     'title' => $quiz->getTitle(),
-                    'course_id' => $course->getId()
-                ]
+                    'course_id' => $course->getId(),
+                ],
             ]);
-
         } catch (\Exception $e) {
-            error_log('Exception in addQuiz: ' . $e->getMessage());
+            error_log('Exception in addQuiz: '.$e->getMessage());
+
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -109,20 +110,21 @@ class QuizController extends AbstractController
     #[Route('/question/add', name: 'question_add', methods: ['POST'])]
     public function addQuestion(Request $request): JsonResponse
     {
-        error_log("=== addQuestion called ===");
-        
+        error_log('=== addQuestion called ===');
+
         try {
             $data = json_decode($request->getContent(), true);
-            error_log("Received question data: " . print_r($data, true));
+            error_log('Received question data: '.print_r($data, true));
 
             // Validate required fields
             $requiredFields = ['quiz_id', 'question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_option'];
             foreach ($requiredFields as $field) {
                 if (!isset($data[$field]) || empty($data[$field])) {
-                    error_log("Missing required field: " . $field);
+                    error_log('Missing required field: '.$field);
+
                     return new JsonResponse([
                         'success' => false,
-                        'message' => "Field '{$field}' is required and cannot be empty"
+                        'message' => "Field '{$field}' is required and cannot be empty",
                     ], Response::HTTP_BAD_REQUEST);
                 }
             }
@@ -130,14 +132,15 @@ class QuizController extends AbstractController
             // Get quiz
             $quiz = $this->entityManager->getRepository(Quiz::class)->find($data['quiz_id']);
             if (!$quiz) {
-                error_log("Quiz not found with ID: " . $data['quiz_id']);
+                error_log('Quiz not found with ID: '.$data['quiz_id']);
+
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Quiz not found'
+                    'message' => 'Quiz not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            error_log("Found quiz: " . $quiz->getTitle());
+            error_log('Found quiz: '.$quiz->getTitle());
 
             // Create question
             $question = new Question();
@@ -156,18 +159,19 @@ class QuizController extends AbstractController
                 foreach ($errors as $error) {
                     $errorMessages[] = $error->getMessage();
                 }
+
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Validation failed',
-                    'errors' => $errorMessages
+                    'errors' => $errorMessages,
                 ], Response::HTTP_BAD_REQUEST);
             }
 
             // Save question
             $this->entityManager->persist($question);
             $this->entityManager->flush();
-            
-            error_log("Question saved successfully with ID: " . $question->getId());
+
+            error_log('Question saved successfully with ID: '.$question->getId());
 
             return new JsonResponse([
                 'success' => true,
@@ -176,14 +180,13 @@ class QuizController extends AbstractController
                     'id' => $question->getId(),
                     'text' => $question->getQuestion(),
                     'options' => $question->getOptions(),
-                    'correctOption' => $question->getCorrectOption()
-                ]
+                    'correctOption' => $question->getCorrectOption(),
+                ],
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -196,7 +199,7 @@ class QuizController extends AbstractController
             if (!$question) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Question not found'
+                    'message' => 'Question not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -209,15 +212,14 @@ class QuizController extends AbstractController
                     'correctOption' => $question->getCorrectOption(),
                     'quiz' => [
                         'id' => $question->getQuiz()->getId(),
-                        'title' => $question->getQuiz()->getTitle()
-                    ]
-                ]
+                        'title' => $question->getQuiz()->getTitle(),
+                    ],
+                ],
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -233,7 +235,7 @@ class QuizController extends AbstractController
             if (!$question) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Question not found'
+                    'message' => 'Question not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -243,22 +245,20 @@ class QuizController extends AbstractController
             }
 
             // Handle different question types
-            if (isset($data['type']) && $data['type'] === 'multiple') {
+            if (isset($data['type']) && 'multiple' === $data['type']) {
                 // Multiple choice question
                 $question->setOptionA($data['optionA'] ?? '');
                 $question->setOptionB($data['optionB'] ?? '');
                 $question->setOptionC($data['optionC'] ?? '');
                 $question->setOptionD($data['optionD'] ?? '');
                 $question->setCorrectOption($data['correctOption'] ?? 'A');
-                
-            } elseif (isset($data['type']) && $data['type'] === 'true_false') {
+            } elseif (isset($data['type']) && 'true_false' === $data['type']) {
                 // True/False question - adapt to multiple choice format
                 $question->setOptionA('True');
                 $question->setOptionB('False');
                 $question->setOptionC('False Option');
                 $question->setOptionD('False Option');
-                $question->setCorrectOption($data['correctAnswer'] === 'true' ? 'A' : 'B');
-                
+                $question->setCorrectOption('true' === $data['correctAnswer'] ? 'A' : 'B');
             } else {
                 // Short answer or default - adapt to multiple choice format
                 $correctAnswer = $data['correctAnswer'] ?? 'Answer';
@@ -279,10 +279,11 @@ class QuizController extends AbstractController
                 foreach ($errors as $error) {
                     $errorMessages[] = $error->getMessage();
                 }
+
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Validation failed',
-                    'errors' => $errorMessages
+                    'errors' => $errorMessages,
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -296,14 +297,13 @@ class QuizController extends AbstractController
                     'id' => $question->getId(),
                     'text' => $question->getQuestion(),
                     'options' => $question->getOptions(),
-                    'correctOption' => $question->getCorrectOption()
-                ]
+                    'correctOption' => $question->getCorrectOption(),
+                ],
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -316,7 +316,7 @@ class QuizController extends AbstractController
             if (!$question) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Question not found'
+                    'message' => 'Question not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -325,13 +325,12 @@ class QuizController extends AbstractController
 
             return new JsonResponse([
                 'success' => true,
-                'message' => 'Question deleted successfully'
+                'message' => 'Question deleted successfully',
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -345,32 +344,31 @@ class QuizController extends AbstractController
             // $user = $this->getUser(); // or $this->security->getUser();
             // if (!$user) { throw $this->createAccessDeniedException('Please log in'); }
             // $teacher = $user; // assuming User entity implements TeacherInterface
-            
+
             $loggedInTeacherId = 1;
             $teacher = $this->userRepository->find($loggedInTeacherId);
-            
+
             // Get courses filtered by current user
             $courses = $this->entityManager->getRepository(Course::class)->findByUser($teacher);
-            
+
             $courseData = [];
             foreach ($courses as $course) {
                 $courseData[] = [
                     'id' => $course->getId(),
                     'title' => $course->getTitle(),
                     'name' => $course->getTitle(),
-                    'status' => $course->getStatus() // Add status field
+                    'status' => $course->getStatus(), // Add status field
                 ];
             }
 
             return new JsonResponse([
                 'success' => true,
-                'courses' => $courseData
+                'courses' => $courseData,
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -383,7 +381,7 @@ class QuizController extends AbstractController
             if (!$quiz) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Quiz not found'
+                    'message' => 'Quiz not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -391,7 +389,7 @@ class QuizController extends AbstractController
             if ($quiz->getCourse()) {
                 $courseData = [
                     'id' => $quiz->getCourse()->getId(),
-                    'title' => $quiz->getCourse()->getTitle()
+                    'title' => $quiz->getCourse()->getTitle(),
                 ];
             }
 
@@ -409,14 +407,13 @@ class QuizController extends AbstractController
                     'showResults' => true, // Quiz entity doesn't have showResults field
                     'questionsCount' => $quiz->getQuestions()->count(),
                     'createdAt' => $quiz->getCreatedAt()->format('Y-m-d H:i:s'),
-                    'updatedAt' => $quiz->getUpdatedAt()?->format('Y-m-d H:i:s')
-                ]
+                    'updatedAt' => $quiz->getUpdatedAt()?->format('Y-m-d H:i:s'),
+                ],
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -432,7 +429,7 @@ class QuizController extends AbstractController
             if (!$quiz) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Quiz not found'
+                    'message' => 'Quiz not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -442,7 +439,7 @@ class QuizController extends AbstractController
             }
 
             if (isset($data['course_id'])) {
-                if ($data['course_id'] !== null && $data['course_id'] !== '') {
+                if (null !== $data['course_id'] && '' !== $data['course_id']) {
                     $course = $this->entityManager->getRepository(Course::class)->find($data['course_id']);
                     if ($course) {
                         $quiz->setCourse($course);
@@ -462,10 +459,11 @@ class QuizController extends AbstractController
                 foreach ($errors as $error) {
                     $errorMessages[] = $error->getMessage();
                 }
+
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Validation failed',
-                    'errors' => $errorMessages
+                    'errors' => $errorMessages,
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -480,15 +478,14 @@ class QuizController extends AbstractController
                     'title' => $quiz->getTitle(),
                     'course' => $quiz->getCourse() ? [
                         'id' => $quiz->getCourse()->getId(),
-                        'title' => $quiz->getCourse()->getTitle()
-                    ] : null
-                ]
+                        'title' => $quiz->getCourse()->getTitle(),
+                    ] : null,
+                ],
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -501,7 +498,7 @@ class QuizController extends AbstractController
             if (!$quiz) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Quiz not found'
+                    'message' => 'Quiz not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -510,13 +507,12 @@ class QuizController extends AbstractController
 
             return new JsonResponse([
                 'success' => true,
-                'message' => 'Quiz deleted successfully'
+                'message' => 'Quiz deleted successfully',
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
+                'message' => 'An error occurred: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -526,27 +522,27 @@ class QuizController extends AbstractController
     {
         try {
             $quizzes = $this->entityManager->getRepository(Quiz::class)->findAll();
-            
+
             // Create CSV content
             $csvContent = "Quiz ID,Quiz Title,Course,Questions Count,Created At,Updated At\n";
-            
+
             foreach ($quizzes as $quiz) {
                 $courseTitle = $quiz->getCourse() ? $quiz->getCourse()->getTitle() : 'No Course';
                 $questionsCount = $quiz->getQuestions()->count();
                 $createdAt = $quiz->getCreatedAt()->format('Y-m-d H:i:s');
                 $updatedAt = $quiz->getUpdatedAt() ? $quiz->getUpdatedAt()->format('Y-m-d H:i:s') : 'Never';
-                
+
                 // Escape commas and quotes in CSV
                 $quizTitle = str_replace('"', '""', $quiz->getTitle());
                 $courseTitle = str_replace('"', '""', $courseTitle);
-                
+
                 $csvContent .= "\"{$quiz->getId()}\",\"{$quizTitle}\",\"{$courseTitle}\",\"{$questionsCount}\",\"{$createdAt}\",\"{$updatedAt}\"\n";
             }
-            
+
             // Add questions details
             $csvContent .= "\n--- Questions Details ---\n";
             $csvContent .= "Quiz ID,Question ID,Question Text,Option A,Option B,Option C,Option D,Correct Option,Created At\n";
-            
+
             foreach ($quizzes as $quiz) {
                 foreach ($quiz->getQuestions() as $question) {
                     $questionText = str_replace('"', '""', $question->getQuestion());
@@ -555,22 +551,21 @@ class QuizController extends AbstractController
                     $optionC = str_replace('"', '""', $question->getOptionC());
                     $optionD = str_replace('"', '""', $question->getOptionD());
                     $createdAt = $question->getCreatedAt()->format('Y-m-d H:i:s');
-                    
+
                     $csvContent .= "\"{$quiz->getId()}\",\"{$question->getId()}\",\"{$questionText}\",\"{$optionA}\",\"{$optionB}\",\"{$optionC}\",\"{$optionD}\",\"{$question->getCorrectOption()}\",\"{$createdAt}\"\n";
                 }
             }
-            
+
             // Create response with CSV file
             $response = new Response($csvContent);
             $response->headers->set('Content-Type', 'text/csv');
-            $response->headers->set('Content-Disposition', 'attachment; filename="quiz-export-' . date('Y-m-d') . '.csv"');
-            
+            $response->headers->set('Content-Disposition', 'attachment; filename="quiz-export-'.date('Y-m-d').'.csv"');
+
             return $response;
-            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Export failed: ' . $e->getMessage()
+                'message' => 'Export failed: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -580,38 +575,37 @@ class QuizController extends AbstractController
     {
         try {
             $quizzes = $this->entityManager->getRepository(Quiz::class)->findAll();
-            
+
             // Generate beautiful PDF content
             $pdfContent = $this->generatePDFContent($quizzes);
-            
+
             // Create filename with timestamp
-            $filename = 'quiz-report-' . date('Y-m-d-H-i-s') . '.html';
-            $filepath = $this->getParameter('kernel.project_dir') . '/public/exports/' . $filename;
-            
+            $filename = 'quiz-report-'.date('Y-m-d-H-i-s').'.html';
+            $filepath = $this->getParameter('kernel.project_dir').'/public/exports/'.$filename;
+
             // Ensure exports directory exists
             $exportsDir = dirname($filepath);
             if (!is_dir($exportsDir)) {
                 mkdir($exportsDir, 0777, true);
             }
-            
+
             // Save HTML file to server
             file_put_contents($filepath, $pdfContent);
-            
+
             // Create response with PDF-like HTML file
             $response = new Response($pdfContent);
             $response->headers->set('Content-Type', 'text/html');
-            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
-            
+            $response->headers->set('Content-Disposition', 'attachment; filename="'.$filename.'"');
+
             return $response;
-            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'PDF export failed: ' . $e->getMessage()
+                'message' => 'PDF export failed: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     private function generatePDFContent($quizzes): string
     {
         $html = '<!DOCTYPE html>
@@ -619,7 +613,7 @@ class QuizController extends AbstractController
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Management Report - ' . date('Y-m-d') . '</title>
+    <title>Quiz Management Report - '.date('Y-m-d').'</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * {
@@ -1072,25 +1066,25 @@ class QuizController extends AbstractController
     <div class="container">
         <div class="header">
             <h1>📚 Quiz Management Report</h1>
-            <p>Generated on ' . date('F j, Y, g:i A') . '</p>
+            <p>Generated on '.date('F j, Y, g:i A').'</p>
         </div>
         
         <div class="content">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number">' . count(array_filter($quizzes, function($quiz) { return $quiz->getCourse() !== null; })) . '</div>
+                    <div class="stat-number">'.count(array_filter($quizzes, function ($quiz) { return null !== $quiz->getCourse(); })).'</div>
                     <div class="stat-label">Total Quizzes</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">' . array_reduce($quizzes, function($carry, $quiz) { return $carry + $quiz->getQuestions()->count(); }, 0) . '</div>
+                    <div class="stat-number">'.array_reduce($quizzes, function ($carry, $quiz) { return $carry + $quiz->getQuestions()->count(); }, 0).'</div>
                     <div class="stat-label">Total Questions</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">' . count(array_filter($quizzes, function($quiz) { return $quiz->getCourse() !== null; })) . '</div>
+                    <div class="stat-number">'.count(array_filter($quizzes, function ($quiz) { return null !== $quiz->getCourse(); })).'</div>
                     <div class="stat-label">With Courses</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">' . ($quizzes ? max(array_map(function($quiz) { return $quiz->getQuestions()->count(); }, $quizzes)) : 0) . '</div>
+                    <div class="stat-number">'.($quizzes ? max(array_map(function ($quiz) { return $quiz->getQuestions()->count(); }, $quizzes)) : 0).'</div>
                     <div class="stat-label">Max Questions</div>
                 </div>
             </div>
@@ -1102,48 +1096,48 @@ class QuizController extends AbstractController
             $html .= '
                 <div class="quiz-card">
                     <div class="quiz-header">
-                        <h3 class="quiz-title">' . htmlspecialchars($quiz->getTitle()) . '</h3>
-                        <span class="quiz-id">#' . $quiz->getId() . '</span>
+                        <h3 class="quiz-title">'.htmlspecialchars($quiz->getTitle()).'</h3>
+                        <span class="quiz-id">#'.$quiz->getId().'</span>
                     </div>
                     
                     <div class="quiz-meta">
                         <div class="meta-item">
-                            <strong>Course:</strong> ' . ($quiz->getCourse() ? htmlspecialchars($quiz->getCourse()->getTitle()) : 'No Course') . '
+                            <strong>Course:</strong> '.($quiz->getCourse() ? htmlspecialchars($quiz->getCourse()->getTitle()) : 'No Course').'
                         </div>
                         <div class="meta-item">
-                            <strong>Questions:</strong> ' . $quiz->getQuestions()->count() . '
+                            <strong>Questions:</strong> '.$quiz->getQuestions()->count().'
                         </div>
                         <div class="meta-item">
-                            <strong>Created:</strong> ' . $quiz->getCreatedAt()->format('M j, Y') . '
+                            <strong>Created:</strong> '.$quiz->getCreatedAt()->format('M j, Y').'
                         </div>
                     </div>
                     
                     <div class="questions-grid">';
-            
+
             if ($quiz->getQuestions()->count() > 0) {
                 foreach ($quiz->getQuestions() as $index => $question) {
                     $html .= '
                         <div class="question-card">
                             <div class="question-text">
-                                <span class="question-number">Q' . ($index + 1) . '</span>
-                                ' . htmlspecialchars($question->getQuestion()) . '
+                                <span class="question-number">Q'.($index + 1).'</span>
+                                '.htmlspecialchars($question->getQuestion()).'
                             </div>
                             <div class="options-grid">
-                                <div class="option ' . ($question->getCorrectOption() === 'A' ? 'correct' : '') . '">
+                                <div class="option '.('A' === $question->getCorrectOption() ? 'correct' : '').'">
                                     <span class="option-label">A</span>
-                                    ' . htmlspecialchars($question->getOptionA()) . '
+                                    '.htmlspecialchars($question->getOptionA()).'
                                 </div>
-                                <div class="option ' . ($question->getCorrectOption() === 'B' ? 'correct' : '') . '">
+                                <div class="option '.('B' === $question->getCorrectOption() ? 'correct' : '').'">
                                     <span class="option-label">B</span>
-                                    ' . htmlspecialchars($question->getOptionB()) . '
+                                    '.htmlspecialchars($question->getOptionB()).'
                                 </div>
-                                <div class="option ' . ($question->getCorrectOption() === 'C' ? 'correct' : '') . '">
+                                <div class="option '.('C' === $question->getCorrectOption() ? 'correct' : '').'">
                                     <span class="option-label">C</span>
-                                    ' . htmlspecialchars($question->getOptionC()) . '
+                                    '.htmlspecialchars($question->getOptionC()).'
                                 </div>
-                                <div class="option ' . ($question->getCorrectOption() === 'D' ? 'correct' : '') . '">
+                                <div class="option '.('D' === $question->getCorrectOption() ? 'correct' : '').'">
                                     <span class="option-label">D</span>
-                                    ' . htmlspecialchars($question->getOptionD()) . '
+                                    '.htmlspecialchars($question->getOptionD()).'
                                 </div>
                             </div>
                         </div>';
@@ -1151,7 +1145,7 @@ class QuizController extends AbstractController
             } else {
                 $html .= '<div class="no-questions">No questions added yet</div>';
             }
-            
+
             $html .= '
                     </div>
                 </div>';
@@ -1162,8 +1156,8 @@ class QuizController extends AbstractController
         </div>
         
         <div class="footer">
-            <p>© ' . date('Y') . ' UniLearn Quiz Management System</p>
-            <small>Report generated on ' . date('Y-m-d H:i:s') . ' | Beautiful HTML Export</small>
+            <p>© '.date('Y').' UniLearn Quiz Management System</p>
+            <small>Report generated on '.date('Y-m-d H:i:s').' | Beautiful HTML Export</small>
         </div>
     </div>
 </body>

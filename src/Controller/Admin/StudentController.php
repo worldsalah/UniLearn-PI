@@ -72,7 +72,7 @@ class StudentController extends AbstractController
             'form' => $form,
         ]);
     }
-    
+
     #[Route('/{id}/delete', name: 'app_admin_student_delete', methods: ['POST'])]
     public function delete(Request $request, User $student, EntityManagerInterface $entityManager): Response
     {

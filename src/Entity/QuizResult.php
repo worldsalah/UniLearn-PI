@@ -16,40 +16,40 @@ class QuizResult
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'quizResults')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "User is required")]
+    #[Assert\NotNull(message: 'User is required')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'quizResults')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "Quiz is required")]
+    #[Assert\NotNull(message: 'Quiz is required')]
     private ?Quiz $quiz = null;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: "Score is required")]
-    #[Assert\PositiveOrZero(message: "Score must be zero or positive")]
+    #[Assert\NotNull(message: 'Score is required')]
+    #[Assert\PositiveOrZero(message: 'Score must be zero or positive')]
     private ?int $score = null;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: "Maximum score is required")]
-    #[Assert\Positive(message: "Maximum score must be positive")]
+    #[Assert\NotNull(message: 'Maximum score is required')]
+    #[Assert\Positive(message: 'Maximum score must be positive')]
     private ?int $maxScore = null;
 
     #[Assert\Expression(
-        "this.getScore() <= this.getMaxScore()",
-        message: "Score cannot be greater than maximum score"
+        'this.getScore() <= this.getMaxScore()',
+        message: 'Score cannot be greater than maximum score'
     )]
     private bool $scoreValidation = true;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: "Quiz date is required")]
+    #[Assert\NotNull(message: 'Quiz date is required')]
     #[Assert\LessThanOrEqual(
-        "today",
-        message: "Quiz date cannot be in the future"
+        'today',
+        message: 'Quiz date cannot be in the future'
     )]
     private ?\DateTimeImmutable $takenAt = null;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: "Creation date is required")]
+    #[Assert\NotNull(message: 'Creation date is required')]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()
@@ -136,10 +136,10 @@ class QuizResult
 
     public function getPercentage(): float
     {
-        if ($this->maxScore === 0) {
+        if (0 === $this->maxScore) {
             return 0;
         }
-        
+
         return round(($this->score / $this->maxScore) * 100, 2);
     }
 }

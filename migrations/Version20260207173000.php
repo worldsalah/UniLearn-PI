@@ -28,16 +28,16 @@ final class Version20260207173000 extends AbstractMigration
             ('Data Science', 'Data analysis, machine learning and AI', 'bi-graph-up', '#6f42c1', NOW()),
             ('Languages', 'Foreign language learning courses', 'bi-translate', '#20c997', NOW()),
             ('Other', 'Miscellaneous courses', 'bi-three-dots', '#6c757d', NOW())");
-        
+
         // Update existing courses to have a default category if they don't have one
         $this->addSql('UPDATE course SET category_id = 1 WHERE category_id IS NULL');
-        
+
         // Add foreign key constraint only if it doesn't exist
         $courseTable = $schema->getTable('course');
         if (!$courseTable->hasForeignKey('FK_169E6FB912469DE2')) {
             $this->addSql('ALTER TABLE course ADD CONSTRAINT FK_169E6FB912469DE2 FOREIGN KEY (category_id) REFERENCES category (id)');
         }
-        
+
         // Add index only if it doesn't exist
         if (!$courseTable->hasIndex('IDX_169E6FB912469DE2')) {
             $this->addSql('CREATE INDEX IDX_169E6FB912469DE2 ON course (category_id)');

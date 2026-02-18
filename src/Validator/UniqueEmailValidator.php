@@ -22,13 +22,13 @@ class UniqueEmailValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, UniqueEmail::class);
         }
 
-        if ($value === null || $value === '') {
+        if (null === $value || '' === $value) {
             return;
         }
 
         $existingUser = $this->userRepository->findOneBy(['email' => $value]);
-        
-        if ($existingUser !== null && $existingUser instanceof User) {
+
+        if (null !== $existingUser && $existingUser instanceof User) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

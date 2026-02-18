@@ -49,6 +49,7 @@ class CourseReview
     public function setCourse(?Course $course): self
     {
         $this->course = $course;
+
         return $this;
     }
 
@@ -60,6 +61,7 @@ class CourseReview
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -71,6 +73,7 @@ class CourseReview
     public function setRating(int $rating): self
     {
         $this->rating = $rating;
+
         return $this;
     }
 
@@ -82,6 +85,7 @@ class CourseReview
     public function setComment(?string $comment): self
     {
         $this->comment = $comment;
+
         return $this;
     }
 
@@ -93,6 +97,7 @@ class CourseReview
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 }

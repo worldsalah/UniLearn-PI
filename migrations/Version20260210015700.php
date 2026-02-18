@@ -21,7 +21,7 @@ final class Version20260210015700 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $bookingTable = $schema->getTable('booking');
-        
+
         // Add columns only if they don't exist
         if (!$bookingTable->hasColumn('preferred_date')) {
             $this->addSql('ALTER TABLE booking ADD preferred_date DATE DEFAULT NULL');
@@ -31,7 +31,7 @@ final class Version20260210015700 extends AbstractMigration
             $this->addSql('ALTER TABLE booking ADD CONSTRAINT FK_E00CEDDEA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
             $this->addSql('CREATE INDEX IDX_E00CEDDEA76ED395 ON booking (user_id)');
         }
-        
+
         // Add progress columns to course table if they don't exist
         $courseTable = $schema->getTable('course');
         if (!$courseTable->hasColumn('image_progress')) {

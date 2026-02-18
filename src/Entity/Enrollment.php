@@ -28,10 +28,10 @@ class Enrollment
     #[ORM\Column(name: 'completed_at', type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $completedAt = null;
 
-    #[ORM\Column(type: 'string', length: 20, options: ["default" => "active"])]
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'active'])]
     private string $status = 'active';
 
-    #[ORM\Column(type: 'float', options: ["default" => 0.0])]
+    #[ORM\Column(type: 'float', options: ['default' => 0.0])]
     private float $progress = 0.0;
 
     public function __construct()
@@ -52,6 +52,7 @@ class Enrollment
     public function setCourse(?Course $course): self
     {
         $this->course = $course;
+
         return $this;
     }
 
@@ -63,6 +64,7 @@ class Enrollment
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -74,6 +76,7 @@ class Enrollment
     public function setEnrolledAt(\DateTimeInterface $enrolledAt): self
     {
         $this->enrolledAt = $enrolledAt;
+
         return $this;
     }
 
@@ -85,6 +88,7 @@ class Enrollment
     public function setCompletedAt(?\DateTimeInterface $completedAt): self
     {
         $this->completedAt = $completedAt;
+
         return $this;
     }
 
@@ -96,6 +100,7 @@ class Enrollment
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -107,6 +112,7 @@ class Enrollment
     public function setProgress(float $progress): self
     {
         $this->progress = $progress;
+
         return $this;
     }
 }

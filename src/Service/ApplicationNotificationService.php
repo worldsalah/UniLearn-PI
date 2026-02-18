@@ -3,8 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Application;
-use App\Entity\Job;
-use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -19,27 +17,27 @@ class ApplicationNotificationService
     }
 
     /**
-     * Send notification to client about new application
+     * Send notification to client about new application.
      */
     public function notifyClient(Application $application): void
     {
         $job = $application->getJob();
         $freelancer = $application->getFreelancer();
-        
-        if ($job === null || $job->getClient() === null) {
+
+        if (null === $job || null === $job->getClient()) {
             return;
         }
-        
+
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
             ->to(new Address($job->getClient()->getEmail()))
-            ->subject('New Application Received: ' . ($job->getTitle() ?? 'Untitled Job'))
+            ->subject('New Application Received: '.($job->getTitle() ?? 'Untitled Job'))
             ->htmlTemplate('emails/new_application.html.twig')
             ->context([
                 'job' => $job,
                 'application' => $application,
                 'freelancer' => $freelancer,
-                'client' => $job->getClient()
+                'client' => $job->getClient(),
             ])
         ;
 
@@ -47,26 +45,26 @@ class ApplicationNotificationService
     }
 
     /**
-     * Send confirmation email to freelancer
+     * Send confirmation email to freelancer.
      */
     public function confirmApplication(Application $application): void
     {
         $job = $application->getJob();
         $freelancer = $application->getFreelancer();
-        
-        if ($job === null || $freelancer === null) {
+
+        if (null === $job || null === $freelancer) {
             return;
         }
-        
+
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
             ->to(new Address($freelancer->getEmail()))
-            ->subject('Application Confirmed: ' . ($job->getTitle() ?? 'Untitled Job'))
+            ->subject('Application Confirmed: '.($job->getTitle() ?? 'Untitled Job'))
             ->htmlTemplate('emails/application_confirmation.html.twig')
             ->context([
                 'job' => $job,
                 'application' => $application,
-                'freelancer' => $freelancer
+                'freelancer' => $freelancer,
             ])
         ;
 
@@ -74,13 +72,13 @@ class ApplicationNotificationService
     }
 
     /**
-     * Send notification when application is accepted
+     * Send notification when application is accepted.
      */
     public function notifyAccepted(Application $application): void
     {
         $job = $application->getJob();
         $freelancer = $application->getFreelancer();
-        
+
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
             ->to(new Address($freelancer->getEmail()))
@@ -89,7 +87,7 @@ class ApplicationNotificationService
             ->context([
                 'job' => $job,
                 'application' => $application,
-                'freelancer' => $freelancer
+                'freelancer' => $freelancer,
             ])
         ;
 
@@ -97,22 +95,22 @@ class ApplicationNotificationService
     }
 
     /**
-     * Send notification when application is rejected
+     * Send notification when application is rejected.
      */
     public function notifyRejected(Application $application): void
     {
         $job = $application->getJob();
         $freelancer = $application->getFreelancer();
-        
+
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
             ->to(new Address($freelancer->getEmail()))
-            ->subject('Application Update: ' . $job->getTitle())
+            ->subject('Application Update: '.$job->getTitle())
             ->htmlTemplate('emails/application_rejected.html.twig')
             ->context([
                 'job' => $job,
                 'application' => $application,
-                'freelancer' => $freelancer
+                'freelancer' => $freelancer,
             ])
         ;
 

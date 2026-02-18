@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Entity\User;
 use App\Entity\Course;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -32,35 +32,37 @@ class AssociateCoursesCommand extends Command
 
         if (empty($users)) {
             $output->writeln('<error>No users found. Please run app:insert-users first.</error>');
+
             return Command::FAILURE;
         }
 
         if (empty($courses)) {
             $output->writeln('<error>No courses found.</error>');
+
             return Command::FAILURE;
         }
 
         // Associate courses with teachers
-        $teachers = array_filter($users, fn($user) => $user->getRole()?->getName() === 'teacher');
+        $teachers = array_filter($users, fn ($user) => 'teacher' === $user->getRole()?->getName());
         $teacherArray = array_values($teachers);
 
         foreach ($courses as $index => $course) {
             if (empty($teacherArray)) {
                 break;
             }
-            
+
             // Assign course to a teacher (round-robin)
             $teacherIndex = $index % count($teacherArray);
             $teacher = $teacherArray[$teacherIndex];
-            
+
             $course->setUser($teacher);
             $this->entityManager->persist($course);
-            
+
             $output->writeln("Associated course '{$course->getTitle()}' with teacher '{$teacher->getName()}'");
         }
 
         $this->entityManager->flush();
-        
+
         $output->writeln('<info>Successfully associated courses with users.</info>');
 
         return Command::SUCCESS;

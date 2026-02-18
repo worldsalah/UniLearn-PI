@@ -2,15 +2,15 @@
 
 namespace App\Command;
 
+use App\Entity\Category;
+use App\Entity\Job;
+use App\Entity\Product;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Product;
-use App\Entity\Job;
-use App\Entity\Category;
-use App\Entity\User;
 
 #[AsCommand(
     name: 'app:create-sample-data',
@@ -31,17 +31,19 @@ class CreateSampleDataCommand extends Command
     {
         // Get users to assign as freelancers/clients
         $users = $this->entityManager->getRepository(User::class)->findAll();
-        
+
         if (empty($users)) {
             $output->writeln('<error>No users found. Please create users first.</error>');
+
             return Command::FAILURE;
         }
 
         // Get categories
         $categories = $this->entityManager->getRepository(Category::class)->findAll();
-        
+
         if (empty($categories)) {
             $output->writeln('<error>No categories found. Please run app:create-categories first.</error>');
+
             return Command::FAILURE;
         }
 
@@ -80,9 +82,9 @@ class CreateSampleDataCommand extends Command
             $product->setPrice($productData['price']);
             $product->setCategory($productData['category']);
             $product->setFreelancer($users[array_rand($users)]);
-            
+
             $this->entityManager->persist($product);
-            $output->writeln('<info>Created product: ' . $productData['title'] . '</info>');
+            $output->writeln('<info>Created product: '.$productData['title'].'</info>');
         }
 
         // Create sample jobs
@@ -134,9 +136,9 @@ class CreateSampleDataCommand extends Command
             $job->setRequirements($jobData['requirements']);
             $job->setSkills($jobData['skills']);
             $job->setClient($users[array_rand($users)]);
-            
+
             $this->entityManager->persist($job);
-            $output->writeln('<info>Created job: ' . $jobData['title'] . '</info>');
+            $output->writeln('<info>Created job: '.$jobData['title'].'</info>');
         }
 
         $this->entityManager->flush();

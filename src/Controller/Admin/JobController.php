@@ -2,10 +2,10 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Job;
 use App\Entity\Application;
-use App\Repository\JobRepository;
+use App\Entity\Job;
 use App\Repository\ApplicationRepository;
+use App\Repository\JobRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,21 +29,21 @@ class JobController extends AbstractController
     public function index(JobRepository $jobRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $search = $request->query->get('search', '');
-        
+
         $queryBuilder = $jobRepository->createQueryBuilder('j')
             ->leftJoin('j.applications', 'a')
             ->addSelect('COUNT(a.id) as applicationCount')
             ->groupBy('j.id');
-        
+
         if ($search) {
             $queryBuilder
                 ->leftJoin('j.client', 'c')
                 ->where('j.title LIKE :search')
                 ->orWhere('j.description LIKE :search')
                 ->orWhere('c.email LIKE :search')
-                ->setParameter('search', '%' . $search . '%');
+                ->setParameter('search', '%'.$search.'%');
         }
-        
+
         $query = $queryBuilder->orderBy('j.createdAt', 'DESC')->getQuery();
         $jobs = $paginator->paginate($query, $request->query->getInt('page', 1), 10);
 
@@ -67,13 +67,13 @@ class JobController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $job = new Job();
-        
+
         // Set the client before form creation to avoid validation issues
         $user = $this->getUser();
-        if ($user !== null) {
+        if (null !== $user) {
             $job->setClient($user instanceof \App\Entity\User ? $user : null);
         }
-        
+
         $form = $this->createForm(\App\Form\Form\JobType::class, $job);
         $form->handleRequest($request);
 
@@ -129,13 +129,13 @@ class JobController extends AbstractController
     }
 
     /**
-     * Get application statistics for chart visualization
+     * Get application statistics for chart visualization.
      */
     private function getApplicationStatistics(): array
     {
         // Get applications per job for the last 30 days
         $thirtyDaysAgo = new \DateTime('-30 days');
-        
+
         $applicationsData = $this->applicationRepository->createQueryBuilder('a')
             ->select('j.title as jobTitle, COUNT(a.id) as applicationCount')
             ->leftJoin('a.job', 'j')
@@ -151,7 +151,7 @@ class JobController extends AbstractController
         // Prepare data for chart
         $jobTitles = [];
         $applicationCounts = [];
-        
+
         foreach ($applicationsData as $data) {
             $jobTitles[] = $data['jobTitle'];
             $applicationCounts[] = $data['applicationCount'];
@@ -175,7 +175,7 @@ class JobController extends AbstractController
         $statusData = [
             'pending' => 0,
             'accepted' => 0,
-            'rejected' => 0
+            'rejected' => 0,
         ];
 
         foreach ($applicationsByStatus as $status) {

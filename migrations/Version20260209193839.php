@@ -24,7 +24,7 @@ final class Version20260209193839 extends AbstractMigration
         if (!$table->hasColumn('sort_order')) {
             $this->addSql('ALTER TABLE chapter ADD sort_order INT NOT NULL');
         }
-        
+
         $courseTable = $schema->getTable('course');
         // Only modify columns if they exist
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
@@ -36,7 +36,7 @@ final class Version20260209193839 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE chapter DROP sort_order');
-        
+
         $courseTable = $schema->getTable('course');
         // Only modify columns if they exist
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {

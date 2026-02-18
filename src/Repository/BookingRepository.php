@@ -16,7 +16,7 @@ class BookingRepository extends ServiceEntityRepository
         parent::__construct($registry, Booking::class);
     }
 
-    //POST
+    // POST
     public function save(Booking $booking, bool $flush = true): void
     {
         $this->getEntityManager()->persist($booking);
@@ -26,7 +26,7 @@ class BookingRepository extends ServiceEntityRepository
         }
     }
 
-    //GET 
+    // GET
     public function findAllBookings(): array
     {
         return $this->createQueryBuilder('bookings')
@@ -34,4 +34,3 @@ class BookingRepository extends ServiceEntityRepository
             ->getResult();
     }
 }
-

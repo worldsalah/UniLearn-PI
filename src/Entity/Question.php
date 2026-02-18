@@ -15,70 +15,70 @@ class Question
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Question text cannot be empty")]
+    #[Assert\NotBlank(message: 'Question text cannot be empty')]
     #[Assert\Length(
         min: 5,
         max: 255,
-        minMessage: "Question must be at least {{ limit }} characters long",
-        maxMessage: "Question cannot be longer than {{ limit }} characters"
+        minMessage: 'Question must be at least {{ limit }} characters long',
+        maxMessage: 'Question cannot be longer than {{ limit }} characters'
     )]
     private ?string $question = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Option A cannot be empty")]
+    #[Assert\NotBlank(message: 'Option A cannot be empty')]
     #[Assert\Length(
         min: 1,
         max: 255,
-        minMessage: "Option A must be at least {{ limit }} character long",
-        maxMessage: "Option A cannot be longer than {{ limit }} characters"
+        minMessage: 'Option A must be at least {{ limit }} character long',
+        maxMessage: 'Option A cannot be longer than {{ limit }} characters'
     )]
     private ?string $optionA = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Option B cannot be empty")]
+    #[Assert\NotBlank(message: 'Option B cannot be empty')]
     #[Assert\Length(
         min: 1,
         max: 255,
-        minMessage: "Option B must be at least {{ limit }} character long",
-        maxMessage: "Option B cannot be longer than {{ limit }} characters"
+        minMessage: 'Option B must be at least {{ limit }} character long',
+        maxMessage: 'Option B cannot be longer than {{ limit }} characters'
     )]
     private ?string $optionB = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Option C cannot be empty")]
+    #[Assert\NotBlank(message: 'Option C cannot be empty')]
     #[Assert\Length(
         min: 1,
         max: 255,
-        minMessage: "Option C must be at least {{ limit }} character long",
-        maxMessage: "Option C cannot be longer than {{ limit }} characters"
+        minMessage: 'Option C must be at least {{ limit }} character long',
+        maxMessage: 'Option C cannot be longer than {{ limit }} characters'
     )]
     private ?string $optionC = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Option D cannot be empty")]
+    #[Assert\NotBlank(message: 'Option D cannot be empty')]
     #[Assert\Length(
         min: 1,
         max: 255,
-        minMessage: "Option D must be at least {{ limit }} character long",
-        maxMessage: "Option D cannot be longer than {{ limit }} characters"
+        minMessage: 'Option D must be at least {{ limit }} character long',
+        maxMessage: 'Option D cannot be longer than {{ limit }} characters'
     )]
     private ?string $optionD = null;
 
     #[ORM\Column(length: 1)]
-    #[Assert\NotBlank(message: "Correct option must be specified")]
+    #[Assert\NotBlank(message: 'Correct option must be specified')]
     #[Assert\Choice(
         choices: ['A', 'B', 'C', 'D'],
-        message: "Correct option must be one of: A, B, C, or D"
+        message: 'Correct option must be one of: A, B, C, or D'
     )]
     private ?string $correctOption = null;
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "Quiz is required")]
+    #[Assert\NotNull(message: 'Quiz is required')]
     private ?Quiz $quiz = null;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: "Creation date is required")]
+    #[Assert\NotNull(message: 'Creation date is required')]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -215,7 +215,7 @@ class Question
             'A' => $this->optionA,
             'B' => $this->optionB,
             'C' => $this->optionC,
-            'D' => $this->optionD
+            'D' => $this->optionD,
         ];
     }
 }

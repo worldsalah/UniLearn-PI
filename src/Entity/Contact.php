@@ -52,7 +52,7 @@ class Contact
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 20, options: ["default" => "pending"])]
+    #[ORM\Column(length: 20, options: ['default' => 'pending'])]
     private ?string $status = 'pending';
 
     public function __construct()
@@ -73,6 +73,7 @@ class Contact
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -84,6 +85,7 @@ class Contact
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
@@ -95,6 +97,7 @@ class Contact
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -106,6 +109,7 @@ class Contact
     public function setPhone(?string $phone): static
     {
         $this->phone = $phone;
+
         return $this;
     }
 
@@ -117,6 +121,7 @@ class Contact
     public function setSubject(string $subject): static
     {
         $this->subject = $subject;
+
         return $this;
     }
 
@@ -128,6 +133,7 @@ class Contact
     public function setMessage(string $message): static
     {
         $this->message = $message;
+
         return $this;
     }
 
@@ -139,6 +145,7 @@ class Contact
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -150,6 +157,7 @@ class Contact
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 }

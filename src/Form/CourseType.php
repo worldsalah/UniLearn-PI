@@ -26,16 +26,16 @@ class CourseType extends AbstractType
                 'label' => 'Course title',
                 'attr' => [
                     'placeholder' => 'Enter course title',
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('shortDescription', TextareaType::class, [
                 'label' => 'Short description',
                 'attr' => [
                     'placeholder' => 'Enter keywords',
                     'rows' => 2,
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('category', EntityType::class, [
                 'label' => 'Course category',
@@ -43,8 +43,8 @@ class CourseType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Select category',
                 'attr' => [
-                    'class' => 'form-select'
-                ]
+                    'class' => 'form-select',
+                ],
             ])
             ->add('level', ChoiceType::class, [
                 'label' => 'Course level',
@@ -52,21 +52,21 @@ class CourseType extends AbstractType
                     'All level' => 'All level',
                     'Beginner' => 'Beginner',
                     'Intermediate' => 'Intermediate',
-                    'Advance' => 'Advance'
+                    'Advance' => 'Advance',
                 ],
                 'placeholder' => 'Select course level',
                 'attr' => [
-                    'class' => 'form-select'
-                ]
+                    'class' => 'form-select',
+                ],
             ])
             ->add('price', NumberType::class, [
                 'label' => 'Course price',
                 'attr' => [
                     'placeholder' => 'Enter course price',
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
-            
+
             // Step 2: Media - These are virtual properties for file upload
             ->add('thumbnailFile', FileType::class, [
                 'label' => 'Course thumbnail image',
@@ -74,16 +74,16 @@ class CourseType extends AbstractType
                 'mapped' => false, // This is a virtual field, not mapped to entity
                 'attr' => [
                     'accept' => 'image/*',
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ],
                 'constraints' => [
                     new ImageConstraint([
                         'maxSize' => '2M',
                         'maxSizeMessage' => 'L\'image ne doit pas dépasser {{ limit }}.',
                         'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
-                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG ou GIF).'
-                    ])
-                ]
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG ou GIF).',
+                    ]),
+                ],
             ])
             ->add('videoFile', FileType::class, [
                 'label' => 'Course introduction video',
@@ -91,18 +91,18 @@ class CourseType extends AbstractType
                 'mapped' => false, // This is a virtual field, not mapped to entity
                 'attr' => [
                     'accept' => 'video/mp4,video/webm,video/ogg',
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ],
                 'constraints' => [
                     new FileConstraint([
                         'maxSize' => '500M',
                         'maxSizeMessage' => 'La vidéo ne doit pas dépasser {{ limit }}.',
                         'mimeTypes' => ['video/mp4', 'video/webm', 'video/ogg'],
-                        'mimeTypesMessage' => 'Veuillez télécharger une vidéo valide (MP4, WebM ou OGG).'
-                    ])
-                ]
+                        'mimeTypesMessage' => 'Veuillez télécharger une vidéo valide (MP4, WebM ou OGG).',
+                    ]),
+                ],
             ])
-            
+
             // Step 3: Additional Information
             ->add('language', ChoiceType::class, [
                 'label' => 'Course language',
@@ -114,19 +114,19 @@ class CourseType extends AbstractType
                     'Italian' => 'it',
                     'Portuguese' => 'pt',
                     'Chinese' => 'zh',
-                    'Japanese' => 'ja'
+                    'Japanese' => 'ja',
                 ],
                 'placeholder' => 'Select language',
                 'attr' => [
-                    'class' => 'form-select'
-                ]
+                    'class' => 'form-select',
+                ],
             ])
             ->add('duration', NumberType::class, [
                 'label' => 'Estimated duration (hours)',
                 'attr' => [
                     'placeholder' => 'e.g., 10',
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('requirements', TextareaType::class, [
                 'label' => 'Requirements',
@@ -134,8 +134,8 @@ class CourseType extends AbstractType
                 'attr' => [
                     'placeholder' => 'What are the prerequisites for this course?',
                     'rows' => 3,
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('learningOutcomes', TextareaType::class, [
                 'label' => 'Learning outcomes',
@@ -143,8 +143,8 @@ class CourseType extends AbstractType
                 'attr' => [
                     'placeholder' => 'What will students learn after completing this course?',
                     'rows' => 3,
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('targetAudience', TextareaType::class, [
                 'label' => 'Target audience',
@@ -152,8 +152,8 @@ class CourseType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Who is this course for?',
                     'rows' => 3,
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
         ;
     }

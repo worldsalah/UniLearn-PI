@@ -16,7 +16,7 @@ class PublicCategoryController extends AbstractController
     public function publicCategories(CategoryRepository $categoryRepository, CourseRepository $courseRepository): Response
     {
         $categories = $categoryRepository->findActiveCategories();
-        
+
         // Debug: Check if categories are empty
         if (empty($categories)) {
             // If no categories found, create an empty array to avoid template errors
@@ -28,7 +28,7 @@ class PublicCategoryController extends AbstractController
                 $category->courseCount = $courseCount;
             }
         }
-        
+
         return $this->render('category/categories.html.twig', [
             'categories' => $categories,
         ]);
@@ -38,7 +38,7 @@ class PublicCategoryController extends AbstractController
     public function courseCategories(CategoryRepository $categoryRepository): Response
     {
         $categories = $categoryRepository->findCategoriesWithCourseCount();
-        
+
         return $this->render('category/course-categories.html.twig', [
             'categories' => $categories,
         ]);

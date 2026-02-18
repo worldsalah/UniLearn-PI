@@ -11,9 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Extension\Core\DataTransformer\BooleanToStringTransformer;
 
 class RegistrationType extends AbstractType
 {
@@ -24,15 +21,15 @@ class RegistrationType extends AbstractType
                 'label' => 'Full Name',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Enter your full name'
-                ]
+                    'placeholder' => 'Enter your full name',
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Enter your email'
-                ]
+                    'placeholder' => 'Enter your email',
+                ],
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -40,25 +37,25 @@ class RegistrationType extends AbstractType
                     'label' => 'Password',
                     'attr' => [
                         'class' => 'form-control',
-                        'placeholder' => 'Enter your password'
-                    ]
+                        'placeholder' => 'Enter your password',
+                    ],
                 ],
                 'second_options' => [
                     'label' => 'Confirm Password',
                     'attr' => [
                         'class' => 'form-control',
-                        'placeholder' => 'Confirm your password'
-                    ]
+                        'placeholder' => 'Confirm your password',
+                    ],
                 ],
-                'invalid_message' => 'Les mots de passe doivent correspondre.'
+                'invalid_message' => 'Les mots de passe doivent correspondre.',
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'label' => 'By signing up, you agree to the terms of service',
                 'mapped' => true,
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-check-input'
-                ]
+                    'class' => 'form-check-input',
+                ],
             ])
         ;
     }

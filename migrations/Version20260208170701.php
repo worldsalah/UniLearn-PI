@@ -21,7 +21,7 @@ final class Version20260208170701 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $courseTable = $schema->getTable('course');
-        
+
         // Only modify columns if they exist
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
             $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
@@ -32,7 +32,7 @@ final class Version20260208170701 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $courseTable = $schema->getTable('course');
-        
+
         // Only modify columns if they exist
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
             $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL');

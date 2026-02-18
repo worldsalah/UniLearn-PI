@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\CheckoutRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -84,7 +83,7 @@ class Checkout
     #[Assert\Length(min: 3, max: 100, minMessage: 'Le nom du titulaire doit contenir au moins {{ limit }} caractères.', maxMessage: 'Le nom du titulaire ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $cardholderName = null;
 
-    #[ORM\Column(length: 20, options: ["default" => "credit_card"])]
+    #[ORM\Column(length: 20, options: ['default' => 'credit_card'])]
     #[Assert\Choice(choices: ['credit_card', 'paypal', 'apple_pay'], message: 'Veuillez choisir une méthode de paiement valide.')]
     private ?string $paymentMethod = 'credit_card';
 
@@ -94,7 +93,7 @@ class Checkout
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 20, options: ["default" => "pending"])]
+    #[ORM\Column(length: 20, options: ['default' => 'pending'])]
     private ?string $status = 'pending';
 
     #[ORM\Column]
@@ -119,6 +118,7 @@ class Checkout
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -130,6 +130,7 @@ class Checkout
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
@@ -141,6 +142,7 @@ class Checkout
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -152,6 +154,7 @@ class Checkout
     public function setPhone(?string $phone): static
     {
         $this->phone = $phone;
+
         return $this;
     }
 
@@ -163,6 +166,7 @@ class Checkout
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
         return $this;
     }
 
@@ -174,6 +178,7 @@ class Checkout
     public function setCity(string $city): static
     {
         $this->city = $city;
+
         return $this;
     }
 
@@ -185,6 +190,7 @@ class Checkout
     public function setState(string $state): static
     {
         $this->state = $state;
+
         return $this;
     }
 
@@ -196,6 +202,7 @@ class Checkout
     public function setZipCode(string $zipCode): static
     {
         $this->zipCode = $zipCode;
+
         return $this;
     }
 
@@ -207,6 +214,7 @@ class Checkout
     public function setCountry(string $country): static
     {
         $this->country = $country;
+
         return $this;
     }
 
@@ -218,6 +226,7 @@ class Checkout
     public function setCardNumber(string $cardNumber): static
     {
         $this->cardNumber = $cardNumber;
+
         return $this;
     }
 
@@ -229,6 +238,7 @@ class Checkout
     public function setExpiryDate(string $expiryDate): static
     {
         $this->expiryDate = $expiryDate;
+
         return $this;
     }
 
@@ -240,6 +250,7 @@ class Checkout
     public function setCvv(string $cvv): static
     {
         $this->cvv = $cvv;
+
         return $this;
     }
 
@@ -251,6 +262,7 @@ class Checkout
     public function setCardholderName(string $cardholderName): static
     {
         $this->cardholderName = $cardholderName;
+
         return $this;
     }
 
@@ -262,6 +274,7 @@ class Checkout
     public function setPaymentMethod(string $paymentMethod): static
     {
         $this->paymentMethod = $paymentMethod;
+
         return $this;
     }
 
@@ -273,6 +286,7 @@ class Checkout
     public function setAgreeTerms(bool $agreeTerms): static
     {
         $this->agreeTerms = $agreeTerms;
+
         return $this;
     }
 
@@ -284,6 +298,7 @@ class Checkout
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -295,6 +310,7 @@ class Checkout
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -306,6 +322,7 @@ class Checkout
     public function setTotalAmount(float $totalAmount): static
     {
         $this->totalAmount = $totalAmount;
+
         return $this;
     }
 }

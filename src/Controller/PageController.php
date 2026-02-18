@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\Quiz;
 use App\Entity\Question;
-use App\Repository\QuizRepository;
+use App\Entity\Quiz;
 use App\Repository\QuestionRepository;
+use App\Repository\QuizRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidator;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidator;
 
 class PageController extends AbstractController
 {
@@ -26,20 +26,21 @@ class PageController extends AbstractController
         QuizRepository $quizRepository,
         QuestionRepository $questionRepository,
         EntityManagerInterface $entityManager,
-        SymfonyValidator $validator
+        SymfonyValidator $validator,
     ) {
         $this->quizRepository = $quizRepository;
         $this->questionRepository = $questionRepository;
         $this->entityManager = $entityManager;
         $this->validator = $validator;
     }
+
     #[Route('/about', name: 'app_about')]
     public function about(): Response
     {
         // Create a simple about page using base template
         return $this->render('base.html.twig', [
             'title' => 'About - Unilearn',
-            'content' => 'About Unilearn - Learning Platform'
+            'content' => 'About Unilearn - Learning Platform',
         ]);
     }
 
@@ -49,7 +50,7 @@ class PageController extends AbstractController
         // Create a simple contact page using base template
         return $this->render('base.html.twig', [
             'title' => 'Contact - Unilearn',
-            'content' => 'Contact Unilearn - Get in Touch'
+            'content' => 'Contact Unilearn - Get in Touch',
         ]);
     }
 
@@ -59,7 +60,6 @@ class PageController extends AbstractController
         return $this->render('category/categories.html.twig');
     }
 
-    
     #[Route('/register', name: 'app_register')]
     public function register(): Response
     {
@@ -117,18 +117,17 @@ class PageController extends AbstractController
         return $this->render('auth/forgot-password.html.twig');
     }
 
-    
     #[Route('/student-dashboard', name: 'app_student_dashboard')]
     public function studentDashboard(): Response
     {
         // Get the currently logged-in user
         $user = $this->getUser();
-        
+
         if (!$user) {
             // If no user is logged in, redirect to login
             return $this->redirectToRoute('app_login');
         }
-        
+
         // Allow all users to access student dashboard
         return $this->render('student/dashboard.html.twig');
     }
@@ -138,25 +137,25 @@ class PageController extends AbstractController
     {
         // Get real data from database
         $courseRepository = $entityManager->getRepository(\App\Entity\Course::class);
-        $quizRepository = $entityManager->getRepository(\App\Entity\Quiz::class);
+        $quizRepository = $entityManager->getRepository(Quiz::class);
         $userRepository = $entityManager->getRepository(\App\Entity\User::class);
-        
+
         $totalCourses = count($courseRepository->findAll());
         $totalQuizzes = count($quizRepository->findAll());
         $totalUsers = count($userRepository->findAll());
-        
+
         // Get recent activities (mock data for now)
         $recentCourses = [];
         $recentQuizzes = [];
         $recentUsers = [];
-        
+
         return $this->render('admin/dashboard.html.twig', [
             'totalCourses' => $totalCourses,
             'totalQuizzes' => $totalQuizzes,
             'totalUsers' => $totalUsers,
             'recentCourses' => $recentCourses,
             'recentQuizzes' => $recentQuizzes,
-            'recentUsers' => $recentUsers
+            'recentUsers' => $recentUsers,
         ]);
     }
 
@@ -195,7 +194,7 @@ class PageController extends AbstractController
     {
         // Get all courses from database
         $courses = $entityManager->getRepository(\App\Entity\Course::class)->findAll();
-        
+
         // Prepare course data for template
         $courseData = [];
         foreach ($courses as $course) {
@@ -211,15 +210,15 @@ class PageController extends AbstractController
                 'thumbnailUrl' => $course->getThumbnailUrl(),
                 'instructor' => [
                     'name' => $course->getUser() ? $course->getUser()->getFullName() : 'Unknown',
-                    'image' => null
+                    'image' => null,
                 ],
                 'levelClass' => $this->getLevelBadgeClass($course->getLevel()),
-                'statusClass' => $this->getStatusBadgeClass($course->getStatus())
+                'statusClass' => $this->getStatusBadgeClass($course->getStatus()),
             ];
         }
 
         return $this->render('admin/course-list.html.twig', [
-            'courses' => $courseData
+            'courses' => $courseData,
         ]);
     }
 
@@ -234,24 +233,24 @@ class PageController extends AbstractController
     {
         $userRepository = $entityManager->getRepository(\App\Entity\User::class);
         $instructors = $userRepository->findBy(['roles' => ['ROLE_INSTRUCTOR']]);
-        
+
         $instructorData = [];
         foreach ($instructors as $instructor) {
             // Calculate actual course count from course assignments
             $coursesCount = count($instructor->getCourses());
-            
+
             $instructorData[] = [
                 'id' => $instructor->getId(),
                 'name' => $instructor->getFullName() ?? 'Unknown',
                 'email' => $instructor->getEmail(),
                 'coursesCount' => $coursesCount,
                 'rating' => 4.5, // Mock rating for now
-                'joinedAt' => $instructor->getCreatedAt() ? $instructor->getCreatedAt()->format('M Y') : 'Unknown'
+                'joinedAt' => $instructor->getCreatedAt() ? $instructor->getCreatedAt()->format('M Y') : 'Unknown',
             ];
         }
-        
+
         return $this->render('admin/instructor-list.html.twig', [
-            'instructors' => $instructorData
+            'instructors' => $instructorData,
         ]);
     }
 
@@ -277,7 +276,7 @@ class PageController extends AbstractController
     public function adminStudentList(Request $request, EntityManagerInterface $entityManager): Response
     {
         $userRepository = $entityManager->getRepository(\App\Entity\User::class);
-        
+
         // Get search and filter parameters
         $search = $request->query->get('search', '');
         $sortBy = $request->query->get('sort', 'createdAt');
@@ -285,42 +284,42 @@ class PageController extends AbstractController
         $status = $request->query->get('status', '');
         $role = $request->query->get('role', '');
         $isAjax = $request->query->get('ajax', false);
-        
+
         // Build query
         $qb = $userRepository->createQueryBuilder('u');
-        
+
         // Join role to get role name
         $qb->leftJoin('u.role', 'r')
            ->addSelect('r');
-        
+
         // Apply search filter
         if (!empty($search)) {
             $qb->andWhere('u.fullName LIKE :search OR u.email LIKE :search')
-               ->setParameter('search', '%' . $search . '%');
+               ->setParameter('search', '%'.$search.'%');
         }
-        
+
         // Apply status filter
         if (!empty($status)) {
             $qb->andWhere('u.status = :status')
                ->setParameter('status', $status);
         }
-        
+
         // Apply role filter
         if (!empty($role)) {
             $qb->andWhere('r.name = :role')
                ->setParameter('role', $role);
         }
-        
+
         // Apply sorting
         $validSortFields = ['fullName', 'email', 'createdAt', 'status', 'r.name'];
         if (in_array($sortBy, $validSortFields, true)) {
-            $qb->orderBy('u.' . $sortBy, $sortOrder === 'asc' ? 'ASC' : 'DESC');
+            $qb->orderBy('u.'.$sortBy, 'asc' === $sortOrder ? 'ASC' : 'DESC');
         } else {
             $qb->orderBy('u.createdAt', 'DESC');
         }
-        
+
         $users = $qb->getQuery()->getResult();
-        
+
         $userData = [];
         foreach ($users as $user) {
             $userData[] = [
@@ -330,38 +329,38 @@ class PageController extends AbstractController
                 'status' => $user->getStatus() ?? 'active',
                 'role' => $this->getUserRole($user),
                 'joinedAt' => $user->getCreatedAt() ? $user->getCreatedAt()->format('M d, Y') : 'Unknown',
-                'lastLogin' => 'Never' // User entity doesn't have lastLogin field
+                'lastLogin' => 'Never', // User entity doesn't have lastLogin field
             ];
         }
-        
+
         // Handle AJAX request
         if ($isAjax) {
             return new JsonResponse([
                 'success' => true,
-                'users' => $userData
+                'users' => $userData,
             ]);
         }
-        
+
         // Get filter options for dropdowns
         $allUsers = $userRepository->findAll();
         $availableRoles = [];
         $availableStatuses = [];
-        
+
         foreach ($allUsers as $user) {
             $userRole = $this->getUserRole($user);
             if (!in_array($userRole, $availableRoles, true)) {
                 $availableRoles[] = $userRole;
             }
-            
+
             $userStatus = $user->getStatus() ?? 'active';
             if (!in_array($userStatus, $availableStatuses, true)) {
                 $availableStatuses[] = $userStatus;
             }
         }
-        
+
         sort($availableRoles);
         sort($availableStatuses);
-        
+
         return $this->render('admin/student-list.html.twig', [
             'users' => $userData,
             'search' => $search,
@@ -370,14 +369,15 @@ class PageController extends AbstractController
             'status' => $status,
             'role' => $role,
             'availableRoles' => $availableRoles,
-            'availableStatuses' => $availableStatuses
+            'availableStatuses' => $availableStatuses,
         ]);
     }
-    
+
     private function getUserRole($user): string
     {
         // Get user role from the role relationship
         $role = $user->getRole();
+
         return $role ? $role->getName() : 'User';
     }
 
@@ -388,9 +388,9 @@ class PageController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
-        
+
         return $this->render('admin/user-view.html.twig', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -401,20 +401,20 @@ class PageController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
-        
+
         if ($request->isMethod('POST')) {
             // Handle form submission
             $user->setFullName($request->request->get('fullName'));
             $user->setEmail($request->request->get('email'));
             $user->setStatus($request->request->get('status'));
-            
+
             $entityManager->flush();
-            
+
             return $this->redirectToRoute('admin_student_list');
         }
-        
+
         return $this->render('admin/user-edit.html.twig', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -425,10 +425,10 @@ class PageController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
-        
+
         $user->setStatus('suspended');
         $entityManager->flush();
-        
+
         return $this->redirectToRoute('admin_student_list');
     }
 
@@ -439,10 +439,10 @@ class PageController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
-        
+
         $user->setStatus('active');
         $entityManager->flush();
-        
+
         return $this->redirectToRoute('admin_student_list');
     }
 
@@ -453,53 +453,53 @@ class PageController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
-        
+
         try {
             // Check for related data before deletion
             $relatedData = [];
-            
+
             // Check for courses
             $courseCount = count($user->getCourses());
             if ($courseCount > 0) {
                 $relatedData['courses'] = $courseCount;
             }
-            
+
             // Check for quiz results
             $quizResultCount = count($user->getQuizResults());
             if ($quizResultCount > 0) {
                 $relatedData['quiz_results'] = $quizResultCount;
             }
-            
+
             // Check for products
             $productCount = count($user->getProducts());
             if ($productCount > 0) {
                 $relatedData['products'] = $productCount;
             }
-            
+
             // Check for jobs
             $jobCount = count($user->getJobs());
             if ($jobCount > 0) {
                 $relatedData['jobs'] = $jobCount;
             }
-            
+
             // Check for orders
             $orderCount = count($user->getOrders());
             if ($orderCount > 0) {
                 $relatedData['orders'] = $orderCount;
             }
-            
+
             // Check for applications
             $applicationCount = count($user->getApplications());
             if ($applicationCount > 0) {
                 $relatedData['applications'] = $applicationCount;
             }
-            
+
             // Check for favorites
             $favoriteCount = count($user->getFavorites());
             if ($favoriteCount > 0) {
                 $relatedData['favorites'] = $favoriteCount;
             }
-            
+
             // If there's related data, handle it properly
             if (!empty($relatedData)) {
                 // Option 1: Remove related data first (uncomment if you want this behavior)
@@ -526,36 +526,38 @@ class PageController extends AbstractController
                     $entityManager->remove($favorite);
                 }
                 */
-                
+
                 // Option 2: Show error message (current behavior)
-                $errorMessage = 'Cannot delete user "' . $user->getFullName() . '" because they have related data: ';
+                $errorMessage = 'Cannot delete user "'.$user->getFullName().'" because they have related data: ';
                 $errorDetails = [];
-                
+
                 foreach ($relatedData as $entityType => $count) {
-                    $errorDetails[] = $count . ' ' . str_replace('_', ' ', $entityType);
+                    $errorDetails[] = $count.' '.str_replace('_', ' ', $entityType);
                 }
-                
-                $errorMessage .= implode(', ', $errorDetails) . '. Please remove or reassign this data first.';
-                
+
+                $errorMessage .= implode(', ', $errorDetails).'. Please remove or reassign this data first.';
+
                 // Add flash message and redirect back
                 $this->addFlash('error', $errorMessage);
+
                 return $this->redirectToRoute('admin_user_view', ['id' => $id]);
             }
-            
+
             // If no related data, proceed with deletion
             $entityManager->remove($user);
             $entityManager->flush();
-            
-            $this->addFlash('success', 'User "' . $user->getFullName() . '" has been successfully deleted.');
-            
+
+            $this->addFlash('success', 'User "'.$user->getFullName().'" has been successfully deleted.');
         } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
             $this->addFlash('error', 'Cannot delete this user because they have related data in the system. Please remove or reassign the related data first.');
+
             return $this->redirectToRoute('admin_user_view', ['id' => $id]);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'An error occurred while trying to delete the user: ' . $e->getMessage());
+            $this->addFlash('error', 'An error occurred while trying to delete the user: '.$e->getMessage());
+
             return $this->redirectToRoute('admin_user_view', ['id' => $id]);
         }
-        
+
         return $this->redirectToRoute('admin_student_list');
     }
 
@@ -640,38 +642,38 @@ class PageController extends AbstractController
         $sortOrder = $request->query->get('order', 'desc');
         $status = $request->query->get('status', '');
         $isAjax = $request->query->get('ajax', false);
-        
+
         // Build query
         $qb = $this->quizRepository->createQueryBuilder('q');
-        
+
         // Join course to get course title
         $qb->leftJoin('q.course', 'c')
            ->addSelect('c');
-        
+
         // Apply search filter
         if (!empty($search)) {
             $qb->andWhere('q.title LIKE :search')
-               ->setParameter('search', '%' . $search . '%');
+               ->setParameter('search', '%'.$search.'%');
         }
-        
+
         // Apply status filter (all quizzes are currently "active")
-        if (!empty($status) && $status === 'active') {
+        if (!empty($status) && 'active' === $status) {
             // All quizzes are active by default, so no filtering needed
-        } elseif (!empty($status) && $status === 'inactive') {
+        } elseif (!empty($status) && 'inactive' === $status) {
             // No inactive quizzes currently
             $qb->andWhere('1 = 0'); // Return no results
         }
-        
+
         // Apply sorting
         $validSortFields = ['title', 'createdAt'];
         if (in_array($sortBy, $validSortFields, true)) {
-            $qb->orderBy('q.' . $sortBy, $sortOrder === 'asc' ? 'ASC' : 'DESC');
+            $qb->orderBy('q.'.$sortBy, 'asc' === $sortOrder ? 'ASC' : 'DESC');
         } else {
             $qb->orderBy('q.createdAt', 'DESC');
         }
-        
+
         $quizzes = $qb->getQuery()->getResult();
-        
+
         $quizData = [];
         foreach ($quizzes as $quiz) {
             $questions = $this->questionRepository->findBy(['quiz' => $quiz]);
@@ -680,18 +682,18 @@ class PageController extends AbstractController
                 'title' => $quiz->getTitle(),
                 'course' => $quiz->getCourse(),
                 'questions' => $questions,
-                'createdAt' => $quiz->getCreatedAt()
+                'createdAt' => $quiz->getCreatedAt(),
             ];
         }
-        
+
         // Handle AJAX request
         if ($isAjax) {
             return new JsonResponse([
                 'success' => true,
-                'quizzes' => $quizData
+                'quizzes' => $quizData,
             ]);
         }
-        
+
         // Get all questions for statistics
         $allQuestions = [];
         foreach ($quizzes as $quiz) {
@@ -699,17 +701,17 @@ class PageController extends AbstractController
             $allQuestions[] = [
                 'quiz_id' => $quiz->getId(),
                 'quiz_title' => $quiz->getTitle(),
-                'questions' => $questions
+                'questions' => $questions,
             ];
         }
-        
+
         return $this->render('admin/simple.html.twig', [
             'quizzes' => $quizzes,
             'allQuestions' => $allQuestions,
             'search' => $search,
             'status' => $status,
             'sortBy' => $sortBy,
-            'sortOrder' => $sortOrder
+            'sortOrder' => $sortOrder,
         ]);
     }
 
@@ -718,7 +720,7 @@ class PageController extends AbstractController
     {
         try {
             $quizzes = $this->quizRepository->findAll();
-            
+
             // Simple HTML content
             $html = '<!DOCTYPE html>
 <html>
@@ -734,7 +736,7 @@ class PageController extends AbstractController
 </head>
 <body>
     <h1>Quiz Export Report</h1>
-    <p>Generated on: ' . date('Y-m-d H:i:s') . '</p>
+    <p>Generated on: '.date('Y-m-d H:i:s').'</p>
     <table>
         <thead>
             <tr>
@@ -745,33 +747,32 @@ class PageController extends AbstractController
             </tr>
         </thead>
         <tbody>';
-            
+
             foreach ($quizzes as $quiz) {
                 $questionCount = count($this->questionRepository->findBy(['quiz' => $quiz]));
                 $html .= '
             <tr>
-                <td>' . $quiz->getId() . '</td>
-                <td>' . htmlspecialchars($quiz->getTitle()) . '</td>
-                <td>' . $questionCount . '</td>
-                <td>' . $quiz->getCreatedAt()->format('Y-m-d H:i:s') . '</td>
+                <td>'.$quiz->getId().'</td>
+                <td>'.htmlspecialchars($quiz->getTitle()).'</td>
+                <td>'.$questionCount.'</td>
+                <td>'.$quiz->getCreatedAt()->format('Y-m-d H:i:s').'</td>
             </tr>';
             }
-            
+
             $html .= '
         </tbody>
     </table>
 </body>
 </html>';
-            
+
             return new Response($html, 200, [
                 'Content-Type' => 'text/html',
-                'Content-Disposition' => 'attachment; filename="quizzes_export_' . date('Y-m-d_H-i-s') . '.html"'
+                'Content-Disposition' => 'attachment; filename="quizzes_export_'.date('Y-m-d_H-i-s').'.html"',
             ]);
-            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Error exporting quizzes: ' . $e->getMessage()
+                'message' => 'Error exporting quizzes: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -787,12 +788,12 @@ class PageController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            
+
             // Create new quiz
             $quiz = new Quiz();
             $quiz->setTitle($data['title']);
             $quiz->setCreatedAt(new \DateTimeImmutable());
-            
+
             // Validate the quiz
             $errors = $this->validator->validate($quiz);
             if (count($errors) > 0) {
@@ -800,16 +801,17 @@ class PageController extends AbstractController
                 foreach ($errors as $error) {
                     $errorMessages[] = $error->getMessage();
                 }
+
                 return new JsonResponse([
                     'success' => false,
-                    'message' => implode(', ', $errorMessages)
+                    'message' => implode(', ', $errorMessages),
                 ], 400);
             }
-            
+
             // Save the quiz to database
             $this->entityManager->persist($quiz);
             $this->entityManager->flush();
-            
+
             // Add questions if provided
             if (isset($data['questions']) && is_array($data['questions'])) {
                 foreach ($data['questions'] as $questionData) {
@@ -822,22 +824,21 @@ class PageController extends AbstractController
                     $question->setOptionD($questionData['optionD'] ?? '');
                     $question->setCorrectOption($questionData['correctOption'] ?? 'A');
                     $question->setCreatedAt(new \DateTimeImmutable());
-                    
+
                     $this->entityManager->persist($question);
                 }
                 $this->entityManager->flush();
             }
-            
+
             return new JsonResponse([
                 'success' => true,
                 'message' => 'Quiz created successfully!',
-                'quizId' => $quiz->getId()
+                'quizId' => $quiz->getId(),
             ]);
-            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Error creating quiz: ' . $e->getMessage()
+                'message' => 'Error creating quiz: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -847,7 +848,7 @@ class PageController extends AbstractController
     {
         try {
             $searchTerm = $request->query->get('q', '');
-            
+
             if (empty($searchTerm)) {
                 // Return all quizzes if search term is empty
                 $quizzes = $this->quizRepository->findAll();
@@ -855,7 +856,7 @@ class PageController extends AbstractController
                 // Search quizzes by title
                 $quizzes = $this->quizRepository->findByTitleContaining($searchTerm);
             }
-            
+
             // Get all questions for each quiz
             $allQuestions = [];
             foreach ($quizzes as $quiz) {
@@ -863,10 +864,10 @@ class PageController extends AbstractController
                 $allQuestions[] = [
                     'quiz_id' => $quiz->getId(),
                     'quiz_title' => $quiz->getTitle(),
-                    'questions' => $questions
+                    'questions' => $questions,
                 ];
             }
-            
+
             // Format quizzes for JSON response
             $formattedQuizzes = [];
             foreach ($quizzes as $quiz) {
@@ -874,20 +875,19 @@ class PageController extends AbstractController
                     'id' => $quiz->getId(),
                     'title' => $quiz->getTitle(),
                     'createdAt' => $quiz->getCreatedAt()->format('Y-m-d H:i:s'),
-                    'updatedAt' => $quiz->getUpdatedAt() ? $quiz->getUpdatedAt()->format('Y-m-d H:i:s') : null
+                    'updatedAt' => $quiz->getUpdatedAt() ? $quiz->getUpdatedAt()->format('Y-m-d H:i:s') : null,
                 ];
             }
-            
+
             return new JsonResponse([
                 'success' => true,
                 'quizzes' => $formattedQuizzes,
-                'allQuestions' => $allQuestions
+                'allQuestions' => $allQuestions,
             ]);
-            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Error searching quizzes: ' . $e->getMessage()
+                'message' => 'Error searching quizzes: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -900,29 +900,28 @@ class PageController extends AbstractController
             if (!$quiz) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Quiz not found'
+                    'message' => 'Quiz not found',
                 ], 404);
             }
-            
+
             // Delete all questions for this quiz
             $questions = $this->questionRepository->findBy(['quiz' => $quiz]);
             foreach ($questions as $question) {
                 $this->entityManager->remove($question);
             }
-            
+
             // Delete quiz
             $this->entityManager->remove($quiz);
             $this->entityManager->flush();
-            
+
             return new JsonResponse([
                 'success' => true,
-                'message' => 'Quiz deleted successfully!'
+                'message' => 'Quiz deleted successfully!',
             ]);
-            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Error deleting quiz: ' . $e->getMessage()
+                'message' => 'Error deleting quiz: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -939,7 +938,7 @@ class PageController extends AbstractController
 
         return $this->render('admin/quiz-detail.html.twig', [
             'quiz' => $quiz,
-            'questions' => $questions
+            'questions' => $questions,
         ]);
     }
 
@@ -955,7 +954,7 @@ class PageController extends AbstractController
 
         return $this->render('admin/quiz-edit.html.twig', [
             'quiz' => $quiz,
-            'questions' => $questions
+            'questions' => $questions,
         ]);
     }
 
@@ -967,16 +966,16 @@ class PageController extends AbstractController
             if (!$quiz) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Quiz not found'
+                    'message' => 'Quiz not found',
                 ], 404);
             }
-            
+
             $data = json_decode($request->getContent(), true);
-            
+
             // Update quiz fields
             $quiz->setTitle($data['title']);
             $quiz->setUpdatedAt(new \DateTimeImmutable());
-            
+
             // Validate the quiz
             $errors = $this->validator->validate($quiz);
             if (count($errors) > 0) {
@@ -984,24 +983,24 @@ class PageController extends AbstractController
                 foreach ($errors as $error) {
                     $errorMessages[] = $error->getMessage();
                 }
+
                 return new JsonResponse([
                     'success' => false,
-                    'message' => implode(', ', $errorMessages)
+                    'message' => implode(', ', $errorMessages),
                 ], 400);
             }
-            
+
             // Save the quiz
             $this->entityManager->flush();
-            
+
             return new JsonResponse([
                 'success' => true,
-                'message' => 'Quiz updated successfully!'
+                'message' => 'Quiz updated successfully!',
             ]);
-            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Error updating quiz: ' . $e->getMessage()
+                'message' => 'Error updating quiz: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -1014,17 +1013,17 @@ class PageController extends AbstractController
             if (!$quiz) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Quiz not found'
+                    'message' => 'Quiz not found',
                 ], 404);
             }
-            
+
             // Create new quiz as a duplicate
             $newQuiz = new Quiz();
-            $newQuiz->setTitle($quiz->getTitle() . ' (Copy)');
+            $newQuiz->setTitle($quiz->getTitle().' (Copy)');
             $newQuiz->setCourse($quiz->getCourse());
             $newQuiz->setCreatedAt(new \DateTimeImmutable());
             $newQuiz->setUpdatedAt(new \DateTimeImmutable());
-            
+
             // Duplicate questions
             foreach ($quiz->getQuestions() as $originalQuestion) {
                 $newQuestion = new Question();
@@ -1036,47 +1035,46 @@ class PageController extends AbstractController
                 $newQuestion->setOptionD($originalQuestion->getOptionD());
                 $newQuestion->setCorrectOption($originalQuestion->getCorrectOption());
                 $newQuestion->setCreatedAt(new \DateTimeImmutable());
-                
+
                 $this->entityManager->persist($newQuestion);
             }
-            
+
             // Save the new quiz and questions
             $this->entityManager->persist($newQuiz);
             $this->entityManager->flush();
-            
+
             return new JsonResponse([
                 'success' => true,
                 'message' => 'Quiz duplicated successfully!',
-                'quiz_id' => $newQuiz->getId()
+                'quiz_id' => $newQuiz->getId(),
             ]);
-            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Error duplicating quiz: ' . $e->getMessage()
+                'message' => 'Error duplicating quiz: '.$e->getMessage(),
             ], 500);
         }
     }
 
     private function getLevelBadgeClass(?string $level): string
     {
-        return match(strtolower($level)) {
+        return match (strtolower($level)) {
             'beginner' => 'text-bg-primary',
             'intermediate' => 'text-bg-purple',
             'advanced' => 'text-bg-danger',
             'all levels', 'all level' => 'text-bg-orange',
-            default => 'text-bg-secondary'
+            default => 'text-bg-secondary',
         };
     }
 
     private function getStatusBadgeClass(?string $status): string
     {
-        return match(strtolower($status)) {
+        return match (strtolower($status)) {
             'live', 'active', 'published' => 'bg-success bg-opacity-15 text-success',
             'pending', 'review' => 'bg-warning bg-opacity-15 text-warning',
             'unaccept', 'rejected', 'inactive' => 'bg-danger bg-opacity-15 text-danger',
             'draft' => 'bg-secondary bg-opacity-15 text-secondary',
-            default => 'bg-secondary bg-opacity-15 text-secondary'
+            default => 'bg-secondary bg-opacity-15 text-secondary',
         };
     }
 }

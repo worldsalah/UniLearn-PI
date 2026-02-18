@@ -30,7 +30,7 @@ class CreateAdminCommand extends Command
     {
         // Check if admin user already exists
         $existingAdmin = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'admin@unilearn.com']);
-        
+
         if ($existingAdmin) {
             // Update password for existing admin
             $hashedPassword = $this->passwordHasher->hashPassword($existingAdmin, 'admin123');
@@ -44,16 +44,16 @@ class CreateAdminCommand extends Command
             // Set role as entity
             $adminRole = $this->entityManager->getRepository(\App\Entity\Role::class)->findOneBy(['name' => 'admin']);
             $admin->setRole($adminRole);
-            
+
             $hashedPassword = $this->passwordHasher->hashPassword($admin, 'admin123');
             $admin->setPassword($hashedPassword);
-            
+
             $this->entityManager->persist($admin);
             $output->writeln('<info>Admin user created successfully.</info>');
         }
 
         $this->entityManager->flush();
-        
+
         $output->writeln('<info>Admin login: admin@unilearn.com / admin123</info>');
 
         return Command::SUCCESS;

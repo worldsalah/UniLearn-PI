@@ -54,7 +54,7 @@ class ApplicationRepository extends ServiceEntityRepository
 
     public function countByJob(Job $job): int
     {
-        return (int)$this->createQueryBuilder('a')
+        return (int) $this->createQueryBuilder('a')
             ->select('COUNT(a.id)')
             ->where('a.job = :job')
             ->setParameter('job', $job)

@@ -8,9 +8,8 @@ use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,16 +24,16 @@ class OrderType extends AbstractType
                 'choice_label' => 'email',
                 'label' => 'Client',
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('product', EntityType::class, [
                 'class' => Product::class,
                 'choice_label' => 'title',
                 'label' => 'Produit/Service',
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('totalPrice', MoneyType::class, [
                 'currency' => 'EUR',
@@ -42,8 +41,8 @@ class OrderType extends AbstractType
                 'label' => 'Montant total (€)',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '0.00'
-                ]
+                    'placeholder' => '0.00',
+                ],
             ])
             ->add('status', ChoiceType::class, [
                 'choices' => [
@@ -54,8 +53,8 @@ class OrderType extends AbstractType
                 ],
                 'label' => 'Statut de la commande',
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('rating', IntegerType::class, [
                 'label' => 'Note (1-5)',
@@ -64,8 +63,8 @@ class OrderType extends AbstractType
                     'class' => 'form-control',
                     'min' => 1,
                     'max' => 5,
-                    'placeholder' => '1 à 5'
-                ]
+                    'placeholder' => '1 à 5',
+                ],
             ])
             ->add('review', TextareaType::class, [
                 'label' => 'Avis',
@@ -73,8 +72,8 @@ class OrderType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Ajoutez votre avis...',
-                    'rows' => 4
-                ]
+                    'rows' => 4,
+                ],
             ])
         ;
     }

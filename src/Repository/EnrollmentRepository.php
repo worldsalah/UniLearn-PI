@@ -16,4 +16,3 @@ class EnrollmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Enrollment::class);
     }
 }
-

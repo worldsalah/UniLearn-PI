@@ -14,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/marketplace')]
 class MarketplaceController extends AbstractController
@@ -25,7 +24,7 @@ class MarketplaceController extends AbstractController
         JobRepository $jobRepository,
         OrderRepository $orderRepository,
         PaginatorInterface $paginator,
-        Request $request
+        Request $request,
     ): Response {
         // Get search parameters
         $search = $request->query->get('q', '');
@@ -43,7 +42,7 @@ class MarketplaceController extends AbstractController
         // Apply filters
         if (!empty($search)) {
             $queryBuilder->andWhere('p.title LIKE :search OR p.description LIKE :search')
-                ->setParameter('search', '%' . $search . '%');
+                ->setParameter('search', '%'.$search.'%');
         }
 
         if (!empty($category)) {
@@ -125,7 +124,7 @@ class MarketplaceController extends AbstractController
                 ->where('o.status = :status')
                 ->setParameter('status', 'paid')
                 ->getQuery()
-                ->getSingleScalarResult() ?? 0
+                ->getSingleScalarResult() ?? 0,
         ];
 
         return $this->render('marketplace/index.html.twig', [
@@ -133,7 +132,7 @@ class MarketplaceController extends AbstractController
             'jobs' => $jobs,
             'orders' => $orders,
             'categories' => $categories,
-            'stats' => $stats
+            'stats' => $stats,
         ]);
     }
 
@@ -141,7 +140,7 @@ class MarketplaceController extends AbstractController
     public function shop(
         ProductRepository $productRepository,
         JobRepository $jobRepository,
-        Request $request
+        Request $request,
     ): Response {
         // Fetch all products
         $products = $productRepository->createQueryBuilder('p')
@@ -175,7 +174,7 @@ class MarketplaceController extends AbstractController
 
         $order = new Order();
         $order->setProduct($product);
-        
+
         // Handle user assignment - if no user is logged in, use a default user
         $user = $this->getUser();
         if (!$user) {
@@ -194,7 +193,7 @@ class MarketplaceController extends AbstractController
                 $entityManager->flush();
             }
         }
-        
+
         $order->setBuyer($user instanceof \App\Entity\User ? $user : null);
         $order->setTotalPrice($product->getPrice());
         $order->setStatus('pending');
@@ -203,6 +202,7 @@ class MarketplaceController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Order created successfully!');
+
         return $this->redirectToRoute('app_marketplace_index');
     }
 
@@ -211,31 +211,31 @@ class MarketplaceController extends AbstractController
         ProductRepository $productRepository,
         JobRepository $jobRepository,
         OrderRepository $orderRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
         // Get the currently logged-in user
         $user = $this->getUser();
-        
+
         if (!$user) {
             // If no user is logged in, redirect to login
             return $this->redirectToRoute('app_login');
         }
-        
+
         // Get user-specific data
         $userProducts = $productRepository->findBy(['freelancer' => $user, 'deletedAt' => null]);
         $userJobs = $jobRepository->findBy(['client' => $user]);
         $userOrders = $orderRepository->findBy(['buyer' => $user]);
-        
+
         // Calculate statistics
         $stats = [
             'totalProducts' => count($userProducts),
             'totalJobs' => count($userJobs),
             'totalOrders' => count($userOrders),
-            'totalRevenue' => array_sum(array_map(fn($order): float => $order->getTotalPrice(), $userOrders)),
-            'activeProducts' => count(array_filter($userProducts, fn($product): bool => $product->getDeletedAt() === null)),
-            'pendingOrders' => count(array_filter($userOrders, fn($order): bool => $order->getStatus() === 'pending')),
+            'totalRevenue' => array_sum(array_map(fn ($order): float => $order->getTotalPrice(), $userOrders)),
+            'activeProducts' => count(array_filter($userProducts, fn ($product): bool => null === $product->getDeletedAt())),
+            'pendingOrders' => count(array_filter($userOrders, fn ($order): bool => 'pending' === $order->getStatus())),
         ];
-        
+
         return $this->render('marketplace/dashboard.html.twig', [
             'user' => $user,
             'stats' => $stats,
@@ -277,7 +277,7 @@ class MarketplaceController extends AbstractController
                 $entityManager->flush();
             }
         }
-        
+
         $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
         $entityManager->persist($product);
 
@@ -291,6 +291,7 @@ class MarketplaceController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Order created successfully!');
+
         return $this->redirectToRoute('app_marketplace_index');
     }
 }

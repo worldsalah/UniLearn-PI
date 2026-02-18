@@ -20,7 +20,7 @@ final class Version20260207172709 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        
+
         // Insert default categories if they don't exist
         $this->addSql("INSERT IGNORE INTO category (name, description, icon, color, created_at) VALUES 
             ('Programming', 'Programming and software development courses', 'bi-code-slash', '#007bff', NOW()),
@@ -30,34 +30,34 @@ final class Version20260207172709 extends AbstractMigration
             ('Data Science', 'Data analysis, machine learning and AI', 'bi-graph-up', '#6f42c1', NOW()),
             ('Languages', 'Foreign language learning courses', 'bi-translate', '#20c997', NOW()),
             ('Other', 'Miscellaneous courses', 'bi-three-dots', '#6c757d', NOW())");
-        
+
         // Add category_id column if it doesn't exist
         $courseTable = $schema->getTable('course');
         if (!$courseTable->hasColumn('category_id')) {
             $this->addSql('ALTER TABLE course ADD category_id INT DEFAULT NULL');
-            
+
             // Update existing courses to have a default category
             $this->addSql('UPDATE course SET category_id = 1 WHERE category_id IS NULL');
-            
+
             // Make category_id NOT NULL if all courses have one
             $this->addSql('ALTER TABLE course CHANGE category_id category_id INT NOT NULL');
         }
-        
+
         // Drop the old category column if it still exists
         if ($courseTable->hasColumn('category')) {
             $this->addSql('ALTER TABLE course DROP category');
         }
-        
+
         // Add foreign key constraint only if it doesn't exist
         if (!$courseTable->hasForeignKey('FK_169E6FB912469DE2')) {
             $this->addSql('ALTER TABLE course ADD CONSTRAINT FK_169E6FB912469DE2 FOREIGN KEY (category_id) REFERENCES category (id)');
         }
-        
+
         // Add index only if it doesn't exist
         if (!$courseTable->hasIndex('IDX_169E6FB912469DE2')) {
             $this->addSql('CREATE INDEX IDX_169E6FB912469DE2 ON course (category_id)');
         }
-        
+
         // Update column types if needed (only if columns exist)
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
             $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
@@ -68,15 +68,15 @@ final class Version20260207172709 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $courseTable = $schema->getTable('course');
-        
+
         if ($courseTable->hasForeignKey('FK_169E6FB912469DE2')) {
             $this->addSql('ALTER TABLE course DROP FOREIGN KEY FK_169E6FB912469DE2');
         }
-        
+
         if ($courseTable->hasIndex('IDX_169E6FB912469DE2')) {
             $this->addSql('DROP INDEX IDX_169E6FB912469DE2 ON course');
         }
-        
+
         // Update column types only if columns exist
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
             $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL');

@@ -17,7 +17,7 @@ class Chapter
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le titre du chapitre est obligatoire.")]
+    #[Assert\NotBlank(message: 'Le titre du chapitre est obligatoire.')]
     #[Assert\Length(min: 3, max: 100, minMessage: 'Le titre du chapitre doit contenir au moins {{ limit }} caractères', maxMessage: 'Le titre du chapitre ne peut pas dépasser {{ limit }} caractères')]
     private ?string $title = null;
 

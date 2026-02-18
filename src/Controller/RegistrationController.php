@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Role;
+use App\Entity\User;
 use App\Form\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +19,7 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user);
@@ -28,7 +28,7 @@ class RegistrationController extends AbstractController
         // Gestion des requêtes AJAX pour validation
         if ($request->isXmlHttpRequest()) {
             $form->submit($request->request->all());
-            
+
             $errors = [];
             if (!$form->isValid()) {
                 foreach ($form->all() as $child) {
@@ -41,10 +41,10 @@ class RegistrationController extends AbstractController
                     }
                 }
             }
-            
+
             return new JsonResponse([
                 'valid' => $form->isValid(),
-                'errors' => $errors
+                'errors' => $errors,
             ]);
         }
 
@@ -79,19 +79,18 @@ class RegistrationController extends AbstractController
 
                 // Redirection vers la page login
                 return $this->redirectToRoute('app_login');
-                
             } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
                 // Handle duplicate email error
                 if (str_contains($e->getMessage(), 'UNIQ_8D93D649E7927C74') || str_contains($e->getMessage(), 'Duplicate entry')) {
                     $this->addFlash('account_exists', 'This email address is already registered. Please sign in to your account.');
                 } else {
-                    $this->addFlash('error', 'Registration failed: ' . $e->getMessage());
+                    $this->addFlash('error', 'Registration failed: '.$e->getMessage());
                 }
-                error_log('Registration error: ' . $e->getMessage());
+                error_log('Registration error: '.$e->getMessage());
             } catch (\Exception $e) {
                 // Handle other exceptions
-                $this->addFlash('error', 'Registration failed: ' . $e->getMessage());
-                error_log('Registration error: ' . $e->getMessage());
+                $this->addFlash('error', 'Registration failed: '.$e->getMessage());
+                error_log('Registration error: '.$e->getMessage());
             }
         }
 

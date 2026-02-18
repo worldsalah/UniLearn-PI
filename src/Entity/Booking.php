@@ -1,5 +1,7 @@
 <?php
+
 // src/Entity/Booking.php
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -20,13 +22,13 @@ class Booking
     private ?string $lastName = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank(message: "Email is required.")]
-    #[Assert\Email(message: "Please enter a valid email address.")]
+    #[Assert\NotBlank(message: 'Email is required.')]
+    #[Assert\Email(message: 'Please enter a valid email address.')]
     private ?string $userEmail = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $phoneNumber = null;
-    
+
     #[ORM\ManyToOne(targetEntity: Session::class)]
     #[ORM\JoinColumn(name: 'session_id', referencedColumnName: 'id', nullable: true)]
     private ?Session $session = null;
@@ -55,6 +57,7 @@ class Booking
     public function setSession(?Session $session): self
     {
         $this->session = $session;
+
         return $this;
     }
 
@@ -66,6 +69,7 @@ class Booking
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -77,6 +81,7 @@ class Booking
     public function setPreferredDate(?\DateTime $preferredDate): self
     {
         $this->preferredDate = $preferredDate;
+
         return $this;
     }
 
@@ -88,6 +93,7 @@ class Booking
     public function setCreatedAt(?\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -99,6 +105,7 @@ class Booking
     public function setUpdatedAt(?\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -110,6 +117,7 @@ class Booking
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -128,6 +136,7 @@ class Booking
     public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -139,6 +148,7 @@ class Booking
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
@@ -150,6 +160,7 @@ class Booking
     public function setUserEmail(string $userEmail): self
     {
         $this->userEmail = $userEmail;
+
         return $this;
     }
 
@@ -161,6 +172,7 @@ class Booking
     public function setPhoneNumber(string $phoneNumber): self
     {
         $this->phoneNumber = $phoneNumber;
+
         return $this;
     }
 }

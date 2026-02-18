@@ -1,19 +1,21 @@
 <?php
+
 namespace App\Controller;
 
+use App\Entity\Booking;
+use App\Repository\BookingRepository;
+use App\Repository\CategoryRepository;
+use App\Repository\RoleRepository;
+use App\Repository\SessionRepository;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use App\Repository\BookingRepository;
-use App\Repository\SessionRepository;
-use App\Repository\CategoryRepository;
-use App\Repository\UserRepository;
-use App\Repository\RoleRepository;
-use App\Entity\Booking;
-use Doctrine\ORM\EntityManagerInterface;
 
-class BookingController extends AbstractController {
+class BookingController extends AbstractController
+{
     #[Route('/booking', name: 'booking_create')]
     public function new(
         Request $request,
@@ -21,22 +23,22 @@ class BookingController extends AbstractController {
         SessionRepository $sessionRepository,
         CategoryRepository $categoryRepository,
         UserRepository $userRepository,
-        RoleRepository $roleRepository
+        RoleRepository $roleRepository,
     ): Response {
         // Get the session_id from query parameter if provided
         $selectedSessionId = $request->query->get('session_id');
         $selectedSession = null;
-        
+
         if ($selectedSessionId) {
             $selectedSession = $sessionRepository->find($selectedSessionId);
         }
-        
+
         //  Get all sessions BEFORE submit
         $sessions = $sessionRepository->findSessionsWithInstructorInfo();
-        
+
         // Get all active categories
         $categories = $categoryRepository->findBy(['isActive' => true], ['name' => 'ASC']);
-        
+
         // Get instructors (users with instructor role)
         $instructorRole = $roleRepository->findOneBy(['name' => 'instructor']);
         $instructors = [];
@@ -49,7 +51,7 @@ class BookingController extends AbstractController {
                 $instructors = $userRepository->findBy(['role' => $instructorRole], ['fullName' => 'ASC']);
             }
         }
-        
+
         // Get students (users with student role)
         $studentRole = $roleRepository->findOneBy(['name' => 'student']);
         $students = [];
@@ -73,13 +75,13 @@ class BookingController extends AbstractController {
             $preferredDate = $request->request->get('preferred_date');
             $message = $request->request->get('message');
             $terms = $request->request->get('termsCheck');
-            
+
             // Role-based field validation
             $instructorId = null;
             $studentId = null;
             $allUserId = null;
-            
-            if ($this->getUser() && $this->getUser()->getRole()?->getName() === 'student') {
+
+            if ($this->getUser() && 'student' === $this->getUser()->getRole()?->getName()) {
                 // For students, instructor selection is only required if no session is pre-selected
                 if (!$selectedSession) {
                     $instructorId = $request->request->get('instructor_id');
@@ -87,8 +89,8 @@ class BookingController extends AbstractController {
                         $errors['instructor_id'] = 'Please select an instructor for your session.';
                     }
                 }
-                // If session is pre-selected, instructor will be assigned automatically
-            } elseif ($this->getUser() && $this->getUser()->getRole()?->getName() === 'instructor') {
+            // If session is pre-selected, instructor will be assigned automatically
+            } elseif ($this->getUser() && 'instructor' === $this->getUser()->getRole()?->getName()) {
                 // Instructors don't need to select students - students book directly
                 // No validation needed for instructors
             } else {
@@ -127,7 +129,7 @@ class BookingController extends AbstractController {
                     if ($date < $today) {
                         $errors['preferred_date'] = 'Please select a date that is today or in the future.';
                     }
-                    
+
                     $maxDate = new \DateTime();
                     $maxDate->modify('+6 months');
                     if ($date > $maxDate) {
@@ -150,7 +152,7 @@ class BookingController extends AbstractController {
                     'allUsers' => $userRepository->findAll(),
                     'errors' => $errors,
                     'formData' => $request->request->all(),
-                    'selectedSession' => $selectedSession
+                    'selectedSession' => $selectedSession,
                 ]);
             }
 
@@ -176,7 +178,7 @@ class BookingController extends AbstractController {
 
             // Set creation date
             $booking->setCreatedAt(new \DateTime());
-            
+
             // Set default status
             $booking->setStatus('pending');
 
@@ -212,7 +214,7 @@ class BookingController extends AbstractController {
             'instructors' => $instructors,
             'students' => $students,
             'allUsers' => $userRepository->findAll(),
-            'selectedSession' => $selectedSession
+            'selectedSession' => $selectedSession,
         ]);
     }
 
@@ -221,31 +223,31 @@ class BookingController extends AbstractController {
     {
         // Get all bookings using your repository method
         $bookings = $bookingRepository->findAllBookings();
+
         // Render the template and pass the bookings
         return $this->render('/Front-office/booking/bookingList.html.twig', [
-            'bookings' => $bookings
+            'bookings' => $bookings,
         ]);
     }
 
     #[Route('/booking-data', name: 'booking_data_display')]
     public function displayBookingData(
-        BookingRepository $bookingRepository
+        BookingRepository $bookingRepository,
     ): Response {
         // Get all bookings
         $bookings = $bookingRepository->findAll();
-        
+
         // Render the booking display template
         return $this->render('Front-office/booking/bookingDisplay.html.twig', [
-            'bookings' => $bookings
+            'bookings' => $bookings,
         ]);
     }
 
     #[Route('/bookings/update', name: 'booking_update', methods: ['POST'])]
     public function update(
         Request $request,
-        BookingRepository $bookingRepository
+        BookingRepository $bookingRepository,
     ): Response {
-
         $booking = $bookingRepository->find($request->request->get('id'));
 
         if (!$booking) {
@@ -265,7 +267,7 @@ class BookingController extends AbstractController {
     #[Route('/booking/{id}/accept', name: 'booking_accept', methods: ['POST'])]
     public function acceptBooking(
         int $id,
-        BookingRepository $bookingRepository
+        BookingRepository $bookingRepository,
     ): Response {
         $booking = $bookingRepository->find($id);
         if (!$booking) {
@@ -277,13 +279,14 @@ class BookingController extends AbstractController {
         $bookingRepository->save($booking, true);
 
         $this->addFlash('success', 'Booking has been accepted successfully!');
+
         return $this->redirectToRoute('all_bookings');
     }
 
     #[Route('/booking/{id}/deny', name: 'booking_deny', methods: ['POST'])]
     public function denyBooking(
         int $id,
-        BookingRepository $bookingRepository
+        BookingRepository $bookingRepository,
     ): Response {
         $booking = $bookingRepository->find($id);
         if (!$booking) {
@@ -295,6 +298,7 @@ class BookingController extends AbstractController {
         $bookingRepository->save($booking, true);
 
         $this->addFlash('warning', 'Booking has been denied.');
+
         return $this->redirectToRoute('all_bookings');
     }
 
@@ -303,7 +307,7 @@ class BookingController extends AbstractController {
         int $id,
         Request $request,
         BookingRepository $bookingRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ): Response {
         $booking = $bookingRepository->find($id);
 
@@ -316,7 +320,7 @@ class BookingController extends AbstractController {
 
         // For AJAX requests, skip CSRF validation for simplicity
         // In production, you should implement proper CSRF protection for AJAX
-        if ($request->isMethod('DELETE') || $this->isCsrfTokenValid('delete_booking_' . $id, $request->request->get('_token'))) {
+        if ($request->isMethod('DELETE') || $this->isCsrfTokenValid('delete_booking_'.$id, $request->request->get('_token'))) {
             $em->remove($booking);
             $em->flush();
 
@@ -335,16 +339,16 @@ class BookingController extends AbstractController {
     #[Route('/booking/{id}/view', name: 'booking_view')]
     public function view(
         int $id,
-        BookingRepository $bookingRepository
+        BookingRepository $bookingRepository,
     ): Response {
         $booking = $bookingRepository->find($id);
-        
+
         if (!$booking) {
             throw $this->createNotFoundException('Booking not found');
         }
 
         return $this->render('Front-office/booking/view.html.twig', [
-            'booking' => $booking
+            'booking' => $booking,
         ]);
     }
 
@@ -356,27 +360,27 @@ class BookingController extends AbstractController {
         SessionRepository $sessionRepository,
         CategoryRepository $categoryRepository,
         UserRepository $userRepository,
-        RoleRepository $roleRepository
+        RoleRepository $roleRepository,
     ): Response {
         $booking = $bookingRepository->find($id);
-        
+
         if (!$booking) {
             throw $this->createNotFoundException('Booking not found');
         }
 
         // Get all sessions for the form
         $sessions = $sessionRepository->findSessionsWithInstructorInfo();
-        
+
         // Get all active categories
         $categories = $categoryRepository->findBy(['isActive' => true], ['name' => 'ASC']);
-        
+
         // Get instructors (users with instructor role)
         $instructorRole = $roleRepository->findOneBy(['name' => 'instructor']);
         $instructors = [];
         if ($instructorRole) {
             $instructors = $userRepository->findBy(['role' => $instructorRole], ['fullName' => 'ASC']);
         }
-        
+
         // Get students (users with student role)
         $studentRole = $roleRepository->findOneBy(['name' => 'student']);
         $students = [];
@@ -391,7 +395,7 @@ class BookingController extends AbstractController {
             $firstName = $request->request->get('firstName');
             $userEmail = $request->request->get('userEmail');
             $preferredDate = $request->request->get('preferred_date');
-            
+
             // Common validations
             if (empty($firstName)) {
                 $errors['firstName'] = 'Full name is required.';
@@ -422,7 +426,7 @@ class BookingController extends AbstractController {
                     'students' => $students,
                     'allUsers' => $userRepository->findAll(),
                     'errors' => $errors,
-                    'formData' => $request->request->all()
+                    'formData' => $request->request->all(),
                 ]);
             }
 
@@ -430,7 +434,7 @@ class BookingController extends AbstractController {
             $booking->setFirstName((string) $firstName);
             $booking->setUserEmail((string) $userEmail);
             $booking->setPhoneNumber((string) $request->request->get('phoneNumber'));
-            
+
             // Set preferred date
             if ($preferredDate) {
                 $booking->setPreferredDate(new \DateTime($preferredDate));
@@ -460,6 +464,7 @@ class BookingController extends AbstractController {
             $bookingRepository->save($booking, true);
 
             $this->addFlash('success', 'Booking updated successfully!');
+
             return $this->redirectToRoute('booking_data_display');
         }
 
@@ -469,7 +474,7 @@ class BookingController extends AbstractController {
             'categories' => $categories,
             'instructors' => $instructors,
             'students' => $students,
-            'allUsers' => $userRepository->findAll()
+            'allUsers' => $userRepository->findAll(),
         ]);
     }
 }

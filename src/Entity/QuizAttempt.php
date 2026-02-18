@@ -37,7 +37,7 @@ class QuizAttempt
     #[ORM\Column(name: 'completed_at', type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $completedAt = null;
 
-    #[ORM\Column(type: 'string', length: 20, options: ["default" => "in_progress"])]
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'in_progress'])]
     private string $status = 'in_progress';
 
     public function __construct()
@@ -58,6 +58,7 @@ class QuizAttempt
     public function setQuiz(?Quiz $quiz): self
     {
         $this->quiz = $quiz;
+
         return $this;
     }
 
@@ -69,6 +70,7 @@ class QuizAttempt
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -80,6 +82,7 @@ class QuizAttempt
     public function setScore(float $score): self
     {
         $this->score = $score;
+
         return $this;
     }
 
@@ -91,6 +94,7 @@ class QuizAttempt
     public function setTotalQuestions(int $totalQuestions): self
     {
         $this->totalQuestions = $totalQuestions;
+
         return $this;
     }
 
@@ -102,6 +106,7 @@ class QuizAttempt
     public function setCorrectAnswers(int $correctAnswers): self
     {
         $this->correctAnswers = $correctAnswers;
+
         return $this;
     }
 
@@ -113,6 +118,7 @@ class QuizAttempt
     public function setStartedAt(\DateTimeInterface $startedAt): self
     {
         $this->startedAt = $startedAt;
+
         return $this;
     }
 
@@ -124,6 +130,7 @@ class QuizAttempt
     public function setCompletedAt(?\DateTimeInterface $completedAt): self
     {
         $this->completedAt = $completedAt;
+
         return $this;
     }
 
@@ -135,6 +142,7 @@ class QuizAttempt
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 }

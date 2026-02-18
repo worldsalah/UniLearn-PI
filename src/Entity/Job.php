@@ -11,7 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: JobRepository::class)]
-#[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false)]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
 class Job
 {
     #[ORM\Id]
@@ -97,6 +97,7 @@ class Job
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -108,6 +109,7 @@ class Job
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -119,6 +121,7 @@ class Job
     public function setBudget(float $budget): static
     {
         $this->budget = $budget;
+
         return $this;
     }
 
@@ -130,6 +133,7 @@ class Job
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -141,6 +145,7 @@ class Job
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -152,6 +157,7 @@ class Job
     public function setDeletedAt(?\DateTimeImmutable $deletedAt): static
     {
         $this->deletedAt = $deletedAt;
+
         return $this;
     }
 
@@ -163,6 +169,7 @@ class Job
     public function setClient(?User $client): static
     {
         $this->client = $client;
+
         return $this;
     }
 
@@ -174,6 +181,7 @@ class Job
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -185,6 +193,7 @@ class Job
     public function setLocation(?string $location): static
     {
         $this->location = $location;
+
         return $this;
     }
 
@@ -196,6 +205,7 @@ class Job
     public function setType(?string $type): static
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -207,6 +217,7 @@ class Job
     public function setExperienceLevel(?string $experienceLevel): static
     {
         $this->experienceLevel = $experienceLevel;
+
         return $this;
     }
 
@@ -218,6 +229,7 @@ class Job
     public function setDuration(?string $duration): static
     {
         $this->duration = $duration;
+
         return $this;
     }
 
@@ -229,6 +241,7 @@ class Job
     public function setRequirements(?string $requirements): static
     {
         $this->requirements = $requirements;
+
         return $this;
     }
 
@@ -240,6 +253,7 @@ class Job
     public function setSkills(?string $skills): static
     {
         $this->skills = $skills;
+
         return $this;
     }
 

@@ -63,6 +63,7 @@ class QuizSettings
     public function setPoints(int $points): static
     {
         $this->points = $points;
+
         return $this;
     }
 
@@ -74,6 +75,7 @@ class QuizSettings
     public function setTimeLimit(?int $timeLimit): static
     {
         $this->timeLimit = $timeLimit;
+
         return $this;
     }
 
@@ -85,6 +87,7 @@ class QuizSettings
     public function setPassingScore(int $passingScore): static
     {
         $this->passingScore = $passingScore;
+
         return $this;
     }
 
@@ -96,6 +99,7 @@ class QuizSettings
     public function setMaxAttempts(int $maxAttempts): static
     {
         $this->maxAttempts = $maxAttempts;
+
         return $this;
     }
 
@@ -107,6 +111,7 @@ class QuizSettings
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -118,6 +123,7 @@ class QuizSettings
     public function setQuiz(?Quiz $quiz): static
     {
         $this->quiz = $quiz;
+
         return $this;
     }
 }

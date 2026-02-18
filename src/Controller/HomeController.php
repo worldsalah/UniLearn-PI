@@ -19,12 +19,12 @@ class HomeController extends AbstractController
     {
         // Get the currently logged-in user
         $user = $this->getUser();
-        
+
         if (!$user) {
             // If no user is logged in, redirect to login
             return $this->redirectToRoute('app_login');
         }
-        
+
         // Redirect all users to instructor dashboard (now accessible by all)
         return $this->redirectToRoute('app_instructor_dashboard');
     }

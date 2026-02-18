@@ -18,13 +18,13 @@ class Course
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le titre du cours est obligatoire.")]
+    #[Assert\NotBlank(message: 'Le titre du cours est obligatoire.')]
     #[Assert\Length(min: 5, max: 200, minMessage: 'Le titre du cours doit contenir au moins {{ limit }} caractères', maxMessage: 'Le titre du cours ne peut pas dépasser {{ limit }} caractères')]
-    #[Assert\Regex(pattern: '/^(?!\d+$).+$/', message: "Le titre ne peut pas être composé uniquement de chiffres.")]
+    #[Assert\Regex(pattern: '/^(?!\d+$).+$/', message: 'Le titre ne peut pas être composé uniquement de chiffres.')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "La description courte est obligatoire.")]
+    #[Assert\NotBlank(message: 'La description courte est obligatoire.')]
     #[Assert\Length(min: 20, max: 1000, minMessage: 'La description courte doit contenir au moins {{ limit }} caractères', maxMessage: 'La description courte ne peut pas dépasser {{ limit }} caractères')]
     private ?string $shortDescription = null;
 
@@ -33,12 +33,12 @@ class Course
     private ?Category $category = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le niveau du cours est obligatoire.")]
+    #[Assert\NotBlank(message: 'Le niveau du cours est obligatoire.')]
     private ?string $level = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: "Le prix est obligatoire.")]
-    #[Assert\Positive(message: "Le prix doit être un nombre positif.")]
+    #[Assert\NotBlank(message: 'Le prix est obligatoire.')]
+    #[Assert\Positive(message: 'Le prix doit être un nombre positif.')]
     #[Assert\LessThanOrEqual(value: 9999.99, message: 'Le prix ne peut pas dépasser {{ value }}')]
     private ?float $price = null;
 
@@ -59,7 +59,7 @@ class Course
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message: "La langue est obligatoire.")]
+    #[Assert\NotBlank(message: 'La langue est obligatoire.')]
     private ?string $language = null;
 
     #[ORM\Column(nullable: true)]
@@ -79,19 +79,19 @@ class Course
     #[Assert\Length(max: 2000, maxMessage: 'L\'audience ne peut pas dépasser {{ limit }} caractères')]
     private ?string $targetAudience = null;
 
-    #[ORM\Column(length: 20, options: ["default" => "inactive"])]
+    #[ORM\Column(length: 20, options: ['default' => 'inactive'])]
     private ?string $status = 'inactive';
 
-    #[ORM\Column(length: 20, options: ["default" => "pending"])]
+    #[ORM\Column(length: 20, options: ['default' => 'pending'])]
     private string $imageStatus = 'pending';
 
-    #[ORM\Column(length: 20, options: ["default" => "pending"])]
+    #[ORM\Column(length: 20, options: ['default' => 'pending'])]
     private string $videoStatus = 'pending';
 
-    #[ORM\Column(options: ["default" => 0])]
+    #[ORM\Column(options: ['default' => 0])]
     private float $imageProgress = 0;
 
-    #[ORM\Column(options: ["default" => 0])]
+    #[ORM\Column(options: ['default' => 0])]
     private float $videoProgress = 0;
 
     #[ORM\Column]
@@ -124,6 +124,7 @@ class Course
     public function setImageStatus(string $imageStatus): static
     {
         $this->imageStatus = $imageStatus;
+
         return $this;
     }
 
@@ -135,6 +136,7 @@ class Course
     public function setVideoStatus(string $videoStatus): static
     {
         $this->videoStatus = $videoStatus;
+
         return $this;
     }
 
@@ -146,6 +148,7 @@ class Course
     public function setImageProgress(float $imageProgress): static
     {
         $this->imageProgress = $imageProgress;
+
         return $this;
     }
 
@@ -157,6 +160,7 @@ class Course
     public function setVideoProgress(float $videoProgress): static
     {
         $this->videoProgress = $videoProgress;
+
         return $this;
     }
 
@@ -171,7 +175,6 @@ class Course
 
         return $this;
     }
-
 
     public function getId(): ?int
     {
@@ -324,6 +327,7 @@ class Course
     public function setRequirements(?string $requirements): static
     {
         $this->requirements = $requirements;
+
         return $this;
     }
 
@@ -335,6 +339,7 @@ class Course
     public function setLearningOutcomes(?string $learningOutcomes): static
     {
         $this->learningOutcomes = $learningOutcomes;
+
         return $this;
     }
 
@@ -346,6 +351,7 @@ class Course
     public function setTargetAudience(?string $targetAudience): static
     {
         $this->targetAudience = $targetAudience;
+
         return $this;
     }
 
@@ -367,6 +373,7 @@ class Course
         foreach ($this->chapters as $chapter) {
             $total += $chapter->getLessons()->count();
         }
+
         return $total;
     }
 

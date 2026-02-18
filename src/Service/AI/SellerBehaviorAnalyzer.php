@@ -12,8 +12,9 @@ class SellerBehaviorAnalyzer
     public function __construct(
         private EntityManagerInterface $entityManager,
         private OrderRepository $orderRepository,
-        private ProductRepository $productRepository
-    ) {}
+        private ProductRepository $productRepository,
+    ) {
+    }
 
     public function analyzeBehavior(User $seller): array
     {
@@ -24,46 +25,46 @@ class SellerBehaviorAnalyzer
         // 1. Transaction Velocity Analysis
         $velocityScore = $this->analyzeTransactionVelocity($seller);
         $score -= (100 - $velocityScore) * 0.25;
-        
+
         if ($velocityScore < 70) {
             $findings[] = [
                 'category' => 'transaction_velocity',
                 'severity' => 'medium',
-                'message' => 'Unusual transaction velocity detected'
+                'message' => 'Unusual transaction velocity detected',
             ];
             $suggestions[] = [
                 'area' => 'Transaction Pattern',
                 'suggestion' => 'Maintain consistent service delivery pace',
-                'priority' => 2
+                'priority' => 2,
             ];
         }
 
         // 2. Response Time Analysis
         $responseScore = $this->analyzeResponseTime($seller);
         $score -= (100 - $responseScore) * 0.20;
-        
+
         if ($responseScore < 80) {
             $suggestions[] = [
                 'area' => 'Communication',
                 'suggestion' => 'Improve response time to buyer inquiries',
-                'priority' => 1
+                'priority' => 1,
             ];
         }
 
         // 3. Cancellation/Dispute Rate
         $cancellationScore = $this->analyzeCancellationRate($seller);
         $score -= (100 - $cancellationScore) * 0.30;
-        
+
         if ($cancellationScore < 70) {
             $findings[] = [
                 'category' => 'cancellation_rate',
                 'severity' => 'high',
-                'message' => 'High cancellation or dispute rate detected'
+                'message' => 'High cancellation or dispute rate detected',
             ];
             $suggestions[] = [
                 'area' => 'Service Quality',
                 'suggestion' => 'Review and improve service delivery process to reduce cancellations',
-                'priority' => 1
+                'priority' => 1,
             ];
         }
 
@@ -74,12 +75,12 @@ class SellerBehaviorAnalyzer
         // 5. Anomaly Detection
         $anomalyScore = $this->detectAnomalies($seller);
         $score -= (100 - $anomalyScore) * 0.10;
-        
+
         if ($anomalyScore < 60) {
             $findings[] = [
                 'category' => 'anomaly',
                 'severity' => 'high',
-                'message' => 'Suspicious activity patterns detected'
+                'message' => 'Suspicious activity patterns detected',
             ];
         }
 
@@ -93,7 +94,7 @@ class SellerBehaviorAnalyzer
                 'cancellation_rate' => $cancellationScore,
                 'activity_consistency' => $consistencyScore,
                 'anomaly_detection' => $anomalyScore,
-            ]
+            ],
         ];
     }
 
@@ -105,8 +106,8 @@ class SellerBehaviorAnalyzer
             return 100.0; // New seller, no penalty
         }
 
-        $productIds = array_map(fn($p) => $p->getId(), $products->toArray());
-        
+        $productIds = array_map(fn ($p) => $p->getId(), $products->toArray());
+
         // Count orders in last 7 days vs last 30 days
         try {
             $recentOrders = $this->orderRepository->createQueryBuilder('o')
@@ -148,15 +149,15 @@ class SellerBehaviorAnalyzer
         // Simulated: In production, track message response times
         // For now, return high score for established sellers
         $createdAt = $seller->getCreatedAt();
-        if ($createdAt === null) {
+        if (null === $createdAt) {
             return 85.0;
         }
         $accountAge = $createdAt->diff(new \DateTimeImmutable())->days;
-        
+
         if ($accountAge < 7) {
             return 85.0; // New sellers get benefit of doubt
         }
-        
+
         return 95.0; // Assume good response time
     }
 
@@ -167,8 +168,8 @@ class SellerBehaviorAnalyzer
             return 100.0;
         }
 
-        $productIds = array_map(fn($p) => $p->getId(), $products->toArray());
-        
+        $productIds = array_map(fn ($p) => $p->getId(), $products->toArray());
+
         try {
             $totalOrders = $this->orderRepository->createQueryBuilder('o')
                 ->select('COUNT(o.id)')
@@ -180,7 +181,7 @@ class SellerBehaviorAnalyzer
             $totalOrders = 0;
         }
 
-        if ($totalOrders === 0) {
+        if (0 === $totalOrders) {
             return 100.0;
         }
 
@@ -198,7 +199,7 @@ class SellerBehaviorAnalyzer
         }
 
         $cancellationRate = $totalOrders > 0 ? ($cancelledOrders / $totalOrders) * 100 : 0;
-        
+
         // Score decreases with higher cancellation rate
         return max(0, 100 - ($cancellationRate * 5));
     }
@@ -206,57 +207,57 @@ class SellerBehaviorAnalyzer
     private function analyzeActivityConsistency(User $seller): float
     {
         $createdAt = $seller->getCreatedAt();
-        if ($createdAt === null) {
+        if (null === $createdAt) {
             return 70.0;
         }
         $accountAge = $createdAt->diff(new \DateTimeImmutable())->days;
-        
+
         // New accounts (< 30 days) get lower consistency score
         if ($accountAge < 30) {
             return 70.0;
         }
-        
+
         // Established accounts get higher score
         if ($accountAge > 180) {
             return 95.0;
         }
-        
+
         return 85.0;
     }
 
     private function detectAnomalies(User $seller): float
     {
         $score = 100.0;
-        
+
         // Check for suspicious patterns
         $products = $seller->getProducts();
-        
+
         // Too many products created in short time
         if ($products->count() > 20) {
             $createdAt = $seller->getCreatedAt();
-            if ($createdAt !== null) {
+            if (null !== $createdAt) {
                 $accountAge = $createdAt->diff(new \DateTimeImmutable())->days;
                 if ($accountAge < 30) {
                     $score -= 40; // Suspicious: too many products too quickly
                 }
             }
         }
-        
+
         // All products have same/similar prices (potential scam)
         if ($products->count() > 3) {
-            $prices = array_map(fn($p) => $p->getPrice(), $products->toArray());
+            $prices = array_map(fn ($p) => $p->getPrice(), $products->toArray());
             $avgPrice = array_sum($prices) / count($prices);
             $variance = 0;
             foreach ($prices as $price) {
                 $variance += pow($price - $avgPrice, 2);
             }
             $variance /= count($prices);
-            
+
             if ($variance < 10 && $avgPrice > 50) {
                 $score -= 20; // Suspicious: all products same price
             }
         }
-        
+
         return max(0, $score);
     }
 }

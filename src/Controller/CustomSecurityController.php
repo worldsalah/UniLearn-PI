@@ -16,11 +16,11 @@ class CustomSecurityController extends AbstractController
     public function customLogin(
         Request $request,
         AuthenticationUtils $authenticationUtils,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
     ): Response {
         // Create login form for validation
         $loginForm = $this->createForm(LoginType::class);
-        
+
         // Get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
@@ -30,28 +30,28 @@ class CustomSecurityController extends AbstractController
         // If form is submitted, validate it server-side
         if ($request->isMethod('POST')) {
             $loginForm->handleRequest($request);
-            
+
             if ($loginForm->isSubmitted()) {
                 $data = $loginForm->getData();
-                
+
                 // Validate the submitted data
                 $email = $request->request->get('email');
                 $password = $request->request->get('password');
-                
+
                 // Create a temporary form data array for validation
                 $formData = ['email' => $email, 'password' => $password];
                 $loginForm->submit($formData);
-                
+
                 if (!$loginForm->isValid()) {
                     // Get validation errors
                     $errors = [];
                     foreach ($loginForm->getErrors(true) as $error) {
                         $errors[] = $error->getMessage();
                     }
-                    
+
                     // Add flash message with validation errors
                     $this->addFlash('error', implode('<br>', $errors));
-                    
+
                     return $this->render('auth/sign-in.html.twig', [
                         'last_username' => $lastUsername,
                         'error' => $error,

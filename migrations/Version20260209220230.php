@@ -27,7 +27,7 @@ final class Version20260209220230 extends AbstractMigration
         if (!$schema->hasTable('session')) {
             $this->addSql('CREATE TABLE session (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, level VARCHAR(255) NOT NULL, date DATETIME NOT NULL, duration INT NOT NULL, session_description VARCHAR(255) NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         }
-        
+
         // Add foreign key only if both tables exist and constraint doesn't exist
         if ($schema->hasTable('booking') && $schema->hasTable('session')) {
             $bookingTable = $schema->getTable('booking');
@@ -35,7 +35,7 @@ final class Version20260209220230 extends AbstractMigration
                 $this->addSql('ALTER TABLE booking ADD CONSTRAINT FK_E00CEDDE613FECDF FOREIGN KEY (session_id) REFERENCES session (id)');
             }
         }
-        
+
         $courseTable = $schema->getTable('course');
         // Only modify columns if they exist
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
@@ -49,7 +49,7 @@ final class Version20260209220230 extends AbstractMigration
         $this->addSql('ALTER TABLE booking DROP FOREIGN KEY FK_E00CEDDE613FECDF');
         $this->addSql('DROP TABLE booking');
         $this->addSql('DROP TABLE session');
-        
+
         $courseTable = $schema->getTable('course');
         // Only modify columns if they exist
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {

@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Role;
+use App\Entity\User;
 use App\Form\Form\StudentType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,12 +27,12 @@ class StudentController extends AbstractController
     {
         // Get the currently logged-in user
         $user = $this->getUser();
-        
+
         if (!$user) {
             // If no user is logged in, redirect to login
             return $this->redirectToRoute('app_login');
         }
-        
+
         if ($student !== $user) {
             throw $this->createAccessDeniedException('You can only edit your own freelancer profile.');
         }
@@ -46,7 +46,7 @@ class StudentController extends AbstractController
             if ($studentRole) {
                 $student->setRole($studentRole);
             }
-            
+
             $entityManager->flush();
             $this->addFlash('success', 'Profil mis à jour avec succès.');
 
@@ -63,4 +63,3 @@ class StudentController extends AbstractController
         ]);
     }
 }
-

@@ -22,7 +22,7 @@ final class Version20260218133724 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('DROP TABLE IF EXISTS course_audit_log');
         $this->addSql('DROP TABLE IF EXISTS course_version');
-        
+
         // Only alter tables that exist
         if ($schema->hasTable('application')) {
             $this->addSql('ALTER TABLE application CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', CHANGE updated_at updated_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
@@ -43,7 +43,7 @@ final class Version20260218133724 extends AbstractMigration
         } else {
             $this->addSql('ALTER TABLE course CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
         }
-        
+
         // Drop columns from course table if they exist
         if ($courseTable->hasColumn('submitted_at')) {
             $this->addSql('ALTER TABLE course DROP submitted_at');
@@ -95,7 +95,7 @@ final class Version20260218133724 extends AbstractMigration
             } else {
                 $this->addSql('ALTER TABLE quiz CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
             }
-            
+
             if (!$quizTable->hasColumn('updated_at')) {
                 $this->addSql('ALTER TABLE quiz ADD updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
             } else {

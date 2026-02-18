@@ -46,6 +46,7 @@ class CourseLesson
     public function setCourse(?Course $course): self
     {
         $this->course = $course;
+
         return $this;
     }
 
@@ -57,6 +58,7 @@ class CourseLesson
     public function setLesson(?Lesson $lesson): self
     {
         $this->lesson = $lesson;
+
         return $this;
     }
 
@@ -68,6 +70,7 @@ class CourseLesson
     public function setSortOrder(int $sortOrder): self
     {
         $this->sortOrder = $sortOrder;
+
         return $this;
     }
 
@@ -79,6 +82,7 @@ class CourseLesson
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 }

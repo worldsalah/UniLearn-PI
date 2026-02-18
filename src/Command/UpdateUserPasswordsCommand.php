@@ -29,7 +29,7 @@ class UpdateUserPasswordsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $users = $this->entityManager->getRepository(User::class)->findAll();
-        
+
         $passwordMap = [
             'admin@unilearn.com' => 'admin123',
             'john@example.com' => 'teacher123',
@@ -49,7 +49,7 @@ class UpdateUserPasswordsCommand extends Command
         }
 
         $this->entityManager->flush();
-        
+
         $output->writeln('<info>Successfully updated user passwords.</info>');
         $output->writeln('<info>Admin login: admin@unilearn.com / admin123</info>');
 

@@ -49,6 +49,7 @@ class QuizAnswer
     public function setQuestion(?QuizQuestion $question): self
     {
         $this->question = $question;
+
         return $this;
     }
 
@@ -60,6 +61,7 @@ class QuizAnswer
     public function setQuizResult(?QuizResult $quizResult): self
     {
         $this->quizResult = $quizResult;
+
         return $this;
     }
 
@@ -71,6 +73,7 @@ class QuizAnswer
     public function setAnswer(?string $answer): self
     {
         $this->answer = $answer;
+
         return $this;
     }
 
@@ -82,6 +85,7 @@ class QuizAnswer
     public function setCorrect(bool $isCorrect): self
     {
         $this->isCorrect = $isCorrect;
+
         return $this;
     }
 
@@ -93,6 +97,7 @@ class QuizAnswer
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 }

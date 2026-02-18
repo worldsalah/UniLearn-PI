@@ -14,38 +14,38 @@ class FormValidationController extends AbstractController
     public function validateForm(Request $request): JsonResponse
     {
         $formType = $request->request->get('form_type');
-        
-        if ($formType === 'registration') {
+
+        if ('registration' === $formType) {
             $form = $this->createForm(RegistrationType::class);
-            
+
             // Simuler la soumission pour validation
             $formData = [
                 'fullName' => $request->request->get('fullName'),
                 'email' => $request->request->get('email'),
                 'password' => [
                     'first' => $request->request->get('password_first'),
-                    'second' => $request->request->get('password_second')
-                ]
+                    'second' => $request->request->get('password_second'),
+                ],
             ];
-            
+
             $form->submit($formData);
-            
+
             $errors = [];
             if (!$form->isValid()) {
                 foreach ($form->getErrors(true) as $error) {
                     $errors[] = [
                         'field' => $error->getOrigin()?->getName(),
-                        'message' => $error->getMessage()
+                        'message' => $error->getMessage(),
                     ];
                 }
             }
 
             return new JsonResponse([
                 'valid' => $form->isValid(),
-                'errors' => $errors
+                'errors' => $errors,
             ]);
         }
-        
+
         return new JsonResponse(['valid' => false, 'errors' => []]);
     }
 }

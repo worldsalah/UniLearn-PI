@@ -7,26 +7,18 @@ use App\Entity\Chapter;
 use App\Entity\Course;
 use App\Entity\Lesson;
 use App\Entity\User;
-use App\Repository\CategoryRepository;
-use App\Repository\UserRepository;
-use App\Repository\QuizResultRepository;
-use App\Form\ProfileType;
 use App\Form\CourseType;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CourseController extends AbstractController
 {
-
     #[Route('/course/{id}', name: 'app_course_show', requirements: ['id' => '\d+'])]
     public function show(Course $course): Response
     {
@@ -39,7 +31,7 @@ class CourseController extends AbstractController
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
-        CategoryRepository $categoryRepository
+        CategoryRepository $categoryRepository,
     ): Response {
         $course = new Course();
         $form = $this->createForm(CourseType::class, $course);
@@ -51,30 +43,30 @@ class CourseController extends AbstractController
             if (!$user) {
                 return $this->redirectToRoute('app_login');
             }
-            
-            $course->setUser($user instanceof \App\Entity\User ? $user : null);
+
+            $course->setUser($user instanceof User ? $user : null);
             $course->setCreatedAt(new \DateTimeImmutable());
             $course->setStatus('inactive'); // Set course to inactive status by default
-            
+
             // Handle file uploads
             $thumbnailFile = $form->get('thumbnailFile')->getData();
-            if ($thumbnailFile !== null) {
-                $newFilename = uniqid() . '.' . $thumbnailFile->guessExtension();
+            if (null !== $thumbnailFile) {
+                $newFilename = uniqid().'.'.$thumbnailFile->guessExtension();
                 $thumbnailFile->move(
-                    $this->getParameter('kernel.project_dir') . '/public/uploads/courses/thumbnails',
+                    $this->getParameter('kernel.project_dir').'/public/uploads/courses/thumbnails',
                     $newFilename
                 );
-                $course->setThumbnailUrl('/uploads/courses/thumbnails/' . $newFilename);
+                $course->setThumbnailUrl('/uploads/courses/thumbnails/'.$newFilename);
             }
 
             $videoFile = $form->get('videoFile')->getData();
-            if ($videoFile !== null) {
-                $newFilename = uniqid() . '.' . $videoFile->guessExtension();
+            if (null !== $videoFile) {
+                $newFilename = uniqid().'.'.$videoFile->guessExtension();
                 $videoFile->move(
-                    $this->getParameter('kernel.project_dir') . '/public/uploads/courses/videos',
+                    $this->getParameter('kernel.project_dir').'/public/uploads/courses/videos',
                     $newFilename
                 );
-                $course->setVideoUrl('/uploads/courses/videos/' . $newFilename);
+                $course->setVideoUrl('/uploads/courses/videos/'.$newFilename);
             }
 
             $entityManager->persist($course);
@@ -82,11 +74,11 @@ class CourseController extends AbstractController
 
             // Check if user provided chapters/lessons data from the form
             $chaptersData = $request->request->get('chapters');
-            
+
             if (!empty($chaptersData)) {
                 // Parse JSON string to array
                 $chaptersArray = json_decode($chaptersData, true);
-                
+
                 if (is_array($chaptersArray) && !empty($chaptersArray)) {
                     // User provided chapters/lessons manually - create only those
                     $this->createChaptersAndLessonsFromFormData($course, $chaptersArray, $entityManager);
@@ -120,7 +112,7 @@ class CourseController extends AbstractController
     public function adminShowCourse(Course $course): Response
     {
         return $this->render('admin/course-detail.html.twig', [
-            'course' => $course
+            'course' => $course,
         ]);
     }
 
@@ -130,7 +122,7 @@ class CourseController extends AbstractController
     {
         // Get all chapters for this course
         $chapters = $course->getChapters();
-        
+
         // Prepare chapters data for template
         $chaptersData = [];
         foreach ($chapters as $chapter) {
@@ -144,18 +136,18 @@ class CourseController extends AbstractController
                     'order' => $lesson->getSortOrder(),
                 ];
             }
-            
+
             $chaptersData[] = [
                 'id' => $chapter->getId(),
                 'title' => $chapter->getTitle(),
                 'lessons' => $lessons,
-                'lessonCount' => count($lessons)
+                'lessonCount' => count($lessons),
             ];
         }
-        
+
         return $this->render('admin/course-lessons.html.twig', [
             'course' => $course,
-            'chapters' => $chaptersData
+            'chapters' => $chaptersData,
         ]);
     }
 
@@ -163,7 +155,7 @@ class CourseController extends AbstractController
     public function adminEditCourse(Course $course): Response
     {
         return $this->render('admin/course-edit.html.twig', [
-            'course' => $course
+            'course' => $course,
         ]);
     }
 
@@ -172,7 +164,7 @@ class CourseController extends AbstractController
     public function adminCourseList(EntityManagerInterface $entityManager): Response
     {
         $courses = $entityManager->getRepository(Course::class)->findAll();
-        
+
         $courseData = [];
         foreach ($courses as $course) {
             $courseData[] = [
@@ -186,13 +178,13 @@ class CourseController extends AbstractController
                 'thumbnailUrl' => $course->getThumbnailUrl(),
                 'instructor' => [
                     'name' => $course->getUser()?->getFullName() ?? 'Unknown',
-                    'email' => $course->getUser()?->getEmail() ?? 'Unknown'
-                ]
+                    'email' => $course->getUser()?->getEmail() ?? 'Unknown',
+                ],
             ];
         }
 
         return $this->render('admin/course-list.html.twig', [
-            'courses' => $courseData
+            'courses' => $courseData,
         ]);
     }
 
@@ -200,7 +192,7 @@ class CourseController extends AbstractController
     {
         // Test with empty data
         return $this->render('admin/course-list-test.html.twig', [
-            'courses' => []
+            'courses' => [],
         ]);
     }
 
@@ -211,17 +203,17 @@ class CourseController extends AbstractController
         try {
             $course->setStatus('live');
             $entityManager->flush();
-            
+
             return new JsonResponse([
                 'status' => 'success',
                 'message' => 'Course activated successfully',
                 'course_id' => $course->getId(),
-                'new_status' => 'live'
+                'new_status' => 'live',
             ]);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Failed to activate course: ' . $e->getMessage()
+                'message' => 'Failed to activate course: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -233,17 +225,17 @@ class CourseController extends AbstractController
         try {
             $course->setStatus('inactive');
             $entityManager->flush();
-            
+
             return new JsonResponse([
                 'status' => 'success',
                 'message' => 'Course deactivated successfully',
                 'course_id' => $course->getId(),
-                'new_status' => 'inactive'
+                'new_status' => 'inactive',
             ]);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Failed to deactivate course: ' . $e->getMessage()
+                'message' => 'Failed to deactivate course: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -254,33 +246,33 @@ class CourseController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            
-            if (json_last_error() !== JSON_ERROR_NONE) {
+
+            if (JSON_ERROR_NONE !== json_last_error()) {
                 return new JsonResponse([
                     'status' => 'error',
-                    'message' => 'Invalid JSON data: ' . json_last_error_msg()
+                    'message' => 'Invalid JSON data: '.json_last_error_msg(),
                 ], 400);
             }
-            
+
             $reason = $data['reason'] ?? 'Course does not meet our quality standards';
-            
+
             // Update course status
             $course->setStatus('unaccept');
             $entityManager->flush();
-            
+
             // You could log to database, send email, or use a notification service
-            error_log('Course unaccepted: ' . $course->getTitle() . ' - Reason: ' . $reason);
-            
+            error_log('Course unaccepted: '.$course->getTitle().' - Reason: '.$reason);
+
             return new JsonResponse([
                 'status' => 'success',
                 'message' => 'Unacceptance notification sent to instructor',
                 'course_id' => $course->getId(),
-                'notification_sent' => true
+                'notification_sent' => true,
             ]);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Failed to process unacceptance: ' . $e->getMessage()
+                'message' => 'Failed to process unacceptance: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -291,47 +283,47 @@ class CourseController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            
-            if (json_last_error() !== JSON_ERROR_NONE) {
+
+            if (JSON_ERROR_NONE !== json_last_error()) {
                 return new JsonResponse([
                     'status' => 'error',
-                    'message' => 'Invalid JSON data: ' . json_last_error_msg()
+                    'message' => 'Invalid JSON data: '.json_last_error_msg(),
                 ], 400);
             }
-            
+
             // Update course instead of deleting
             $course->setStatus('deleted');
-            
+
             // Update category if provided
-            if (isset($data['category']) && $data['category'] !== null && $data['category'] !== '') {
+            if (isset($data['category']) && null !== $data['category'] && '' !== $data['category']) {
                 $category = $entityManager->getRepository(Category::class)->find($data['category']);
                 if ($category) {
                     $course->setCategory($category);
                 } else {
                     return new JsonResponse([
                         'status' => 'error',
-                        'message' => 'Category not found: ' . $data['category']
+                        'message' => 'Category not found: '.$data['category'],
                     ], 400);
                 }
             }
-            
+
             $entityManager->flush();
-            
+
             return new JsonResponse([
                 'status' => 'success',
                 'message' => 'Course deleted successfully',
-                'course_id' => $course->getId()
+                'course_id' => $course->getId(),
             ]);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Failed to delete course: ' . $e->getMessage()
+                'message' => 'Failed to delete course: '.$e->getMessage(),
             ], 500);
         }
     }
 
     /**
-     * Create chapters and lessons from form data
+     * Create chapters and lessons from form data.
      */
     private function createChaptersAndLessonsFromFormData(Course $course, array $chaptersData, EntityManagerInterface $entityManager): void
     {
@@ -339,21 +331,21 @@ class CourseController extends AbstractController
             if (empty($chapterData['title'])) {
                 continue; // Skip empty chapters
             }
-            
+
             $chapter = new Chapter();
             $chapter->setTitle($chapterData['title']);
             $chapter->setCourse($course);
             $chapter->setSortOrder($index + 1);
-            
+
             $entityManager->persist($chapter);
-            
+
             // Create lessons for this chapter if provided
             if (isset($chapterData['lessons']) && is_array($chapterData['lessons'])) {
                 foreach ($chapterData['lessons'] as $lessonIndex => $lessonData) {
                     if (empty($lessonData['title'])) {
                         continue; // Skip empty lessons
                     }
-                    
+
                     $lesson = new Lesson();
                     $lesson->setTitle($lessonData['title']);
                     $lesson->setChapter($chapter);
@@ -362,12 +354,12 @@ class CourseController extends AbstractController
                     $lesson->setStatus('active');
                     $lesson->setSortOrder($lessonIndex + 1);
                     $lesson->setDescription($lessonData['description'] ?? '');
-                    
+
                     $entityManager->persist($lesson);
                 }
             }
         }
-        
+
         $entityManager->flush();
     }
 }

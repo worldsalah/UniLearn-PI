@@ -2,28 +2,27 @@
 
 namespace App\Service;
 
-use App\Entity\User;
 use App\Entity\Order;
+use App\Entity\User;
 use App\Repository\OrderRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 class SellerReputationService
 {
     private OrderRepository $orderRepository;
 
     public function __construct(
-        OrderRepository $orderRepository
+        OrderRepository $orderRepository,
     ) {
         $this->orderRepository = $orderRepository;
     }
 
     /**
-     * Calculate comprehensive seller reputation score
+     * Calculate comprehensive seller reputation score.
      */
     public function calculateReputationScore(\Symfony\Component\Security\Core\User\UserInterface $seller): array
     {
         $stats = $this->getSellerStats($seller);
-        
+
         $score = 0;
         $factors = [];
 
@@ -33,7 +32,7 @@ class SellerReputationService
         $factors['completion_rate'] = [
             'value' => round($completionRate, 1),
             'weight' => 40,
-            'score' => round($completionRate * 0.4, 1)
+            'score' => round($completionRate * 0.4, 1),
         ];
 
         // Average response time (25% weight)
@@ -42,7 +41,7 @@ class SellerReputationService
         $factors['response_time'] = [
             'value' => $stats['avg_response_time'],
             'weight' => 25,
-            'score' => round($responseScore * 0.25, 1)
+            'score' => round($responseScore * 0.25, 1),
         ];
 
         // Review sentiment (25% weight)
@@ -52,7 +51,7 @@ class SellerReputationService
             'rating' => $stats['avg_rating'],
             'count' => $stats['total_reviews'],
             'weight' => 25,
-            'score' => round($reviewScore * 0.25, 1)
+            'score' => round($reviewScore * 0.25, 1),
         ];
 
         // Account age and verification (10% weight)
@@ -62,7 +61,7 @@ class SellerReputationService
             'age_days' => $stats['account_age_days'],
             'verified' => $stats['is_verified'],
             'weight' => 10,
-            'score' => round($accountScore * 0.1, 1)
+            'score' => round($accountScore * 0.1, 1),
         ];
 
         return [
@@ -70,24 +69,33 @@ class SellerReputationService
             'badge' => $this->getBadge($score),
             'level' => $this->getLevel($score),
             'factors' => $factors,
-            'stats' => $stats
+            'stats' => $stats,
         ];
     }
 
     /**
-     * Get seller badge based on score
+     * Get seller badge based on score.
      */
     public function getBadge(float $score): string
     {
-        if ($score >= 90) return 'elite';
-        if ($score >= 75) return 'gold';
-        if ($score >= 60) return 'silver';
-        if ($score >= 40) return 'bronze';
+        if ($score >= 90) {
+            return 'elite';
+        }
+        if ($score >= 75) {
+            return 'gold';
+        }
+        if ($score >= 60) {
+            return 'silver';
+        }
+        if ($score >= 40) {
+            return 'bronze';
+        }
+
         return 'new';
     }
 
     /**
-     * Get seller level with benefits
+     * Get seller level with benefits.
      */
     public function getLevel(float $score): array
     {
@@ -96,49 +104,49 @@ class SellerReputationService
                 'name' => 'Elite Seller',
                 'color' => '#6366f1',
                 'benefits' => ['Priority support', 'Featured listings', 'Lower fees', 'Advanced analytics'],
-                'requirements' => ['90+ reputation score', '50+ completed orders', '4.8+ average rating']
+                'requirements' => ['90+ reputation score', '50+ completed orders', '4.8+ average rating'],
             ],
             'gold' => [
                 'name' => 'Gold Seller',
                 'color' => '#f59e0b',
                 'benefits' => ['Enhanced visibility', 'Standard support', 'Reduced fees', 'Basic analytics'],
-                'requirements' => ['75-89 reputation score', '25+ completed orders', '4.5+ average rating']
+                'requirements' => ['75-89 reputation score', '25+ completed orders', '4.5+ average rating'],
             ],
             'silver' => [
                 'name' => 'Silver Seller',
                 'color' => '#6b7280',
                 'benefits' => ['Improved visibility', 'Email support', 'Standard fees'],
-                'requirements' => ['60-74 reputation score', '10+ completed orders', '4.0+ average rating']
+                'requirements' => ['60-74 reputation score', '10+ completed orders', '4.0+ average rating'],
             ],
             'bronze' => [
                 'name' => 'Bronze Seller',
                 'color' => '#92400e',
                 'benefits' => ['Basic visibility', 'Community support'],
-                'requirements' => ['40-59 reputation score', '5+ completed orders', '3.5+ average rating']
+                'requirements' => ['40-59 reputation score', '5+ completed orders', '3.5+ average rating'],
             ],
             'new' => [
                 'name' => 'New Seller',
                 'color' => '#d1d5db',
                 'benefits' => ['Getting started support'],
-                'requirements' => ['Build your reputation with first few orders']
-            ]
+                'requirements' => ['Build your reputation with first few orders'],
+            ],
         ];
 
         return $levels[$this->getBadge($score)];
     }
 
     /**
-     * Get comprehensive seller statistics
+     * Get comprehensive seller statistics.
      */
     public function getSellerStats(\Symfony\Component\Security\Core\User\UserInterface $seller): array
     {
         // Total orders
         $totalOrders = $this->orderRepository->count(['freelancer' => $seller]);
-        
+
         // Completed orders
         $completedOrders = $this->orderRepository->count([
             'freelancer' => $seller,
-            'status' => 'completed'
+            'status' => 'completed',
         ]);
 
         // Cancelled/failed orders
@@ -153,14 +161,14 @@ class SellerReputationService
 
         // Average response time (in hours)
         $avgResponseTime = $this->calculateAverageResponseTime($seller);
-        
+
         // Review statistics (calculated from orders)
         $reviewStats = $this->getReviewStats($seller);
-        
+
         // Account age
         $accountAge = $seller->getCreatedAt();
         $accountAgeDays = $accountAge ? (new \DateTime())->diff($accountAge)->days : 0;
-        
+
         // Verification status
         $isVerified = $seller->isVerified() ?? false;
 
@@ -174,12 +182,12 @@ class SellerReputationService
             'total_reviews' => $reviewStats['total_reviews'],
             'account_age_days' => $accountAgeDays,
             'is_verified' => $isVerified,
-            'dispute_rate' => $totalOrders > 0 ? round(($failedOrders / $totalOrders) * 100, 1) : 0
+            'dispute_rate' => $totalOrders > 0 ? round(($failedOrders / $totalOrders) * 100, 1) : 0,
         ];
     }
 
     /**
-     * Get seller performance metrics for dashboard
+     * Get seller performance metrics for dashboard.
      */
     public function getPerformanceMetrics(\Symfony\Component\Security\Core\User\UserInterface $seller): array
     {
@@ -192,88 +200,107 @@ class SellerReputationService
             'performance_indicators' => [
                 [
                     'metric' => 'Order Completion',
-                    'value' => $stats['completion_rate'] . '%',
+                    'value' => $stats['completion_rate'].'%',
                     'status' => $stats['completion_rate'] >= 90 ? 'excellent' : ($stats['completion_rate'] >= 75 ? 'good' : 'needs_improvement'),
-                    'trend' => $this->getCompletionTrend($seller)
+                    'trend' => $this->getCompletionTrend($seller),
                 ],
                 [
                     'metric' => 'Response Time',
                     'value' => $this->formatResponseTime($stats['avg_response_time']),
                     'status' => $stats['avg_response_time'] <= 2 ? 'excellent' : ($stats['avg_response_time'] <= 6 ? 'good' : 'needs_improvement'),
-                    'trend' => $this->getResponseTrend($seller)
+                    'trend' => $this->getResponseTrend($seller),
                 ],
                 [
                     'metric' => 'Customer Rating',
-                    'value' => $stats['avg_rating'] . '/5.0',
+                    'value' => $stats['avg_rating'].'/5.0',
                     'status' => $stats['avg_rating'] >= 4.5 ? 'excellent' : ($stats['avg_rating'] >= 4.0 ? 'good' : 'needs_improvement'),
-                    'trend' => $this->getRatingTrend($seller)
+                    'trend' => $this->getRatingTrend($seller),
                 ],
                 [
                     'metric' => 'Dispute Rate',
-                    'value' => $stats['dispute_rate'] . '%',
+                    'value' => $stats['dispute_rate'].'%',
                     'status' => $stats['dispute_rate'] <= 2 ? 'excellent' : ($stats['dispute_rate'] <= 5 ? 'good' : 'needs_improvement'),
-                    'trend' => $this->getDisputeTrend($seller)
-                ]
+                    'trend' => $this->getDisputeTrend($seller),
+                ],
             ],
             'recent_achievements' => $this->getRecentAchievements($seller, $reputation),
-            'improvement_tips' => $this->getImprovementTips($reputation)
+            'improvement_tips' => $this->getImprovementTips($reputation),
         ];
     }
 
     /**
-     * Calculate response time score
+     * Calculate response time score.
      */
     private function calculateResponseScore(float $responseTime): float
     {
-        if ($responseTime <= 1) return 100;
-        if ($responseTime <= 2) return 90;
-        if ($responseTime <= 4) return 75;
-        if ($responseTime <= 8) return 60;
-        if ($responseTime <= 24) return 40;
+        if ($responseTime <= 1) {
+            return 100;
+        }
+        if ($responseTime <= 2) {
+            return 90;
+        }
+        if ($responseTime <= 4) {
+            return 75;
+        }
+        if ($responseTime <= 8) {
+            return 60;
+        }
+        if ($responseTime <= 24) {
+            return 40;
+        }
+
         return 20;
     }
 
     /**
-     * Calculate review score based on rating and quantity
+     * Calculate review score based on rating and quantity.
      */
     private function calculateReviewScore(float $avgRating, int $totalReviews): float
     {
-        if ($totalReviews === 0) return 50; // Neutral score for no reviews
-        
+        if (0 === $totalReviews) {
+            return 50;
+        } // Neutral score for no reviews
+
         $avgRating = $reviewStats['avg_rating'] ?? 0.0;
         $ratingScore = ($avgRating / 5) * 100;
-        
+
         // Bonus for having more reviews
         $reviewBonus = min($totalReviews * 2, 20); // Max 20 points bonus
-        
+
         return min($ratingScore + $reviewBonus, 100);
     }
 
     /**
-     * Calculate account score based on age and verification
+     * Calculate account score based on age and verification.
      */
     private function calculateAccountScore(User $seller): float
     {
         $score = 0;
-        
+
         // Account age score
         $ageDays = $seller->getCreatedAt() ? (new \DateTime())->diff($seller->getCreatedAt())->days : 0;
-        if ($ageDays >= 365) $score += 50;
-        elseif ($ageDays >= 180) $score += 40;
-        elseif ($ageDays >= 90) $score += 30;
-        elseif ($ageDays >= 30) $score += 20;
-        else $score += 10;
-        
+        if ($ageDays >= 365) {
+            $score += 50;
+        } elseif ($ageDays >= 180) {
+            $score += 40;
+        } elseif ($ageDays >= 90) {
+            $score += 30;
+        } elseif ($ageDays >= 30) {
+            $score += 20;
+        } else {
+            $score += 10;
+        }
+
         // Verification bonus
-        if ($seller->isVerified() === true) {
+        if (true === $seller->isVerified()) {
             $score += 50;
         }
-        
+
         return $score;
     }
 
     /**
-     * Calculate average response time
+     * Calculate average response time.
      */
     private function calculateAverageResponseTime(User $seller): float
     {
@@ -283,18 +310,18 @@ class SellerReputationService
     }
 
     /**
-     * Get review statistics (calculated from completed orders)
+     * Get review statistics (calculated from completed orders).
      */
     private function getReviewStats(User $seller): array
     {
         // Get completed orders as a proxy for reviews
         $completedOrders = $this->orderRepository->findBy([
             'freelancer' => $seller,
-            'status' => 'completed'
+            'status' => 'completed',
         ]);
-        
+
         $totalReviews = count($completedOrders);
-        
+
         // Calculate average rating from completed orders
         // This would typically come from actual reviews, but we'll simulate it
         $totalRating = 0;
@@ -302,121 +329,126 @@ class SellerReputationService
             // Simulate rating based on order completion
             $totalRating += mt_rand(35, 50) / 10; // Random rating between 3.5 and 5.0
         }
-        
+
         return [
             'total_reviews' => $totalReviews,
-            'avg_rating' => $totalReviews > 0 ? round($totalRating / $totalReviews, 1) : 0
+            'avg_rating' => $totalReviews > 0 ? round($totalRating / $totalReviews, 1) : 0,
         ];
     }
 
     /**
-     * Format response time for display
+     * Format response time for display.
      */
     private function formatResponseTime(float $hours): string
     {
         if ($hours < 1) {
-            return round($hours * 60) . ' min';
+            return round($hours * 60).' min';
         }
-        return round($hours, 1) . ' hours';
+
+        return round($hours, 1).' hours';
     }
 
     /**
-     * Get completion trend
+     * Get completion trend.
      */
     private function getCompletionTrend(User $seller): string
     {
         // This would calculate from historical data
         // For demo, return random trend
         $trends = ['up', 'down', 'stable'];
+
         return $trends[array_rand($trends)];
     }
 
     /**
-     * Get response trend
+     * Get response trend.
      */
     private function getResponseTrend(User $seller): string
     {
         $trends = ['up', 'down', 'stable'];
+
         return $trends[array_rand($trends)];
     }
 
     /**
-     * Get rating trend
+     * Get rating trend.
      */
     private function getRatingTrend(User $seller): string
     {
         $trends = ['up', 'down', 'stable'];
+
         return $trends[array_rand($trends)];
     }
 
     /**
-     * Get dispute trend
+     * Get dispute trend.
      */
     private function getDisputeTrend(User $seller): string
     {
         $trends = ['up', 'down', 'stable'];
+
         return $trends[array_rand($trends)];
     }
 
     /**
-     * Get recent achievements
+     * Get recent achievements.
      */
     private function getRecentAchievements(User $seller, array $reputation): array
     {
         $achievements = [];
-        
+
         if ($reputation['overall_score'] >= 90) {
             $achievements[] = [
                 'title' => 'Elite Status Reached',
                 'description' => 'Congratulations! You\'ve achieved Elite seller status',
                 'icon' => '🏆',
-                'date' => (new \DateTime())->format('Y-m-d')
+                'date' => (new \DateTime())->format('Y-m-d'),
             ];
         }
-        
+
         if ($reputation['stats']['completed_orders'] >= 50) {
             $achievements[] = [
                 'title' => '50+ Orders Completed',
                 'description' => 'Milestone: 50 successful orders delivered',
                 'icon' => '📦',
-                'date' => (new \DateTime())->format('Y-m-d')
+                'date' => (new \DateTime())->format('Y-m-d'),
             ];
         }
-        
+
         return $achievements;
     }
 
     /**
-     * Get improvement tips
+     * Get improvement tips.
      */
     private function getImprovementTips(array $reputation): array
     {
         $tips = [];
-        
+
         if ($reputation['factors']['completion_rate']['value'] < 90) {
             $tips[] = [
                 'area' => 'Order Completion',
                 'tip' => 'Focus on completing more orders to improve your completion rate',
-                'priority' => 'high'
+                'priority' => 'high',
             ];
         }
-        
+
         if ($reputation['factors']['response_time']['value'] > 4) {
             $tips[] = [
                 'area' => 'Response Time',
                 'tip' => 'Respond to messages faster to improve customer satisfaction',
-                'priority' => 'medium'
+                'priority' => 'medium',
             ];
         }
-        
+
         if ($reputation['factors']['reviews']['count'] < 10) {
             $tips[] = [
                 'area' => 'Reviews',
                 'tip' => 'Encourage satisfied customers to leave reviews',
-                'priority' => 'low'
+                'priority' => 'low',
             ];
         }
-        
+
         return $tips;
     }
 }

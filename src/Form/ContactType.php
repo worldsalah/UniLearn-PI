@@ -8,8 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,30 +22,30 @@ class ContactType extends AbstractType
                 'label' => 'Prénom',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Jean'
-                ]
+                    'placeholder' => 'Jean',
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom de famille',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Dupont'
-                ]
+                    'placeholder' => 'Dupont',
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Adresse email',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'jean.dupont@example.com'
-                ]
+                    'placeholder' => 'jean.dupont@example.com',
+                ],
             ])
             ->add('phone', TelType::class, [
                 'label' => 'Téléphone',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '+33 1 23 45 67 89'
-                ]
+                    'placeholder' => '+33 1 23 45 67 89',
+                ],
             ])
             ->add('subject', ChoiceType::class, [
                 'label' => 'Sujet',
@@ -58,22 +58,22 @@ class ContactType extends AbstractType
                     'Partenariat' => 'Partnership',
                 ],
                 'attr' => [
-                    'class' => 'form-select'
-                ]
+                    'class' => 'form-select',
+                ],
             ])
             ->add('message', TextareaType::class, [
                 'label' => 'Message',
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 5,
-                    'placeholder' => 'Dites-nous comment nous pouvons vous aider...'
-                ]
+                    'placeholder' => 'Dites-nous comment nous pouvons vous aider...',
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Envoyer le message',
                 'attr' => [
-                    'class' => 'btn btn-primary'
-                ]
+                    'class' => 'btn btn-primary',
+                ],
             ])
         ;
     }

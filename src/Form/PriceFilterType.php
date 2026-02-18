@@ -18,22 +18,22 @@ class PriceFilterType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => 'Min'
-                ]
+                    'placeholder' => 'Min',
+                ],
             ])
             ->add('maxPrice', NumberType::class, [
                 'label' => 'Prix maximum',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => 'Max'
-                ]
+                    'placeholder' => 'Max',
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Appliquer le filtre',
                 'attr' => [
-                    'class' => 'btn btn-primary btn-sm w-100 mt-2'
-                ]
+                    'class' => 'btn btn-primary btn-sm w-100 mt-2',
+                ],
             ])
         ;
     }

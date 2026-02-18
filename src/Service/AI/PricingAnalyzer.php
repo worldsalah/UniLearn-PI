@@ -8,8 +8,9 @@ use App\Repository\ProductRepository;
 class PricingAnalyzer
 {
     public function __construct(
-        private ProductRepository $productRepository
-    ) {}
+        private ProductRepository $productRepository,
+    ) {
+    }
 
     public function analyzePricing(Product $product): array
     {
@@ -20,29 +21,29 @@ class PricingAnalyzer
         // 1. Category Price Benchmarking
         $benchmarkResult = $this->benchmarkAgainstCategory($product);
         $score -= (100 - $benchmarkResult['score']) * 0.40;
-        
+
         if ($benchmarkResult['score'] < 70) {
             $findings[] = [
                 'category' => 'pricing',
                 'severity' => $benchmarkResult['severity'],
-                'message' => $benchmarkResult['message']
+                'message' => $benchmarkResult['message'],
             ];
             $suggestions[] = [
                 'area' => 'Pricing Strategy',
                 'suggestion' => $benchmarkResult['suggestion'],
-                'priority' => 1
+                'priority' => 1,
             ];
         }
 
         // 2. Outlier Detection
         $outlierResult = $this->detectPriceOutliers($product);
         $score -= (100 - $outlierResult['score']) * 0.30;
-        
+
         if ($outlierResult['is_outlier']) {
             $findings[] = [
                 'category' => 'price_outlier',
                 'severity' => 'medium',
-                'message' => $outlierResult['message']
+                'message' => $outlierResult['message'],
             ];
         }
 
@@ -60,7 +61,7 @@ class PricingAnalyzer
                 'value_score' => $valueScore,
                 'market_average' => $benchmarkResult['market_average'] ?? 0,
                 'suggested_price_range' => $benchmarkResult['suggested_range'] ?? [],
-            ]
+            ],
         ];
     }
 
@@ -85,12 +86,12 @@ class PricingAnalyzer
                 'message' => 'Insufficient market data for accurate benchmarking',
                 'severity' => 'low',
                 'suggestion' => 'Price appears reasonable for new category',
-                'market_average' => $price
+                'market_average' => $price,
             ];
         }
 
         // Calculate market statistics
-        $prices = array_map(fn($p) => $p->getPrice(), $categoryProducts);
+        $prices = array_map(fn ($p) => $p->getPrice(), $categoryProducts);
         $avgPrice = array_sum($prices) / count($prices);
         $minPrice = min($prices);
         $maxPrice = max($prices);
@@ -149,21 +150,21 @@ class PricingAnalyzer
             'suggested_range' => [
                 'min' => max($minPrice, $avgPrice * 0.7),
                 'max' => min($maxPrice, $avgPrice * 1.3),
-                'optimal' => $avgPrice
-            ]
+                'optimal' => $avgPrice,
+            ],
         ];
     }
 
     private function detectPriceOutliers(Product $product): array
     {
         $price = $product->getPrice();
-        
+
         // Detect suspiciously round numbers (potential lazy pricing)
-        if ($price > 100 && $price % 100 === 0) {
+        if ($price > 100 && 0 === $price % 100) {
             return [
                 'score' => 85.0,
                 'is_outlier' => true,
-                'message' => 'Price is a round number - consider more precise pricing'
+                'message' => 'Price is a round number - consider more precise pricing',
             ];
         }
 
@@ -172,7 +173,7 @@ class PricingAnalyzer
             return [
                 'score' => 40.0,
                 'is_outlier' => true,
-                'message' => 'Price is unusually low - may indicate low quality or scam'
+                'message' => 'Price is unusually low - may indicate low quality or scam',
             ];
         }
 
@@ -181,24 +182,24 @@ class PricingAnalyzer
             return [
                 'score' => 70.0,
                 'is_outlier' => true,
-                'message' => 'Price is very high - ensure value justifies premium pricing'
+                'message' => 'Price is very high - ensure value justifies premium pricing',
             ];
         }
 
         return [
             'score' => 100.0,
             'is_outlier' => false,
-            'message' => 'Price appears normal'
+            'message' => 'Price appears normal',
         ];
     }
 
     private function calculateValueScore(Product $product): float
     {
         $score = 100.0;
-        
+
         // Value = Quality of description + Seller rating vs Price
         $description = $product->getDescription();
-        $descriptionLength = $description !== null ? strlen($description) : 0;
+        $descriptionLength = null !== $description ? strlen($description) : 0;
         $sellerRating = $product->getFreelancer()->getRating();
         $price = $product->getPrice();
 

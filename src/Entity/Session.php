@@ -1,10 +1,12 @@
 <?php
+
 // src/Entity/Session.php
+
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 class Session
@@ -71,6 +73,7 @@ class Session
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -82,6 +85,7 @@ class Session
     public function setLevel(string $level): self
     {
         $this->level = $level;
+
         return $this;
     }
 
@@ -93,6 +97,7 @@ class Session
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
         return $this;
     }
 
@@ -104,6 +109,7 @@ class Session
     public function setStartDate(\DateTimeInterface $startDate): self
     {
         $this->startDate = $startDate;
+
         return $this;
     }
 
@@ -115,6 +121,7 @@ class Session
     public function setEndDate(\DateTimeInterface $endDate): self
     {
         $this->endDate = $endDate;
+
         return $this;
     }
 
@@ -126,6 +133,7 @@ class Session
     public function setDuration(int $duration): self
     {
         $this->duration = $duration;
+
         return $this;
     }
 
@@ -137,6 +145,7 @@ class Session
     public function setSessionDescription(?string $sessionDescription): self
     {
         $this->sessionDescription = $sessionDescription;
+
         return $this;
     }
 
@@ -148,6 +157,7 @@ class Session
     public function setInstructor(?User $instructor): self
     {
         $this->instructor = $instructor;
+
         return $this;
     }
 
@@ -159,6 +169,7 @@ class Session
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
         return $this;
     }
 

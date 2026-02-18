@@ -7,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/pricing')]
 class PricingApiController extends AbstractController
@@ -20,7 +19,7 @@ class PricingApiController extends AbstractController
     }
 
     /**
-     * Analyze product price
+     * Analyze product price.
      */
     #[Route('/analyze/{id}', name: 'api_pricing_analyze', methods: ['GET'])]
     public function analyzePrice(int $id): JsonResponse
@@ -33,13 +32,13 @@ class PricingApiController extends AbstractController
                 'label' => 'Fair Price',
                 'color' => '#6b7280',
                 'description' => 'Reasonably priced',
-                'icon' => '⚖️'
+                'icon' => '⚖️',
             ],
             'market_position' => [
                 'percentile' => 55.0,
                 'rank' => 12,
                 'total' => 25,
-                'position' => 'standard'
+                'position' => 'standard',
             ],
             'market_data' => [
                 'total_listings' => 25,
@@ -52,9 +51,9 @@ class PricingApiController extends AbstractController
                 'price_distribution' => [
                     'budget' => 6,
                     'standard' => 15,
-                    'premium' => 4
+                    'premium' => 4,
                 ],
-                'price_trend' => 'stable'
+                'price_trend' => 'stable',
             ],
             'recommendations' => [
                 [
@@ -64,8 +63,8 @@ class PricingApiController extends AbstractController
                     'description' => 'Your price is well-positioned in the market. Consider small adjustments based on demand.',
                     'suggested_price' => 150.00,
                     'potential_impact' => 'Maintain current performance',
-                    'confidence' => 90
-                ]
+                    'confidence' => 90,
+                ],
             ],
             'price_analysis' => [
                 'is_competitive' => true,
@@ -75,41 +74,41 @@ class PricingApiController extends AbstractController
                     'potential_change_percent' => 0.0,
                     'optimal_price' => 140.00,
                     'potential_revenue_impact' => '0.0% potential revenue decrease',
-                    'confidence' => 85
-                ]
-            ]
+                    'confidence' => 85,
+                ],
+            ],
         ];
-        
+
         return new JsonResponse([
             'success' => true,
             'data' => [
                 'product_id' => $id,
                 'analysis' => $mockAnalysis,
-                'analyzed_at' => (new \DateTime())->format('Y-m-d H:i:s')
-            ]
+                'analyzed_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            ],
         ]);
     }
 
     /**
-     * Get market data for category
+     * Get market data for category.
      */
     #[Route('/market-data/{category}', name: 'api_pricing_market_data', methods: ['GET'])]
     public function marketData(string $category): JsonResponse
     {
         $marketData = $this->priceService->getMarketData($category);
-        
+
         return new JsonResponse([
             'success' => true,
             'data' => [
                 'category' => $category,
                 'market_data' => $marketData,
-                'generated_at' => (new \DateTime())->format('Y-m-d H:i:s')
-            ]
+                'generated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            ],
         ]);
     }
 
     /**
-     * Get price recommendations
+     * Get price recommendations.
      */
     #[Route('/recommendations/{id}', name: 'api_pricing_recommendations', methods: ['GET'])]
     public function priceRecommendations(int $id): JsonResponse
@@ -127,8 +126,8 @@ class PricingApiController extends AbstractController
                 'action_items' => [
                     'Monitor competitor pricing weekly',
                     'Consider seasonal adjustments',
-                    'Track conversion rates by price point'
-                ]
+                    'Track conversion rates by price point',
+                ],
             ],
             [
                 'type' => 'dynamic_pricing',
@@ -141,24 +140,24 @@ class PricingApiController extends AbstractController
                 'action_items' => [
                     'Implement weekend pricing schedule',
                     'Monitor sales performance during peak times',
-                    'A/B test different weekend price points'
-                ]
-            ]
+                    'A/B test different weekend price points',
+                ],
+            ],
         ];
-        
+
         return new JsonResponse([
             'success' => true,
             'data' => [
                 'product_id' => $id,
                 'recommendations' => $recommendations,
                 'total_recommendations' => count($recommendations),
-                'generated_at' => (new \DateTime())->format('Y-m-d H:i:s')
-            ]
+                'generated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            ],
         ]);
     }
 
     /**
-     * Get price optimization suggestions
+     * Get price optimization suggestions.
      */
     #[Route('/optimize/{id}', name: 'api_pricing_optimize', methods: ['POST'])]
     public function optimizePrice(int $id, Request $request): JsonResponse
@@ -166,14 +165,14 @@ class PricingApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $targetPrice = $data['target_price'] ?? null;
         $strategy = $data['strategy'] ?? 'balanced'; // aggressive, balanced, conservative
-        
-        if ($targetPrice === null || $targetPrice === '') {
+
+        if (null === $targetPrice || '' === $targetPrice) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Target price is required'
+                'error' => 'Target price is required',
             ], 400);
         }
-        
+
         // Mock optimization analysis
         $optimization = [
             'target_price' => $targetPrice,
@@ -181,63 +180,63 @@ class PricingApiController extends AbstractController
             'analysis' => [
                 'market_position' => [
                     'percentile' => 45.0,
-                    'position' => 'standard'
+                    'position' => 'standard',
                 ],
                 'expected_impact' => [
                     'visibility_change' => '+5%',
                     'conversion_rate_change' => '-2%',
                     'revenue_change' => '+8%',
-                    'competition_level' => 'Medium'
+                    'competition_level' => 'Medium',
                 ],
                 'risk_assessment' => [
                     'risk_level' => 'Low',
                     'confidence' => 85,
-                    'time_to_see_results' => '2-3 weeks'
-                ]
+                    'time_to_see_results' => '2-3 weeks',
+                ],
             ],
             'implementation_plan' => [
                 'step_1' => [
                     'action' => 'Update listing price',
                     'timing' => 'Immediately',
-                    'monitoring' => 'Track daily views and inquiries'
+                    'monitoring' => 'Track daily views and inquiries',
                 ],
                 'step_2' => [
                     'action' => 'Monitor conversion rates',
                     'timing' => 'First week',
-                    'monitoring' => 'Compare with previous conversion data'
+                    'monitoring' => 'Compare with previous conversion data',
                 ],
                 'step_3' => [
                     'action' => 'Evaluate performance',
                     'timing' => 'After 2 weeks',
-                    'monitoring' => 'Assess overall revenue impact'
-                ]
+                    'monitoring' => 'Assess overall revenue impact',
+                ],
             ],
             'alternatives' => [
                 [
                     'price' => $targetPrice * 0.95,
                     'expected_impact' => 'Higher conversion, lower revenue per sale',
-                    'risk_level' => 'Very Low'
+                    'risk_level' => 'Very Low',
                 ],
                 [
                     'price' => $targetPrice * 1.05,
                     'expected_impact' => 'Lower conversion, higher revenue per sale',
-                    'risk_level' => 'Medium'
-                ]
-            ]
+                    'risk_level' => 'Medium',
+                ],
+            ],
         ];
-        
+
         return new JsonResponse([
             'success' => true,
             'data' => [
                 'product_id' => $id,
                 'optimization' => $optimization,
-                'generated_at' => (new \DateTime())->format('Y-m-d H:i:s')
-            ]
+                'generated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            ],
         ]);
     }
 
     /**
-     * Get price comparison with competitors
+     * Get price comparison with competitors.
      */
     #[Route('/compare/{id}', name: 'api_pricing_compare', methods: ['GET'])]
     public function comparePrices(int $id): JsonResponse
@@ -253,7 +252,7 @@ class PricingApiController extends AbstractController
                     'price_difference' => '-3.3%',
                     'rating' => 4.7,
                     'orders' => 89,
-                    'market_position' => 'Slightly lower'
+                    'market_position' => 'Slightly lower',
                 ],
                 [
                     'id' => 2,
@@ -262,7 +261,7 @@ class PricingApiController extends AbstractController
                     'price_difference' => '+10.0%',
                     'rating' => 4.5,
                     'orders' => 67,
-                    'market_position' => 'Higher'
+                    'market_position' => 'Higher',
                 ],
                 [
                     'id' => 3,
@@ -271,41 +270,41 @@ class PricingApiController extends AbstractController
                     'price_difference' => '-6.7%',
                     'rating' => 4.8,
                     'orders' => 102,
-                    'market_position' => 'Lower'
-                ]
+                    'market_position' => 'Lower',
+                ],
             ],
             'summary' => [
                 'average_competitor_price' => 150.00,
                 'price_vs_average' => '0.0%',
                 'market_position' => 'Competitive',
                 'recommendation' => 'Your pricing is well-positioned against competitors',
-                'opportunity' => 'Consider value-added services to justify premium pricing'
+                'opportunity' => 'Consider value-added services to justify premium pricing',
             ],
             'price_distribution' => [
                 'budget_range' => ['min' => 100, 'max' => 130, 'count' => 2],
                 'standard_range' => ['min' => 130, 'max' => 170, 'count' => 5],
-                'premium_range' => ['min' => 170, 'max' => 200, 'count' => 1]
-            ]
+                'premium_range' => ['min' => 170, 'max' => 200, 'count' => 1],
+            ],
         ];
-        
+
         return new JsonResponse([
             'success' => true,
             'data' => [
                 'product_id' => $id,
                 'comparison' => $comparison,
-                'analyzed_at' => (new \DateTime())->format('Y-m-d H:i:s')
-            ]
+                'analyzed_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            ],
         ]);
     }
 
     /**
-     * Get pricing insights and trends
+     * Get pricing insights and trends.
      */
     #[Route('/insights/{category}', name: 'api_pricing_insights', methods: ['GET'])]
     public function pricingInsights(string $category, Request $request): JsonResponse
     {
         $period = $request->query->get('period', 'month'); // week, month, quarter, year
-        
+
         // Mock insights
         $insights = [
             'category' => $category,
@@ -317,7 +316,7 @@ class PricingApiController extends AbstractController
                     'previous' => 140.00,
                     'change' => '+3.6%',
                     'trend' => 'increasing',
-                    'insight' => 'Prices are trending upward due to increased demand'
+                    'insight' => 'Prices are trending upward due to increased demand',
                 ],
                 [
                     'metric' => 'Price Range',
@@ -325,72 +324,72 @@ class PricingApiController extends AbstractController
                     'current_max' => 220.00,
                     'previous_min' => 75.00,
                     'previous_max' => 200.00,
-                    'insight' => 'Price range is expanding, indicating market segmentation'
+                    'insight' => 'Price range is expanding, indicating market segmentation',
                 ],
                 [
                     'metric' => 'Market Competition',
                     'current_listings' => 25,
                     'previous_listings' => 22,
                     'change' => '+13.6%',
-                    'insight' => 'Competition is increasing, pricing strategy becomes more important'
-                ]
+                    'insight' => 'Competition is increasing, pricing strategy becomes more important',
+                ],
             ],
             'opportunities' => [
                 [
                     'type' => 'price_gap',
                     'description' => 'Gap between $100-120 with low competition',
                     'potential' => 'Medium',
-                    'action' => 'Consider creating service packages in this range'
+                    'action' => 'Consider creating service packages in this range',
                 ],
                 [
                     'type' => 'premium_segment',
                     'description' => 'High demand for premium services ($200+)',
                     'potential' => 'High',
-                    'action' => 'Develop premium offerings with enhanced features'
-                ]
+                    'action' => 'Develop premium offerings with enhanced features',
+                ],
             ],
             'recommendations' => [
                 'Monitor competitor pricing weekly',
                 'Consider dynamic pricing based on demand',
                 'Focus on value proposition rather than price competition',
-                'Develop tiered pricing strategies'
+                'Develop tiered pricing strategies',
             ],
-            'generated_at' => (new \DateTime())->format('Y-m-d H:i:s')
+            'generated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
         ];
-        
+
         return new JsonResponse([
             'success' => true,
-            'data' => $insights
+            'data' => $insights,
         ]);
     }
 
     /**
-     * Get pricing calculator
+     * Get pricing calculator.
      */
     #[Route('/calculator', name: 'api_pricing_calculator', methods: ['POST'])]
     public function pricingCalculator(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        
+
         $category = $data['category'] ?? '';
         $targetRevenue = $data['target_revenue'] ?? null;
         $expectedOrders = $data['expected_orders'] ?? null;
         $costs = $data['costs'] ?? 0;
-        
-        if ($category === '' || ($targetRevenue === null && $expectedOrders === null)) {
+
+        if ('' === $category || (null === $targetRevenue && null === $expectedOrders)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Category and either target revenue or expected orders are required'
+                'error' => 'Category and either target revenue or expected orders are required',
             ], 400);
         }
-        
+
         $marketData = $this->priceService->getMarketData($category);
         $recommendedPrice = $marketData['median_price'];
-        
+
         // Calculate pricing scenarios
         $scenarios = [];
-        
-        if ($targetRevenue !== null) {
+
+        if (null !== $targetRevenue) {
             $priceForRevenue = ($targetRevenue + $costs) / ($expectedOrders ?? 10);
             $scenarios[] = [
                 'name' => 'Revenue Target',
@@ -398,43 +397,43 @@ class PricingApiController extends AbstractController
                 'expected_orders' => $expectedOrders ?? 10,
                 'expected_revenue' => $targetRevenue,
                 'profit_margin' => round((($priceForRevenue - $costs) / $priceForRevenue) * 100, 1),
-                'market_position' => $this->calculateMarketPosition($priceForRevenue, $marketData)
+                'market_position' => $this->calculateMarketPosition($priceForRevenue, $marketData),
             ];
         }
-        
-        if ($expectedOrders !== null) {
+
+        if (null !== $expectedOrders) {
             $scenarios[] = [
                 'name' => 'Market Average',
                 'price' => $recommendedPrice,
                 'expected_orders' => $expectedOrders,
                 'expected_revenue' => $recommendedPrice * $expectedOrders,
                 'profit_margin' => round((($recommendedPrice - $costs) / $recommendedPrice) * 100, 1),
-                'market_position' => 'Standard'
+                'market_position' => 'Standard',
             ];
         }
-        
+
         // Budget scenario
         $budgetPrice = $marketData['p25_price'];
         $scenarios[] = [
             'name' => 'Budget Pricing',
             'price' => $budgetPrice,
-            'expected_orders' => $expectedOrders !== null ? round($expectedOrders * 1.3) : 13,
-            'expected_revenue' => $budgetPrice * ($expectedOrders !== null ? round($expectedOrders * 1.3) : 13),
+            'expected_orders' => null !== $expectedOrders ? round($expectedOrders * 1.3) : 13,
+            'expected_revenue' => $budgetPrice * (null !== $expectedOrders ? round($expectedOrders * 1.3) : 13),
             'profit_margin' => round((($budgetPrice - $costs) / $budgetPrice) * 100, 1),
-            'market_position' => 'Budget'
+            'market_position' => 'Budget',
         ];
-        
+
         // Premium scenario
         $premiumPrice = $marketData['p75_price'];
         $scenarios[] = [
             'name' => 'Premium Pricing',
             'price' => $premiumPrice,
-            'expected_orders' => $expectedOrders !== null ? round($expectedOrders * 0.7) : 7,
-            'expected_revenue' => $premiumPrice * ($expectedOrders !== null ? round($expectedOrders * 0.7) : 7),
+            'expected_orders' => null !== $expectedOrders ? round($expectedOrders * 0.7) : 7,
+            'expected_revenue' => $premiumPrice * (null !== $expectedOrders ? round($expectedOrders * 0.7) : 7),
             'profit_margin' => round((($premiumPrice - $costs) / $premiumPrice) * 100, 1),
-            'market_position' => 'Premium'
+            'market_position' => 'Premium',
         ];
-        
+
         return new JsonResponse([
             'success' => true,
             'data' => [
@@ -442,42 +441,47 @@ class PricingApiController extends AbstractController
                     'category' => $category,
                     'target_revenue' => $targetRevenue,
                     'expected_orders' => $expectedOrders,
-                    'costs' => $costs
+                    'costs' => $costs,
                 ],
                 'market_data' => $marketData,
                 'scenarios' => $scenarios,
                 'recommendation' => $this->getBestScenario($scenarios),
-                'calculated_at' => (new \DateTime())->format('Y-m-d H:i:s')
-            ]
+                'calculated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            ],
         ]);
     }
 
     /**
-     * Calculate market position for a price
+     * Calculate market position for a price.
      */
     private function calculateMarketPosition(float $price, array $marketData): string
     {
-        if ($price <= $marketData['p25_price']) return 'Budget';
-        if ($price <= $marketData['p75_price']) return 'Standard';
+        if ($price <= $marketData['p25_price']) {
+            return 'Budget';
+        }
+        if ($price <= $marketData['p75_price']) {
+            return 'Standard';
+        }
+
         return 'Premium';
     }
 
     /**
-     * Get the best pricing scenario
+     * Get the best pricing scenario.
      */
     private function getBestScenario(array $scenarios): array
     {
         // Simple logic: recommend scenario with highest expected revenue
         $best = null;
         $maxRevenue = 0;
-        
+
         foreach ($scenarios as $scenario) {
             if ($scenario['expected_revenue'] > $maxRevenue) {
                 $maxRevenue = $scenario['expected_revenue'];
                 $best = $scenario;
             }
         }
-        
+
         return $best;
     }
 }

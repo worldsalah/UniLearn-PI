@@ -20,28 +20,28 @@ final class Version20260208160537 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        
+
         // Create tables only if they don't exist
         if (!$schema->hasTable('application')) {
             $this->addSql('CREATE TABLE application (id INT AUTO_INCREMENT NOT NULL, cover_letter LONGTEXT NOT NULL, proposed_budget NUMERIC(10, 2) NOT NULL, timeline VARCHAR(255) NOT NULL, status VARCHAR(20) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, deleted_at DATETIME DEFAULT NULL, job_id INT NOT NULL, freelancer_id INT NOT NULL, INDEX IDX_A45BDDC1BE04EA9 (job_id), INDEX IDX_A45BDDC18545BDF5 (freelancer_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         }
-        
+
         if (!$schema->hasTable('favorite')) {
             $this->addSql('CREATE TABLE favorite (id INT AUTO_INCREMENT NOT NULL, created_at DATETIME NOT NULL, user_id INT NOT NULL, job_id INT NOT NULL, INDEX IDX_68C58ED9A76ED395 (user_id), INDEX IDX_68C58ED9BE04EA9 (job_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         }
-        
+
         if (!$schema->hasTable('job')) {
             $this->addSql('CREATE TABLE job (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, budget DOUBLE PRECISION NOT NULL, status VARCHAR(20) NOT NULL, created_at DATETIME NOT NULL, deleted_at DATETIME DEFAULT NULL, client_id INT NOT NULL, INDEX IDX_FBD8E0F819EB6921 (client_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         }
-        
+
         if (!$schema->hasTable('order')) {
             $this->addSql('CREATE TABLE `order` (id INT AUTO_INCREMENT NOT NULL, total_price DOUBLE PRECISION NOT NULL, status VARCHAR(20) NOT NULL, rating INT DEFAULT NULL, review LONGTEXT DEFAULT NULL, created_at DATETIME NOT NULL, product_id INT NOT NULL, buyer_id INT NOT NULL, INDEX IDX_F52993984584665A (product_id), INDEX IDX_F52993986C755722 (buyer_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         }
-        
+
         if (!$schema->hasTable('product')) {
             $this->addSql('CREATE TABLE product (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, price DOUBLE PRECISION NOT NULL, category VARCHAR(255) NOT NULL, image VARCHAR(255) DEFAULT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, deleted_at DATETIME DEFAULT NULL, slug VARCHAR(255) NOT NULL, freelancer_id INT NOT NULL, UNIQUE INDEX UNIQ_D34A04AD989D9B62 (slug), INDEX IDX_D34A04AD8545BDF5 (freelancer_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         }
-        
+
         // Add foreign keys only if tables exist and constraints don't exist
         if ($schema->hasTable('application') && $schema->hasTable('job')) {
             $appTable = $schema->getTable('application');
@@ -49,14 +49,14 @@ final class Version20260208160537 extends AbstractMigration
                 $this->addSql('ALTER TABLE application ADD CONSTRAINT FK_A45BDDC1BE04EA9 FOREIGN KEY (job_id) REFERENCES job (id)');
             }
         }
-        
+
         if ($schema->hasTable('application') && $schema->hasTable('user')) {
             $appTable = $schema->getTable('application');
             if (!$appTable->hasForeignKey('FK_A45BDDC18545BDF5')) {
                 $this->addSql('ALTER TABLE application ADD CONSTRAINT FK_A45BDDC18545BDF5 FOREIGN KEY (freelancer_id) REFERENCES user (id)');
             }
         }
-        
+
         if ($schema->hasTable('favorite')) {
             $favTable = $schema->getTable('favorite');
             if (!$favTable->hasForeignKey('FK_68C58ED9A76ED395')) {
@@ -66,14 +66,14 @@ final class Version20260208160537 extends AbstractMigration
                 $this->addSql('ALTER TABLE favorite ADD CONSTRAINT FK_68C58ED9BE04EA9 FOREIGN KEY (job_id) REFERENCES job (id)');
             }
         }
-        
+
         if ($schema->hasTable('job')) {
             $jobTable = $schema->getTable('job');
             if (!$jobTable->hasForeignKey('FK_FBD8E0F819EB6921')) {
                 $this->addSql('ALTER TABLE job ADD CONSTRAINT FK_FBD8E0F819EB6921 FOREIGN KEY (client_id) REFERENCES user (id)');
             }
         }
-        
+
         if ($schema->hasTable('order')) {
             $orderTable = $schema->getTable('order');
             if (!$orderTable->hasForeignKey('FK_F52993984584665A')) {
@@ -83,14 +83,14 @@ final class Version20260208160537 extends AbstractMigration
                 $this->addSql('ALTER TABLE `order` ADD CONSTRAINT FK_F52993986C755722 FOREIGN KEY (buyer_id) REFERENCES user (id)');
             }
         }
-        
+
         if ($schema->hasTable('product')) {
             $productTable = $schema->getTable('product');
             if (!$productTable->hasForeignKey('FK_D34A04AD8545BDF5')) {
                 $this->addSql('ALTER TABLE product ADD CONSTRAINT FK_D34A04AD8545BDF5 FOREIGN KEY (freelancer_id) REFERENCES user (id)');
             }
         }
-        
+
         // Drop tables only if they exist
         if ($schema->hasTable('booking')) {
             $this->addSql('DROP TABLE booking');
@@ -101,7 +101,7 @@ final class Version20260208160537 extends AbstractMigration
         if ($schema->hasTable('certificate')) {
             $this->addSql('DROP TABLE certificate');
         }
-        
+
         // Only modify columns if they exist
         $courseTable = $schema->getTable('course');
         if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {

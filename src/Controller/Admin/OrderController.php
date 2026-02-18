@@ -22,6 +22,7 @@ class OrderController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
+
     #[Route('/', name: 'app_admin_order_index', methods: ['GET'])]
     public function index(OrderRepository $orderRepository, PaginatorInterface $paginator, Request $request): Response
     {
@@ -63,9 +64,10 @@ class OrderController extends AbstractController
     public function show(OrderRepository $orderRepository, int $id): Response
     {
         $order = $orderRepository->find($id);
-        
+
         if (!$order) {
             $this->addFlash('error', 'Order not found.');
+
             return $this->redirectToRoute('app_admin_order_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -78,12 +80,13 @@ class OrderController extends AbstractController
     public function edit(Request $request, OrderRepository $orderRepository, EntityManagerInterface $entityManager, int $id): Response
     {
         $order = $orderRepository->find($id);
-        
+
         if (!$order) {
             $this->addFlash('error', 'Order not found.');
+
             return $this->redirectToRoute('app_admin_order_index', [], Response::HTTP_SEE_OTHER);
         }
-        
+
         $form = $this->createForm(\App\Form\Form\OrderType::class, $order);
         $form->handleRequest($request);
 
@@ -103,12 +106,13 @@ class OrderController extends AbstractController
     public function delete(Request $request, OrderRepository $orderRepository, EntityManagerInterface $entityManager, int $id): Response
     {
         $order = $orderRepository->find($id);
-        
+
         if (!$order) {
             $this->addFlash('error', 'Order not found.');
+
             return $this->redirectToRoute('app_admin_order_index', [], Response::HTTP_SEE_OTHER);
         }
-        
+
         if ($this->isCsrfTokenValid('delete'.$order->getId(), $request->request->get('_token'))) {
             $entityManager->remove($order);
             $entityManager->flush();
@@ -119,20 +123,20 @@ class OrderController extends AbstractController
     }
 
     /**
-     * Get order statistics for dashboard display
+     * Get order statistics for dashboard display.
      */
     private function getOrderStatistics(): array
     {
         $orderRepository = $this->entityManager->getRepository(Order::class);
-        
+
         // Total orders
         $totalOrders = $orderRepository->count([]);
-        
+
         // Orders by status
         $pendingOrders = $orderRepository->count(['status' => 'pending']);
         $completedOrders = $orderRepository->count(['status' => 'completed']);
         $cancelledOrders = $orderRepository->count(['status' => 'cancelled']);
-        
+
         // Total revenue (completed orders)
         $revenueQuery = $orderRepository->createQueryBuilder('o')
             ->select('SUM(o.totalPrice) as total')
@@ -140,7 +144,7 @@ class OrderController extends AbstractController
             ->setParameter('status', 'completed')
             ->getQuery();
         $totalRevenue = $revenueQuery->getSingleScalarResult() ?: 0;
-        
+
         // Recent orders (last 7 days)
         $sevenDaysAgo = new \DateTime('-7 days');
         $recentOrdersQuery = $orderRepository->createQueryBuilder('o')
@@ -149,7 +153,7 @@ class OrderController extends AbstractController
             ->setParameter('date', $sevenDaysAgo)
             ->getQuery();
         $recentOrders = $recentOrdersQuery->getSingleScalarResult() ?: 0;
-        
+
         return [
             'totalOrders' => $totalOrders,
             'pendingOrders' => $pendingOrders,

@@ -17,7 +17,7 @@ class CourseRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find courses by user
+     * Find courses by user.
      */
     public function findByUser($user): array
     {
@@ -29,4 +29,3 @@ class CourseRepository extends ServiceEntityRepository
             ->getResult();
     }
 }
-

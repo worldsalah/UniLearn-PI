@@ -44,19 +44,19 @@ class InsertUsersCommand extends Command
             // Set role as entity
             $userRole = $this->entityManager->getRepository(\App\Entity\Role::class)->findOneBy(['name' => $userData['role']]);
             $user->setRole($userRole);
-            
+
             // Hash the password
             $hashedPassword = $this->passwordHasher->hashPassword($user, $userData['password']);
             $user->setPassword($hashedPassword);
-            
+
             $this->entityManager->persist($user);
-            
+
             $output->writeln("Created user: {$userData['name']} ({$userData['email']}) with role: {$userData['role']}");
         }
 
         $this->entityManager->flush();
-        
-        $output->writeln('<info>Successfully inserted ' . count($users) . ' users into the database.</info>');
+
+        $output->writeln('<info>Successfully inserted '.count($users).' users into the database.</info>');
         $output->writeln('<info>Admin login: admin@unilearn.com / admin123</info>');
 
         return Command::SUCCESS;

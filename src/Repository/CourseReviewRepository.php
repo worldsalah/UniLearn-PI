@@ -16,4 +16,3 @@ class CourseReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, CourseReview::class);
     }
 }
-

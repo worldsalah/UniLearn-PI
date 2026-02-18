@@ -18,15 +18,15 @@ class StudentType extends AbstractType
                 'label' => 'Nom complet',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Entrez votre nom complet'
-                ]
+                    'placeholder' => 'Entrez votre nom complet',
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Adresse email',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Entrez votre adresse email'
-                ]
+                    'placeholder' => 'Entrez votre adresse email',
+                ],
             ])
         ;
     }

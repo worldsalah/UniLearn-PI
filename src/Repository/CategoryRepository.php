@@ -34,7 +34,7 @@ class CategoryRepository extends ServiceEntityRepository
     public function findCategoriesWithCourseCount(): array
     {
         // Use native SQL to avoid Doctrine issues
-        $sql = "
+        $sql = '
             SELECT c.id, c.name, c.description, c.icon, c.color, c.is_active, c.created_at, c.slug,
                    COUNT(co.id) as courseCount
             FROM category c
@@ -42,11 +42,11 @@ class CategoryRepository extends ServiceEntityRepository
             WHERE c.is_active = 1
             GROUP BY c.id, c.name, c.description, c.icon, c.color, c.is_active, c.created_at, c.slug
             ORDER BY c.name ASC
-        ";
-        
+        ';
+
         $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
         $result = $stmt->executeQuery();
-        
+
         $categories = [];
         while ($row = $result->fetchAssociative()) {
             // Create a simple array with all category data
@@ -56,18 +56,18 @@ class CategoryRepository extends ServiceEntityRepository
                 'description' => $row['description'],
                 'icon' => $row['icon'],
                 'color' => $row['color'],
-                'isActive' => (bool)$row['is_active'],
+                'isActive' => (bool) $row['is_active'],
                 'createdAt' => new \DateTimeImmutable($row['created_at']),
                 'slug' => $row['slug'],
-                'courseCount' => (int) $row['courseCount']
+                'courseCount' => (int) $row['courseCount'],
             ];
-            
+
             $categories[] = [
                 0 => (object) $categoryData, // Convert to object for template compatibility
-                'courseCount' => (int) $row['courseCount']
+                'courseCount' => (int) $row['courseCount'],
             ];
         }
-        
+
         return $categories;
     }
 }

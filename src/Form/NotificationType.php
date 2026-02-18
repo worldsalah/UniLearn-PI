@@ -18,14 +18,14 @@ class NotificationType extends AbstractType
                 'label' => 'Adresse email',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Entrez votre adresse email'
-                ]
+                    'placeholder' => 'Entrez votre adresse email',
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Me notifier',
                 'attr' => [
-                    'class' => 'btn btn-primary w-100'
-                ]
+                    'class' => 'btn btn-primary w-100',
+                ],
             ])
         ;
     }

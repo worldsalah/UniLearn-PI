@@ -18,9 +18,9 @@ class CheckoutController extends AbstractController
     {
         $checkout = new Checkout();
         $checkout->setTotalAmount(183.57); // Set default total amount
-        
+
         $form = $this->createForm(CheckoutType::class, $checkout, [
-            'total_amount' => 183.57
+            'total_amount' => 183.57,
         ]);
         $form->handleRequest($request);
 

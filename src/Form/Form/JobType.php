@@ -3,13 +3,11 @@
 namespace App\Form\Form;
 
 use App\Entity\Job;
-use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,16 +20,16 @@ class JobType extends AbstractType
                 'label' => 'Titre de l\'offre',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Entrez le titre de l\'offre d\'emploi'
-                ]
+                    'placeholder' => 'Entrez le titre de l\'offre d\'emploi',
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Décrivez l\'offre d\'emploi en détail...',
-                    'rows' => 6
-                ]
+                    'rows' => 6,
+                ],
             ])
             ->add('budget', MoneyType::class, [
                 'label' => 'Budget (€)',
@@ -39,8 +37,8 @@ class JobType extends AbstractType
                 'divisor' => 100,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '0.00'
-                ]
+                    'placeholder' => '0.00',
+                ],
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'Statut',
@@ -50,16 +48,16 @@ class JobType extends AbstractType
                     'Terminé' => 'completed',
                 ],
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('location', TextType::class, [
                 'label' => 'Lieu',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'ex: Remote, Paris, France'
-                ]
+                    'placeholder' => 'ex: Remote, Paris, France',
+                ],
             ])
             ->add('type', ChoiceType::class, [
                 'label' => 'Type de contrat',
@@ -72,8 +70,8 @@ class JobType extends AbstractType
                 ],
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('experienceLevel', ChoiceType::class, [
                 'label' => 'Niveau d\'expérience',
@@ -85,16 +83,16 @@ class JobType extends AbstractType
                 ],
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('duration', TextType::class, [
                 'label' => 'Durée',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'ex: 3 mois, 6 semaines'
-                ]
+                    'placeholder' => 'ex: 3 mois, 6 semaines',
+                ],
             ])
             ->add('requirements', TextareaType::class, [
                 'label' => 'Exigences',
@@ -102,16 +100,16 @@ class JobType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Listez les compétences et qualifications spécifiques...',
-                    'rows' => 4
-                ]
+                    'rows' => 4,
+                ],
             ])
             ->add('skills', TextType::class, [
                 'label' => 'Compétences requises',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'ex: PHP, JavaScript, Gestion de projet'
-                ]
+                    'placeholder' => 'ex: PHP, JavaScript, Gestion de projet',
+                ],
             ])
         ;
     }

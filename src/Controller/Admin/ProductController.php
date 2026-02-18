@@ -27,19 +27,19 @@ class ProductController extends AbstractController
     public function index(ProductRepository $productRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $search = $request->query->get('search', '');
-        
+
         // Build query with search functionality
         $queryBuilder = $productRepository->createQueryBuilder('p');
-        
+
         // Add search condition if search term is provided
         if (!empty($search)) {
             $queryBuilder->where('p.title LIKE :search OR p.description LIKE :search')
-                     ->setParameter('search', '%' . $search . '%');
+                     ->setParameter('search', '%'.$search.'%');
         }
-        
+
         $queryBuilder->orderBy('p.createdAt', 'DESC');
         $query = $queryBuilder->getQuery();
-        
+
         $products = $paginator->paginate($query, $request->query->getInt('page', 1), 10);
 
         return $this->render('admin/product/index.html.twig', [
@@ -53,7 +53,7 @@ class ProductController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $product = new Product();
-        
+
         // Set the freelancer before form creation to avoid validation issues
         $user = $this->getUser();
         if (!$user) {
@@ -62,7 +62,7 @@ class ProductController extends AbstractController
         } else {
             $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
         }
-        
+
         $form = $this->createForm(\App\Form\Form\ProductType::class, $product);
         $form->handleRequest($request);
 
@@ -84,12 +84,13 @@ class ProductController extends AbstractController
     public function edit(Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository, int $id): Response
     {
         $product = $productRepository->find($id);
-        
+
         if (!$product) {
             $this->addFlash('error', 'Product not found.');
+
             return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);
         }
-        
+
         $form = $this->createForm(\App\Form\Form\ProductType::class, $product);
         $form->handleRequest($request);
 
@@ -110,12 +111,13 @@ class ProductController extends AbstractController
     public function delete(Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository, int $id): Response
     {
         $product = $productRepository->find($id);
-        
+
         if (!$product) {
             $this->addFlash('error', 'Product not found.');
+
             return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);
         }
-        
+
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
             $entityManager->remove($product);
             $entityManager->flush();
@@ -129,9 +131,10 @@ class ProductController extends AbstractController
     public function show(ProductRepository $productRepository, int $id): Response
     {
         $product = $productRepository->find($id);
-        
+
         if (!$product) {
             $this->addFlash('error', 'Product not found.');
+
             return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -141,29 +144,29 @@ class ProductController extends AbstractController
     }
 
     /**
-     * Get product statistics for dashboard display
+     * Get product statistics for dashboard display.
      */
     private function getProductStatistics(): array
     {
         $productRepository = $this->entityManager->getRepository(Product::class);
-        
+
         // Total products
         $totalProducts = $productRepository->count([]);
-        
+
         // Active products (not deleted)
         $activeProductsQuery = $productRepository->createQueryBuilder('p')
             ->select('COUNT(p.id) as count')
             ->where('p.deletedAt IS NULL')
             ->getQuery();
         $activeProducts = $activeProductsQuery->getSingleScalarResult() ?: 0;
-        
+
         // Total value of all products
         $totalValueQuery = $productRepository->createQueryBuilder('p')
             ->select('SUM(p.price) as total')
             ->where('p.deletedAt IS NULL')
             ->getQuery();
         $totalValue = $totalValueQuery->getSingleScalarResult() ?: 0;
-        
+
         // Products by category
         $categoryStatsQuery = $productRepository->createQueryBuilder('p')
             ->select('c.name as categoryName, COUNT(p.id) as productCount')
@@ -173,7 +176,7 @@ class ProductController extends AbstractController
             ->orderBy('productCount', 'DESC')
             ->getQuery();
         $categoryStats = $categoryStatsQuery->getResult();
-        
+
         // Recent products (last 7 days)
         $sevenDaysAgo = new \DateTime('-7 days');
         $recentProductsQuery = $productRepository->createQueryBuilder('p')
@@ -183,7 +186,7 @@ class ProductController extends AbstractController
             ->setParameter('date', $sevenDaysAgo)
             ->getQuery();
         $recentProducts = $recentProductsQuery->getSingleScalarResult() ?: 0;
-        
+
         return [
             'totalProducts' => $totalProducts,
             'activeProducts' => $activeProducts,

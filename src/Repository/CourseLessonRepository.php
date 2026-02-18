@@ -16,4 +16,3 @@ class CourseLessonRepository extends ServiceEntityRepository
         parent::__construct($registry, CourseLesson::class);
     }
 }
-

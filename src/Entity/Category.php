@@ -17,7 +17,7 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le nom de la catégorie est obligatoire.")]
+    #[Assert\NotBlank(message: 'Le nom de la catégorie est obligatoire.')]
     #[Assert\Length(min: 2, max: 100, minMessage: 'Le nom de la catégorie doit contenir au moins {{ limit }} caractères', maxMessage: 'Le nom de la catégorie ne peut pas dépasser {{ limit }} caractères')]
     private ?string $name = null;
 
@@ -31,10 +31,10 @@ class Category
     private ?string $icon = null;
 
     #[ORM\Column(length: 7, nullable: true)]
-    #[Assert\Regex(pattern: '/^#[0-9A-Fa-f]{6}$/', message: "La couleur doit être un code hexadécimal valide (ex: #FF5733)")]
+    #[Assert\Regex(pattern: '/^#[0-9A-Fa-f]{6}$/', message: 'La couleur doit être un code hexadécimal valide (ex: #FF5733)')]
     private ?string $color = null;
 
-    #[ORM\Column(options: ["default" => true])]
+    #[ORM\Column(options: ['default' => true])]
     private bool $isActive = true;
 
     #[ORM\Column]
@@ -82,7 +82,7 @@ class Category
     private function generateSlug(): void
     {
         $name = $this->name;
-        if ($name !== null) {
+        if (null !== $name) {
             $this->slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
         }
     }

@@ -17,24 +17,24 @@ class AjaxValidationController extends AbstractController
         $form->handleRequest($request);
 
         $data = json_decode($request->getContent(), true);
-        
-        if ($data !== null && $data !== false) {
+
+        if (null !== $data && false !== $data) {
             // Submit form with data for validation
             $form->submit($data);
-            
+
             $errors = [];
             if (!$form->isValid()) {
                 foreach ($form->getErrors(true) as $error) {
                     $errors[] = [
                         'field' => $error->getOrigin()?->getName(),
-                        'message' => $error->getMessage()
+                        'message' => $error->getMessage(),
                     ];
                 }
             }
 
             return new JsonResponse([
                 'valid' => $form->isValid(),
-                'errors' => $errors
+                'errors' => $errors,
             ]);
         }
 
@@ -45,8 +45,8 @@ class AjaxValidationController extends AbstractController
     public function validateLogin(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        
-        if ($data === null || $data === false) {
+
+        if (null === $data || false === $data) {
             return new JsonResponse(['valid' => false, 'errors' => []]);
         }
 
@@ -70,7 +70,7 @@ class AjaxValidationController extends AbstractController
 
         return new JsonResponse([
             'valid' => $isValid,
-            'errors' => $errors
+            'errors' => $errors,
         ]);
     }
 }

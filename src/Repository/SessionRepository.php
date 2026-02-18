@@ -2,9 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Session;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\Session;
 
 class SessionRepository extends ServiceEntityRepository
 {
@@ -13,7 +13,7 @@ class SessionRepository extends ServiceEntityRepository
         parent::__construct($registry, Session::class);
     }
 
-    //POST
+    // POST
     public function save(Session $session, bool $flush = true): void
     {
         $this->getEntityManager()->persist($session);
@@ -23,7 +23,7 @@ class SessionRepository extends ServiceEntityRepository
         }
     }
 
-    //GET 
+    // GET
     public function findAllSessions(): array
     {
         return $this->createQueryBuilder('s')

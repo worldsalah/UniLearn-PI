@@ -5,15 +5,14 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Image;
 
 class ProfileType extends AbstractType
@@ -25,38 +24,38 @@ class ProfileType extends AbstractType
                 'label' => 'Full Name',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Enter your full name'
+                    'placeholder' => 'Enter your full name',
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
-                        'message' => 'Please enter your full name'
+                        'message' => 'Please enter your full name',
                     ]),
                     new Assert\Length([
                         'min' => 2,
                         'max' => 100,
                         'minMessage' => 'Your name should be at least {{ limit }} characters',
-                        'maxMessage' => 'Your name should not be more than {{ limit }} characters'
+                        'maxMessage' => 'Your name should not be more than {{ limit }} characters',
                     ]),
                     new Assert\Regex([
                         'pattern' => '/^[a-zA-ZÀ-ÿ\s\'-]+$/',
-                        'message' => 'Your name can only contain letters, spaces, hyphens and apostrophes'
-                    ])
-                ]
+                        'message' => 'Your name can only contain letters, spaces, hyphens and apostrophes',
+                    ]),
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email Address',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Enter your email address'
+                    'placeholder' => 'Enter your email address',
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
-                        'message' => 'Please enter your email address'
+                        'message' => 'Please enter your email address',
                     ]),
                     new Assert\Email([
-                        'message' => 'Please enter a valid email address'
-                    ])
-                ]
+                        'message' => 'Please enter a valid email address',
+                    ]),
+                ],
             ])
             ->add('bio', TextareaType::class, [
                 'label' => 'Bio',
@@ -64,55 +63,55 @@ class ProfileType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'Tell us about yourself...'
+                    'placeholder' => 'Tell us about yourself...',
                 ],
                 'constraints' => [
                     new Assert\Length([
                         'max' => 500,
-                        'maxMessage' => 'Your bio should not be more than {{ limit }} characters'
-                    ])
-                ]
+                        'maxMessage' => 'Your bio should not be more than {{ limit }} characters',
+                    ]),
+                ],
             ])
             ->add('phone', TextType::class, [
                 'label' => 'Phone Number',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Enter your phone number'
+                    'placeholder' => 'Enter your phone number',
                 ],
                 'constraints' => [
                     new Assert\Regex([
                         'pattern' => '/^[+]?[\d\s\-\(\)]+$/',
-                        'message' => 'Please enter a valid phone number'
-                    ])
-                ]
+                        'message' => 'Please enter a valid phone number',
+                    ]),
+                ],
             ])
             ->add('location', TextType::class, [
                 'label' => 'Location',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'City, Country'
+                    'placeholder' => 'City, Country',
                 ],
                 'constraints' => [
                     new Assert\Length([
                         'max' => 100,
-                        'maxMessage' => 'Location should not be more than {{ limit }} characters'
-                    ])
-                ]
+                        'maxMessage' => 'Location should not be more than {{ limit }} characters',
+                    ]),
+                ],
             ])
             ->add('website', TextType::class, [
                 'label' => 'Website',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'https://yourwebsite.com'
+                    'placeholder' => 'https://yourwebsite.com',
                 ],
                 'constraints' => [
                     new Assert\Url([
-                        'message' => 'Please enter a valid URL'
-                    ])
-                ]
+                        'message' => 'Please enter a valid URL',
+                    ]),
+                ],
             ])
             ->add('profileImage', FileType::class, [
                 'label' => 'Profile Image',
@@ -120,7 +119,7 @@ class ProfileType extends AbstractType
                 'mapped' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'accept' => 'image/*'
+                    'accept' => 'image/*',
                 ],
                 'constraints' => [
                     new Image([
@@ -130,26 +129,26 @@ class ProfileType extends AbstractType
                             'image/jpeg',
                             'image/png',
                             'image/gif',
-                            'image/webp'
+                            'image/webp',
                         ],
-                        'mimeTypesMessage' => 'Please upload a valid image (JPEG, PNG, GIF, or WebP)'
-                    ])
-                ]
+                        'mimeTypesMessage' => 'Please upload a valid image (JPEG, PNG, GIF, or WebP)',
+                    ]),
+                ],
             ])
             ->add('currentPassword', PasswordType::class, [
                 'label' => 'Current Password',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Enter current password to confirm changes'
+                    'placeholder' => 'Enter current password to confirm changes',
                 ],
                 'mapped' => false,
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'Please enter your current password to confirm changes',
-                        'groups' => ['password_change']
-                    ])
-                ]
+                        'groups' => ['password_change'],
+                    ]),
+                ],
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -157,17 +156,17 @@ class ProfileType extends AbstractType
                     'label' => 'New Password',
                     'attr' => [
                         'class' => 'form-control',
-                        'placeholder' => 'Enter new password'
+                        'placeholder' => 'Enter new password',
                     ],
-                    'required' => false
+                    'required' => false,
                 ],
                 'second_options' => [
                     'label' => 'Confirm New Password',
                     'attr' => [
                         'class' => 'form-control',
-                        'placeholder' => 'Confirm new password'
+                        'placeholder' => 'Confirm new password',
                     ],
-                    'required' => false
+                    'required' => false,
                 ],
                 'mapped' => false,
                 'constraints' => [
@@ -176,14 +175,14 @@ class ProfileType extends AbstractType
                         'max' => 4096,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
                         'maxMessage' => 'Your password should not be more than {{ limit }} characters',
-                        'groups' => ['password_change']
+                        'groups' => ['password_change'],
                     ]),
                     new Assert\Regex([
                         'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/',
                         'message' => 'Your password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character',
-                        'groups' => ['password_change']
-                    ])
-                ]
+                        'groups' => ['password_change'],
+                    ]),
+                ],
             ])
         ;
     }
@@ -192,7 +191,7 @@ class ProfileType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'validation_groups' => ['Default', 'password_change']
+            'validation_groups' => ['Default', 'password_change'],
         ]);
     }
 }

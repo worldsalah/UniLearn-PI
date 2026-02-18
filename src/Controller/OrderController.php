@@ -5,8 +5,6 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Form\Form\OrderType;
-use App\Repository\OrderRepository;
-use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,30 +19,30 @@ class OrderController extends AbstractController
     {
         // Get the currently logged-in user
         $user = $this->getUser();
-        
+
         if (!$user) {
             // If no user is logged in, redirect to login
             return $this->redirectToRoute('app_login');
         }
-        
+
         $order = new Order();
         $order->setProduct($product);
         $order->setBuyer($user instanceof \App\Entity\User ? $user : null);
         $order->setTotalPrice($product->getPrice());
-        
+
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($order);
             $entityManager->flush();
-            
+
             return $this->redirectToRoute('app_product_show', ['slug' => $product->getSlug()]);
         }
 
         return $this->render('order/new.html.twig', [
             'form' => $form,
-            'product' => $product
+            'product' => $product,
         ]);
     }
 
@@ -53,12 +51,12 @@ class OrderController extends AbstractController
     {
         // Get the currently logged-in user
         $user = $this->getUser();
-        
+
         if (!$user) {
             // If no user is logged in, redirect to login
             return $this->redirectToRoute('app_login');
         }
-        
+
         if ($order->getBuyer() !== $user) {
             throw $this->createAccessDeniedException('You cannot complete this order');
         }
@@ -73,6 +71,7 @@ class OrderController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Order completed successfully!');
+
         return $this->redirectToRoute('app_marketplace_index');
     }
 }

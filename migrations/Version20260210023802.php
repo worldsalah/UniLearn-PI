@@ -21,12 +21,12 @@ final class Version20260210023802 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $bookingTable = $schema->getTable('booking');
-        
+
         // Add column only if it doesn't exist
         if (!$bookingTable->hasColumn('updated_at')) {
             $this->addSql('ALTER TABLE booking ADD updated_at DATETIME DEFAULT NULL');
         }
-        
+
         $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
     }
 

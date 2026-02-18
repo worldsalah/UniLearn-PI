@@ -2,15 +2,13 @@
 
 namespace App\Entity;
 
-use App\Entity\Job;
-use App\Entity\User;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
-#[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false)]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
 class Application
 {
     #[ORM\Id]
@@ -63,6 +61,7 @@ class Application
     public function setJob(?Job $job): static
     {
         $this->job = $job;
+
         return $this;
     }
 
@@ -74,6 +73,7 @@ class Application
     public function setFreelancer(?User $freelancer): static
     {
         $this->freelancer = $freelancer;
+
         return $this;
     }
 
@@ -85,6 +85,7 @@ class Application
     public function setCoverLetter(?string $coverLetter): static
     {
         $this->coverLetter = $coverLetter;
+
         return $this;
     }
 
@@ -96,6 +97,7 @@ class Application
     public function setProposedBudget(?string $proposedBudget): static
     {
         $this->proposedBudget = $proposedBudget;
+
         return $this;
     }
 
@@ -107,6 +109,7 @@ class Application
     public function setTimeline(?string $timeline): static
     {
         $this->timeline = $timeline;
+
         return $this;
     }
 
@@ -118,6 +121,7 @@ class Application
     public function setStatus(?string $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -129,6 +133,7 @@ class Application
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -140,6 +145,7 @@ class Application
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -151,6 +157,7 @@ class Application
     public function setDeletedAt(?\DateTime $deletedAt): static
     {
         $this->deletedAt = $deletedAt;
+
         return $this;
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Job;
 use App\Entity\Application;
+use App\Entity\Job;
 use App\Form\Form\JobType;
 use App\Repository\ApplicationRepository;
 use App\Service\ApplicationNotificationService;
@@ -32,7 +32,7 @@ class JobController extends AbstractController
             // Redirect to login if not authenticated
             return $this->redirectToRoute('app_login');
         }
-        
+
         // Redirect to the actual new job form if authenticated
         return $this->redirectToRoute('app_job_new');
     }
@@ -41,7 +41,7 @@ class JobController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $job = new Job();
-        
+
         // Set the client before form creation to avoid validation issues
         $user = $this->getUser();
         if (!$user) {
@@ -60,19 +60,20 @@ class JobController extends AbstractController
                 $entityManager->flush();
             }
         }
-        
+
         $job->setClient($user instanceof \App\Entity\User ? $user : null);
-        
+
         $form = $this->createForm(JobType::class, $job);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $job->setCreatedAt(new \DateTimeImmutable());
-            
+
             $entityManager->persist($job);
             $entityManager->flush();
-            
+
             $this->addFlash('success', 'L\'offre d\'emploi a été créée avec succès.');
+
             return $this->redirectToRoute('app_job_show', ['id' => $job->getId()]);
         }
 
@@ -82,7 +83,7 @@ class JobController extends AbstractController
         }
 
         return $this->render('job/new.html.twig', [
-            'form' => $form
+            'form' => $form,
         ]);
     }
 
@@ -97,17 +98,17 @@ class JobController extends AbstractController
     #[Route('/{id}/apply', name: 'app_job_apply', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function apply(
-        Job $job, 
-        Request $request, 
-        ApplicationRepository $applicationRepository, 
-        EntityManagerInterface $entityManager
+        Job $job,
+        Request $request,
+        ApplicationRepository $applicationRepository,
+        EntityManagerInterface $entityManager,
     ): JsonResponse {
         $user = $this->getUser();
-        
+
         if (!$user) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'You must be logged in to apply for jobs.'
+                'message' => 'You must be logged in to apply for jobs.',
             ], 401);
         }
 
@@ -115,7 +116,7 @@ class JobController extends AbstractController
         if (!$user->getStudent()) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'You must have a freelancer profile to apply for jobs.'
+                'message' => 'You must have a freelancer profile to apply for jobs.',
             ], 400);
         }
 
@@ -124,15 +125,15 @@ class JobController extends AbstractController
         if ($existingApplication) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'You have already applied for this job.'
+                'message' => 'You have already applied for this job.',
             ], 400);
         }
 
         // Check if job is still open
-        if ($job->getStatus() !== 'open') {
+        if ('open' !== $job->getStatus()) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'This job is no longer accepting applications.'
+                'message' => 'This job is no longer accepting applications.',
             ], 400);
         }
 
@@ -162,7 +163,7 @@ class JobController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'message' => 'Application submitted successfully! The client has been notified.',
-            'application_id' => $application->getId()
+            'application_id' => $application->getId(),
         ]);
     }
 }

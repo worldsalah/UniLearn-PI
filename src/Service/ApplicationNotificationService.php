@@ -26,10 +26,14 @@ class ApplicationNotificationService
         $job = $application->getJob();
         $freelancer = $application->getFreelancer();
         
+        if ($job === null || $job->getClient() === null) {
+            return;
+        }
+        
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
             ->to(new Address($job->getClient()->getEmail()))
-            ->subject('New Application Received: ' . $job->getTitle())
+            ->subject('New Application Received: ' . ($job->getTitle() ?? 'Untitled Job'))
             ->htmlTemplate('emails/new_application.html.twig')
             ->context([
                 'job' => $job,
@@ -50,10 +54,14 @@ class ApplicationNotificationService
         $job = $application->getJob();
         $freelancer = $application->getFreelancer();
         
+        if ($job === null || $freelancer === null) {
+            return;
+        }
+        
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
             ->to(new Address($freelancer->getEmail()))
-            ->subject('Application Confirmed: ' . $job->getTitle())
+            ->subject('Application Confirmed: ' . ($job->getTitle() ?? 'Untitled Job'))
             ->htmlTemplate('emails/application_confirmation.html.twig')
             ->context([
                 'job' => $job,

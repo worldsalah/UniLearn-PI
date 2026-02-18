@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Favorite;
+use App\Entity\User;
+use App\Entity\Job;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

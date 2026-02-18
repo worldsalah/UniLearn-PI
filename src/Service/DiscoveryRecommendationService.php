@@ -57,9 +57,9 @@ class DiscoveryRecommendationService
             foreach ($products as $product) {
                 $suggestions[] = [
                     'id' => $product->getId(),
-                    'title' => $product->getTitle(),
+                    'title' => $product->getTitle() ?? 'Untitled Product',
                     'type' => 'product',
-                    'category' => $product->getCategory(),
+                    'category' => $product->getCategory() ?? 'Uncategorized',
                     'price' => $product->getPrice(),
                     'rating' => $this->calculateProductRating($product),
                     'url' => '/product/' . $product->getId()
@@ -83,7 +83,7 @@ class DiscoveryRecommendationService
             foreach ($jobs as $job) {
                 $suggestions[] = [
                     'id' => $job->getId(),
-                    'title' => $job->getTitle(),
+                    'title' => $job->getTitle() ?? 'Untitled Job',
                     'type' => 'job',
                     'category' => 'Job Request',
                     'budget' => $job->getBudget(),

@@ -38,13 +38,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function countCoursesByUser(int $userId): int
     {
-        return $this->createQueryBuilder('u')
+        $result = $this->createQueryBuilder('u')
             ->select('COUNT(c.id)')
             ->leftJoin('u.courses', 'c')
             ->where('u.id = :userId')
             ->setParameter('userId', $userId)
             ->getQuery()
-            ->getSingleScalarResult() ?? 0;
+            ->getSingleScalarResult();
+        
+        return (int) $result;
     }
 
     /**
@@ -52,13 +54,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function countQuizResultsByUser(int $userId): int
     {
-        return $this->createQueryBuilder('u')
+        $result = $this->createQueryBuilder('u')
             ->select('COUNT(qr.id)')
             ->leftJoin('u.quizResults', 'qr')
             ->where('u.id = :userId')
             ->setParameter('userId', $userId)
             ->getQuery()
-            ->getSingleScalarResult() ?? 0;
+            ->getSingleScalarResult();
+        
+        return (int) $result;
     }
 
     //    /**

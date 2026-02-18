@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use App\Validator\UniqueEmail;
+use App\Validator\UniqueEmail as UniqueEmailConstraint;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,7 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: 'L\'adresse email est obligatoire.')]
     #[Assert\Email(message: 'L\'adresse email n\'est pas valide.')]
     #[Assert\Length(max: 100, maxMessage: 'L\'email ne peut pas dépasser {{ limit }} caractères.')]
-    #[App\Validator\UniqueEmail(message: 'Cette adresse email est déjà utilisée.')]
+    #[UniqueEmailConstraint(message: 'Cette adresse email est déjà utilisée.')]
     private ?string $email = null;
 
     #[ORM\Column(type: 'string', length: 255)]

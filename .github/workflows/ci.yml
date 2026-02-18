@@ -58,6 +58,15 @@ jobs:
         echo "APP_SECRET=test-secret-for-ci" >> .env.local
         echo "DATABASE_URL=mysql://root:root@127.0.0.1:3306/unilearn_test?serverVersion=8.0&charset=utf8mb4" >> .env.local
 
+    - name: Debug .env
+      run: |
+        echo "=== .env content ==="
+        cat .env
+        echo "=== .env.local content ==="
+        cat .env.local
+        echo "=== .env.test content ==="
+        cat .env.test
+
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest --no-interaction --no-scripts
 

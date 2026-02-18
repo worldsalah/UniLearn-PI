@@ -42,7 +42,6 @@ parameters:
         numericOperandsInArithmeticOperators: true
         strictCalls: true
         switchConditionsMatchingType: true
-        noImplicitWildcard: true
     
     typeAliases:
         UserId: 'int'

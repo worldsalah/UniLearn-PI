@@ -27,8 +27,6 @@ parameters:
     
     scanFiles:
         - config/services.yaml
-        - config/packages/*.yaml
-        - config/packages/**/*.yaml
     
     strictRules:
         allRules: false

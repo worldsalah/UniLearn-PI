@@ -23,7 +23,8 @@ final class Version20260207141653 extends AbstractMigration
         $this->addSql('CREATE TABLE booking (id INT AUTO_INCREMENT NOT NULL, status VARCHAR(30) NOT NULL, note LONGTEXT DEFAULT NULL, created_at DATETIME NOT NULL, student_id INT NOT NULL, slot_id INT NOT NULL, INDEX IDX_E00CEDDECB944F1A (student_id), INDEX IDX_E00CEDDE59E5119C (slot_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE booking_slot (id INT AUTO_INCREMENT NOT NULL, start_at DATETIME NOT NULL, end_at DATETIME NOT NULL, is_available TINYINT DEFAULT 1 NOT NULL, freelancer_id INT NOT NULL, INDEX IDX_B49F02298545BDF5 (freelancer_id), UNIQUE INDEX uniq_slot_freelancer_start (freelancer_id, start_at), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE certificate (id INT AUTO_INCREMENT NOT NULL, issued_at DATETIME NOT NULL, verification_code VARCHAR(64) NOT NULL, pdf_file VARCHAR(255) DEFAULT NULL, student_id INT NOT NULL, course_id INT DEFAULT NULL, quiz_id INT DEFAULT NULL, UNIQUE INDEX UNIQ_219CDA4AE821C39F (verification_code), INDEX IDX_219CDA4ACB944F1A (student_id), INDEX IDX_219CDA4A591CC992 (course_id), INDEX IDX_219CDA4A853CD175 (quiz_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE course (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, price DOUBLE PRECISION DEFAULT NULL, is_published TINYINT DEFAULT 0 NOT NULL, image VARCHAR(255) DEFAULT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, deleted_at DATETIME DEFAULT NULL, slug VARCHAR(255) NOT NULL, category_id INT NOT NULL, instructor_id INT NOT NULL, UNIQUE INDEX UNIQ_169E6FB9989D9B62 (slug), INDEX IDX_169E6FB912469DE2 (category_id), INDEX IDX_169E6FB98C4FC193 (instructor_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        // Comment out course table creation since it already exists
+        // $this->addSql('CREATE TABLE course (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, price DOUBLE PRECISION DEFAULT NULL, is_published TINYINT DEFAULT 0 NOT NULL, image VARCHAR(255) DEFAULT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, deleted_at DATETIME DEFAULT NULL, slug VARCHAR(255) NOT NULL, category_id INT NOT NULL, instructor_id INT NOT NULL, UNIQUE INDEX UNIQ_169E6FB9989D9B62 (slug), INDEX IDX_169E6FB912469DE2 (category_id), INDEX IDX_169E6FB98C4FC193 (instructor_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE course_category (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(120) NOT NULL, slug VARCHAR(140) NOT NULL, UNIQUE INDEX UNIQ_AFF874975E237E06 (name), UNIQUE INDEX UNIQ_AFF87497989D9B62 (slug), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE course_lesson (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, content LONGTEXT DEFAULT NULL, position INT NOT NULL, course_id INT NOT NULL, INDEX IDX_564CB5BE591CC992 (course_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE course_review (id INT AUTO_INCREMENT NOT NULL, rating INT NOT NULL, comment LONGTEXT DEFAULT NULL, created_at DATETIME NOT NULL, student_id INT NOT NULL, course_id INT NOT NULL, INDEX IDX_D77B408BCB944F1A (student_id), INDEX IDX_D77B408B591CC992 (course_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
@@ -101,10 +102,8 @@ final class Version20260207141653 extends AbstractMigration
         $this->addSql('ALTER TABLE quiz_attempt_answer DROP FOREIGN KEY FK_9453B9FCF24C5BEC');
         $this->addSql('ALTER TABLE quiz_question DROP FOREIGN KEY FK_6033B00B853CD175');
         $this->addSql('ALTER TABLE student DROP FOREIGN KEY FK_B723AF33A76ED395');
-        $this->addSql('DROP TABLE booking');
-        $this->addSql('DROP TABLE booking_slot');
-        $this->addSql('DROP TABLE certificate');
-        $this->addSql('DROP TABLE course');
+        // Comment out DROP TABLE course since it already exists
+        // $this->addSql('DROP TABLE course');
         $this->addSql('DROP TABLE course_category');
         $this->addSql('DROP TABLE course_lesson');
         $this->addSql('DROP TABLE course_review');

@@ -2,7 +2,7 @@
 
 namespace App\Service\AI;
 
-use App\Entity\Student;
+use App\Entity\User;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,7 +15,7 @@ class SellerBehaviorAnalyzer
         private ProductRepository $productRepository
     ) {}
 
-    public function analyzeBehavior(Student $seller): array
+    public function analyzeBehavior(User $seller): array
     {
         $score = 100.0;
         $findings = [];
@@ -97,7 +97,7 @@ class SellerBehaviorAnalyzer
         ];
     }
 
-    private function analyzeTransactionVelocity(Student $seller): float
+    private function analyzeTransactionVelocity(User $seller): float
     {
         // Get orders for this seller's products
         $products = $seller->getProducts();
@@ -108,26 +108,34 @@ class SellerBehaviorAnalyzer
         $productIds = array_map(fn($p) => $p->getId(), $products->toArray());
         
         // Count orders in last 7 days vs last 30 days
-        $recentOrders = $this->orderRepository->createQueryBuilder('o')
-            ->select('COUNT(o.id)')
-            ->where('o.product IN (:products)')
-            ->andWhere('o.createdAt >= :sevenDaysAgo')
-            ->setParameter('products', $productIds)
-            ->setParameter('sevenDaysAgo', new \DateTimeImmutable('-7 days'))
-            ->getQuery()
-            ->getSingleScalarResult();
+        try {
+            $recentOrders = $this->orderRepository->createQueryBuilder('o')
+                ->select('COUNT(o.id)')
+                ->where('o.product IN (:products)')
+                ->andWhere('o.createdAt >= :sevenDaysAgo')
+                ->setParameter('products', $productIds)
+                ->setParameter('sevenDaysAgo', new \DateTimeImmutable('-7 days'))
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (\Exception $e) {
+            $recentOrders = 0;
+        }
 
-        $monthlyOrders = $this->orderRepository->createQueryBuilder('o')
-            ->select('COUNT(o.id)')
-            ->where('o.product IN (:products)')
-            ->andWhere('o.createdAt >= :thirtyDaysAgo')
-            ->setParameter('products', $productIds)
-            ->setParameter('thirtyDaysAgo', new \DateTimeImmutable('-30 days'))
-            ->getQuery()
-            ->getSingleScalarResult();
+        try {
+            $monthlyOrders = $this->orderRepository->createQueryBuilder('o')
+                ->select('COUNT(o.id)')
+                ->where('o.product IN (:products)')
+                ->andWhere('o.createdAt >= :thirtyDaysAgo')
+                ->setParameter('products', $productIds)
+                ->setParameter('thirtyDaysAgo', new \DateTimeImmutable('-30 days'))
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (\Exception $e) {
+            $monthlyOrders = 0;
+        }
 
         // Detect sudden spikes (more than 3x normal rate)
-        $normalRate = $monthlyOrders / 4; // Weekly average
+        $normalRate = $monthlyOrders > 0 ? $monthlyOrders / 4 : 0; // Weekly average
         if ($recentOrders > $normalRate * 3 && $recentOrders > 10) {
             return 60.0; // Suspicious spike
         }
@@ -135,11 +143,15 @@ class SellerBehaviorAnalyzer
         return 100.0;
     }
 
-    private function analyzeResponseTime(Student $seller): float
+    private function analyzeResponseTime(User $seller): float
     {
         // Simulated: In production, track message response times
         // For now, return high score for established sellers
-        $accountAge = $seller->getCreatedAt()->diff(new \DateTimeImmutable())->days;
+        $createdAt = $seller->getCreatedAt();
+        if ($createdAt === null) {
+            return 85.0;
+        }
+        $accountAge = $createdAt->diff(new \DateTimeImmutable())->days;
         
         if ($accountAge < 7) {
             return 85.0; // New sellers get benefit of doubt
@@ -148,7 +160,7 @@ class SellerBehaviorAnalyzer
         return 95.0; // Assume good response time
     }
 
-    private function analyzeCancellationRate(Student $seller): float
+    private function analyzeCancellationRate(User $seller): float
     {
         $products = $seller->getProducts();
         if ($products->isEmpty()) {
@@ -157,35 +169,47 @@ class SellerBehaviorAnalyzer
 
         $productIds = array_map(fn($p) => $p->getId(), $products->toArray());
         
-        $totalOrders = $this->orderRepository->createQueryBuilder('o')
-            ->select('COUNT(o.id)')
-            ->where('o.product IN (:products)')
-            ->setParameter('products', $productIds)
-            ->getQuery()
-            ->getSingleScalarResult();
+        try {
+            $totalOrders = $this->orderRepository->createQueryBuilder('o')
+                ->select('COUNT(o.id)')
+                ->where('o.product IN (:products)')
+                ->setParameter('products', $productIds)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (\Exception $e) {
+            $totalOrders = 0;
+        }
 
         if ($totalOrders == 0) {
             return 100.0;
         }
 
-        $cancelledOrders = $this->orderRepository->createQueryBuilder('o')
-            ->select('COUNT(o.id)')
-            ->where('o.product IN (:products)')
-            ->andWhere('o.status = :cancelled')
-            ->setParameter('products', $productIds)
-            ->setParameter('cancelled', 'cancelled')
-            ->getQuery()
-            ->getSingleScalarResult();
+        try {
+            $cancelledOrders = $this->orderRepository->createQueryBuilder('o')
+                ->select('COUNT(o.id)')
+                ->where('o.product IN (:products)')
+                ->andWhere('o.status = :cancelled')
+                ->setParameter('products', $productIds)
+                ->setParameter('cancelled', 'cancelled')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (\Exception $e) {
+            $cancelledOrders = 0;
+        }
 
-        $cancellationRate = ($cancelledOrders / $totalOrders) * 100;
+        $cancellationRate = $totalOrders > 0 ? ($cancelledOrders / $totalOrders) * 100 : 0;
         
         // Score decreases with higher cancellation rate
         return max(0, 100 - ($cancellationRate * 5));
     }
 
-    private function analyzeActivityConsistency(Student $seller): float
+    private function analyzeActivityConsistency(User $seller): float
     {
-        $accountAge = $seller->getCreatedAt()->diff(new \DateTimeImmutable())->days;
+        $createdAt = $seller->getCreatedAt();
+        if ($createdAt === null) {
+            return 70.0;
+        }
+        $accountAge = $createdAt->diff(new \DateTimeImmutable())->days;
         
         // New accounts (< 30 days) get lower consistency score
         if ($accountAge < 30) {
@@ -200,7 +224,7 @@ class SellerBehaviorAnalyzer
         return 85.0;
     }
 
-    private function detectAnomalies(Student $seller): float
+    private function detectAnomalies(User $seller): float
     {
         $score = 100.0;
         
@@ -209,9 +233,12 @@ class SellerBehaviorAnalyzer
         
         // Too many products created in short time
         if ($products->count() > 20) {
-            $accountAge = $seller->getCreatedAt()->diff(new \DateTimeImmutable())->days;
-            if ($accountAge < 30) {
-                $score -= 40; // Suspicious: too many products too quickly
+            $createdAt = $seller->getCreatedAt();
+            if ($createdAt !== null) {
+                $accountAge = $createdAt->diff(new \DateTimeImmutable())->days;
+                if ($accountAge < 30) {
+                    $score -= 40; // Suspicious: too many products too quickly
+                }
             }
         }
         

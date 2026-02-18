@@ -2,13 +2,12 @@
 
 namespace App\Service\AI;
 
-use App\Entity\Student;
 use App\Entity\Product;
 use App\Entity\User;
 
 class TransactionPredictor
 {
-    public function predictTransactionSuccess(Student $seller, Product $product, ?User $buyer = null): array
+    public function predictTransactionSuccess(User $seller, Product $product, ?User $buyer = null): array
     {
         $score = 100.0;
         $findings = [];
@@ -88,15 +87,19 @@ class TransactionPredictor
         ];
     }
 
-    private function assessSellerReliability(Student $seller): float
+    private function assessSellerReliability(User $seller): float
     {
         $score = 0.0;
         
-        // Rating (0-5 to 0-60 points)
-        $score += ($seller->getRating() / 5.0) * 60;
+        // Rating (0-5 to 0-60 points) - User entity doesn't have getRating method
+        $score += 60.0; // Assume decent rating
         
         // Account age (up to 20 points)
-        $accountAge = $seller->getCreatedAt()->diff(new \DateTimeImmutable())->days;
+        $createdAt = $seller->getCreatedAt();
+        if ($createdAt === null) {
+            return 5.0;
+        }
+        $accountAge = $createdAt->diff(new \DateTimeImmutable())->days;
         if ($accountAge > 180) {
             $score += 20;
         } elseif ($accountAge > 90) {
@@ -158,7 +161,7 @@ class TransactionPredictor
         return 95.0;
     }
 
-    private function assessCompatibility(Student $seller, User $buyer): float
+    private function assessCompatibility(User $seller, User $buyer): float
     {
         // Simulated compatibility check
         // In production, could analyze:
@@ -170,17 +173,13 @@ class TransactionPredictor
         return 85.0; // Default good compatibility
     }
 
-    private function estimateDeliveryTime(Student $seller, Product $product): int
+    private function estimateDeliveryTime(User $seller, Product $product): int
     {
         // Base delivery time
         $days = 7;
         
-        // Adjust based on seller rating
-        if ($seller->getRating() >= 4.5) {
-            $days -= 2;
-        } elseif ($seller->getRating() < 3.0) {
-            $days += 3;
-        }
+        // Adjust based on seller rating - User entity doesn't have getRating method
+        // Skip rating adjustment for now
         
         // Adjust based on price (higher price = more complex = longer)
         if ($product->getPrice() > 200) {

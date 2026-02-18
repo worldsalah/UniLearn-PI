@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Service\YouTubeService;
+use App\Entity\Lesson;
+use App\Repository\LessonRepository;
 use App\Repository\CourseRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +18,22 @@ class YouTubeController extends AbstractController
 {
     private YouTubeService $youTubeService;
     private Security $security;
+    private LessonRepository $lessonRepository;
+    private CourseRepository $courseRepository;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(YouTubeService $youTubeService, Security $security)
-    {
+    public function __construct(
+        YouTubeService $youTubeService, 
+        Security $security,
+        LessonRepository $lessonRepository,
+        CourseRepository $courseRepository,
+        EntityManagerInterface $entityManager
+    ) {
         $this->youTubeService = $youTubeService;
         $this->security = $security;
+        $this->lessonRepository = $lessonRepository;
+        $this->courseRepository = $courseRepository;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -226,8 +240,11 @@ class YouTubeController extends AbstractController
             
             // Test the lessons API directly
             $lessonsController = new \App\Controller\LessonVideoController(
-                $this->youTubeService,
-                $this->security
+                $this->lessonRepository,
+                $this->courseRepository,
+                $this->entityManager,
+                $this->security,
+                $this->youTubeService
             );
             
             $response = $lessonsController->getLessons();

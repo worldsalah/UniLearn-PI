@@ -41,7 +41,7 @@ class AssociateCoursesCommand extends Command
         }
 
         // Associate courses with teachers
-        $teachers = array_filter($users, fn($user) => $user->getRole() === 'teacher');
+        $teachers = array_filter($users, fn($user) => $user->getRole()?->getName() === 'teacher');
         $teacherArray = array_values($teachers);
 
         foreach ($courses as $index => $course) {

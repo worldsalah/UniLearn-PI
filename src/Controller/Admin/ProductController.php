@@ -60,7 +60,7 @@ class ProductController extends AbstractController
             // For admin, you might want to set a default user or handle differently
             $product->setFreelancer(null);
         } else {
-            $product->setFreelancer($user);
+            $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
         }
         
         $form = $this->createForm(\App\Form\Form\ProductType::class, $product);

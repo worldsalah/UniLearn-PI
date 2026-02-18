@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/pricing')]
 class PricingApiController extends AbstractController
@@ -167,7 +167,7 @@ class PricingApiController extends AbstractController
         $targetPrice = $data['target_price'] ?? null;
         $strategy = $data['strategy'] ?? 'balanced'; // aggressive, balanced, conservative
         
-        if (!$targetPrice) {
+        if ($targetPrice === null || $targetPrice === '') {
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Target price is required'
@@ -377,7 +377,7 @@ class PricingApiController extends AbstractController
         $expectedOrders = $data['expected_orders'] ?? null;
         $costs = $data['costs'] ?? 0;
         
-        if (!$category || (!$targetRevenue && !$expectedOrders)) {
+        if ($category === '' || ($targetRevenue === null && $expectedOrders === null)) {
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Category and either target revenue or expected orders are required'
@@ -390,7 +390,7 @@ class PricingApiController extends AbstractController
         // Calculate pricing scenarios
         $scenarios = [];
         
-        if ($targetRevenue) {
+        if ($targetRevenue !== null) {
             $priceForRevenue = ($targetRevenue + $costs) / ($expectedOrders ?? 10);
             $scenarios[] = [
                 'name' => 'Revenue Target',
@@ -402,7 +402,7 @@ class PricingApiController extends AbstractController
             ];
         }
         
-        if ($expectedOrders) {
+        if ($expectedOrders !== null) {
             $scenarios[] = [
                 'name' => 'Market Average',
                 'price' => $recommendedPrice,
@@ -418,8 +418,8 @@ class PricingApiController extends AbstractController
         $scenarios[] = [
             'name' => 'Budget Pricing',
             'price' => $budgetPrice,
-            'expected_orders' => $expectedOrders ? round($expectedOrders * 1.3) : 13,
-            'expected_revenue' => $budgetPrice * ($expectedOrders ? round($expectedOrders * 1.3) : 13),
+            'expected_orders' => $expectedOrders !== null ? round($expectedOrders * 1.3) : 13,
+            'expected_revenue' => $budgetPrice * ($expectedOrders !== null ? round($expectedOrders * 1.3) : 13),
             'profit_margin' => round((($budgetPrice - $costs) / $budgetPrice) * 100, 1),
             'market_position' => 'Budget'
         ];
@@ -429,8 +429,8 @@ class PricingApiController extends AbstractController
         $scenarios[] = [
             'name' => 'Premium Pricing',
             'price' => $premiumPrice,
-            'expected_orders' => $expectedOrders ? round($expectedOrders * 0.7) : 7,
-            'expected_revenue' => $premiumPrice * ($expectedOrders ? round($expectedOrders * 0.7) : 7),
+            'expected_orders' => $expectedOrders !== null ? round($expectedOrders * 0.7) : 7,
+            'expected_revenue' => $premiumPrice * ($expectedOrders !== null ? round($expectedOrders * 0.7) : 7),
             'profit_margin' => round((($premiumPrice - $costs) / $premiumPrice) * 100, 1),
             'market_position' => 'Premium'
         ];

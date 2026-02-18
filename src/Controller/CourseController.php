@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Chapter;
 use App\Entity\Course;
 use App\Entity\Lesson;
@@ -25,12 +26,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CourseController extends AbstractController
 {
-    private ValidatorInterface $validator;
-
-    public function __construct(ValidatorInterface $validator)
-    {
-        $this->validator = $validator;
-    }
 
     #[Route('/course/{id}', name: 'app_course_show', requirements: ['id' => '\d+'])]
     public function show(Course $course): Response
@@ -57,13 +52,13 @@ class CourseController extends AbstractController
                 return $this->redirectToRoute('app_login');
             }
             
-            $course->setUser($user);
+            $course->setUser($user instanceof \App\Entity\User ? $user : null);
             $course->setCreatedAt(new \DateTimeImmutable());
             $course->setStatus('inactive'); // Set course to inactive status by default
             
             // Handle file uploads
             $thumbnailFile = $form->get('thumbnailFile')->getData();
-            if ($thumbnailFile) {
+            if ($thumbnailFile !== null) {
                 $newFilename = uniqid() . '.' . $thumbnailFile->guessExtension();
                 $thumbnailFile->move(
                     $this->getParameter('kernel.project_dir') . '/public/uploads/courses/thumbnails',
@@ -73,7 +68,7 @@ class CourseController extends AbstractController
             }
 
             $videoFile = $form->get('videoFile')->getData();
-            if ($videoFile) {
+            if ($videoFile !== null) {
                 $newFilename = uniqid() . '.' . $videoFile->guessExtension();
                 $videoFile->move(
                     $this->getParameter('kernel.project_dir') . '/public/uploads/courses/videos',
@@ -292,7 +287,7 @@ class CourseController extends AbstractController
 
     #[Route('/api/course/{id}/delete', name: 'api_course_delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
     // #[IsGranted('ROLE_ADMIN')]
-    public function deleteCourse(Course $course, EntityManagerInterface $entityManager): JsonResponse
+    public function deleteCourse(Course $course, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
             $data = json_decode($request->getContent(), true);

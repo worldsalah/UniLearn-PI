@@ -389,7 +389,7 @@ final class InstructorController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Handle profile image upload
             $profileImageFile = $form->get('profileImage')->getData();
-            if ($profileImageFile) {
+            if ($profileImageFile !== null) {
                 $newFilename = uniqid() . '.' . $profileImageFile->guessExtension();
                 
                 // Move the file to the uploads directory

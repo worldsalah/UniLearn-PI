@@ -313,7 +313,7 @@ class PageController extends AbstractController
         
         // Apply sorting
         $validSortFields = ['fullName', 'email', 'createdAt', 'status', 'r.name'];
-        if (in_array($sortBy, $validSortFields)) {
+        if (in_array($sortBy, $validSortFields, true)) {
             $qb->orderBy('u.' . $sortBy, $sortOrder === 'asc' ? 'ASC' : 'DESC');
         } else {
             $qb->orderBy('u.createdAt', 'DESC');
@@ -349,12 +349,12 @@ class PageController extends AbstractController
         
         foreach ($allUsers as $user) {
             $userRole = $this->getUserRole($user);
-            if (!in_array($userRole, $availableRoles)) {
+            if (!in_array($userRole, $availableRoles, true)) {
                 $availableRoles[] = $userRole;
             }
             
             $userStatus = $user->getStatus() ?? 'active';
-            if (!in_array($userStatus, $availableStatuses)) {
+            if (!in_array($userStatus, $availableStatuses, true)) {
                 $availableStatuses[] = $userStatus;
             }
         }
@@ -664,7 +664,7 @@ class PageController extends AbstractController
         
         // Apply sorting
         $validSortFields = ['title', 'createdAt'];
-        if (in_array($sortBy, $validSortFields)) {
+        if (in_array($sortBy, $validSortFields, true)) {
             $qb->orderBy('q.' . $sortBy, $sortOrder === 'asc' ? 'ASC' : 'DESC');
         } else {
             $qb->orderBy('q.createdAt', 'DESC');

@@ -34,7 +34,7 @@ class FavoriteController extends AbstractController
         } else {
             // Add to favorites
             $favorite = new Favorite();
-            $favorite->setUser($user);
+            $favorite->setUser($user instanceof \App\Entity\User ? $user : null);
             $favorite->setJob($job);
             $entityManager->persist($favorite);
             $entityManager->flush();

@@ -19,12 +19,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class JobController extends AbstractController
 {
     private ApplicationRepository $applicationRepository;
-    private EntityManagerInterface $entityManager;
 
-    public function __construct(ApplicationRepository $applicationRepository, EntityManagerInterface $entityManager)
+    public function __construct(ApplicationRepository $applicationRepository)
     {
         $this->applicationRepository = $applicationRepository;
-        $this->entityManager = $entityManager;
     }
 
     #[Route('/', name: 'app_admin_job_index', methods: ['GET'])]
@@ -73,7 +71,7 @@ class JobController extends AbstractController
         // Set the client before form creation to avoid validation issues
         $user = $this->getUser();
         if ($user !== null) {
-            $job->setClient($user);
+            $job->setClient($user instanceof \App\Entity\User ? $user : null);
         }
         
         $form = $this->createForm(\App\Form\Form\JobType::class, $job);

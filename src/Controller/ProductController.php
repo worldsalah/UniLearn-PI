@@ -53,7 +53,7 @@ class ProductController extends AbstractController
             }
         }
         
-        $product->setFreelancer($user);
+        $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
         
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
@@ -122,7 +122,7 @@ class ProductController extends AbstractController
             
             // Ensure the product has a freelancer
             if (!$product->getFreelancer()) {
-                $product->setFreelancer($user);
+                $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
             }
             
             $product->setUpdatedAt(new \DateTimeImmutable());

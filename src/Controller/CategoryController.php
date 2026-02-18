@@ -18,12 +18,6 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 #[Route('/admin')]
 class CategoryController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
 
     // Admin routes
     #[Route('/categories', name: 'admin_category_list')]

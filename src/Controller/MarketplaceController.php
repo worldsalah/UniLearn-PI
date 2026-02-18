@@ -195,7 +195,7 @@ class MarketplaceController extends AbstractController
             }
         }
         
-        $order->setBuyer($user);
+        $order->setBuyer($user instanceof \App\Entity\User ? $user : null);
         $order->setTotalPrice($product->getPrice());
         $order->setStatus('pending');
 
@@ -278,12 +278,12 @@ class MarketplaceController extends AbstractController
             }
         }
         
-        $product->setFreelancer($user);
+        $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
         $entityManager->persist($product);
 
         $order = new Order();
         $order->setProduct($product);
-        $order->setBuyer($user);
+        $order->setBuyer($user instanceof \App\Entity\User ? $user : null);
         $order->setTotalPrice($job->getBudget());
         $order->setStatus('pending');
 

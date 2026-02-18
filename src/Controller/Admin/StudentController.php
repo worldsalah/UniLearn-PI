@@ -31,7 +31,7 @@ class StudentController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $student = new User();
-        $form = $this->createForm(\App\Form\StudentType::class, $student);
+        $form = $this->createForm(\App\Form\Form\StudentType::class, $student);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -58,7 +58,7 @@ class StudentController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_student_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $student, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(\App\Form\StudentType::class, $student);
+        $form = $this->createForm(\App\Form\Form\StudentType::class, $student);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

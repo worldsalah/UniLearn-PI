@@ -92,7 +92,7 @@ class SessionController extends AbstractController {
             $validLevels = ['beginner', 'intermediate', 'advanced'];
             if (empty($level)) {
                 $errors['level'] = 'Session level is required.';
-            } elseif (!in_array($level, $validLevels)) {
+            } elseif (!in_array($level, $validLevels, true)) {
                 $errors['level'] = 'Invalid session level selected.';
             }
 
@@ -252,7 +252,7 @@ class SessionController extends AbstractController {
             $validLevels = ['beginner', 'intermediate', 'advanced'];
             if (empty($level)) {
                 $errors['level'] = 'Session level is required.';
-            } elseif (!in_array($level, $validLevels)) {
+            } elseif (!in_array($level, $validLevels, true)) {
                 $errors['level'] = 'Invalid session level selected.';
             }
 

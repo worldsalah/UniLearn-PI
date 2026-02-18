@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/job')]
 class JobController extends AbstractController
@@ -61,7 +61,7 @@ class JobController extends AbstractController
             }
         }
         
-        $job->setClient($user);
+        $job->setClient($user instanceof \App\Entity\User ? $user : null);
         
         $form = $this->createForm(JobType::class, $job);
         $form->handleRequest($request);
@@ -139,7 +139,7 @@ class JobController extends AbstractController
         // Create new application
         $application = new Application();
         $application->setJob($job);
-        $application->setFreelancer($user);
+        $application->setFreelancer($user instanceof \App\Entity\User ? $user : null);
         $application->setCoverLetter($request->request->get('coverLetter'));
         $application->setProposedBudget((float) $request->request->get('proposedBudget'));
         $application->setTimeline($request->request->get('timeline'));

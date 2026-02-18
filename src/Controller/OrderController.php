@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Entity\Product;
-use App\Form\OrderType;
+use App\Form\Form\OrderType;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,7 +29,7 @@ class OrderController extends AbstractController
         
         $order = new Order();
         $order->setProduct($product);
-        $order->setBuyer($user);
+        $order->setBuyer($user instanceof \App\Entity\User ? $user : null);
         $order->setTotalPrice($product->getPrice());
         
         $form = $this->createForm(OrderType::class, $order);

@@ -79,7 +79,7 @@ class BookingController extends AbstractController {
             $studentId = null;
             $allUserId = null;
             
-            if ($this->getUser() && $this->getUser()->getRole()->getName() === 'student') {
+            if ($this->getUser() && $this->getUser()->getRole()?->getName() === 'student') {
                 // For students, instructor selection is only required if no session is pre-selected
                 if (!$selectedSession) {
                     $instructorId = $request->request->get('instructor_id');
@@ -88,7 +88,7 @@ class BookingController extends AbstractController {
                     }
                 }
                 // If session is pre-selected, instructor will be assigned automatically
-            } elseif ($this->getUser() && $this->getUser()->getRole()->getName() === 'instructor') {
+            } elseif ($this->getUser() && $this->getUser()->getRole()?->getName() === 'instructor') {
                 // Instructors don't need to select students - students book directly
                 // No validation needed for instructors
             } else {
@@ -160,7 +160,7 @@ class BookingController extends AbstractController {
             // Set the user relationship if logged in
             if ($this->getUser()) {
                 $user = $this->getUser();
-                $booking->setUser($user);
+                $booking->setUser($user instanceof \App\Entity\User ? $user : null);
                 $booking->setFirstName($request->request->get('firstName') ?: $user->getFullName());
                 $booking->setUserEmail($request->request->get('userEmail') ?: $user->getEmail());
             } else {

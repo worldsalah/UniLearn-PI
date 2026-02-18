@@ -442,7 +442,7 @@ class QuizController extends AbstractController
             }
 
             if (isset($data['course_id'])) {
-                if ($data['course_id']) {
+                if ($data['course_id'] !== null && $data['course_id'] !== '') {
                     $course = $this->entityManager->getRepository(Course::class)->find($data['course_id']);
                     if ($course) {
                         $quiz->setCourse($course);

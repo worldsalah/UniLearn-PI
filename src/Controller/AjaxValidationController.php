@@ -18,7 +18,7 @@ class AjaxValidationController extends AbstractController
 
         $data = json_decode($request->getContent(), true);
         
-        if ($data) {
+        if ($data !== null && $data !== false) {
             // Submit form with data for validation
             $form->submit($data);
             
@@ -46,7 +46,7 @@ class AjaxValidationController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         
-        if (!$data) {
+        if ($data === null || $data === false) {
             return new JsonResponse(['valid' => false, 'errors' => []]);
         }
 

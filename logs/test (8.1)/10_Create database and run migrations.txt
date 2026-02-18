@@ -1,0 +1,19 @@
+﻿2026-02-18T17:01:59.7682649Z ##[group]Run php bin/console doctrine:database:create --if-not-exists --env=test
+2026-02-18T17:01:59.7683211Z [36;1mphp bin/console doctrine:database:create --if-not-exists --env=test[0m
+2026-02-18T17:01:59.7683702Z [36;1mphp bin/console doctrine:migrations:migrate --no-interaction --env=test[0m
+2026-02-18T17:01:59.7732836Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:01:59.7733063Z env:
+2026-02-18T17:01:59.7733235Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:01:59.7733472Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:01:59.7733683Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:01:59.7733879Z ##[endgroup]
+2026-02-18T17:01:59.8842658Z Created database `unilearn_test_test` for connection named default
+2026-02-18T17:02:00.0315616Z [notice] Migrating up to DoctrineMigrations\Version20260218133724
+2026-02-18T17:02:00.1691496Z [warning] Migration DoctrineMigrations\Version20260205180537 was executed but did not result in any SQL statements.
+2026-02-18T17:02:01.7349444Z [warning] Migration DoctrineMigrations\Version20260208170601 was executed but did not result in any SQL statements.
+2026-02-18T17:02:01.7919323Z [warning] Migration DoctrineMigrations\Version20260208170701 was executed but did not result in any SQL statements.
+2026-02-18T17:02:03.0178934Z [notice] finished in 2984.5ms, used 28M memory, 33 migrations executed, 139 sql queries
+2026-02-18T17:02:03.0179612Z 
+2026-02-18T17:02:03.0207270Z  [OK] Successfully migrated to version: DoctrineMigrations\Version20260218133724
+2026-02-18T17:02:03.0207903Z 
+2026-02-18T17:02:03.0207913Z 

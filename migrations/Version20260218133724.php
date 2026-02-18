@@ -87,7 +87,21 @@ final class Version20260218133724 extends AbstractMigration
         if ($schema->hasTable('question')) {
             $this->addSql('ALTER TABLE question CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', CHANGE updated_at updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
         }
-        $this->addSql('ALTER TABLE quiz CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', CHANGE updated_at updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
+        // Handle quiz table - add columns if missing, then modify them
+        if ($schema->hasTable('quiz')) {
+            $quizTable = $schema->getTable('quiz');
+            if (!$quizTable->hasColumn('created_at')) {
+                $this->addSql('ALTER TABLE quiz ADD created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
+            } else {
+                $this->addSql('ALTER TABLE quiz CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
+            }
+            
+            if (!$quizTable->hasColumn('updated_at')) {
+                $this->addSql('ALTER TABLE quiz ADD updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
+            } else {
+                $this->addSql('ALTER TABLE quiz CHANGE updated_at updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
+            }
+        }
         if ($schema->hasTable('quiz_result')) {
             $this->addSql('ALTER TABLE quiz_result CHANGE taken_at taken_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
         }

@@ -25,7 +25,7 @@ final class Version20260218140000 extends AbstractMigration
         if (!$table->hasColumn('image_progress')) {
             $table->addColumn('image_progress', 'float', [
                 'default' => 0,
-                'notnull' => false,
+                'notnull' => true,
             ]);
         }
         
@@ -33,7 +33,7 @@ final class Version20260218140000 extends AbstractMigration
         if (!$table->hasColumn('video_progress')) {
             $table->addColumn('video_progress', 'float', [
                 'default' => 0,
-                'notnull' => false,
+                'notnull' => true,
             ]);
         }
     }

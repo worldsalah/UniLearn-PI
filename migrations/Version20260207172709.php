@@ -32,20 +32,31 @@ final class Version20260207172709 extends AbstractMigration
             ('Other', 'Miscellaneous courses', 'bi-three-dots', '#6c757d', NOW())");
         
         // Add category_id column if it doesn't exist
-        $this->addSql('ALTER TABLE course ADD category_id INT DEFAULT NULL');
-        
-        // Update existing courses to have a default category
-        $this->addSql('UPDATE course SET category_id = 1 WHERE category_id IS NULL');
-        
-        // Make category_id NOT NULL if all courses have one
-        $this->addSql('ALTER TABLE course CHANGE category_id category_id INT NOT NULL');
+        $courseTable = $schema->getTable('course');
+        if (!$courseTable->hasColumn('category_id')) {
+            $this->addSql('ALTER TABLE course ADD category_id INT DEFAULT NULL');
+            
+            // Update existing courses to have a default category
+            $this->addSql('UPDATE course SET category_id = 1 WHERE category_id IS NULL');
+            
+            // Make category_id NOT NULL if all courses have one
+            $this->addSql('ALTER TABLE course CHANGE category_id category_id INT NOT NULL');
+        }
         
         // Drop the old category column if it still exists
-        $this->addSql('ALTER TABLE course DROP category IF EXISTS');
+        if ($courseTable->hasColumn('category')) {
+            $this->addSql('ALTER TABLE course DROP category');
+        }
         
-        // Add foreign key constraint
-        $this->addSql('ALTER TABLE course ADD CONSTRAINT FK_169E6FB912469DE2 FOREIGN KEY (category_id) REFERENCES category (id)');
-        $this->addSql('CREATE INDEX IDX_169E6FB912469DE2 ON course (category_id)');
+        // Add foreign key constraint only if it doesn't exist
+        if (!$courseTable->hasForeignKey('FK_169E6FB912469DE2')) {
+            $this->addSql('ALTER TABLE course ADD CONSTRAINT FK_169E6FB912469DE2 FOREIGN KEY (category_id) REFERENCES category (id)');
+        }
+        
+        // Add index only if it doesn't exist
+        if (!$courseTable->hasIndex('IDX_169E6FB912469DE2')) {
+            $this->addSql('CREATE INDEX IDX_169E6FB912469DE2 ON course (category_id)');
+        }
         
         // Update column types if needed
         $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');

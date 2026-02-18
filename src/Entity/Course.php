@@ -401,7 +401,7 @@ class Course
     }
 
     // Virtual file handling methods for thumbnail
-    public function getThumbnailFile()
+    public function getThumbnailFile(): ?string
     {
         return null; // This is a virtual field
     }
@@ -413,7 +413,7 @@ class Course
     }
 
     // Virtual file handling methods for video
-    public function getVideoFile()
+    public function getVideoFile(): ?string
     {
         return null; // This is a virtual field
     }

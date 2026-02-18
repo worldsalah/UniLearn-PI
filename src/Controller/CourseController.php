@@ -190,8 +190,8 @@ class CourseController extends AbstractController
                 'createdAt' => $course->getCreatedAt() ? $course->getCreatedAt()->format('d M Y') : 'Unknown',
                 'thumbnailUrl' => $course->getThumbnailUrl(),
                 'instructor' => [
-                    'name' => $course->getUser() ? $course->getUser()->getFullName() : 'Unknown',
-                    'email' => $course->getUser() ? $course->getUser()->getEmail() : 'Unknown'
+                    'name' => $course->getUser()?->getFullName() ?? 'Unknown',
+                    'email' => $course->getUser()?->getEmail() ?? 'Unknown'
                 ]
             ];
         }

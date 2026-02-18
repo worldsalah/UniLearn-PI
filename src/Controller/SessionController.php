@@ -620,7 +620,7 @@ class SessionController extends AbstractController {
             'startDate' => $session->getStartDate() ? $session->getStartDate()->format('Y-m-d') : null,
             'endDate' => $session->getEndDate() ? $session->getEndDate()->format('Y-m-d') : null,
             'sessionDescription' => $session->getSessionDescription(),
-            'instructor_id' => $session->getInstructor() ? $session->getInstructor()->getId() : null,
+            'instructor_id' => $session->getInstructor()?->getId() ?? null,
             'instructor' => $session->getInstructor() ? [
                 'id' => $session->getInstructor()->getId(),
                 'fullName' => $session->getInstructor()->getFullName(),

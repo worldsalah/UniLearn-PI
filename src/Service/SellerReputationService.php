@@ -267,7 +267,7 @@ class SellerReputationService
         else $score += 10;
         
         // Verification bonus
-        if ($seller->isVerified()) {
+        if ($seller->isVerified() === true) {
             $score += 50;
         }
         

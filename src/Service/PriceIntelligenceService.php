@@ -271,7 +271,8 @@ class PriceIntelligenceService
         // This is a simplified estimation
         // In reality, you'd query the database for exact rank
         $percentile = $this->calculatePercentile($price, $marketData);
-        return max(1, round((1 - $percentile / 100) * $marketData['total_listings']));
+        $totalListings = $marketData['total_listings'] ?? 0;
+        return max(1, round((1 - $percentile / 100) * $totalListings));
     }
 
     /**
@@ -294,7 +295,7 @@ class PriceIntelligenceService
         $category = $product->getCategory();
         
         // Web Development specific
-        if ($category !== null && (strpos(strtolower($category), 'web') !== false || strpos(strtolower($category), 'development') !== false)) {
+        if ($category !== null && (strpos(strtolower($category ?? ''), 'web') !== false || strpos(strtolower($category ?? ''), 'development') !== false)) {
             if ($product->getPrice() < 50) {
                 $recommendations[] = [
                     'type' => 'category_specific',
@@ -308,7 +309,7 @@ class PriceIntelligenceService
         }
         
         // Design specific
-        if ($category !== null && strpos(strtolower($category), 'design') !== false) {
+        if ($category !== null && strpos(strtolower($category ?? ''), 'design') !== false) {
             if ($product->getPrice() > 200) {
                 $recommendations[] = [
                     'type' => 'category_specific',

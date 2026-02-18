@@ -58,15 +58,28 @@ final class Version20260207172709 extends AbstractMigration
             $this->addSql('CREATE INDEX IDX_169E6FB912469DE2 ON course (category_id)');
         }
         
-        // Update column types if needed
-        $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        // Update column types if needed (only if columns exist)
+        if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
+            $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        }
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE course DROP FOREIGN KEY FK_169E6FB912469DE2');
-        $this->addSql('DROP INDEX IDX_169E6FB912469DE2 ON course');
-        $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL');
+        $courseTable = $schema->getTable('course');
+        
+        if ($courseTable->hasForeignKey('FK_169E6FB912469DE2')) {
+            $this->addSql('ALTER TABLE course DROP FOREIGN KEY FK_169E6FB912469DE2');
+        }
+        
+        if ($courseTable->hasIndex('IDX_169E6FB912469DE2')) {
+            $this->addSql('DROP INDEX IDX_169E6FB912469DE2 ON course');
+        }
+        
+        // Update column types only if columns exist
+        if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
+            $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL');
+        }
     }
 }

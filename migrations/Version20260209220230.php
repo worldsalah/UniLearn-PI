@@ -36,7 +36,11 @@ final class Version20260209220230 extends AbstractMigration
             }
         }
         
-        $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        $courseTable = $schema->getTable('course');
+        // Only modify columns if they exist
+        if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
+            $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        }
     }
 
     public function down(Schema $schema): void
@@ -45,6 +49,11 @@ final class Version20260209220230 extends AbstractMigration
         $this->addSql('ALTER TABLE booking DROP FOREIGN KEY FK_E00CEDDE613FECDF');
         $this->addSql('DROP TABLE booking');
         $this->addSql('DROP TABLE session');
-        $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL');
+        
+        $courseTable = $schema->getTable('course');
+        // Only modify columns if they exist
+        if ($courseTable->hasColumn('image_progress') && $courseTable->hasColumn('video_progress')) {
+            $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL');
+        }
     }
 }

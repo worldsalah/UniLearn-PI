@@ -32,11 +32,16 @@ final class Version20260207173000 extends AbstractMigration
         // Update existing courses to have a default category if they don't have one
         $this->addSql('UPDATE course SET category_id = 1 WHERE category_id IS NULL');
         
-        // Add foreign key constraint if it doesn't exist
-        $this->addSql('ALTER TABLE course ADD CONSTRAINT FK_169E6FB912469DE2 FOREIGN KEY (category_id) REFERENCES category (id)');
+        // Add foreign key constraint only if it doesn't exist
+        $courseTable = $schema->getTable('course');
+        if (!$courseTable->hasForeignKey('FK_169E6FB912469DE2')) {
+            $this->addSql('ALTER TABLE course ADD CONSTRAINT FK_169E6FB912469DE2 FOREIGN KEY (category_id) REFERENCES category (id)');
+        }
         
-        // Add index if it doesn't exist
-        $this->addSql('CREATE INDEX IF NOT EXISTS IDX_169E6FB912469DE2 ON course (category_id)');
+        // Add index only if it doesn't exist
+        if (!$courseTable->hasIndex('IDX_169E6FB912469DE2')) {
+            $this->addSql('CREATE INDEX IDX_169E6FB912469DE2 ON course (category_id)');
+        }
     }
 
     public function down(Schema $schema): void

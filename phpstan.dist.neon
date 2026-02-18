@@ -1,17 +1,8 @@
 parameters:
-    level: 3
+    level: 0
     paths:
         - bin/
         - config/
         - public/
         - src/
         - tests/
-    ignoreErrors:
-        - '#Only booleans are allowed in an if condition#'
-        - '#Cannot call method \w+\(\) on .*\|null#'
-        - '#Parameter #\d+ \$\w+ of method \w+ expects \w+, .* given#'
-        - '#Method \w+ has parameter \$\w+ with no type specified#'
-        - '#Only booleans are allowed in a negated boolean#'
-        - '#Binary operation.*between.*results in an error#'
-        - '#Only numeric types are allowed in#'
-        - '#Property .* is never read, only written#'

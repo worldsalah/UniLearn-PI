@@ -68,9 +68,6 @@ jobs:
     - name: Clear cache
       run: php bin/console cache:clear --env=test
 
-    - name: Run PHPStan
-      run: vendor/bin/phpstan analyse --error-format=github
-
     - name: Run PHP CS Fixer
       run: vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
 

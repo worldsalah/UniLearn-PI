@@ -1,4 +1,6 @@
-🎓 UniLearn — Plateforme d’Apprentissage Intelligente (Projet PI Java & Web)
+🎓 UniLearn — Plateforme d'Apprentissage Intelligente (Projet PI Java & Web)
+
+<!-- CI workflow test trigger -->
 
 UniLearn est un projet universitaire réalisé dans le cadre du module Projet Intégré – Développement Web Java.
 

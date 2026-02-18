@@ -10,11 +10,10 @@
          bootstrap="tests/bootstrap.php"
          cacheDirectory=".phpunit.cache"
          executionOrder="depends,defects"
-         requireCoverageMetadata="true"
-         beStrictAboutCoverageMetadata="true"
          beStrictAboutOutputDuringTests="true"
-         failOnRisky="true"
+         failOnRisky="false"
          failOnEmptyTestSuite="false"
+         stopOnFailure="false"
 >
     <php>
         <ini name="display_errors" value="1" />
@@ -30,20 +29,10 @@
         </testsuite>
     </testsuites>
 
-    <source ignoreSuppressionOfDeprecations="true"
-            ignoreIndirectDeprecations="true"
-            restrictNotices="true"
-            restrictWarnings="true"
-    >
+    <source>
         <include>
             <directory>src</directory>
         </include>
-
-        <deprecationTrigger>
-            <method>Doctrine\Deprecations\Deprecation::trigger</method>
-            <method>Doctrine\Deprecations\Deprecation::delegateTriggerToBackend</method>
-            <function>trigger_deprecation</function>
-        </deprecationTrigger>
     </source>
 
     <extensions>

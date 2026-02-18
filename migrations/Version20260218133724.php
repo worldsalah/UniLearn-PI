@@ -20,8 +20,8 @@ final class Version20260218133724 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP TABLE course_audit_log');
-        $this->addSql('DROP TABLE course_version');
+        $this->addSql('DROP TABLE IF EXISTS course_audit_log');
+        $this->addSql('DROP TABLE IF EXISTS course_version');
         $this->addSql('ALTER TABLE application CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', CHANGE updated_at updated_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
         $this->addSql('ALTER TABLE category CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
         $this->addSql('ALTER TABLE checkout CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');

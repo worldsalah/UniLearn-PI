@@ -165,9 +165,9 @@ class SellerReputationService
         $isVerified = $seller->isVerified() ?? false;
 
         return [
-            'total_orders' => (int) $totalOrders,
-            'completed_orders' => (int) $completedOrders,
-            'failed_orders' => (int) $failedOrders,
+            'total_orders' => $totalOrders,
+            'completed_orders' => $completedOrders,
+            'failed_orders' => $failedOrders,
             'completion_rate' => $totalOrders > 0 ? round(($completedOrders / $totalOrders) * 100, 1) : 0,
             'avg_response_time' => $avgResponseTime,
             'avg_rating' => $reviewStats['avg_rating'],
@@ -240,7 +240,7 @@ class SellerReputationService
     {
         if ($totalReviews === 0) return 50; // Neutral score for no reviews
         
-        $avgRating = $avgRating ?? 0;
+        $avgRating = $reviewStats['avg_rating'] ?? 0.0;
         $ratingScore = ($avgRating / 5) * 100;
         
         // Bonus for having more reviews

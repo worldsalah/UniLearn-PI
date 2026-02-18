@@ -19,7 +19,11 @@ final class Version20260209180000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE user ADD agree_terms TINYINT(1) DEFAULT 0 NOT NULL');
+        // Check if column exists before adding
+        $table = $schema->getTable('user');
+        if (!$table->hasColumn('agree_terms')) {
+            $this->addSql('ALTER TABLE user ADD agree_terms TINYINT(1) DEFAULT 0 NOT NULL');
+        }
     }
 
     public function down(Schema $schema): void

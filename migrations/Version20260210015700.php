@@ -20,9 +20,18 @@ final class Version20260210015700 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE booking ADD preferred_date DATE DEFAULT NULL, ADD user_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE booking ADD CONSTRAINT FK_E00CEDDEA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
-        $this->addSql('CREATE INDEX IDX_E00CEDDEA76ED395 ON booking (user_id)');
+        $bookingTable = $schema->getTable('booking');
+        
+        // Add columns only if they don't exist
+        if (!$bookingTable->hasColumn('preferred_date')) {
+            $this->addSql('ALTER TABLE booking ADD preferred_date DATE DEFAULT NULL');
+        }
+        if (!$bookingTable->hasColumn('user_id')) {
+            $this->addSql('ALTER TABLE booking ADD user_id INT DEFAULT NULL');
+            $this->addSql('ALTER TABLE booking ADD CONSTRAINT FK_E00CEDDEA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+            $this->addSql('CREATE INDEX IDX_E00CEDDEA76ED395 ON booking (user_id)');
+        }
+        
         $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
     }
 

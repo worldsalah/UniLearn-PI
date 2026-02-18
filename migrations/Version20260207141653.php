@@ -49,8 +49,8 @@ final class Version20260207141653 extends AbstractMigration
         $this->addSql('ALTER TABLE certificate ADD CONSTRAINT FK_219CDA4ACB944F1A FOREIGN KEY (student_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE certificate ADD CONSTRAINT FK_219CDA4A591CC992 FOREIGN KEY (course_id) REFERENCES course (id)');
         $this->addSql('ALTER TABLE certificate ADD CONSTRAINT FK_219CDA4A853CD175 FOREIGN KEY (quiz_id) REFERENCES quiz (id)');
-        $this->addSql('ALTER TABLE course ADD CONSTRAINT FK_169E6FB912469DE2 FOREIGN KEY (category_id) REFERENCES course_category (id)');
-        $this->addSql('ALTER TABLE course ADD CONSTRAINT FK_169E6FB98C4FC193 FOREIGN KEY (instructor_id) REFERENCES user (id)');
+        // Foreign key constraints for course table will be handled by later migrations
+        // after the category_id column is properly added
         $this->addSql('ALTER TABLE course_lesson ADD CONSTRAINT FK_564CB5BE591CC992 FOREIGN KEY (course_id) REFERENCES course (id)');
         $this->addSql('ALTER TABLE course_review ADD CONSTRAINT FK_D77B408BCB944F1A FOREIGN KEY (student_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE course_review ADD CONSTRAINT FK_D77B408B591CC992 FOREIGN KEY (course_id) REFERENCES course (id)');

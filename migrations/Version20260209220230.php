@@ -20,9 +20,22 @@ final class Version20260209220230 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE booking (id INT AUTO_INCREMENT NOT NULL, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, user_email VARCHAR(255) NOT NULL, phone_number VARCHAR(255) NOT NULL, session_id INT NOT NULL, INDEX IDX_E00CEDDE613FECDF (session_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE session (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, level VARCHAR(255) NOT NULL, date DATETIME NOT NULL, duration INT NOT NULL, session_description VARCHAR(255) NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('ALTER TABLE booking ADD CONSTRAINT FK_E00CEDDE613FECDF FOREIGN KEY (session_id) REFERENCES session (id)');
+        // Create tables only if they don't exist
+        if (!$schema->hasTable('booking')) {
+            $this->addSql('CREATE TABLE booking (id INT AUTO_INCREMENT NOT NULL, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, user_email VARCHAR(255) NOT NULL, phone_number VARCHAR(255) NOT NULL, session_id INT NOT NULL, INDEX IDX_E00CEDDE613FECDF (session_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        }
+        if (!$schema->hasTable('session')) {
+            $this->addSql('CREATE TABLE session (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, level VARCHAR(255) NOT NULL, date DATETIME NOT NULL, duration INT NOT NULL, session_description VARCHAR(255) NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        }
+        
+        // Add foreign key only if both tables exist and constraint doesn't exist
+        if ($schema->hasTable('booking') && $schema->hasTable('session')) {
+            $bookingTable = $schema->getTable('booking');
+            if (!$bookingTable->hasForeignKey('FK_E00CEDDE613FECDF')) {
+                $this->addSql('ALTER TABLE booking ADD CONSTRAINT FK_E00CEDDE613FECDF FOREIGN KEY (session_id) REFERENCES session (id)');
+            }
+        }
+        
         $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
     }
 

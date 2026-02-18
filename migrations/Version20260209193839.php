@@ -20,7 +20,10 @@ final class Version20260209193839 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE chapter ADD sort_order INT NOT NULL');
+        $table = $schema->getTable('chapter');
+        if (!$table->hasColumn('sort_order')) {
+            $this->addSql('ALTER TABLE chapter ADD sort_order INT NOT NULL');
+        }
         $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
     }
 

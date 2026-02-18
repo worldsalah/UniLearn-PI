@@ -32,7 +32,14 @@ final class Version20260210015700 extends AbstractMigration
             $this->addSql('CREATE INDEX IDX_E00CEDDEA76ED395 ON booking (user_id)');
         }
         
-        $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        // Add progress columns to course table if they don't exist
+        $courseTable = $schema->getTable('course');
+        if (!$courseTable->hasColumn('image_progress')) {
+            $this->addSql('ALTER TABLE course ADD image_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        }
+        if (!$courseTable->hasColumn('video_progress')) {
+            $this->addSql('ALTER TABLE course ADD video_progress DOUBLE PRECISION DEFAULT 0 NOT NULL');
+        }
     }
 
     public function down(Schema $schema): void
@@ -41,6 +48,13 @@ final class Version20260210015700 extends AbstractMigration
         $this->addSql('ALTER TABLE booking DROP FOREIGN KEY FK_E00CEDDEA76ED395');
         $this->addSql('DROP INDEX IDX_E00CEDDEA76ED395 ON booking');
         $this->addSql('ALTER TABLE booking DROP preferred_date, DROP user_id');
-        $this->addSql('ALTER TABLE course CHANGE image_progress image_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL, CHANGE video_progress video_progress DOUBLE PRECISION DEFAULT \'0\' NOT NULL');
+        // Drop progress columns from course table if they exist
+        $courseTable = $schema->getTable('course');
+        if ($courseTable->hasColumn('image_progress')) {
+            $this->addSql('ALTER TABLE course DROP image_progress');
+        }
+        if ($courseTable->hasColumn('video_progress')) {
+            $this->addSql('ALTER TABLE course DROP video_progress');
+        }
     }
 }

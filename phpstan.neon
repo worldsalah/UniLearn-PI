@@ -26,9 +26,9 @@ parameters:
         - vendor/autoload.php
     
     scanFiles:
-        - config/services.php
-        - config/packages/*.php
-        - config/packages/**/*.php
+        - config/services.yaml
+        - config/packages/*.yaml
+        - config/packages/**/*.yaml
     
     strictRules:
         allRules: false

@@ -72,10 +72,7 @@ class JobController extends AbstractController
         
         // Set the client before form creation to avoid validation issues
         $user = $this->getUser();
-        if (!$user) {
-            // For admin, you might want to set a default user or handle differently
-            $job->setClient(null);
-        } else {
+        if ($user !== null) {
             $job->setClient($user);
         }
         

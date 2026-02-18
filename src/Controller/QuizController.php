@@ -1078,7 +1078,7 @@ class QuizController extends AbstractController
         <div class="content">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number">' . count($quizzes) . '</div>
+                    <div class="stat-number">' . count(array_filter($quizzes, function($quiz) { return $quiz->getCourse() !== null; })) . '</div>
                     <div class="stat-label">Total Quizzes</div>
                 </div>
                 <div class="stat-card">

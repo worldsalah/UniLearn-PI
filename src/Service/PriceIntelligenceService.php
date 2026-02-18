@@ -99,7 +99,7 @@ class PriceIntelligenceService
             } elseif ($price <= $p75) {
                 ++$distribution['standard'];
             } else {
-                $distribution['premium']++;
+                ++$distribution['premium'];
             }
         }
 

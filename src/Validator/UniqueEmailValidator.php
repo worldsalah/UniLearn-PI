@@ -27,8 +27,8 @@ class UniqueEmailValidator extends ConstraintValidator
         }
 
         $existingUser = $this->userRepository->findOneBy(['email' => $value]);
-
-        if ($existingUser !== null) {
+        
+        if ($existingUser !== null && $existingUser instanceof User) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

@@ -15,18 +15,15 @@ class DiscoveryRecommendationService
 {
     private ProductRepository $productRepository;
     private JobRepository $jobRepository;
-    private UserRepository $userRepository;
     private EntityManagerInterface $entityManager;
 
     public function __construct(
         ProductRepository $productRepository,
         JobRepository $jobRepository,
-        UserRepository $userRepository,
         EntityManagerInterface $entityManager
     ) {
         $this->productRepository = $productRepository;
         $this->jobRepository = $jobRepository;
-        $this->userRepository = $userRepository;
         $this->entityManager = $entityManager;
     }
 

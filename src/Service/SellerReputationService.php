@@ -10,14 +10,11 @@ use Doctrine\ORM\EntityManagerInterface;
 class SellerReputationService
 {
     private OrderRepository $orderRepository;
-    private EntityManagerInterface $entityManager;
 
     public function __construct(
-        OrderRepository $orderRepository,
-        EntityManagerInterface $entityManager
+        OrderRepository $orderRepository
     ) {
         $this->orderRepository = $orderRepository;
-        $this->entityManager = $entityManager;
     }
 
     /**
@@ -243,6 +240,7 @@ class SellerReputationService
     {
         if ($totalReviews === 0) return 50; // Neutral score for no reviews
         
+        $avgRating = $avgRating ?? 0;
         $ratingScore = ($avgRating / 5) * 100;
         
         // Bonus for having more reviews

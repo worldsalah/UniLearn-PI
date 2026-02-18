@@ -142,7 +142,7 @@ class YouTubeService
         $allVideos = [];
         foreach ($queries as $query) {
             try {
-                $videos = $this->searchEducationalVideos($query, 5);
+                $videos = $this->searchEducationalVideos((string)$query, 5);
                 $allVideos = array_merge($allVideos, $videos);
             } catch (\Exception $e) {
                 // Continue with other queries if one fails

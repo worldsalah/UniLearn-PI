@@ -272,7 +272,7 @@ class PriceIntelligenceService
         // In reality, you'd query the database for exact rank
         $percentile = $this->calculatePercentile($price, $marketData);
         $totalListings = $marketData['total_listings'] ?? 0;
-        return max(1, round((1 - $percentile / 100) * $totalListings));
+        return max(1, (int)round((1 - $percentile / 100) * $totalListings));
     }
 
     /**
@@ -406,27 +406,6 @@ class PriceIntelligenceService
         elseif ($percentile >= 25 && $percentile <= 75) $confidence += 10;
         
         return min($confidence, 95);
-    }
-
-    /**
-     * Calculate percentile from array
-     */
-    private function percentile(array $arr, $percentile): float
-    {
-        sort($arr);
-        $index = ($percentile / 100) * (count($arr) - 1);
-        
-        if (floor($index) === (int)$index) {
-            return $arr[$index];
-        } else {
-            $lower = $arr[floor($index)];
-            $upper = $arr[ceil($index)];
-            return $lower + (($upper - $lower) * ($index - floor($index)));
-        }
-    }
-
-    /**
-     * Calculate median
      */
     private function median(array $arr): float
     {

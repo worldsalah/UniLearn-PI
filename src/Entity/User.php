@@ -30,7 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: 'L\'adresse email est obligatoire.')]
     #[Assert\Email(message: 'L\'adresse email n\'est pas valide.')]
     #[Assert\Length(max: 100, maxMessage: 'L\'email ne peut pas dépasser {{ limit }} caractères.')]
-    #[UniqueEmailConstraint(message: 'Cette adresse email est déjà utilisée.')]
+    #[UniqueEmailConstraint]
     private ?string $email = null;
 
     #[ORM\Column(type: 'string', length: 255)]

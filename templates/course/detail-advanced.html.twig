@@ -1,0 +1,490 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ course.title }} - Course Details{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Advanced Course Detail Styles */
+.course-header-advanced {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    padding: 3rem 0;
+    color: white;
+}
+
+.course-title-advanced {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.course-meta-advanced {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.meta-item-advanced {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.video-player-advanced {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.video-player-advanced video {
+    width: 100%;
+    height: auto;
+}
+
+.course-section-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.course-section-header {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 12px 12px 0 0;
+}
+
+.course-section-header h3 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.curriculum-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.curriculum-item:last-child {
+    border-bottom: none;
+}
+
+.lesson-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+}
+
+.lesson-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.lesson-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dc3545;
+    color: white;
+}
+
+.lesson-icon.locked {
+    background: #6c757d;
+}
+
+.lesson-title h6 {
+    margin: 0;
+    font-weight: 500;
+}
+
+.lesson-duration {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.sidebar-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.price-display-advanced {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+.course-features-list {
+    list-style: none;
+    padding: 0;
+}
+
+.course-features-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f3f5;
+    display: flex;
+    justify-content: space-between;
+}
+
+.course-features-list li:last-child {
+    border-bottom: none;
+}
+
+.instructor-info-advanced {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.instructor-avatar-advanced {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.rating-stars {
+    color: #ffc107;
+}
+
+.course-tags-advanced {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tag-advanced {
+    background: #e9ecef;
+    color: #495057;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.tag-advanced:hover {
+    background: #0d6efd;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .course-title-advanced {
+        font-size: 1.75rem;
+    }
+    
+    .course-meta-advanced {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Course Header Advanced -->
+<section class="course-header-advanced">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="course-title-advanced">{{ course.title }}</h1>
+                <p class="lead mb-3">{{ course.shortDescription }}</p>
+                
+                <div class="course-meta-advanced">
+                    <div class="meta-item-advanced">
+                        <i class="fas fa-star"></i>
+                        <span>{{ random(4.1, 4.9) }} ({{ random(200, 500) }} reviews)</span>
+                    </div>
+                    <div class="meta-item-advanced">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>{{ random(1000, 5000) }} enrolled</span>
+                    </div>
+                    <div class="meta-item-advanced">
+                        <i class="fas fa-signal"></i>
+                        <span>{{ course.level|default('All Levels') }}</span>
+                    </div>
+                    <div class="meta-item-advanced">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ course.duration ? course.duration ~ ' hours' : 'Self-paced' }}</span>
+                    </div>
+                    <div class="meta-item-advanced">
+                        <i class="fas fa-globe"></i>
+                        <span>{{ course.language|default('English') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="pt-3">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Main Content -->
+            <div class="col-xl-8">
+                <!-- Video Player -->
+                <div class="course-section-card">
+                    <div class="video-player-advanced">
+                        {% if course.videoUrl %}
+                            <div class="ratio ratio-16x9">
+                                <iframe src="{{ course.videoUrl|replace({'youtube.com': 'youtube-nocookie.com'}) }}" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        {% elseif course.thumbnailUrl %}
+                            <img src="{{ asset(course.thumbnailUrl) }}" alt="{{ course.title }}" class="img-fluid">
+                        {% else %}
+                            <div class="ratio ratio-16x9 bg-light d-flex align-items-center justify-content-center">
+                                <i class="fas fa-play-circle fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Course Description -->
+                <div class="course-section-card">
+                    <div class="course-section-header">
+                        <h3>Course Description</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if course.shortDescription %}
+                            <p class="mb-3">{{ course.shortDescription }}</p>
+                        {% endif %}
+                        
+                        {% if course.learningOutcomes %}
+                            <h5 class="mt-4 mb-3">What You'll Learn</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        {% set outcomes = course.learningOutcomes|split('\n') %}
+                                        {% for outcome in outcomes|slice(0, 5) %}
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                {{ outcome|trim }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        {% for outcome in outcomes|slice(5, 10) %}
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                {{ outcome|trim }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if course.requirements %}
+                            <h5 class="mt-4 mb-3">Requirements</h5>
+                            <p>{{ course.requirements }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Curriculum -->
+                <div class="course-section-card">
+                    <div class="course-section-header">
+                        <h3>Curriculum</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if course.chapters and course.chapters|length > 0 %}
+                            {% for chapter in course.chapters %}
+                                <div class="curriculum-item">
+                                    <h5 class="mb-3">Chapter {{ loop.index }}: {{ chapter.title }}</h5>
+                                    
+                                    {% if chapter.lessons and chapter.lessons|length > 0 %}
+                                        {% for lesson in chapter.lessons %}
+                                            <div class="lesson-item">
+                                                <div class="lesson-info">
+                                                    <div class="lesson-icon">
+                                                        <i class="fas fa-play"></i>
+                                                    </div>
+                                                    <div class="lesson-title">
+                                                        <h6>{{ lesson.title }}</h6>
+                                                        <div class="lesson-duration">
+                                                            {% if lesson.duration %}
+                                                                {{ lesson.duration }}
+                                                            {% else %}
+                                                                {{ random(5, 30) }} min
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-sm btn-success">Play</button>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-muted">No lessons available in this chapter.</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No curriculum available for this course.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- FAQs -->
+                <div class="course-section-card">
+                    <div class="course-section-header">
+                        <h3>Frequently Asked Questions</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        What is included in this course?
+                                    </button>
+                                </h2>
+                                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        This course includes video lectures, downloadable resources, assignments, and a certificate of completion.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        Who is this course for?
+                                    </button>
+                                </h2>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        This course is designed for {{ course.level|default('beginners') }} who want to learn {{ course.title|lower }}.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        Will I receive a certificate?
+                                    </button>
+                                </h2>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Yes, you will receive a certificate of completion after finishing all course materials.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-xl-4">
+                <!-- Course Info Card -->
+                <div class="sidebar-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="price-display-advanced">
+                            {% if course.price > 0 %}
+                                ${{ course.price|number_format(2, '.', ',') }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#"><i class="fab fa-twitter me-2"></i>Twitter</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fab fa-facebook me-2"></i>Facebook</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fab fa-linkedin me-2"></i>LinkedIn</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mb-3">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-shopping-cart me-2"></i>Enroll Now
+                        </button>
+                        <button class="btn btn-outline-primary">
+                            <i class="fas fa-heart me-2"></i>Add to Wishlist
+                        </button>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h5 class="mb-3">This Course Includes:</h5>
+                    <ul class="course-features-list">
+                        <li>
+                            <span><i class="fas fa-book-open text-primary me-2"></i>Lectures</span>
+                            <span>{{ course.chapters ? course.chapters|length : 0 }}</span>
+                        </li>
+                        <li>
+                            <span><i class="fas fa-clock text-primary me-2"></i>Duration</span>
+                            <span>{{ course.duration ? course.duration ~ 'h' : 'Self-paced' }}</span>
+                        </li>
+                        <li>
+                            <span><i class="fas fa-signal text-primary me-2"></i>Level</span>
+                            <span>{{ course.level|default('All Levels') }}</span>
+                        </li>
+                        <li>
+                            <span><i class="fas fa-globe text-primary me-2"></i>Language</span>
+                            <span>{{ course.language|default('English') }}</span>
+                        </li>
+                        <li>
+                            <span><i class="fas fa-certificate text-primary me-2"></i>Certificate</span>
+                            <span>Yes</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Instructor Info -->
+                <div class="sidebar-card">
+                    <h5 class="mb-3">Instructor</h5>
+                    <div class="instructor-info-advanced">
+                        <div class="instructor-avatar-advanced">
+                            <i class="fas fa-user fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ course.user ? course.user.fullName : 'Professional Instructor' }}</h6>
+                            <p class="text-muted small mb-1">Expert in {{ course.title|lower }}</p>
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <small class="ms-2">{{ random(4.5, 4.9) }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="sidebar-card">
+                    <h5 class="mb-3">Popular Tags</h5>
+                    <div class="course-tags-advanced">
+                        <a href="#" class="tag-advanced">{{ course.category.name|default('Programming') }}</a>
+                        <a href="#" class="tag-advanced">{{ course.level|default('Beginner') }}</a>
+                        <a href="#" class="tag-advanced">Online Course</a>
+                        <a href="#" class="tag-advanced">Certificate</a>
+                        <a href="#" class="tag-advanced">Self-paced</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -22,7 +22,12 @@ class CourseController extends AbstractController
     #[Route('/course/{id}', name: 'app_course_show', requirements: ['id' => '\d+'])]
     public function show(Course $course): Response
     {
-        return $this->render('instructor/course-detail.html.twig', [
+        // Debug: Log course details
+        error_log('Course ID: ' . $course->getId());
+        error_log('Course Title: ' . $course->getTitle());
+        error_log('Course Status: ' . $course->getStatus());
+        
+        return $this->render('course/detail-advanced.html.twig', [
             'course' => $course,
         ]);
     }

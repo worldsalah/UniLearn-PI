@@ -27,7 +27,7 @@ class YouTubeService
     /**
      * Search for educational videos on YouTube.
      */
-    public function searchEducationalVideos(string $query, int $maxResults = 10): array
+    public function searchEducationalVideos(string $query, int $maxResults = 1): array
     {
         try {
             // Clean and format the search query
@@ -143,7 +143,7 @@ class YouTubeService
         $allVideos = [];
         foreach ($queries as $query) {
             try {
-                $videos = $this->searchEducationalVideos((string) $query, 5);
+                $videos = $this->searchEducationalVideos((string) $query, 2); // Reduced from 5 to 2
                 $allVideos = array_merge($allVideos, $videos);
             } catch (\Exception $e) {
                 // Continue with other queries if one fails
@@ -156,13 +156,13 @@ class YouTubeService
         $seenIds = [];
 
         foreach ($allVideos as $video) {
-            if (!in_array($video['id'], $seenIds) && count($uniqueVideos) < 20) {
+            if (!in_array($video['id'], $seenIds) && count($uniqueVideos) < 5) { // Reduced from 20 to 5
                 $uniqueVideos[] = $video;
                 $seenIds[] = $video['id'];
             }
         }
 
-        return array_slice($uniqueVideos, 0, 10);
+        return array_slice($uniqueVideos, 0, 3); // Return only 3 videos instead of 10
     }
 
     /**

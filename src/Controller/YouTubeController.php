@@ -85,8 +85,8 @@ class YouTubeController extends AbstractController
     public function search(Request $request): JsonResponse
     {
         $query = $request->query->get('q', '');
-        $maxResults = $request->query->get('maxResults', 10);
-        $maxResults = is_numeric($maxResults) ? (int) $maxResults : 10;
+        $maxResults = $request->query->get('maxResults', 1);
+        $maxResults = is_numeric($maxResults) ? (int) $maxResults : 1;
 
         if (empty($query)) {
             return new JsonResponse(['error' => 'Query parameter is required'], 400);

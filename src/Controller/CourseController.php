@@ -23,10 +23,10 @@ class CourseController extends AbstractController
     public function show(Course $course): Response
     {
         // Debug: Log course details
-        error_log('Course ID: ' . $course->getId());
-        error_log('Course Title: ' . $course->getTitle());
-        error_log('Course Status: ' . $course->getStatus());
-        
+        error_log('Course ID: '.$course->getId());
+        error_log('Course Title: '.$course->getTitle());
+        error_log('Course Status: '.$course->getStatus());
+
         return $this->render('course/detail-advanced.html.twig', [
             'course' => $course,
         ]);

@@ -52,12 +52,12 @@ class PublicCategoryController extends AbstractController
         );
 
         // Debug: Log the results
-        error_log('Category: ' . $category->getName());
-        error_log('All courses found: ' . count($allCourses));
-        error_log('Live courses found: ' . count($liveCourses));
-        
+        error_log('Category: '.$category->getName());
+        error_log('All courses found: '.count($allCourses));
+        error_log('Live courses found: '.count($liveCourses));
+
         foreach ($allCourses as $course) {
-            error_log('Course: ' . $course->getTitle() . ' | Status: ' . $course->getStatus());
+            error_log('Course: '.$course->getTitle().' | Status: '.$course->getStatus());
         }
 
         // Use all courses for now to see if they display

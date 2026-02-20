@@ -58,10 +58,10 @@ class CourseGridController extends AbstractController
         }
 
         // Apply price filter
-        if ($priceType === 'free') {
+        if ('free' === $priceType) {
             $queryBuilder->andWhere('c.price = :price')
                 ->setParameter('price', 0);
-        } elseif ($priceType === 'paid') {
+        } elseif ('paid' === $priceType) {
             $queryBuilder->andWhere('c.price > :price')
                 ->setParameter('price', 0);
         }
@@ -158,16 +158,16 @@ class CourseGridController extends AbstractController
             GROUP BY level
             ORDER BY courseCount DESC
         ';
-        
+
         $result = $entityManager->getConnection()->executeQuery($sql, ['status' => 'live']);
-        
+
         while ($row = $result->fetchAssociative()) {
             $levels[] = [
                 'name' => $row['level'],
                 'count' => (int) $row['courseCount'],
             ];
         }
-        
+
         return $levels;
     }
 
@@ -184,16 +184,16 @@ class CourseGridController extends AbstractController
             GROUP BY language
             ORDER BY courseCount DESC
         ';
-        
+
         $result = $entityManager->getConnection()->executeQuery($sql, ['status' => 'live']);
-        
+
         while ($row = $result->fetchAssociative()) {
             $languages[] = [
                 'name' => $row['language'],
                 'count' => (int) $row['courseCount'],
             ];
         }
-        
+
         return $languages;
     }
 }

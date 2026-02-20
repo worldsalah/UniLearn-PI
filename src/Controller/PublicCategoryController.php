@@ -15,19 +15,7 @@ class PublicCategoryController extends AbstractController
     #[Route('/categories', name: 'app_categories')]
     public function publicCategories(CategoryRepository $categoryRepository, CourseRepository $courseRepository): Response
     {
-        $categories = $categoryRepository->findActiveCategories();
-
-        // Debug: Check if categories are empty
-        if (empty($categories)) {
-            // If no categories found, create an empty array to avoid template errors
-            $categories = [];
-        } else {
-            // Add course count to each category
-            foreach ($categories as $category) {
-                $courseCount = $courseRepository->count(['category' => $category, 'status' => 'live']);
-                $category->courseCount = $courseCount;
-            }
-        }
+        $categories = $categoryRepository->findCategoriesWithCourseCount();
 
         return $this->render('category/categories.html.twig', [
             'categories' => $categories,
@@ -51,11 +39,29 @@ class PublicCategoryController extends AbstractController
             throw $this->createNotFoundException('Category not found');
         }
 
-        // Get active courses in this category
-        $courses = $courseRepository->findBy(
+        // First, try to find all courses in this category regardless of status
+        $allCourses = $courseRepository->findBy(
+            ['category' => $category],
+            ['createdAt' => 'DESC']
+        );
+
+        // Then find only live courses
+        $liveCourses = $courseRepository->findBy(
             ['category' => $category, 'status' => 'live'],
             ['createdAt' => 'DESC']
         );
+
+        // Debug: Log the results
+        error_log('Category: '.$category->getName());
+        error_log('All courses found: '.count($allCourses));
+        error_log('Live courses found: '.count($liveCourses));
+
+        foreach ($allCourses as $course) {
+            error_log('Course: '.$course->getTitle().' | Status: '.$course->getStatus());
+        }
+
+        // Use all courses for now to see if they display
+        $courses = $allCourses;
 
         return $this->render('category/detail.html.twig', [
             'category' => $category,

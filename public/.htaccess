@@ -29,3 +29,9 @@ RewriteRule .? %{ENV:BASE}/index.php [L]
     php_value max_execution_time 300
     php_value max_input_time 300
 </IfModule>
+
+# Add SVG MIME type
+<IfModule mod_mime.c>
+    AddType image/svg+xml svg svgz
+    AddEncoding gzip svgz
+</IfModule>

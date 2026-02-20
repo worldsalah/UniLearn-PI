@@ -710,56 +710,64 @@ Steps END -->
 document.addEventListener('DOMContentLoaded', function() {
     // Wait for all scripts to load
     setTimeout(function() {
-        // Initialize stepper
-        const stepperElement = document.querySelector('#stepper');
-        if (stepperElement && typeof Stepper !== 'undefined') {
-            const stepper = new Stepper(stepperElement, {
-                linear: false,
-                animation: true
-            });
-
-            // Add event listeners for next/previous buttons
-            document.querySelectorAll('.next-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    stepper.next();
+        try {
+            // Initialize stepper
+            const stepperElement = document.querySelector('#stepper');
+            if (stepperElement && typeof Stepper !== 'undefined') {
+                const stepper = new Stepper(stepperElement, {
+                    linear: false,
+                    animation: true
                 });
-            });
 
-            document.querySelectorAll('.prev-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    stepper.previous();
+                // Add event listeners for next/previous buttons
+                document.querySelectorAll('.next-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        stepper.next();
+                    }, { passive: true });
                 });
-            });
 
-            // Remove dstepper-none class from all content divs
-            document.querySelectorAll('.content').forEach(content => {
-                content.classList.remove('dstepper-none');
-            });
+                document.querySelectorAll('.prev-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        stepper.previous();
+                    }, { passive: true });
+                });
 
-            // Show first step content
-            const firstStep = document.querySelector('#step-1');
-            if (firstStep) {
-                firstStep.classList.add('active');
-                firstStep.style.display = 'block';
+                // Remove dstepper-none class from all content divs
+                document.querySelectorAll('.content').forEach(content => {
+                    content.classList.remove('dstepper-none');
+                });
+
+                // Show first step content
+                const firstStep = document.querySelector('#step-1');
+                if (firstStep) {
+                    firstStep.classList.add('active');
+                    firstStep.style.display = 'block';
+                }
+
+                console.log('Stepper initialized successfully');
+            } else {
+                console.error('Stepper library not loaded or element not found');
             }
 
-            console.log('Stepper initialized successfully');
-        } else {
-            console.error('Stepper library not loaded or element not found');
+            // Initialize Choices.js selects
+            document.querySelectorAll('.js-choice').forEach(element => {
+                try {
+                    if (typeof Choices !== 'undefined') {
+                        new Choices(element, {
+                            removeItemButton: true,
+                            searchEnabled: element.dataset.searchEnabled === 'true',
+                            maxItemCount: element.dataset.maxItemCount || -1,
+                            placeholder: element.dataset.placeholder === 'true',
+                            placeholderValue: element.dataset.placeholderVal || 'Select an option'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error initializing Choices for element:', element, error);
+                }
+            });
+        } catch (error) {
+            console.error('Error initializing scripts:', error);
         }
-
-        // Initialize Choices.js selects
-        document.querySelectorAll('.js-choice').forEach(element => {
-            if (typeof Choices !== 'undefined') {
-                new Choices(element, {
-                    removeItemButton: true,
-                    searchEnabled: element.dataset.searchEnabled === 'true',
-                    maxItemCount: element.dataset.maxItemCount || -1,
-                    placeholder: element.dataset.placeholder === 'true',
-                    placeholderValue: element.dataset.placeholderVal || 'Select an option'
-                });
-            }
-        });
     }, 1000);
 });
 </script>

@@ -25,4 +25,57 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
+    'bootstrap' => [
+        'version' => '5.3.8',
+    ],
+    '@popperjs/core' => [
+        'version' => '2.11.8',
+    ],
+    'bootstrap/dist/css/bootstrap.min.css' => [
+        'version' => '5.3.8',
+        'type' => 'css',
+    ],
+    '@fortawesome/fontawesome-free' => [
+        'version' => '7.2.0',
+    ],
+    '@fortawesome/fontawesome-free/css/fontawesome.min.css' => [
+        'version' => '7.2.0',
+        'type' => 'css',
+    ],
+    'tiny-slider' => [
+        'version' => '2.9.4',
+    ],
+    'glightbox' => [
+        'version' => '3.3.1',
+    ],
+    'choices.js' => [
+        'version' => '11.1.0',
+    ],
+    'aos' => [
+        'version' => '2.3.4',
+    ],
+    'quill' => [
+        'version' => '2.0.3',
+    ],
+    'lodash-es' => [
+        'version' => '4.17.21',
+    ],
+    'parchment' => [
+        'version' => '3.0.0',
+    ],
+    'quill-delta' => [
+        'version' => '5.1.0',
+    ],
+    'eventemitter3' => [
+        'version' => '5.0.1',
+    ],
+    'fast-diff' => [
+        'version' => '1.3.0',
+    ],
+    'lodash.clonedeep' => [
+        'version' => '4.5.0',
+    ],
+    'lodash.isequal' => [
+        'version' => '4.5.0',
+    ],
 ];

@@ -623,7 +623,7 @@
                                 <img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
                             </div>
                             <div>
-                                <a class="h6" href="#">{{ teacher.name }}</a>
+                                <a class="h6" href="#">{{ teacher.fullName }}</a>
                                 <p class="small m-0">{{ teacher.email }}</p>
                             </div>
                         </div>
@@ -769,10 +769,12 @@ Page content START -->
                                     </div>
                                     <div class="video-player-container shadow-lg rounded">
                                         <div class="ratio ratio-21x9">
-                                            <iframe src="{{ course.videoUrl }}" 
+                                            <iframe src="{{ course.videoUrl|replace({'youtube.com': 'youtube-nocookie.com'}) }}" 
                                                     frameborder="0" 
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                                     allowfullscreen
+                                                    sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
+                                                    referrerpolicy="no-referrer-when-downgrade"
                                                     class="video-frame">
                                             </iframe>
                                         </div>

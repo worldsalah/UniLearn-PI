@@ -176,7 +176,13 @@ var e = {
             if (!(selectors instanceof HTMLElement) && selectors !== null) {
                 selectors = document.querySelector(selectors);
             }
-            selectors.addEventListener(type, listener);
+            // Use passive event listeners for better performance
+            const options = { passive: true };
+            if (type === 'touchstart' || type === 'touchmove' || type === 'wheel' || type === 'scroll') {
+                selectors.addEventListener(type, listener, options);
+            } else {
+                selectors.addEventListener(type, listener);
+            }
         });
     },
     onAll: function (selectors, type, listener) {
@@ -185,10 +191,22 @@ var e = {
                 if (type.indexOf(',') > -1) {
                     let types = type.split(',');
                     types.forEach((type) => {
-                        element.addEventListener(type, listener);
+                        // Use passive event listeners for better performance
+                        const options = { passive: true };
+                        if (type === 'touchstart' || type === 'touchmove' || type === 'wheel' || type === 'scroll') {
+                            element.addEventListener(type, listener, options);
+                        } else {
+                            element.addEventListener(type, listener);
+                        }
                     });
                 } else {
-                    element.addEventListener(type, listener);
+                    // Use passive event listeners for better performance
+                    const options = { passive: true };
+                    if (type === 'touchstart' || type === 'touchmove' || type === 'wheel' || type === 'scroll') {
+                        element.addEventListener(type, listener, options);
+                    } else {
+                        element.addEventListener(type, listener);
+                    }
                 }
 
 
@@ -292,7 +310,7 @@ var e = {
             stickyNav.insertAdjacentHTML('afterend', '<div id="sticky-space"></div>');
             var stickySpace = e.select('#sticky-space');
             if (e.isVariableDefined(stickySpace)) {
-                document.addEventListener('scroll', function (event) {
+                window.addEventListener('scroll', function (event) {
                     var scTop = window.pageYOffset || document.documentElement.scrollTop;
                     if (scTop >= 400) {
                         stickySpace.addClass('active');
@@ -303,7 +321,7 @@ var e = {
                         stickySpace.style.height = '0px';
                         stickyNav.removeClass("navbar-sticky-on");
                     }
-                });
+                }, { passive: true });
             }
         }
     },
@@ -451,7 +469,7 @@ var e = {
                 } else {
                     remove_class_on_scroll()
                 }
-            });
+            }, { passive: true });
 
             backBtn.addEventListener('click', () => window.scrollTo({
                 top: 0,
@@ -1026,7 +1044,7 @@ var e = {
             } else {
                 remove_class_on_scroll()
             }
-        });
+        }, { passive: true });
     }
     },
     // END: Sticky element

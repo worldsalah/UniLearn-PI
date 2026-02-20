@@ -33,39 +33,28 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function findCategoriesWithCourseCount(): array
     {
-        // Use native SQL to avoid Doctrine issues
-        $sql = '
-            SELECT c.id, c.name, c.description, c.icon, c.color, c.is_active, c.created_at, c.slug,
-                   COUNT(co.id) as courseCount
-            FROM category c
-            LEFT JOIN course co ON c.id = co.category_id
-            WHERE c.is_active = 1
-            GROUP BY c.id, c.name, c.description, c.icon, c.color, c.is_active, c.created_at, c.slug
-            ORDER BY c.name ASC
-        ';
+        // First get all active categories
+        $categories = $this->createQueryBuilder('c')
+            ->where('c.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
-        $result = $stmt->executeQuery();
+        // Then get course counts for each category
+        foreach ($categories as $category) {
+            $count = $this->getEntityManager()->createQueryBuilder()
+                ->select('COUNT(c.id)')
+                ->from('App\Entity\Course', 'c')
+                ->where('c.category = :category')
+                ->andWhere('c.status = :status')
+                ->setParameter('category', $category->getId())
+                ->setParameter('status', 'live')
+                ->getQuery()
+                ->getSingleScalarResult();
 
-        $categories = [];
-        while ($row = $result->fetchAssociative()) {
-            // Create a simple array with all category data
-            $categoryData = [
-                'id' => $row['id'],
-                'name' => $row['name'],
-                'description' => $row['description'],
-                'icon' => $row['icon'],
-                'color' => $row['color'],
-                'isActive' => (bool) $row['is_active'],
-                'createdAt' => new \DateTimeImmutable($row['created_at']),
-                'slug' => $row['slug'],
-                'courseCount' => (int) $row['courseCount'],
-            ];
-
-            $categories[] = [
-                0 => (object) $categoryData, // Convert to object for template compatibility
-                'courseCount' => (int) $row['courseCount'],
-            ];
+            // Add course count as a dynamic property
+            $category->courseCount = (int) $count;
         }
 
         return $categories;

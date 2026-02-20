@@ -54,12 +54,6 @@ class PageController extends AbstractController
         ]);
     }
 
-    #[Route('/courses', name: 'app_courses')]
-    public function courses(): Response
-    {
-        return $this->render('category/categories.html.twig');
-    }
-
     #[Route('/register', name: 'app_register')]
     public function register(): Response
     {
@@ -76,12 +70,6 @@ class PageController extends AbstractController
     public function homeVariant3(): Response
     {
         return $this->render('home/index-3.html.twig');
-    }
-
-    #[Route('/course-grid', name: 'app_course_grid')]
-    public function courseGrid(): Response
-    {
-        return $this->render('course/grid.html.twig');
     }
 
     #[Route('/course-detail', name: 'app_course_detail')]

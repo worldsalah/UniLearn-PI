@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'front_base.html.twig' %}
 
 {% block title %}{{ category.name }} Courses - Unilearn{% endblock %}
 
@@ -235,22 +235,44 @@
 </style>
 {% endblock %}
 
-{% block body %}
-<!-- Header -->
-{% include 'components/header.html.twig' %}
-
+{% block content %}
 <!-- Category Header -->
 <section class="category-header">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
+                {% set icon_mapping = {
+                    'code': 'bi-code',
+                    'palette': 'bi-palette',
+                    'megaphone': 'bi-megaphone',
+                    'pen': 'bi-pen',
+                    'briefcase': 'bi-briefcase',
+                    'data-science': 'bi-bar-chart-line',
+                    'online': 'bi-globe',
+                    'engineering': 'bi-tools',
+                    'coding': 'bi-code-square',
+                    'profit': 'bi-cash',
+                    'medical': 'bi-first-aid',
+                    'home': 'bi-house',
+                    'artist': 'bi-palette',
+                    'account': 'bi-person'
+                } %}
+                
                 <div class="category-icon-large">
-                    {% if category.icon %}
-                        <i class="{{ category.icon }}"></i>
-                    {% else %}
-                        <i class="bi bi-tag"></i>
-                    {% endif %}
-                </div>
+                        {% if category.icon %}
+                            {% if category.icon starts with 'http' %}
+                                <img src="{{ category.icon }}" alt="{{ category.name }}" style="width: 80px; height: 80px; object-fit: contain;">
+                            {% elseif category.icon starts with 'bi-' %}
+                                <i class="{{ category.icon }}"></i>
+                            {% elseif icon_mapping[category.icon] is defined %}
+                                <i class="{{ icon_mapping[category.icon] }}"></i>
+                            {% else %}
+                                <i class="bi bi-palette"></i>
+                            {% endif %}
+                        {% else %}
+                            <i class="bi bi-tag"></i>
+                        {% endif %}
+                    </div>
                 
                 <h1 class="category-title">{{ category.name }}</h1>
                 
@@ -264,13 +286,51 @@
                         <div class="label">Courses</div>
                     </div>
                     <div class="stat-large">
-                        <div class="number">{{ courses|reduce((sum, course) => sum + course.totalLessons, 0) }}</div>
+                        <div class="number">
+                            {% set totalLessons = 0 %}
+                            {% for course in courses %}
+                                {% if course.chapters is defined and course.chapters %}
+                                    {% for chapter in course.chapters %}
+                                        {% if chapter.lessons is defined and chapter.lessons %}
+                                            {% set totalLessons = totalLessons + chapter.lessons|length %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ totalLessons }}
+                        </div>
                         <div class="label">Lessons</div>
                     </div>
                     <div class="stat-large">
-                        <div class="number">{{ courses|reduce((sum, course) => sum + course.duration|default(0), 0) }}</div>
+                        <div class="number">
+                            {% set totalDuration = 0 %}
+                            {% for course in courses %}
+                                {% if course.duration is defined and course.duration %}
+                                    {% set totalDuration = totalDuration + course.duration %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ totalDuration }}
+                        </div>
                         <div class="label">Hours</div>
                     </div>
+                </div>
+                
+                <!-- Debug info -->
+                <div class="mt-3 p-2 bg-light rounded">
+                    <small class="text-muted">
+                        Debug: Found {{ courses|length }} courses in category "{{ category.name }}"
+                        {% if courses|length > 0 %}
+                            - First course: {{ courses[0].title ?? 'N/A' }}
+                            <br>
+                            - Course statuses: 
+                            {% for course in courses %}
+                                {{ course.status ?? 'unknown' }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <br>
+                            - No courses found. Check if courses have correct category assignment.
+                        {% endif %}
+                    </small>
                 </div>
             </div>
         </div>

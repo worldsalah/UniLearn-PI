@@ -360,12 +360,12 @@ Header START -->
 
                     <!-- Nav item Courses -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_courses' %}active{% endif %}" href="#" id="courseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_course_grid' %}active{% endif %}" href="#" id="courseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Courses
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="courseDropdown">
                             <li><h6 class="dropdown-header">Learning</h6></li>
-                            <li><a class="dropdown-item" href="{{ path('app_courses') }}">Browse Courses</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_course_grid') }}">Browse Courses</a></li>
                             <li><a class="dropdown-item" href="{{ path('app_categories') }}">Course Categories</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Student</h6></li>
@@ -423,7 +423,7 @@ Header START -->
 
                 <!-- Search bar START -->
                 <div class="nav-item mx-3">
-                    <form class="position-relative" method="get" action="{{ path('app_courses') }}">
+                    <form class="position-relative" method="get" action="{{ path('app_course_grid') }}">
                         <input class="form-control pe-5" type="search" name="search" placeholder="Search courses, topics..." aria-label="Search">
                         <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
                             <i class="fas fa-search fs-6"></i>
@@ -752,7 +752,12 @@ Page content START -->
                                                     <!-- Course level -->
                                                     <div class="col-md-6">
                                                         {{ form_label(courseForm.level, 'Course level', {'label_attr': {'class': 'form-label'}}) }}
-                                                        {{ form_widget(courseForm.level, {'attr': {'class': 'form-select'}}) }}
+                                                        <select id="course_level" name="course[level]" class="form-select" required>
+                                                            <option value="">Select level...</option>
+                                                            <option value="Beginner" {% if courseForm.level.vars.value == 'Beginner' %}selected{% endif %}>Beginner</option>
+                                                            <option value="Intermediate" {% if courseForm.level.vars.value == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                                                            <option value="Advanced" {% if courseForm.level.vars.value == 'Advanced' %}selected{% endif %}>Advanced</option>
+                                                        </select>
                                                         {% if courseForm.level.vars.errors|length > 0 %}
                                                             <div class="invalid-feedback d-block">
                                                                 {% for error in courseForm.level.vars.errors %}

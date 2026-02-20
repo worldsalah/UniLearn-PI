@@ -1,0 +1,906 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ course.title }} - Unilearn{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Course Detail Styles */
+.course-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.course-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.5" fill="%23ffffff20" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.1;
+}
+
+.course-content {
+    position: relative;
+    z-index: 2;
+}
+
+.course-thumbnail-hero {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.course-title-hero {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.course-badges {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.course-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.level-badge {
+    background: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+}
+
+.language-badge {
+    background: rgba(25, 135, 84, 0.1);
+    color: #198754;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.instructor-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.instructor-name {
+    font-weight: 600;
+    color: #495057;
+}
+
+.instructor-title {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.course-preview-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.preview-image.placeholder {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: #6c757d;
+}
+
+.preview-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-price {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.price-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #007bff;
+    display: block;
+}
+
+.price-amount.free {
+    color: #198754;
+}
+
+.price-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.preview-enroll-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.preview-enroll-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3);
+}
+
+.preview-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.course-thumbnail-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.play-button-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.course-thumbnail-wrapper:hover .play-button-overlay {
+    opacity: 1;
+}
+
+.play-button {
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.course-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+}
+
+.rating-badge {
+    background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.instructor-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.rating-text {
+    font-size: 0.75rem;
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.course-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.tag {
+    background: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.preview-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.preview-image-wrapper:hover .preview-overlay {
+    opacity: 1;
+}
+
+.preview-play-btn {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.preview-duration {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.price-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.price-original {
+    text-decoration: line-through;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.discount-badge {
+    background: #dc3545;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+.free-badge {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.money-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(25, 135, 84, 0.1);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #198754;
+}
+
+.students-avatars {
+    display: flex;
+    align-items: center;
+    gap: -0.5rem;
+}
+
+.student-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+}
+
+.student-avatar:nth-child(2) {
+    z-index: 1;
+}
+
+.student-avatar:nth-child(3) {
+    z-index: 2;
+}
+
+.student-avatar:nth-child(4) {
+    z-index: 3;
+}
+
+.more-students {
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.social-proof {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(13, 110, 253, 0.05);
+    border-radius: 12px;
+}
+
+.social-text {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #495057;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.course-meta-hero {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.meta-item-hero {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+}
+
+.course-info-section {
+    padding: 4rem 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+}
+
+.course-description-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.course-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sidebar-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.price-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 1rem;
+}
+
+.enroll-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.enroll-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3);
+}
+
+.course-features {
+    list-style: none;
+    padding: 0;
+}
+
+.course-features li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.course-features li:last-child {
+    border-bottom: none;
+}
+
+.feature-icon {
+    color: #28a745;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .course-hero {
+        padding: 3rem 0;
+    }
+    
+    .course-title-hero {
+        font-size: 2rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .course-meta-hero {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Course Hero -->
+<section class="course-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="course-content">
+                    <!-- Course Thumbnail with Play Button -->
+                    <div class="course-thumbnail-wrapper mb-4">
+                        {% if course.thumbnailUrl %}
+                            <img src="{{ asset(course.thumbnailUrl) }}" alt="{{ course.title }}" class="course-thumbnail-hero">
+                            <div class="play-button-overlay">
+                                <div class="play-button">
+                                    <i class="bi bi-play-fill"></i>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Course Badges -->
+                    <div class="course-badges mb-3">
+                        {% if course.level %}
+                            <span class="course-badge level-badge">
+                                <i class="bi bi-bar-chart me-1"></i>{{ course.level }}
+                            </span>
+                        {% endif %}
+                        {% if course.language %}
+                            <span class="course-badge language-badge">
+                                <i class="bi bi-globe me-1"></i>{{ course.language }}
+                            </span>
+                        {% endif %}
+                        <span class="course-badge rating-badge">
+                            <i class="bi bi-star-fill me-1"></i>{{ random(4.1, 4.9) }} ({{ random(200, 500) }})
+                        </span>
+                    </div>
+                    
+                    <!-- Course Title -->
+                    <h1 class="course-title-hero">{{ course.title }}</h1>
+                    
+                    <!-- Course Subtitle -->
+                    <p class="course-subtitle">Master {{ course.title|lower }} with comprehensive training and real-world projects</p>
+                    
+                    <!-- Enhanced Instructor Info -->
+                    <div class="course-instructor">
+                        <div class="instructor-avatar me-3">
+                            <i class="bi bi-person-circle fs-2"></i>
+                        </div>
+                        <div>
+                            <div class="instructor-name">{{ course.user ? course.user.fullName : 'Instructor' }}</div>
+                            <div class="instructor-title">Professional Instructor</div>
+                            <div class="instructor-rating">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-half text-warning"></i>
+                                <span class="rating-text">{{ random(4.5, 4.9) }} Instructor Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Enhanced Course Meta -->
+                    <div class="course-meta-hero">
+                        <div class="meta-item-hero">
+                            <div class="meta-icon">
+                                <i class="bi bi-signal"></i>
+                            </div>
+                            <div class="meta-content">
+                                <div class="meta-label">Level</div>
+                                <div class="meta-value">{{ course.level|default('All Levels') }}</div>
+                            </div>
+                        </div>
+                        {% if course.duration %}
+                        <div class="meta-item-hero">
+                            <div class="meta-icon">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <div class="meta-content">
+                                <div class="meta-label">Duration</div>
+                                <div class="meta-value">{{ course.duration }} hours</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="meta-item-hero">
+                            <div class="meta-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="meta-content">
+                                <div class="meta-label">Students</div>
+                                <div class="meta-value">{{ random(100, 999) }} enrolled</div>
+                            </div>
+                        </div>
+                        <div class="meta-item-hero">
+                            <div class="meta-icon">
+                                <i class="bi bi-globe"></i>
+                            </div>
+                            <div class="meta-content">
+                                <div class="meta-label">Language</div>
+                                <div class="meta-value">{{ course.language|default('English') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course Tags -->
+                    <div class="course-tags">
+                        <span class="tag">Web Development</span>
+                        <span class="tag">Frontend</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Enhanced Course Preview Card -->
+            <div class="col-lg-6">
+                <div class="course-preview-card">
+                    <!-- Preview Image with Video Preview -->
+                    <div class="preview-image-wrapper">
+                        {% if course.thumbnailUrl %}
+                            <img src="{{ asset(course.thumbnailUrl) }}" alt="{{ course.title }}" class="preview-image">
+                        {% else %}
+                            <div class="preview-image placeholder">
+                                <i class="bi bi-book fs-1"></i>
+                            </div>
+                        {% endif %}
+                        <div class="preview-overlay">
+                            <div class="preview-play-btn">
+                                <i class="bi bi-play-circle"></i>
+                            </div>
+                            <div class="preview-duration">
+                                {% if course.duration %}{{ course.duration }}h preview{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-content">
+                        <!-- Enhanced Price Display -->
+                        <div class="preview-price">
+                            <div class="price-main">
+                                {% if course.price > 0 %}
+                                    <span class="price-amount">${{ course.price|number_format(2, '.', ',') }}</span>
+                                    <span class="price-original">${{ (course.price * 1.5)|number_format(2, '.', ',') }}</span>
+                                {% else %}
+                                    <span class="price-amount free">Free</span>
+                                {% endif %}
+                            </div>
+                            <div class="price-label">
+                                {% if course.price > 0 %}
+                                    <span class="discount-badge">Limited time: 33% OFF</span>
+                                {% else %}
+                                    <span class="free-badge">Full access</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Enhanced Enrollment Button -->
+                        <button class="preview-enroll-btn">
+                            <i class="bi bi-cart-plus me-2"></i>
+                            Enroll Now
+                        </button>
+                        
+                        <!-- Money Back Guarantee -->
+                        <div class="money-back">
+                            <i class="bi bi-shield-check me-2"></i>
+                            30-day money-back guarantee
+                        </div>
+                        
+                        <!-- Enhanced Features -->
+                        <div class="preview-features">
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>Lifetime Access</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>Certificate of Completion</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>Access on mobile & TV</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>Downloadable resources</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>Assignments & quizzes</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Social Proof -->
+                        <div class="social-proof">
+                            <div class="students-avatars">
+                                <img src="https://picsum.photos/seed/student1/30/30.jpg" alt="Student" class="student-avatar">
+                                <img src="https://picsum.photos/seed/student2/30/30.jpg" alt="Student" class="student-avatar">
+                                <img src="https://picsum.photos/seed/student3/30/30.jpg" alt="Student" class="student-avatar">
+                                <img src="https://picsum.photos/seed/student4/30/30.jpg" alt="Student" class="student-avatar">
+                                <span class="more-students">+{{ random(100, 500) }}</span>
+                            </div>
+                            <div class="social-text">
+                                <strong>{{ random(1000, 5000) }}+</strong> students enrolled
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Course Information -->
+<section class="course-info-section">
+    <div class="container">
+        <div class="info-grid">
+            <!-- Main Content -->
+            <div class="course-description-box">
+                <h2 class="h3 mb-4">About This Course</h2>
+                
+                {% if course.shortDescription %}
+                    <p class="lead mb-4">{{ course.shortDescription }}</p>
+                {% endif %}
+                
+                {% if course.learningOutcomes %}
+                    <div class="course-description">
+                        <h4 class="h5 mb-3">What You'll Learn</h4>
+                        {{ course.learningOutcomes|raw }}
+                    </div>
+                {% endif %}
+                
+                {% if course.chapters and course.chapters|length > 0 %}
+                    <h3 class="h4 mt-5 mb-3">Course Content</h3>
+                    <div class="course-content-list">
+                        {% set totalLessons = 0 %}
+                        {% set totalDuration = 0 %}
+                        
+                        {% for chapter in course.chapters %}
+                            <div class="chapter-item mb-3">
+                                <h5 class="h6 mb-2">
+                                    <i class="bi bi-folder me-2"></i>
+                                    Chapter {{ loop.index }}: {{ chapter.title }}
+                                </h5>
+                                
+                                {% if chapter.lessons and chapter.lessons|length > 0 %}
+                                    <ul class="list-unstyled ms-4">
+                                        {% for lesson in chapter.lessons %}
+                                            <li class="mb-2">
+                                                <i class="bi bi-play-circle me-2 text-primary"></i>
+                                                {{ lesson.title }}
+                                                {% if lesson.duration %}
+                                                    <span class="text-muted ms-2">({{ lesson.duration }})</span>
+                                                    {% set totalDuration = totalDuration + lesson.duration|split(':')[0]|default(0) * 60 + lesson.duration|split(':')[1]|default(0) %}
+                                                {% endif %}
+                                            </li>
+                                            {% set totalLessons = totalLessons + 1 %}
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        
+                        <div class="mt-3 p-3 bg-light rounded">
+                            <strong>{{ totalLessons }} lessons</strong> • 
+                            {% set hours = (totalDuration // 60) %}
+                            {% set minutes = (totalDuration % 60) %}
+                            {% if hours > 0 %}{{ hours }}h {% endif %}{{ minutes }}m total duration
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="course-sidebar">
+                <!-- Price Box -->
+                <div class="sidebar-box">
+                    <div class="text-center">
+                        <div class="price-display">
+                            {% if course.price > 0 %}
+                                ${{ course.price|number_format(2, '.', ',') }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </div>
+                        
+                        <button class="enroll-btn">
+                            <i class="bi bi-cart-plus me-2"></i>
+                            Enroll Now
+                        </button>
+                        
+                        <p class="text-muted small mt-3 mb-0">
+                            <i class="bi bi-shield-check me-1"></i>
+                            30-day money-back guarantee
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Course Features -->
+                <div class="sidebar-box">
+                    <h4 class="h5 mb-3">Course Features</h4>
+                    <ul class="course-features">
+                        <li>
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            Lifetime access
+                        </li>
+                        <li>
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            Certificate of completion
+                        </li>
+                        <li>
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            {{ totalLessons ?? 0 }} lessons
+                        </li>
+                        <li>
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            {% if course.duration %}{{ course.duration }} hours{% else %}Self-paced{% endif %}
+                        </li>
+                        <li>
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            Downloadable resources
+                        </li>
+                        <li>
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            Access on mobile and TV
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Category Info -->
+                {% if course.category %}
+                <div class="sidebar-box">
+                    <h4 class="h5 mb-3">Category</h4>
+                    <div class="d-flex align-items-center">
+                        {% if course.category.icon %}
+                            <i class="{{ course.category.icon }} me-2 fs-4"></i>
+                        {% else %}
+                            <i class="bi bi-tag me-2 fs-4"></i>
+                        {% endif %}
+                        <span>{{ course.category.name }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Courses (Optional) -->
+{% if relatedCourses|default([])|length > 0 %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="h3 mb-4">Related Courses</h2>
+        <div class="row">
+            {% for relatedCourse in relatedCourses %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        {% if relatedCourse.thumbnailUrl %}
+                            <img src="{{ asset(relatedCourse.thumbnailUrl) }}" class="card-img-top" alt="{{ relatedCourse.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ relatedCourse.title }}</h5>
+                            <p class="card-text">{{ relatedCourse.shortDescription|slice(0, 100) ~ '...' }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-primary fw-bold">
+                                    {% if relatedCourse.price > 0 %}
+                                        ${{ relatedCourse.price|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        Free
+                                    {% endif %}
+                                </span>
+                                <a href="{{ path('app_course_show', {'id': relatedCourse.id}) }}" class="btn btn-outline-primary btn-sm">
+                                    View Course
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

@@ -3,9 +3,6 @@
 {% block title %}Create Course - Eduport{% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/choices/css/choices.min.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/stepper/css/bs-stepper.min.css') }}">
-
 <!-- Disable global Choices initialization for this page -->
 <script>
 // Prevent the global functions.js from initializing Choices on this page
@@ -97,11 +94,127 @@ window.choiceSkipInit = true;
 
 /* Stepper content visibility control */
 .bs-stepper-pane {
-    display: none;
+    display: none !important;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .bs-stepper-pane.active {
-    display: block;
+    display: block !important;
+    opacity: 1;
+}
+
+.bs-stepper-pane.fade:not(.active) {
+    display: none !important;
+    opacity: 0;
+}
+
+.bs-stepper-pane.fade.active {
+    display: block !important;
+    opacity: 1;
+}
+
+/* Stepper Header Horizontal Layout */
+.bs-stepper-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.step .d-grid {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e9ecef;
+    border: 2px solid #dee2e6;
+    color: #6c757d;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    margin: 0 auto 0.5rem;
+}
+
+.step.active .step-trigger {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+.step.completed .step-trigger {
+    background: #198754;
+    border-color: #198754;
+    color: white;
+}
+
+.step-trigger:hover {
+    transform: scale(1.05);
+}
+
+.bs-stepper-circle {
+    font-size: 1.1rem;
+}
+
+.bs-stepper-label {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.step.active .bs-stepper-label {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.step.completed .bs-stepper-label {
+    color: #198754;
+    font-weight: 600;
+}
+
+.line {
+    flex: 0 0 60px;
+    height: 2px;
+    background: #dee2e6;
+    position: relative;
+    margin: 0 1rem;
+}
+
+.step.completed ~ .line {
+    background: #198754;
+}
+
+/* Disabled button styling */
+.btn:disabled,
+.btn.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    filter: grayscale(0.5);
+    pointer-events: none;
+}
+
+.btn:disabled:hover,
+.btn.disabled:hover {
+    transform: none;
+    background-color: #6c757d;
+    border-color: #6c757d;
 }
 
 /* Form validation styles */
@@ -520,61 +633,61 @@ Page content START -->
                             {% endif %}
 
                             <!-- Multi-step form START -->
+                            {{ form_start(courseForm, {'attr': {'novalidate': 'novalidate', 'id': 'courseForm'}}) }}
                             <div class="bs-stepper" id="stepper">
-                                <!-- Steps header START -->
-                                <div class="bs-stepper-header" role="tablist">
-                                    <!-- Step 1 -->
-                                    <div class="step" data-target="#step-1">
-                                        <div class="d-grid text-center align-items-center">
-                                            <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger1" aria-controls="step-1">
-                                                <span class="bs-stepper-circle">1</span>
-                                            </button>
-                                            <h6 class="bs-stepper-label d-none d-md-block">Basic Information</h6>
+                                    <!-- Steps header START -->
+                                    <div class="bs-stepper-header" role="tablist">
+                                        <!-- Step 1 -->
+                                        <div class="step active" data-target="#step-1">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger1" aria-controls="step-1">
+                                                    <span class="bs-stepper-circle">1</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Basic Information</h6>
+                                            </div>
+                                        </div>
+                                        <div class="line"></div>
+
+                                        <!-- Step 2 -->
+                                        <div class="step" data-target="#step-2">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger2" aria-controls="step-2">
+                                                    <span class="bs-stepper-circle">2</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Course Media</h6>
+                                            </div>
+                                        </div>
+                                        <div class="line"></div>
+
+                                        <!-- Step 3 -->
+                                        <div class="step" data-target="#step-3">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger3" aria-controls="step-3">
+                                                    <span class="bs-stepper-circle">3</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Curriculum</h6>
+                                            </div>
+                                        </div>
+                                        <div class="line"></div>
+
+                                        <!-- Step 4 -->
+                                        <div class="step" data-target="#step-4">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger4" aria-controls="step-4">
+                                                    <span class="bs-stepper-circle">4</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Additional Information</h6>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="line"></div>
+                                    <!-- Step Buttons END -->
 
-                                    <!-- Step 2 -->
-                                    <div class="step" data-target="#step-2">
-                                        <div class="d-grid text-center align-items-center">
-                                            <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger2" aria-controls="step-2">
-                                                <span class="bs-stepper-circle">2</span>
-                                            </button>
-                                            <h6 class="bs-stepper-label d-none d-md-block">Course Media</h6>
-                                        </div>
-                                    </div>
-                                    <div class="line"></div>
-
-                                    <!-- Step 3 -->
-                                    <div class="step" data-target="#step-3">
-                                        <div class="d-grid text-center align-items-center">
-                                            <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger3" aria-controls="step-3">
-                                                <span class="bs-stepper-circle">3</span>
-                                            </button>
-                                            <h6 class="bs-stepper-label d-none d-md-block">Curriculum</h6>
-                                        </div>
-                                    </div>
-                                    <div class="line"></div>
-
-                                    <!-- Step 4 -->
-                                    <div class="step" data-target="#step-4">
-                                        <div class="d-grid text-center align-items-center">
-                                            <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger4" aria-controls="step-4">
-                                                <span class="bs-stepper-circle">4</span>
-                                            </button>
-                                            <h6 class="bs-stepper-label d-none d-md-block">Additional Information</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Step Buttons END -->
-
-                                <!-- Card body START -->
-                                <div class="card-body">
-                                    <!-- Step content START -->
-                                    <div class="bs-stepper-content">
-                                        <!-- Step 1 content START -->
-                                        <div id="step-1" role="tabpanel" class="bs-stepper-pane content active fade" aria-labelledby="steppertrigger1">
-                                            {{ form_start(courseForm, {'attr': {'novalidate': 'novalidate', 'id': 'courseForm'}}) }}
+                                    <!-- Card body START -->
+                                    <div class="card-body">
+                                        <!-- Step content START -->
+                                        <div class="bs-stepper-content">
+                                            <!-- Step 1 content START -->
+                                            <div id="step-1" role="tabpanel" class="bs-stepper-pane content active fade" aria-labelledby="steppertrigger1">
                                                 <!-- Title -->
                                                 <h4>Course details</h4>
 
@@ -677,9 +790,6 @@ Page content START -->
                                                 <div class="d-flex justify-content-between mt-4">
                                                     <button type="button" class="btn btn-secondary previous-btn" disabled>Previous</button>
                                                     <button type="button" id="next-btn-1" class="btn btn-primary next-btn">Next</button>
-                                                    <button type="submit" class="btn btn-outline-success ms-2">
-                                                        <i class="fas fa-check me-2"></i>Submit Course
-                                                    </button>
                                                 </div>
                                         </div>
                                         <!-- Step 1 content END -->
@@ -733,9 +843,6 @@ Page content START -->
                                             <div class="d-flex justify-content-between mt-4">
                                                 <button type="button" class="btn btn-secondary previous-btn" disabled>Previous</button>
                                                 <button type="button" id="next-btn-1" class="btn btn-primary next-btn">Next</button>
-                                                <button type="submit" class="btn btn-outline-success ms-2">
-                                                    <i class="fas fa-check me-2"></i>Submit Course
-                                                </button>
                                             </div>
                                         </div>
                                         <!-- Step 2 content END -->
@@ -761,9 +868,6 @@ Page content START -->
                                             <div class="d-flex justify-content-between mt-4">
                                                 <button type="button" class="btn btn-secondary previous-btn">Previous</button>
                                                 <button type="button" id="next-btn-3" class="btn btn-primary next-btn">Next</button>
-                                                <button type="submit" class="btn btn-outline-success ms-2">
-                                                    <i class="fas fa-check me-2"></i>Submit Course
-                                                </button>
                                             </div>
                                         </div>
                                         <!-- Step 3 content END -->
@@ -875,9 +979,8 @@ Page content START -->
                                                     <i class="fas fa-check"></i> Create Course
                                                 </button>
                                             </div>
-                                            {{ form_end(courseForm) }}
                                         </div>
-                                        <!-- Step 3 content END -->
+                                        <!-- Step 4 content END -->
                                     </div>
                                     <!-- Step content END -->
                                 </div>
@@ -885,6 +988,7 @@ Page content START -->
                             </div>
                             <!-- Steps END -->
                         </div>
+                        {{ form_end(courseForm) }}
                     </div>
                 </div>
                 <!-- Main content END -->
@@ -919,186 +1023,447 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Form validation for each step
+    function validateStep(stepIndex) {
+        let isValid = true;
+        let errorMessage = '';
+        
+        // Reset previous errors
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        
+        switch(stepIndex) {
+            case 0: // Step 1: Basic Information
+                const title = document.getElementById('course_title');
+                const shortDescription = document.getElementById('course_shortDescription');
+                const category = document.getElementById('course_category');
+                const level = document.getElementById('course_level');
+                const price = document.getElementById('course_price');
+                
+                // Validate title
+                if (!title || !title.value.trim()) {
+                    if (title) title.classList.add('is-invalid');
+                    errorMessage += 'Course title is required. ';
+                    isValid = false;
+                }
+                
+                // Validate short description
+                if (!shortDescription || !shortDescription.value.trim() || shortDescription.value.trim().length < 10) {
+                    if (shortDescription) shortDescription.classList.add('is-invalid');
+                    errorMessage += 'Short description must be at least 10 characters. ';
+                    isValid = false;
+                }
+                
+                // Validate category
+                if (!category || !category.value) {
+                    if (category) category.classList.add('is-invalid');
+                    errorMessage += 'Please select a category. ';
+                    isValid = false;
+                }
+                
+                // Validate level
+                if (!level || !level.value) {
+                    if (level) level.classList.add('is-invalid');
+                    errorMessage += 'Please select a course level. ';
+                    isValid = false;
+                }
+                
+                // Validate price
+                if (!price || !price.value || price.value <= 0) {
+                    if (price) price.classList.add('is-invalid');
+                    errorMessage += 'Please enter a valid price greater than 0. ';
+                    isValid = false;
+                }
+                break;
+                
+            case 1: // Step 2: Course Media
+                const thumbnailFile = document.getElementById('course_thumbnailFile');
+                const videoFile = document.getElementById('course_videoFile');
+                
+                // Require at least one media file
+                if ((!thumbnailFile || !thumbnailFile.files || thumbnailFile.files.length === 0) && 
+                    (!videoFile || !videoFile.files || videoFile.files.length === 0)) {
+                    if (thumbnailFile) thumbnailFile.classList.add('is-invalid');
+                    if (videoFile) videoFile.classList.add('is-invalid');
+                    errorMessage += 'Please upload at least a thumbnail image or introduction video. ';
+                    isValid = false;
+                }
+                break;
+                
+            case 2: // Step 3: Curriculum
+                const chapters = document.querySelectorAll('.chapter-item');
+                
+                // Require at least one chapter
+                if (chapters.length === 0) {
+                    errorMessage += 'Please add at least one chapter to your course. ';
+                    isValid = false;
+                } else {
+                    chapters.forEach((chapter, index) => {
+                        const titleInput = chapter.querySelector('.chapter-title');
+                        if (!titleInput || !titleInput.value.trim()) {
+                            if (titleInput) titleInput.classList.add('is-invalid');
+                            errorMessage += `Chapter ${index + 1} title is required. `;
+                            isValid = false;
+                        }
+                        
+                        // Check if chapter has at least one lesson
+                        const lessons = chapter.querySelectorAll('.lesson-item');
+                        if (lessons.length === 0) {
+                            errorMessage += `Chapter ${index + 1} should have at least one lesson. `;
+                            isValid = false;
+                        } else {
+                            lessons.forEach((lesson, lessonIndex) => {
+                                const lessonTitle = lesson.querySelector('.lesson-title');
+                                if (!lessonTitle || !lessonTitle.value.trim()) {
+                                    if (lessonTitle) lessonTitle.classList.add('is-invalid');
+                                    errorMessage += `Lesson ${lessonIndex + 1} in Chapter ${index + 1} title is required. `;
+                                    isValid = false;
+                                }
+                            });
+                        }
+                    });
+                }
+                break;
+                
+            case 3: // Step 4: Additional Information
+                const requirements = document.getElementById('course_requirements');
+                const learningOutcomes = document.getElementById('course_learningOutcomes');
+                const targetAudience = document.getElementById('course_targetAudience');
+                const language = document.getElementById('course_language');
+                const duration = document.getElementById('course_duration');
+                
+                // Validate language (required)
+                if (!language || !language.value) {
+                    if (language) language.classList.add('is-invalid');
+                    errorMessage += 'Please select a course language. ';
+                    isValid = false;
+                }
+                
+                // Validate duration (required)
+                if (!duration || !duration.value || duration.value <= 0) {
+                    if (duration) duration.classList.add('is-invalid');
+                    errorMessage += 'Please enter a valid course duration. ';
+                    isValid = false;
+                }
+                
+                // Validate requirements (optional but if filled, should be meaningful)
+                if (requirements && requirements.value && requirements.value.trim().length < 20) {
+                    requirements.classList.add('is-invalid');
+                    errorMessage += 'Requirements should be at least 20 characters if provided. ';
+                    isValid = false;
+                }
+                
+                // Validate learning outcomes (optional but if filled, should be meaningful)
+                if (learningOutcomes && learningOutcomes.value && learningOutcomes.value.trim().length < 20) {
+                    learningOutcomes.classList.add('is-invalid');
+                    errorMessage += 'Learning outcomes should be at least 20 characters if provided. ';
+                    isValid = false;
+                }
+                
+                // Validate target audience (optional but if filled, should be meaningful)
+                if (targetAudience && targetAudience.value && targetAudience.value.trim().length < 20) {
+                    targetAudience.classList.add('is-invalid');
+                    errorMessage += 'Target audience should be at least 20 characters if provided. ';
+                    isValid = false;
+                }
+                break;
+        }
+        
+        return { isValid, errorMessage };
+    }
+    
+    // Update next button state based on current step validation
+    function updateNextButtonState() {
+        const currentStep = stepper.currentIndex;
+        const validation = validateStep(currentStep);
+        const nextButton = document.querySelector(`#next-btn-${currentStep + 1}`);
+        
+        if (nextButton) {
+            if (validation.isValid) {
+                nextButton.disabled = false;
+                nextButton.classList.remove('disabled');
+            } else {
+                nextButton.disabled = true;
+                nextButton.classList.add('disabled');
+            }
+        }
+        
+        return validation;
+    }
+    
+    // Add real-time validation listeners
+    function addValidationListeners() {
+        // Step 1 fields
+        ['course_title', 'course_shortDescription', 'course_category', 'course_level', 'course_price'].forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('input', updateNextButtonState);
+                field.addEventListener('change', updateNextButtonState);
+                field.addEventListener('blur', updateNextButtonState);
+            }
+        });
+        
+        // Step 2 fields (file inputs)
+        ['course_thumbnailFile', 'course_videoFile'].forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('change', updateNextButtonState);
+            }
+        });
+        
+        // Step 3 chapters and lessons
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('chapter-title') || e.target.classList.contains('lesson-title')) {
+                updateNextButtonState();
+            }
+        });
+        
+        // Step 4 fields
+        ['course_requirements', 'course_learningOutcomes', 'course_targetAudience', 'course_language', 'course_duration'].forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('input', updateNextButtonState);
+                field.addEventListener('change', updateNextButtonState);
+                field.addEventListener('blur', updateNextButtonState);
+            }
+        });
+        
+        // Listen for chapter/lesson additions/removals
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' && 
+                    (mutation.target.classList.contains('chapters-container') || 
+                     mutation.target.classList.contains('lessons-container'))) {
+                    updateNextButtonState();
+                }
+            });
+        });
+        
+        // Observe chapters container for changes
+        const chaptersContainer = document.getElementById('chaptersContainer');
+        if (chaptersContainer) {
+            observer.observe(chaptersContainer, {
+                childList: true,
+                subtree: true
+            });
+        }
+    }
+
+    // Client-side validation
+    function validateForm() {
+        const title = document.getElementById('course_title');
+        const shortDescription = document.getElementById('course_shortDescription');
+        const category = document.getElementById('course_category');
+        const level = document.getElementById('course_level');
+        const price = document.getElementById('course_price');
+        
+        let isValid = true;
+        let errorMessage = '';
+        
+        // Reset previous errors
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+        
+        // Validate title
+        if (!title.value.trim()) {
+            title.classList.add('is-invalid');
+            errorMessage += 'Course title is required.\\n';
+            isValid = false;
+        }
+        
+        // Validate category
+        if (!category.value) {
+            category.classList.add('is-invalid');
+            errorMessage += 'Please select a category.\\n';
+            isValid = false;
+        }
+        
+        // Validate level
+        if (!level.value) {
+            level.classList.add('is-invalid');
+            errorMessage += 'Please select a course level.\\n';
+            isValid = false;
+        }
+        
+        // Validate price
+        if (!price.value || parseFloat(price.value) < 0) {
+            price.classList.add('is-invalid');
+            errorMessage += 'Please enter a valid price.\\n';
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            showGlobalNotification('Validation Error', errorMessage, 'error');
+        }
+        
+        return isValid;
+    }
+    
+    // Add event listeners for real-time validation
+    document.getElementById('course_title')?.addEventListener('blur', validateForm);
+    document.getElementById('course_category')?.addEventListener('change', validateForm);
+    document.getElementById('course_level')?.addEventListener('change', validateForm);
+    document.getElementById('course_price')?.addEventListener('blur', validateForm);
+    
+    // Override form submission to validate first
+    document.getElementById('courseForm').addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
     // Simple stepper functionality without validation
     const stepper = {
         currentIndex: 0,
-        steps: document.querySelectorAll('.bs-stepper-pane'),
+        steps: null,
+        
+        init: function() {
+            // Wait a bit for DOM to be ready
+            setTimeout(() => {
+                this.steps = document.querySelectorAll('.bs-stepper-pane');
+                console.log('Stepper init - found steps:', this.steps.length);
+                console.log('Steps:', this.steps);
+                
+                // Ensure first step is active
+                if (this.steps.length > 0) {
+                    this.steps.forEach((step, index) => {
+                        step.classList.remove('active', 'show');
+                        step.style.display = 'none';
+                        step.style.opacity = '0';
+                        console.log(`Step ${index + 1} classes:`, step.className);
+                    });
+                    
+                    // Force first step to be visible
+                    this.steps[0].classList.add('active', 'show');
+                    this.steps[0].style.display = 'block';
+                    this.steps[0].style.opacity = '1';
+                    this.currentIndex = 0;
+                    
+                    console.log('First step forced active:', this.steps[0].className);
+                    console.log('First step display:', window.getComputedStyle(this.steps[0]).display);
+                }
+                
+                this.updateStepIndicators();
+                
+                // Initialize validation listeners
+                addValidationListeners();
+                
+                // Set initial next button state
+                updateNextButtonState();
+            }, 200);
+        },
         
         next: function() {
+            console.log('Next button clicked, current index:', this.currentIndex, 'total steps:', this.steps.length);
+            if (!this.steps || this.steps.length === 0) {
+                console.log('Steps not initialized');
+                return;
+            }
+            
+            // Validate current step before proceeding
+            const validation = validateStep(this.currentIndex);
+            if (!validation.isValid) {
+                console.log('Validation failed:', validation.errorMessage);
+                // Show error message
+                if (typeof showGlobalNotification === 'function') {
+                    showGlobalNotification('Validation Error', validation.errorMessage, 'error');
+                } else {
+                    alert('Please correct the following errors: ' + validation.errorMessage);
+                }
+                return;
+            }
+            
             if (this.currentIndex < this.steps.length - 1) {
-                this.steps[this.currentIndex].classList.remove('active');
+                // Hide current step
+                this.steps[this.currentIndex].classList.remove('active', 'show');
+                this.steps[this.currentIndex].style.display = 'none';
+                this.steps[this.currentIndex].style.opacity = '0';
+                
                 this.currentIndex++;
-                this.steps[this.currentIndex].classList.add('active');
+                
+                // Show next step
+                this.steps[this.currentIndex].classList.add('active', 'show');
+                this.steps[this.currentIndex].style.display = 'block';
+                this.steps[this.currentIndex].style.opacity = '1';
+                
                 this.updateStepIndicators();
+                updateNextButtonState(); // Update next button for new step
+                console.log('Moved to step:', this.currentIndex);
+            } else {
+                console.log('Already at last step');
             }
         },
         
         previous: function() {
+            if (!this.steps || this.steps.length === 0) {
+                console.log('Steps not initialized');
+                return;
+            }
             if (this.currentIndex > 0) {
-                this.steps[this.currentIndex].classList.remove('active');
+                // Hide current step
+                this.steps[this.currentIndex].classList.remove('active', 'show');
+                this.steps[this.currentIndex].style.display = 'none';
+                this.steps[this.currentIndex].style.opacity = '0';
+                
                 this.currentIndex--;
-                this.steps[this.currentIndex].classList.add('active');
+                
+                // Show previous step
+                this.steps[this.currentIndex].classList.add('active', 'show');
+                this.steps[this.currentIndex].style.display = 'block';
+                this.steps[this.currentIndex].style.opacity = '1';
+                
                 this.updateStepIndicators();
+                updateNextButtonState(); // Update next button for new step
             }
         },
         
         updateStepIndicators: function() {
-            document.querySelectorAll('.step').forEach((step, index) => {
-                step.classList.remove('active', 'completed');
+            const indicators = document.querySelectorAll('.step');
+            indicators.forEach((indicator, index) => {
+                indicator.classList.remove('active', 'completed');
                 if (index < this.currentIndex) {
-                    step.classList.add('completed');
+                    indicator.classList.add('completed');
                 } else if (index === this.currentIndex) {
-                    step.classList.add('active');
+                    indicator.classList.add('active');
                 }
             });
+        },
+        
+        goToStep: function(stepIndex) {
+            if (stepIndex >= 0 && stepIndex < this.steps.length) {
+                this.steps[this.currentIndex].classList.remove('active');
+                this.currentIndex = stepIndex;
+                this.steps[this.currentIndex].classList.add('active');
+                this.updateStepIndicators();
+            }
         }
     };
-
-    // Add event listeners for navigation buttons
-    document.querySelectorAll('.next-btn').forEach(btn => {
-        btn.addEventListener('click', () => stepper.next());
+    
+    // Add event listeners for next/previous buttons
+    document.querySelectorAll('.next-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            stepper.next();
+        });
     });
     
-    document.querySelectorAll('.previous-btn').forEach(btn => {
-        btn.addEventListener('click', () => stepper.previous());
-    });
-
-    // Add form submission handler for all submit buttons
-    document.querySelectorAll('button[type="submit"]').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            // Prevent default stepper navigation
+    document.querySelectorAll('.previous-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
             e.preventDefault();
-            
-            // Validate all steps before submission
-            let isValid = true;
-            let firstInvalidField = null;
-            
-            // Check all form fields
-            const form = document.getElementById('courseForm');
-            const inputs = form.querySelectorAll('input, select, textarea');
-            
-            inputs.forEach(input => {
-                // Remove any existing validation styling
-                input.classList.remove('is-invalid');
-                
-                // Basic validation
-                if (input.hasAttribute('required') && !input.value.trim()) {
-                    isValid = false;
-                    input.classList.add('is-invalid');
-                    if (!firstInvalidField) {
-                        firstInvalidField = input;
-                    }
-                }
-                
-                // Email validation
-                if (input.type === 'email' && input.value && !validateEmail(input.value)) {
-                    isValid = false;
-                    input.classList.add('is-invalid');
-                    if (!firstInvalidField) {
-                        firstInvalidField = input;
-                    }
-                }
-            });
-            
-            if (!isValid) {
-                // Show error message
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'alert alert-danger alert-dismissible fade show d-flex align-items-center';
-                errorDiv.innerHTML = `
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <div class="flex-grow-1">
-                        <h6 class="alert-heading mb-2">
-                            <i class="fas fa-times-circle me-1"></i>
-                            Please correct the following errors before submitting:
-                        </h6>
-                        <ul class="mb-0">
-                            <li>Fill in all required fields marked with *</li>
-                            <li>Ensure email addresses are valid</li>
-                            <li>Complete all steps of the course creation form</li>
-                        </ul>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-                
-                // Insert error message at the top of the card body
-                const cardBody = document.querySelector('.card-body');
-                cardBody.insertBefore(errorDiv, cardBody.firstChild);
-                
-                // Scroll to top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                // Focus first invalid field
-                if (firstInvalidField) {
-                    firstInvalidField.focus();
-                }
-                
-                // Auto-dismiss after 5 seconds
-                setTimeout(() => {
-                    const closeBtn = errorDiv.querySelector('.btn-close');
-                    if (closeBtn) {
-                        closeBtn.click();
-                    }
-                }, 5000);
-                
-                return false;
-            }
-            
-            // If valid, submit the form
-            form.submit();
+            stepper.previous();
         });
     });
-
-    // Email validation helper function
-    function validateEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
-    // Show first step
-    if (stepper.steps.length > 0) {
-        stepper.steps[0].classList.add('active');
-        stepper.updateStepIndicators();
-    }
-
-    // Image preview functionality
-    const courseImage = document.getElementById('courseImage');
-    if (courseImage) {
-        courseImage.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.querySelector('#thumb-container img');
-                    if (img) {
-                        img.src = e.target.result;
-                        img.classList.remove('d-none');
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
+    
+    // Add click listeners to step indicators
+    document.querySelectorAll('.step-trigger').forEach((trigger, index) => {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            stepper.goToStep(index);
         });
-    }
-
-    // Video preview functionality
-    const courseVideo = document.getElementById('courseVideo');
-    if (courseVideo) {
-        courseVideo.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('video/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const video = document.getElementById('video-preview');
-                    const placeholder = document.getElementById('video-placeholder');
-                    if (video && placeholder) {
-                        video.src = e.target.result;
-                        video.classList.remove('d-none');
-                        placeholder.classList.add('d-none');
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
+    });
+    
+    // Initialize stepper
+    stepper.init();
 });
 
 // Simple chapter management
@@ -1107,15 +1472,15 @@ function addChapter() {
     const chapterId = 'chapter-' + Date.now();
     
     const chapterHtml = `
-        <div class="chapter-item border rounded p-3 mb-3" id="${chapterId}">
+        <div class="chapter-item border rounded p-3 mb-3" id="` + chapterId + `">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <input type="text" class="form-control chapter-title" placeholder="Chapter title" style="flex: 1;">
-                <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeChapter('${chapterId}')">
+                <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeChapter('` + chapterId + `')">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
             <div class="lessons-container">
-                <button type="button" class="btn btn-sm btn-primary-soft mb-2" onclick="addLesson('${chapterId}')">
+                <button type="button" class="btn btn-sm btn-primary-soft mb-2" onclick="addLesson('` + chapterId + `')">
                     <i class="fas fa-plus me-1"></i>Add Lesson
                 </button>
             </div>
@@ -1223,4 +1588,4 @@ function submitCourse() {
     mainForm.submit();
 }
 </script>
-{% endblock %}
+{% endblock javascripts %}

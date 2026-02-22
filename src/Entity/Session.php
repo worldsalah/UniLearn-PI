@@ -37,7 +37,7 @@ class Session
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $sessionDescription = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'sessions')]
     #[ORM\JoinColumn(name: 'instructor_id', referencedColumnName: 'id')]
     private ?User $instructor = null;
 

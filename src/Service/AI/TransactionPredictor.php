@@ -26,7 +26,7 @@ class TransactionPredictor
         $score -= (100 - $priceScore) * 0.20;
 
         // 4. Buyer-Seller Compatibility (10% weight)
-        if ($buyer) {
+        if ($buyer !== null) {
             $compatibilityScore = $this->assessCompatibility($seller, $buyer);
             $score -= (100 - $compatibilityScore) * 0.10;
         }
@@ -82,7 +82,7 @@ class TransactionPredictor
                 'seller_reliability' => $sellerScore,
                 'product_quality' => $productScore,
                 'price_reasonableness' => $priceScore,
-                'compatibility' => $buyer ? $compatibilityScore : 100,
+                'compatibility' => $buyer !== null ? $compatibilityScore : 100,
             ],
         ];
     }
@@ -138,7 +138,7 @@ class TransactionPredictor
         }
 
         // Has image
-        if (!$product->getImage()) {
+        if ($product->getImage() === null || $product->getImage() === '') {
             $score -= 15;
         }
 

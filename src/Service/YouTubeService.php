@@ -31,7 +31,7 @@ class YouTubeService
     {
         try {
             // Clean and format the search query
-            $searchQuery = null !== $query ? trim($query) : '';
+            $searchQuery = trim($query);
 
             // Make sure the query is not empty
             if (empty($searchQuery)) {
@@ -143,7 +143,7 @@ class YouTubeService
         $allVideos = [];
         foreach ($queries as $query) {
             try {
-                $videos = $this->searchEducationalVideos((string) $query, 2); // Reduced from 5 to 2
+                $videos = $this->searchEducationalVideos($query, 2); // Reduced from 5 to 2
                 $allVideos = array_merge($allVideos, $videos);
             } catch (\Exception $e) {
                 // Continue with other queries if one fails
@@ -156,7 +156,7 @@ class YouTubeService
         $seenIds = [];
 
         foreach ($allVideos as $video) {
-            if (!in_array($video['id'], $seenIds) && count($uniqueVideos) < 5) { // Reduced from 20 to 5
+            if (!in_array($video['id'], $seenIds, true) && count($uniqueVideos) < 5) { // Reduced from 20 to 5
                 $uniqueVideos[] = $video;
                 $seenIds[] = $video['id'];
             }
@@ -171,7 +171,7 @@ class YouTubeService
     public function formatDuration(string $duration): string
     {
         try {
-            $start = new \DateTime('@1970-01-01');
+            $start = new \DateTime('1970-01-01');
             $start->add(new \DateInterval($duration));
 
             $hours = $start->format('H');

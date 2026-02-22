@@ -58,7 +58,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator
             new UserBadge($email, function ($userIdentifier) {
                 $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $userIdentifier]);
 
-                if (!$user) {
+                if ($user === null) {
                     throw new CustomUserMessageAuthenticationException('Email could not be found.');
                 }
 
@@ -71,7 +71,8 @@ class LoginFormAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+        $targetPath = $this->getTargetPath($request->getSession(), $providerKey);
+        if ($targetPath !== null) {
             return new RedirectResponse($targetPath);
         }
 

@@ -1,0 +1,286 @@
+<style>
+/* Simple Autocomplete Styles */
+.autocomplete-container {
+    position: relative;
+    width: 200px;
+}
+
+.autocomplete-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+    background-color: #f8f9fa;
+    border-left: 3px solid #007bff;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.autocomplete-description {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.autocomplete-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.autocomplete-level {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.autocomplete-price {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.autocomplete-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 12px;
+    color: #666;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+mark {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 1px 2px;
+    border-radius: 2px;
+    font-weight: 600;
+}
+</style>
+
+<div class="autocomplete-container">
+    <input 
+        class="form-control pe-5 form-control-sm" 
+        type="search" 
+        name="search" 
+        placeholder="Search courses..." 
+        aria-label="Search courses"
+        autocomplete="off"
+        id="courseSearchInput"
+    >
+    <div class="autocomplete-suggestions" id="suggestionsContainer"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('courseSearchInput');
+    const suggestionsContainer = document.getElementById('suggestionsContainer');
+    let debounceTimer;
+    let currentSuggestions = [];
+    let selectedIndex = -1;
+
+    if (!searchInput || !suggestionsContainer) return;
+
+    // Event listeners
+    searchInput.addEventListener('input', handleInput);
+    searchInput.addEventListener('focus', () => showSuggestions());
+    searchInput.addEventListener('blur', () => setTimeout(hideSuggestions, 200));
+    searchInput.addEventListener('keydown', handleKeydown);
+
+    // Close on click outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            hideSuggestions();
+        }
+    });
+
+    function handleInput(e) {
+        const query = e.target.value.trim();
+        
+        // Clear previous timer
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+        
+        if (query.length < 2) {
+            hideSuggestions();
+            return;
+        }
+        
+        // Debounce the search
+        debounceTimer = setTimeout(() => {
+            fetchSuggestions(query);
+        }, 300);
+    }
+
+    async function fetchSuggestions(query) {
+        try {
+            showLoading();
+            
+            const response = await fetch(`/api/autocomplete/courses?q=${encodeURIComponent(query)}&limit=5`);
+            const data = await response.json();
+            
+            if (data.success) {
+                currentSuggestions = data.suggestions;
+                displaySuggestions();
+            } else {
+                hideSuggestions();
+            }
+        } catch (error) {
+            console.error('Autocomplete error:', error);
+            hideSuggestions();
+        }
+    }
+
+    function displaySuggestions() {
+        if (currentSuggestions.length === 0) {
+            suggestionsContainer.innerHTML = '<div class="autocomplete-item">No courses found</div>';
+            showSuggestions();
+            return;
+        }
+        
+        const html = currentSuggestions.map((suggestion, index) => `
+            <div class="autocomplete-item ${index === selectedIndex ? 'selected' : ''}" 
+                 data-index="${index}" onclick="selectSuggestion(${index})">
+                <div class="autocomplete-title">${highlightMatch(suggestion.title)}</div>
+                <div class="autocomplete-description">${highlightMatch(suggestion.description || '')}</div>
+                <div class="autocomplete-meta">
+                    <span class="autocomplete-level">${suggestion.level || 'All levels'}</span>
+                    <span class="autocomplete-price">$${suggestion.price || '0'}</span>
+                </div>
+            </div>
+        `).join('');
+        
+        suggestionsContainer.innerHTML = html;
+        showSuggestions();
+    }
+
+    function highlightMatch(text) {
+        const query = searchInput.value.trim();
+        if (!query) return text;
+        
+        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(regex, '<mark>$1</mark>');
+    }
+
+    function showLoading() {
+        suggestionsContainer.innerHTML = `
+            <div class="autocomplete-loading">
+                <div class="spinner"></div>
+                <span>Searching...</span>
+            </div>
+        `;
+        showSuggestions();
+    }
+
+    function selectSuggestion(index) {
+        const suggestion = currentSuggestions[index];
+        if (suggestion) {
+            searchInput.value = suggestion.title;
+            hideSuggestions();
+            // Navigate to course page (you may need to adjust this URL)
+            window.location.href = `/course/${suggestion.id}`;
+        }
+    }
+
+    function handleKeydown(e) {
+        if (!suggestionsContainer.style.display || suggestionsContainer.style.display === 'none') {
+            return;
+        }
+        
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, currentSuggestions.length - 1);
+                updateSelectedClass();
+                break;
+                
+            case 'ArrowUp':
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                updateSelectedClass();
+                break;
+                
+            case 'Enter':
+                e.preventDefault();
+                if (selectedIndex >= 0) {
+                    selectSuggestion(selectedIndex);
+                }
+                break;
+                
+            case 'Escape':
+                hideSuggestions();
+                break;
+        }
+    }
+
+    function updateSelectedClass() {
+        const items = suggestionsContainer.querySelectorAll('.autocomplete-item');
+        items.forEach((item, index) => {
+            if (index === selectedIndex) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+    }
+
+    function showSuggestions() {
+        suggestionsContainer.style.display = 'block';
+    }
+
+    function hideSuggestions() {
+        suggestionsContainer.style.display = 'none';
+        selectedIndex = -1;
+    }
+
+    // Make selectSuggestion globally available
+    window.selectSuggestion = selectSuggestion;
+});
+</script>

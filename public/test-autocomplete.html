@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Autocomplete - UniLearn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .autocomplete-container { 
+            position: relative; 
+            width: 400px; 
+            margin: 50px auto;
+        }
+        .autocomplete-suggestions { 
+            position: absolute; 
+            top: 100%; 
+            left: 0; 
+            right: 0; 
+            background: white; 
+            border: 1px solid #ddd; 
+            border-top: none;
+            border-radius: 0 0 8px 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-height: 300px; 
+            overflow-y: auto; 
+            z-index: 1000; 
+            display: none;
+        }
+        .autocomplete-item { 
+            padding: 12px 16px; 
+            cursor: pointer; 
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+        .autocomplete-item:hover { 
+            background-color: #f8f9fa; 
+            border-left: 3px solid #007bff;
+        }
+        .autocomplete-title { 
+            font-weight: 600; 
+            color: #333; 
+            margin-bottom: 4px; 
+        }
+        .autocomplete-description { 
+            color: #666; 
+            font-size: 13px; 
+            margin-bottom: 4px;
+        }
+        .autocomplete-meta { 
+            display: flex; 
+            gap: 12px; 
+            font-size: 12px;
+        }
+        .autocomplete-level { 
+            background: #e3f2fd; 
+            color: #1976d2; 
+            padding: 2px 8px; 
+            border-radius: 12px; 
+            font-weight: 500;
+        }
+        .autocomplete-price { 
+            color: #28a745; 
+            font-weight: 600;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 UniLearn Autocomplete Test</h1>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5>Test Your Autocomplete Search</h5>
+                
+                <div class="autocomplete-container">
+                    <input 
+                        class="form-control" 
+                        type="search" 
+                        name="search" 
+                        placeholder="Search courses..." 
+                        autocomplete="off"
+                        id="courseSearchInput"
+                    >
+                    <div class="autocomplete-suggestions" id="suggestionsContainer"></div>
+                </div>
+                
+                <div id="status" class="status info">
+                    <strong>ℹ️ Status:</strong> Ready to test autocomplete
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5>📋 Test Results</h5>
+                <div id="testResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('courseSearchInput');
+        const suggestionsContainer = document.getElementById('suggestionsContainer');
+        const statusDiv = document.getElementById('status');
+        const testResults = document.getElementById('testResults');
+        let debounceTimer;
+        
+        if (!searchInput || !suggestionsContainer) {
+            statusDiv.className = 'status error';
+            statusDiv.innerHTML = '<strong>❌ Error:</strong> Search elements not found';
+            return;
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', handleInput);
+        searchInput.addEventListener('focus', () => showSuggestions());
+        
+        // Hide on click outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
+
+        function handleInput(e) {
+            const query = e.target.value.trim();
+            
+            // Clear previous timer
+            if (debounceTimer) {
+                clearTimeout(debounceTimer);
+            }
+            
+            if (query.length < 2) {
+                hideSuggestions();
+                updateStatus('info', 'ℹ️ Type at least 2 characters to search');
+                return;
+            }
+            
+            // Debounce the search
+            debounceTimer = setTimeout(() => {
+                fetchSuggestions(query);
+            }, 300);
+        }
+
+        async function fetchSuggestions(query) {
+            try {
+                updateStatus('info', '🔍 Searching for: "' + query + '"');
+                
+                // Try mock API first (works without Elasticsearch)
+                let response = await fetch('/api/autocomplete/courses-mock?q=' + encodeURIComponent(query) + '&limit=5');
+                
+                if (!response.ok) {
+                    throw new Error('Mock API failed');
+                }
+                
+                let data = await response.json();
+                
+                updateStatus('success', '✅ Mock API working! Found ' + data.suggestions.length + ' results');
+                displaySuggestions(data.suggestions);
+                
+            } catch (error) {
+                updateStatus('error', '❌ Error: ' + error.message);
+                hideSuggestions();
+            }
+        }
+
+        function displaySuggestions(suggestions) {
+            if (suggestions.length === 0) {
+                suggestionsContainer.innerHTML = '<div class="autocomplete-item">No courses found</div>';
+                showSuggestions();
+                return;
+            }
+            
+            const html = suggestions.map(suggestion => `
+                <div class="autocomplete-item" onclick="selectCourse('${suggestion.title.replace(/'/g, "\\'")}')">
+                    <div class="autocomplete-title">${suggestion.title}</div>
+                    <div class="autocomplete-description">${suggestion.description}</div>
+                    <div class="autocomplete-meta">
+                        <span class="autocomplete-level">${suggestion.level}</span>
+                        <span class="autocomplete-price">$${suggestion.price}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            suggestionsContainer.innerHTML = html;
+            showSuggestions();
+        }
+
+        function selectCourse(title) {
+            searchInput.value = title;
+            hideSuggestions();
+            updateStatus('success', '✅ Selected: ' + title);
+        }
+
+        function showSuggestions() {
+            suggestionsContainer.style.display = 'block';
+        }
+
+        function hideSuggestions() {
+            suggestionsContainer.style.display = 'none';
+        }
+
+        function updateStatus(type, message) {
+            statusDiv.className = 'status ' + type;
+            statusDiv.innerHTML = '<strong>' + message + '</strong>';
+        }
+    });
+    </script>
+</body>
+</html>

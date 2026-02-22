@@ -412,12 +412,12 @@ Header END -->
                     </a>
 
                     {% if not nextLesson %}
-                        <form method="get" action="{{ path('app_instructor_course_detail', {'id': course.id}) }}" style="display: inline;">
+                        <form method="get" action="{{ path('app_certificate_preview', {'courseId': course.id}) }}" style="display: inline;">
                             <button type="submit" 
                                     class="btn btn-success"
                                     onclick="markCourseComplete(); return true;"
-                                    title="Complete course and return to overview">
-                                Complete Course <i class="fas fa-check-circle ms-2"></i>
+                                    title="Complete course and view certificate">
+                                Complete Course <i class="fas fa-certificate ms-2"></i>
                             </button>
                         </form>
                     {% endif %}

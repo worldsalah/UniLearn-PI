@@ -121,7 +121,7 @@ class ReputationAggregator
         $score = 0.0;
 
         // Has bio
-        if ($seller->getBio()) {
+        if ($seller->getBio() !== null && $seller->getBio() !== '') {
             $score += 25;
         }
 

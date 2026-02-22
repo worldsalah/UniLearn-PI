@@ -72,12 +72,7 @@ class PageController extends AbstractController
         return $this->render('home/index-3.html.twig');
     }
 
-    #[Route('/course-detail', name: 'app_course_detail')]
-    public function courseDetail(): Response
-    {
-        return $this->render('course/detail.html.twig');
-    }
-
+    
     #[Route('/sign-in', name: 'app_sign_in')]
     public function signIn(AuthenticationUtils $authenticationUtils): Response
     {

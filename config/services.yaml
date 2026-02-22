@@ -29,3 +29,21 @@ services:
     App\Service\YouTubeService:
         arguments:
             $googleYoutubeApiKey: '%google_youtube_api_key%'
+
+    # Elasticsearch Finder Services
+    
+    App\Controller\Api\JobAutocompleteController:
+        arguments:
+            $finder: '@fos_elastica.finder.jobs'
+    
+    App\Controller\Api\ProductAutocompleteController:
+        arguments:
+            $finder: '@fos_elastica.finder.products'
+    
+        
+    App\Controller\Api\UniversalAutocompleteController:
+        arguments:
+            $coursesFinder: '@fos_elastica.finder.courses'
+            $jobsFinder: '@fos_elastica.finder.jobs'
+            $productsFinder: '@fos_elastica.finder.products'
+            $usersFinder: '@fos_elastica.finder.users'

@@ -50,7 +50,7 @@ class ContentValidationService
         }
 
         // 3. Image Validation (if image exists)
-        if ($product->getImage()) {
+        if ($product->getImage() !== null && $product->getImage() !== '') {
             $imageResult = $this->validateImage($product->getImage());
             $score -= (100 - $imageResult['score']) * 0.20;
 
@@ -180,7 +180,7 @@ class ContentValidationService
 
     private function validateImage(?string $imagePath): array
     {
-        if (!$imagePath) {
+        if ($imagePath === null || $imagePath === '') {
             return ['score' => 100, 'message' => 'No image provided'];
         }
 

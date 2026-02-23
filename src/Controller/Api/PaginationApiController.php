@@ -35,10 +35,7 @@ class PaginationApiController extends AbstractController
 
         try {
             $queryBuilder = $this->productRepository->createQueryBuilder('p')
-                ->leftJoin('p.category', 'c')
-                ->where('p.deletedAt IS NULL')
-                ->andWhere('p.status = :status')
-                ->setParameter('status', 'active');
+                ->leftJoin('p.category', 'c');
 
             // Apply search filter
             if (!empty($search)) {
@@ -63,7 +60,7 @@ class PaginationApiController extends AbstractController
             }
 
             // Apply sorting
-            $allowedSortFields = ['createdAt', 'title', 'price', 'rating', 'views'];
+            $allowedSortFields = ['createdAt', 'title', 'price'];
             if (in_array($sortBy, $allowedSortFields)) {
                 $sortOrder = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
                 $queryBuilder->orderBy("p.{$sortBy}", $sortOrder);
@@ -98,8 +95,6 @@ class PaginationApiController extends AbstractController
                         'name' => $product->getFreelancer()?->getFullName() ?? 'Unknown',
                         'email' => $product->getFreelancer()?->getEmail() ?? 'unknown@example.com'
                     ],
-                    'rating' => $product->getRating() ?? 0,
-                    'views' => $product->getViews() ?? 0,
                     'created_at' => $product->getCreatedAt()->format('Y-m-d H:i:s'),
                     'updated_at' => $product->getUpdatedAt()->format('Y-m-d H:i:s')
                 ];

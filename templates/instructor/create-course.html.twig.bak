@@ -1,0 +1,1006 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Course - Instructor Dashboard{% endblock %}
+
+{% block stylesheets %}
+<!-- Stepper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/css/bs-stepper.min.css">
+<!-- Choices CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<style>
+/* Override the dstepper-none class to show content */
+.dstepper-none {
+    display: block !important;
+}
+/* Ensure stepper content is visible */
+.bs-stepper-content .content {
+    display: none !important;
+}
+.bs-stepper-content .content.active {
+    display: block !important;
+}
+/* Custom styles for form elements */
+.js-choice {
+    background-color: transparent !important;
+    border: 1px solid #dee2e6 !important;
+}
+.h-400px {
+    height: 400px;
+}
+/* Fix stepper styling */
+.bs-stepper .step-trigger {
+    color: #6c757d !important;
+    text-decoration: none !important;
+}
+.bs-stepper .step-trigger:hover {
+    color: #0d6efd !important;
+}
+.bs-stepper .active .step-trigger {
+    color: #0d6efd !important;
+}
+.bs-stepper .bs-stepper-circle {
+    background-color: #e9ecef;
+    color: #6c757d;
+    border: 2px solid #dee2e6;
+}
+.bs-stepper .active .bs-stepper-circle {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+.bs-stepper .line {
+    background-color: #dee2e6;
+    height: 2px;
+}
+.bs-stepper .step-nav-item.completed .step-nav-line {
+    background-color: #0d6efd;
+}
+
+/* Disable step navigation clicks */
+.bs-stepper .step-trigger {
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+    opacity: 0.7 !important;
+}
+
+.bs-stepper .step-trigger:hover {
+    color: #6c757d !important;
+    text-decoration: none !important;
+    background-color: transparent !important;
+}
+
+.bs-stepper .step-trigger:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Server-side validation error styles */
+.form-control.is-invalid {
+    border-color: #dc3545 !important;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-select.is-invalid {
+    border-color: #dc3545 !important;
+    padding-right: calc(0.375em + 2.25rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath d='m7.247 4.86-4.796 4.796a.25.25 0 0 0-.354 0l-4.796 4.796a.25.25 0 0 0 0 .354l4.796-4.796a.25.25 0 0 0 .354 0zm4.896 0 4.796 4.796a.25.25 0 0 0 .354 0l4.796-4.796a.25.25 0 0 0-.354-.354L8.354 8.354a.25.25 0 0 0-.354 0z'/%3e%3c/svg%3e"), url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center, center left 2.25rem;
+    background-size: 16px 12px, calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-check-input.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.form-check-input.is-invalid:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.form-check-input.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #dc3545;
+}
+
+.invalid-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 5;
+    display: none;
+    max-width: 100%;
+    padding: 0.25rem 0.5rem;
+    margin-top: 0.1rem;
+    font-size: 0.875rem;
+    color: #fff;
+    background-color: rgba(220, 53, 69, 0.9);
+    border-radius: 0.25rem;
+}
+
+.form-control.is-invalid ~ .invalid-tooltip,
+.form-select.is-invalid ~ .invalid-tooltip {
+    display: block;
+}
+
+.border-dashed {
+    border: 2px dashed #dee2e6 !important;
+}
+
+.btn-round {
+    border-radius: 50%;
+}
+
+.btn-white-shadow {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.btn-danger-soft {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border-color: rgba(220, 53, 69, 0.2);
+}
+
+.btn-success-soft {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: #198754;
+    border-color: rgba(25, 135, 84, 0.2);
+}
+
+.btn-primary-soft {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+    border-color: rgba(13, 110, 253, 0.2);
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+.stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    content: "";
+}
+</style>
+{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+    
+<!-- =======================
+Page Banner START -->
+<section class="py-0 bg-primary h-100px align-items-center d-flex h-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
+    <!-- Main banner background image -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <!-- Title -->
+                <h1 class="text-white">Submit a new Course</h1>
+                <p class="text-white mb-0">Read our <a href="#" class="text-white"><u>"Before you create a course"</u></a> article before submitting!</p>    
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Steps START -->
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto text-center">
+                <!-- Content -->
+                <p class="text-center">Use this interface to add a new Course to the portal. Once you are done adding the item it will be reviewed for quality. If approved, your course will appear for sale and you will be informed by email that your course has been accepted.</p>
+            </div>
+        </div>
+
+        <div class="card bg-transparent border rounded-3 mb-5">
+            <div id="stepper" class="bs-stepper stepper-outline">
+                <!-- Card header -->
+                <div class="card-header bg-light border-bottom px-lg-5">
+                    <!-- Step Buttons START -->
+                    <div class="bs-stepper-header" role="tablist">
+                        <!-- Step 1 -->
+                        <div class="step" data-target="#step-1">
+                            <div class="d-grid text-center align-items-center">
+                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger1" aria-controls="step-1">
+                                    <span class="bs-stepper-circle">1</span>
+                                </button>
+                                <h6 class="bs-stepper-label d-none d-md-block">Course details</h6>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+
+                        <!-- Step 2 -->
+                        <div class="step" data-target="#step-2">
+                            <div class="d-grid text-center align-items-center">
+                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger2" aria-controls="step-2">
+                                    <span class="bs-stepper-circle">2</span>
+                                </button>
+                                <h6 class="bs-stepper-label d-none d-md-block">Course media</h6>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+
+                        <!-- Step 3 -->
+                        <div class="step" data-target="#step-3">
+                            <div class="d-grid text-center align-items-center">
+                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger3" aria-controls="step-3">
+                                    <span class="bs-stepper-circle">3</span>
+                                </button>
+                                <h6 class="bs-stepper-label d-none d-md-block">Curriculum</h6>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+
+                        <!-- Step 4 -->
+                        <div class="step" data-target="#step-4">
+                            <div class="d-grid text-center align-items-center">
+                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger4" aria-controls="step-4">
+                                    <span class="bs-stepper-circle">4</span>
+                                </button>
+                                <h6 class="bs-stepper-label d-none d-md-block">Additional information</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Step Buttons END -->
+                </div>
+
+                <!-- Card body START -->
+                <div class="card-body">
+                    <!-- Flash messages -->
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Step content START -->
+                    <div class="bs-stepper-content">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                            <!-- Step 1 content START -->
+                            <div id="step-1" role="tabpanel" class="content fade active" aria-labelledby="steppertrigger1">
+                                <!-- Title -->
+                                <h4>Course details</h4>
+
+                                <hr> <!-- Divider -->
+
+                                <!-- Basic information START -->
+                                <div class="row g-4">
+                                    <!-- Course title -->
+                                    <div class="col-12">
+                                        <label class="form-label">Course title</label>
+                                        {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter course title'}}) }}
+                                        {{ form_errors(form.title) }}
+                                    </div>
+
+                                    <!-- Short description -->
+                                    <div class="col-12">
+                                        <label class="form-label">Short description</label>
+                                        {{ form_widget(form.shortDescription, {'attr': {'class': 'form-control', 'rows': '2', 'placeholder': 'Enter keywords'}}) }}
+                                        {{ form_errors(form.shortDescription) }}
+                                    </div>
+
+                                    <!-- Course category -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Course category</label>
+                                        {{ form_widget(form.category, {'attr': {'class': 'form-select js-choice border-0 z-index-9 bg-transparent', 'aria-label': '.form-select-sm', 'data-search-enabled': 'true'}}) }}
+                                        {{ form_errors(form.category) }}
+                                    </div>
+
+                                    <!-- Course level -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Course level</label>
+                                        {{ form_widget(form.level, {'attr': {'class': 'form-select js-choice border-0 z-index-9 bg-transparent', 'aria-label': '.form-select-sm', 'data-search-enabled': 'false', 'data-remove-item-button': 'true'}}) }}
+                                        {{ form_errors(form.level) }}
+                                    </div>
+
+                                    <!-- Language -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Language</label>
+                                        {{ form_widget(form.language, {'attr': {'class': 'form-select js-choice border-0 z-index-9 bg-transparent', 'multiple': 'multiple', 'aria-label': '.form-select-sm', 'data-max-item-count': '3', 'data-remove-item-button': 'true'}}) }}
+                                        {{ form_errors(form.language) }}
+                                    </div>
+
+                                    <!-- Featured -->
+                                    <div class="col-md-6 d-flex align-items-center justify-content-start mt-5">
+                                        <div class="form-check form-switch form-check-md">
+                                            {{ form_widget(form.featured, {'attr': {'class': 'form-check-input', 'id': 'checkPrivacy1'}}) }}
+                                            {{ form_label(form.featured, 'Check this for featured course', {'label_attr': {'class': 'form-check-label', 'for': 'checkPrivacy1'}}) }}
+                                            {{ form_errors(form.featured) }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Course time -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Course time</label>
+                                        {{ form_widget(form.duration, {'attr': {'class': 'form-control', 'placeholder': 'Enter course time'}}) }}
+                                        {{ form_errors(form.duration) }}
+                                    </div>
+
+                                    <!-- Total lecture -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Total lecture</label>
+                                        {{ form_widget(form.totalLectures, {'attr': {'class': 'form-control', 'placeholder': 'Enter total lecture'}}) }}
+                                        {{ form_errors(form.totalLectures) }}
+                                    </div>
+
+                                    <!-- Course price -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Course price</label>
+                                        {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Enter course price'}}) }}
+                                        {{ form_errors(form.price) }}
+                                    </div>
+
+                                    <!-- Course discount -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Discount price</label>
+                                        {{ form_widget(form.discountPrice, {'attr': {'class': 'form-control', 'placeholder': 'Enter discount'}}) }}
+                                        {{ form_errors(form.discountPrice) }}
+                                        <div class="col-12 mt-1 mb-0">
+                                            <div class="form-check small mb-0">
+                                                <input class="form-check-input" type="checkbox" id="checkBox1">
+                                                <label class="form-check-label" for="checkBox1">
+                                                    Enable this Discount
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Course description -->
+                                    <div class="col-12">
+                                        <label class="form-label">Add description</label>
+                                        <!-- Editor toolbar -->
+                                        <div class="bg-light border border-bottom-0 rounded-top py-3" id="quilltoolbar">
+                                            <span class="ql-formats">
+                                                <select class="ql-size"></select>
+                                            </span>
+                                            <span class="ql-formats">
+                                                <button class="ql-bold"></button>
+                                                <button class="ql-italic"></button>
+                                                <button class="ql-underline"></button>
+                                                <button class="ql-strike"></button>
+                                            </span>
+                                            <span class="ql-formats">
+                                                <select class="ql-color"></select>
+                                                <select class="ql-background"></select>
+                                            </span>
+                                            <span class="ql-formats">
+                                                <button class="ql-code-block"></button>
+                                            </span>
+                                            <span class="ql-formats">
+                                                <button class="ql-list" value="ordered"></button>
+                                                <button class="ql-list" value="bullet"></button>
+                                                <button class="ql-indent" value="-1"></button>
+                                                <button class="ql-indent" value="+1"></button>
+                                            </span>
+                                            <span class="ql-formats">
+                                                <button class="ql-link"></button>
+                                                <button class="ql-image"></button>
+                                            </span>
+                                            <span class="ql-formats">
+                                                <button class="ql-clean"></button>
+                                            </span>
+                                        </div>
+                                        {{ form_widget(form.description, {'attr': {'class': 'bg-body border rounded-bottom h-400px overflow-hidden', 'id': 'quilleditor'}}) }}
+                                        {{ form_errors(form.description) }}
+                                    </div>
+                                </div>
+                                <!-- Basic information START -->
+                            </div>
+                            <!-- Step 1 content END -->
+
+                            <!-- Step 2 content START -->
+                            <div id="step-2" role="tabpanel" class="content fade" aria-labelledby="steppertrigger2">
+                                <!-- Title -->
+                                <h4>Course media</h4>
+
+                                <hr> <!-- Divider -->
+
+                                <div class="row">
+                                    <!-- Upload image START -->
+                                    <div class="col-12">
+                                        <div class="text-center justify-content-center align-items-center p-4 p-sm-5 border border-2 border-dashed position-relative rounded-3">
+                                            <!-- Image -->
+                                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                                            <div>
+                                                <h6 class="my-2">Upload course image here, or<a href="#!" class="text-primary"> Browse</a></h6>
+                                                <label style="cursor:pointer;">
+                                                    <span> 
+                                                        {{ form_widget(form.imagePath, {'attr': {'class': 'form-control stretched-link', 'type': 'file', 'name': 'my-image', 'id': 'image', 'accept': 'image/gif, image/jpeg, image/png'}}) }}
+                                                    </span>
+                                                </label>
+                                                    <p class="small mb-0 mt-2"><b>Note:</b> Only JPG, JPEG and PNG. Our suggested dimensions are 600px * 450px. Larger image will be cropped to 4:3 to fit our thumbnails/previews.</p>
+                                            </div>    
+                                        </div>
+
+                                        <!-- Button -->
+                                        <div class="d-sm-flex justify-content-end mt-2">
+                                            <button type="button" class="btn btn-sm btn-danger-soft mb-3">Remove image</button>
+                                        </div>
+                                    </div>
+                                    <!-- Upload image END -->
+
+                                    <!-- Upload video START -->
+                                    <div class="col-12">
+                                        <h5>Upload video</h5>
+                                        <!-- Input -->
+                                        <div class="col-12 mt-4 mb-5">
+                                            <label class="form-label">Video URL</label>
+                                            {{ form_widget(form.videoUrl, {'attr': {'class': 'form-control', 'placeholder': 'Enter video url'}}) }}
+                                            {{ form_errors(form.videoUrl) }}
+                                        </div>
+                                        <div class="position-relative my-4">
+                                            <hr>
+                                            <p class="small position-absolute top-50 start-50 translate-middle bg-body px-3 mb-0">Or</p>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label">Upload video</label>
+                                            <div class="input-group mb-3">
+                                                <input type="file" class="form-control" id="inputGroupFile01">
+                                                <label class="input-group-text">.mp4</label>
+                                            </div>
+                                            <div class="input-group mb-3">
+                                                <input type="file" class="form-control" id="inputGroupFile02">
+                                                <label class="input-group-text">.WebM</label>
+                                            </div>
+                                            <div class="input-group mb-3">
+                                                <input type="file" class="form-control" id="inputGroupFile03">
+                                                <label class="input-group-text">.OGG</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Preview -->
+                                    <h5 class="mt-4">Video preview</h5>
+                                    <div class="position-relative">
+                                        <!-- Image -->
+                                        <img src="assets/images/about/04.jpg" class="rounded-4" alt="">
+                                        <div class="position-absolute top-50 start-50 translate-middle">
+                                            <!-- Video link -->
+                                            <a href="https://www.youtube.com/embed/tXHviS-4ygo" class="btn btn-lg text-danger btn-round btn-white-shadow mb-0" data-glightbox="" data-gallery="video-tour">
+                                                <i class="fas fa-play"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Upload video END -->
+
+                                    <!-- Step 2 button -->
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button class="btn btn-secondary prev-btn mb-0">Previous</button>
+                                        <button class="btn btn-primary next-btn mb-0">Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Step 2 content END -->
+
+                            <!-- Step 3 content START -->
+                            <div id="step-3" role="tabpanel" class="content fade" aria-labelledby="steppertrigger3">
+                                <!-- Title -->
+                                <h4>Curriculum</h4>
+
+                                <hr> <!-- Divider -->
+
+                                <div class="row">
+                                    <!-- Add lecture Modal button -->
+                                    <div class="d-sm-flex justify-content-sm-between align-items-center mb-3">
+                                        <h5 class="mb-2 mb-sm-0">Upload Lecture</h5>
+                                        <a href="#" class="btn btn-sm btn-primary-soft mb-0" data-bs-toggle="modal" data-bs-target="#addLecture"><i class="bi bi-plus-circle me-2"></i>Add Lecture</a>
+                                    </div>
+            
+                                    <!-- Edit lecture START -->
+                                    <div class="accordion accordion-icon accordion-bg-light" id="accordionExample2">
+                                        <!-- Item START -->
+                                        <div class="accordion-item mb-3">
+                                            <h6 class="accordion-header font-base" id="heading-1">
+                                                <button class="accordion-button fw-bold rounded d-inline-block collapsed d-block pe-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="false" aria-controls="collapse-1">
+                                                    Introduction of Digital Marketing 
+                                                </button>
+                                            </h6>
+            
+                                            <div id="collapse-1" class="accordion-collapse collapse show" aria-labelledby="heading-1" data-bs-parent="#accordionExample2">
+                                                <!-- Topic START -->
+                                                <div class="accordion-body mt-3">
+                                                    <!-- Video item START -->
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="position-relative">
+                                                            <a href="#" class="btn btn-danger-soft btn-round btn-sm mb-0 stretched-link position-static"><i class="fas fa-play"></i></a>
+                                                            <span class="ms-2 mb-0 h6 fw-light">Introduction</span>
+                                                        </div>
+                                                        <!-- Edit and cancel button -->
+                                                        <div>
+                                                            <a href="#" class="btn btn-sm btn-success-soft btn-round me-1 mb-1 mb-md-0"><i class="far fa-fw fa-edit"></i></a>
+                                                            <button class="btn btn-sm btn-danger-soft btn-round mb-0"><i class="fas fa-fw fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Divider -->
+                                                    <hr>
+                                                    <!-- Video item END -->
+                            
+                                                    <!-- Video item START -->
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="position-relative">
+                                                            <a href="#" class="btn btn-danger-soft btn-round btn-sm mb-0 stretched-link position-static"><i class="fas fa-play"></i></a>
+                                                            <span class="ms-2 mb-0 h6 fw-light">What is Digital Marketing</span>
+                                                        </div>
+                                                        <!-- Edit and cancel button -->
+                                                        <div>
+                                                            <a href="#" class="btn btn-sm btn-success-soft btn-round me-1 mb-1 mb-md-0"><i class="far fa-fw fa-edit"></i></a>
+                                                            <button class="btn btn-sm btn-danger-soft btn-round mb-0"><i class="fas fa-fw fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Divider -->
+                                                    <hr>
+                                                    <!-- Video item END -->
+            
+                                                    <!-- Add topic -->
+                                                    <a href="#" class="btn btn-sm btn-dark mb-0" data-bs-toggle="modal" data-bs-target="#addTopic"><i class="bi bi-plus-circle me-2"></i>Add topic</a>
+                                                </div>
+                                                <!-- Topic END -->
+                                            </div>
+                                        </div>
+                                        <!-- Item END -->
+                    
+                                        <!-- Item START -->
+                                        <div class="accordion-item mb-3">
+                                            <h6 class="accordion-header font-base" id="heading-2">
+                                                <button class="accordion-button fw-bold rounded d-inline-block collapsed d-block pe-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+                                                    Customer Life cycle
+                                                </button>
+                                            </h6>
+            
+                                            <div id="collapse-2" class="accordion-collapse collapse" aria-labelledby="heading-2" data-bs-parent="#accordionExample2">
+                                                <div class="accordion-body mt-3">
+                                                    <!-- Add topic -->
+                                                    <a href="#" class="btn btn-sm btn-dark mb-0" data-bs-toggle="modal" data-bs-target="#addTopic">
+                                                        <i class="bi bi-plus-circle me-2"></i>Add topic
+                                                    </a>    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Item END -->
+                    
+                                        <!-- Item START -->
+                                        <div class="accordion-item mb-3">
+                                            <h6 class="accordion-header font-base" id="heading-3">
+                                                <button class="accordion-button fw-bold collapsed rounded d-block pe-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+                                                    How much should I offer the sellers? 
+                                                </button>
+                                            </h6>
+                                            <!-- Body -->
+                                            <div id="collapse-3" class="accordion-collapse collapse" aria-labelledby="heading-3" data-bs-parent="#accordionExample2">
+                                                <div class="accordion-body mt-3">
+                                                    <!-- Add topic -->
+                                                    <a href="#" class="btn btn-sm btn-dark mb-0" data-bs-toggle="modal" data-bs-target="#addTopic">
+                                                        <i class="bi bi-plus-circle me-2"></i>Add topic
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>    
+                                        <!-- Item END -->
+            
+                                    </div>
+                                    <!-- Edit lecture END -->
+
+                                    <!-- Step 3 button -->
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-secondary prev-btn mb-0">Previous</button>
+                                        <button class="btn btn-primary next-btn mb-0">Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Step 3 content END -->
+
+                            <!-- Step 4 content START -->
+                            <div id="step-4" role="tabpanel" class="content fade" aria-labelledby="steppertrigger4">
+                                <!-- Title -->
+                                <h4>Additional information</h4>
+
+                                <hr> <!-- Divider -->
+
+                                <div class="row g-4">
+                                    
+                                    <!-- Edit faq START -->
+                                    <div class="col-12">
+                                        <div class="bg-light border rounded p-2 p-sm-4">
+                                            <div class="d-sm-flex justify-content-sm-between align-items-center mb-3">
+                                                <h5 class="mb-2 mb-sm-0">Upload FAQs</h5>
+                                                <a href="#" class="btn btn-sm btn-primary-soft mb-0" data-bs-toggle="modal" data-bs-target="#addQuestion"><i class="bi bi-plus-circle me-2"></i>Add Question</a>
+                                            </div>
+
+                                            <div class="row g-4">
+                                                <div class="col-12">
+                                                    <div class="bg-body p-3 p-sm-4 border rounded">
+                                                        <!-- Item 1 -->
+                                                        <div class="d-sm-flex justify-content-sm-between align-items-center mb-2">
+                                                            <!-- Question -->
+                                                            <h6 class="mb-0">How Digital Marketing Work?</h6>
+                                                            <!-- Button -->
+                                                            <div class="align-middle">
+                                                                <a href="#" class="btn btn-sm btn-success-soft btn-round me-1 mb-1 mb-md-0"><i class="far fa-fw fa-edit"></i></a>
+                                                                <button class="btn btn-sm btn-danger-soft btn-round mb-0"><i class="fas fa-fw fa-times"></i></button>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Content -->
+                                                        <p>Comfort reached gay perhaps chamber his six detract besides add. Moonlight newspaper up its enjoyment agreeable depending. Timed voice share led him to widen noisy young. At weddings believed laughing although the material does the exercise of. Up attempt offered ye civilly so sitting to. She new course gets living within Elinor joy. She rapturous suffering concealed.</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <div class="bg-body p-4 border rounded">
+                                                        <!-- Item 2 -->
+                                                        <div class="d-sm-flex justify-content-sm-between align-items-center mb-2">
+                                                            <!-- Question -->
+                                                            <h6 class="mb-0">How Digital Marketing Work?</h6>
+                                                            <!-- Button -->
+                                                            <div class="align-middle">
+                                                                <a href="#" class="btn btn-sm btn-success-soft btn-round me-1 mb-1 mb-md-0"><i class="far fa-fw fa-edit"></i></a>
+                                                                <button class="btn btn-sm btn-danger-soft btn-round mb-0"><i class="fas fa-fw fa-times"></i></button>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Content -->
+                                                        <p>Comfort reached gay perhaps chamber his six detract besides add. Moonlight newspaper up its enjoyment agreeable depending. Timed voice share led him to widen noisy young. At weddings believed laughing although the material does the exercise of. Up attempt offered ye civilly so sitting to. She new course gets living within Elinor joy. She rapturous suffering concealed.</p>
+                                                    </div>    
+                                                </div>
+                                            </div>
+                                        </div>    
+                                    </div>
+                                    <!-- Edit faq END -->
+
+                                    <!-- Tags START -->
+                                    <div class="col-12">
+                                        <div class="bg-light border rounded p-4">
+                                            <h5 class="mb-0">Tags</h5>
+                                            <div class="mt-3">
+                                                {{ form_widget(form.tags, {'attr': {'class': 'form-control js-choice mb-0', 'data-placeholder': 'true', 'data-placeholder-Val': 'Enter tags', 'data-max-item-count': '14', 'data-remove-item-button': 'true'}}) }}
+                                                {{ form_errors(form.tags) }}
+                                                <span class="small">Maximum of 14 keywords. Keywords should all be in lowercase.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Tags END -->
+
+                                    <!-- Reviewer START -->
+                                    <div class="col-12">
+                                        <div class="bg-light border rounded p-4">
+                                            <h5 class="mb-0">Message to a reviewer</h5>
+
+                                            <!-- Comment -->
+                                            <div class="mt-3">
+                                                {{ form_widget(form.reviewerMessage, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Write a message', 'spellcheck': 'false'}}) }}
+                                                {{ form_errors(form.reviewerMessage) }}
+                                                <div class="form-check mb-0 mt-2">
+                                                    {{ form_widget(form.licenseCheckbox, {'attr': {'class': 'form-check-input', 'id': 'exampleCheck1'}}) }}
+                                                    {{ form_label(form.licenseCheckbox, 'Any images, sounds, or other assets that are not my own work, have been appropriately licensed for use in the file preview or main course. Other than these items, this work is entirely my own and I have full rights to sell it here.', {'label_attr': {'class': 'form-check-label', 'for': 'exampleCheck1'}}) }}
+                                                    {{ form_errors(form.licenseCheckbox) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Reviewer START -->
+
+                                    <!-- Step 4 button -->
+                                    <div class="d-md-flex justify-content-between align-items-start mt-4">
+                                        <button class="btn btn-secondary prev-btn mb-2 mb-md-0">Previous</button>
+                                        <button class="btn btn-light me-auto ms-md-2 mb-2 mb-md-0">Preview Course</button>
+                                        <div class="text-md-end">
+                                            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success mb-2 mb-sm-0'}}) }}
+                                            <p class="mb-0 small mt-1">Once you click "Submit a Course", your course will be uploaded and marked as pending for review.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Step 4 content END -->
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- Form END -->
+                    </div>
+                </div>
+                <!-- Card body END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Form END -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Popup modal for add lecture START -->
+<div class="modal fade" id="addLecture" tabindex="-1" aria-labelledby="addLectureLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h5 class="modal-title text-white" id="addLectureLabel">Add Lecture</h5>
+        <button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="modal-body">
+        <form class="row text-start g-3">
+            <!-- Course name -->
+            <div class="col-12">
+                <label class="form-label">Course name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" placeholder="Enter course name">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success my-0">Save Lecture</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Popup modal for add lecture END -->
+
+<!-- Popup modal for add topic START -->
+<div class="modal fade" id="addTopic" tabindex="-1" aria-labelledby="addTopicLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h5 class="modal-title text-white" id="addTopicLabel">Add topic</h5>
+        <button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="modal-body">
+        <form class="row text-start g-3">
+            <!-- Topic name -->
+            <div class="col-md-6">
+                <label class="form-label">Topic name</label>
+                <input class="form-control" type="text" placeholder="Enter topic name">
+            </div>
+            <!-- Video link -->
+            <div class="col-md-6">
+                <label class="form-label">Video link</label>
+                <input class="form-control" type="text" placeholder="Enter Video link">
+            </div>
+            <!-- Description -->
+            <div class="col-12 mt-3">
+                <label class="form-label">Course description</label>
+                <textarea class="form-control" rows="4" placeholder="" spellcheck="false"></textarea>
+            </div>
+            <!-- Buttons -->
+            <div class="col-6 mt-3">
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                    <!-- Free button -->
+                    <input type="radio" class="btn-check" name="options" id="option1" checked="">
+                    <label class="btn btn-sm btn-light btn-primary-soft-check border-0 m-0" for="option1">Free</label>
+                    <!-- Premium button -->
+                    <input type="radio" class="btn-check" name="options" id="option2">
+                    <label class="btn btn-sm btn-light btn-primary-soft-check border-0 m-0" for="option2">Premium</label>
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success my-0">Save topic</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Popup modal for add topic END -->
+
+<!-- Popup modal for add faq START -->
+<div class="modal fade" id="addQuestion" tabindex="-1" aria-labelledby="addQuestionLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h5 class="modal-title text-white" id="addQuestionLabel">Add FAQ</h5>
+        <button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="modal-body">
+        <form class="row text-start g-3">
+            <!-- Question -->
+            <div class="col-12">
+                <label class="form-label">Question</label>
+                <input class="form-control" type="text" placeholder="Write a question">
+            </div>
+            <!-- Answer -->
+            <div class="col-12 mt-3">
+                <label class="form-label">Answer</label>
+                <textarea class="form-control" rows="4" placeholder="Write a answer" spellcheck="false"></textarea>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success my-0">Save topic</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Popup modal for add faq END -->
+
+{% include 'components/footer.html.twig' %}
+
+{% endblock %}
+
+{% block javascripts %}
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/js/bs-stepper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<!-- Quill Editor JS -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+// Override the problematic showActiveTheme function from base template immediately
+window.showActiveTheme = function(theme) {
+    // Do nothing - theme switching not needed for this page
+    console.log('Theme switching disabled for create course page');
+};
+
+// Override the functions.js choicesSelect to prevent errors
+if (typeof window.choicesSelect !== 'undefined') {
+    window.choicesSelect = function() {
+        console.log('Choices.js initialization overridden for create course page');
+    };
+}
+
+// Prevent Choices.js errors from functions.js
+window.Choices = window.Choices || function() {
+    console.log('Choices.js mock - library not loaded yet');
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for all scripts to load
+    setTimeout(function() {
+        // Initialize stepper
+        const stepperElement = document.querySelector('#stepper');
+        if (stepperElement && typeof Stepper !== 'undefined') {
+            const stepper = new Stepper(stepperElement, {
+                linear: false,
+                animation: true
+            });
+
+            // Add event listeners for next/previous buttons (no validation)
+            document.querySelectorAll('.next-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Find the currently visible step content
+                    const visibleStep = document.querySelector('.content.active');
+                    let currentStepNum = 1;
+                    
+                    if (visibleStep) {
+                        const stepId = visibleStep.id;
+                        currentStepNum = parseInt(stepId.replace('step-', ''));
+                    }
+                    
+                    if (currentStepNum < 4) {
+                        stepper.next();
+                        
+                        // Force show the next step content
+                        setTimeout(() => {
+                            const nextStepNum = currentStepNum + 1;
+                            const nextStepElement = document.getElementById('step-' + nextStepNum);
+                            
+                            // Hide all steps first
+                            document.querySelectorAll('.content').forEach(content => {
+                                content.classList.remove('active');
+                                content.style.display = 'none';
+                            });
+                            
+                            // Show the next step
+                            if (nextStepElement) {
+                                nextStepElement.classList.add('active');
+                                nextStepElement.style.display = 'block';
+                            }
+                        }, 200);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.prev-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = document.querySelector('.bs-stepper .step.active');
+                    if (currentStep) {
+                        const currentStepNum = parseInt(currentStep.querySelector('.bs-stepper-circle').textContent);
+                        stepper.previous();
+                        
+                        // Force show the previous step content
+                        setTimeout(() => {
+                            const prevStepNum = currentStepNum - 1;
+                            const prevStepElement = document.getElementById('step-' + prevStepNum);
+                            
+                            // Hide all steps first
+                            document.querySelectorAll('.content').forEach(content => {
+                                content.classList.remove('active');
+                                content.style.display = 'none';
+                            });
+                            
+                            // Show the previous step
+                            if (prevStepElement) {
+                                prevStepElement.classList.add('active');
+                                prevStepElement.style.display = 'block';
+                            }
+                        }, 200);
+                    }
+                });
+            });
+
+            // Remove dstepper-none class from all content divs
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('dstepper-none');
+            });
+
+            // Show first step content
+            const firstStep = document.querySelector('#step-1');
+            if (firstStep) {
+                firstStep.classList.add('active');
+                firstStep.style.display = 'block';
+            }
+
+        console.log('Stepper initialized successfully');
+        } else {
+            console.error('Stepper library not loaded or element not found');
+        }
+
+        // Initialize Choices.js selects
+        document.querySelectorAll('.js-choice').forEach(element => {
+            if (typeof Choices !== 'undefined') {
+                new Choices(element, {
+                    removeItemButton: true,
+                    searchEnabled: element.dataset.searchEnabled === 'true',
+                    maxItemCount: element.dataset.maxItemCount || -1,
+                    placeholder: element.dataset.placeholder === 'true',
+                    placeholderValue: element.dataset.placeholderVal || 'Select an option'
+                });
+            }
+        });
+
+        console.log('Form initialized successfully');
+        
+        // Initialize Quill editor
+        if (document.getElementById('quilleditor')) {
+            var quill = new Quill('#quilleditor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: '#quilltoolbar'
+                }
+            });
+            
+            // Set initial content from the form field
+            const descriptionField = document.querySelector('[name*="description"]');
+            if (descriptionField && quill) {
+                descriptionField.style.display = 'none';
+                quill.root.innerHTML = descriptionField.value || '';
+                
+                // Update the hidden field when Quill content changes
+                quill.on('text-change', function() {
+                    descriptionField.value = quill.root.innerHTML;
+                });
+            }
+        }
+     }, 1000);
+});
+</script>
+{% endblock %}

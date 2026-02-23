@@ -1,0 +1,847 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Edit Profile - UniLearn{% endblock %}
+
+{% block stylesheets %}
+<style>
+.profile-gradient {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    position: relative;
+    overflow: hidden;
+}
+.profile-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center;
+    background-size: cover;
+    opacity: 0.1;
+}
+.profile-banner {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+.avatar-enhanced {
+    border: 4px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+.avatar-enhanced:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+.profile-form-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+.profile-form-card .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1.5rem;
+}
+.profile-form-card .card-body {
+    padding: 2rem;
+}
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+.profile-image-upload {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #dee2e6;
+    margin: 0 auto 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.profile-image-upload:hover {
+    border-color: #667eea;
+    transform: scale(1.05);
+}
+.profile-image-upload img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.profile-image-upload .upload-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.profile-image-upload:hover .upload-overlay {
+    opacity: 1;
+}
+.password-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* AI Chat Widget */
+.ai-chat-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    z-index: 1050;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ai-chat-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+}
+.ai-chat-toggle .badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #ff4757;
+    font-size: 10px;
+    padding: 4px 6px;
+    border-radius: 50%;
+}
+.ai-chat-box {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 380px;
+    max-height: 520px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    z-index: 1049;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+}
+.ai-chat-box.active {
+    display: flex;
+}
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.ai-chat-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.ai-chat-header .ai-avatar {
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 10px;
+}
+.ai-chat-header .ai-info h6 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+.ai-chat-header .ai-info small {
+    opacity: 0.8;
+    font-size: 11px;
+}
+.ai-chat-header .close-chat {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+.ai-chat-header .close-chat:hover {
+    opacity: 1;
+}
+.ai-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    max-height: 320px;
+    min-height: 200px;
+    background: #f8f9fa;
+}
+.chat-msg {
+    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+}
+.chat-msg.ai {
+    flex-direction: row;
+}
+.chat-msg.user {
+    flex-direction: row-reverse;
+}
+.chat-msg .msg-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+.chat-msg.ai .msg-avatar {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+.chat-msg.user .msg-avatar {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+.chat-msg .msg-bubble {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+.chat-msg.ai .msg-bubble {
+    background: white;
+    color: #333;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.chat-msg.user .msg-bubble {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+.bio-suggestion-card {
+    background: white;
+    border: 2px solid #e8eaf6;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 8px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.bio-suggestion-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    transform: translateY(-1px);
+}
+.bio-suggestion-card .suggestion-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #667eea;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+.bio-suggestion-card .suggestion-text {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.4;
+}
+.bio-suggestion-card .use-btn {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    margin-top: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.bio-suggestion-card .use-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+.ai-chat-input {
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 8px;
+    background: white;
+}
+.ai-chat-input input {
+    flex: 1;
+    border: 2px solid #e8eaf6;
+    border-radius: 25px;
+    padding: 8px 16px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.ai-chat-input input:focus {
+    border-color: #667eea;
+}
+.ai-chat-input .send-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.ai-chat-input .send-btn:hover {
+    transform: scale(1.08);
+}
+.ai-chat-input .send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 8px 14px;
+}
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #bbb;
+    animation: typing 1.2s infinite;
+}
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+}
+.quick-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+.quick-prompt-btn {
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.quick-prompt-btn:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+@media (max-width: 480px) {
+    .ai-chat-box {
+        right: 10px;
+        left: 10px;
+        width: auto;
+        bottom: 80px;
+    }
+    .ai-chat-toggle {
+        bottom: 15px;
+        right: 15px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<main>
+
+<!-- Page Banner START -->
+<section class="pt-0">
+    <div class="container-fluid px-0">
+        <div class="bg-blue h-100px h-md-200px rounded-0"
+             style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
+        </div>
+    </div>
+    <div class="container mt-n4">
+        <div class="row">
+            <div class="col-12">
+                <div class="profile-banner card-body p-4">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-auto mt-4 mt-md-0">
+                            <div class="avatar avatar-xxl mt-n3">
+                                {% if user.profileImage %}
+                                    <img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset(user.profileImage) }}" alt="avatar">
+                                {% else %}
+                                    <img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col d-md-flex justify-content-between align-items-center mt-4">
+                            <div>
+                                <h1 class="my-1 fs-3 fw-bold">{{ user.fullName }}</h1>
+                                <p class="text-muted mb-0">{{ user.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Page Banner END -->
+
+<!-- Page content START -->
+<section class="pt-0">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-9">
+
+                <!-- Flash messages -->
+                {% for type, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+                <!-- Profile Form START -->
+                <div class="profile-form-card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user-edit me-2"></i>Edit Profile
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+
+                            <!-- Profile Image Upload -->
+                            <div class="text-center mb-4">
+                                <div class="profile-image-upload" onclick="document.getElementById('{{ form.profileImage.vars.id }}').click()">
+                                    {% if user.profileImage %}
+                                        <img id="profile-preview" src="{{ asset(user.profileImage) }}" alt="Profile Image">
+                                    {% else %}
+                                        <img id="profile-preview" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="Profile Image">
+                                    {% endif %}
+                                    <div class="upload-overlay">
+                                        <div class="text-center">
+                                            <i class="fas fa-camera fa-2x mb-2"></i>
+                                            <p class="mb-0 small">Change photo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-none">
+                                    {{ form_widget(form.profileImage) }}
+                                </div>
+                                {{ form_errors(form.profileImage) }}
+                            </div>
+
+                            <!-- Personal Information -->
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    {{ form_label(form.fullName) }}
+                                    {{ form_widget(form.fullName) }}
+                                    {{ form_errors(form.fullName) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(form.email) }}
+                                    {{ form_widget(form.email) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form_label(form.bio) }}
+                                    {{ form_widget(form.bio) }}
+                                    {{ form_errors(form.bio) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(form.phone) }}
+                                    {{ form_widget(form.phone) }}
+                                    {{ form_errors(form.phone) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(form.location) }}
+                                    {{ form_widget(form.location) }}
+                                    {{ form_errors(form.location) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form_label(form.website) }}
+                                    {{ form_widget(form.website) }}
+                                    {{ form_errors(form.website) }}
+                                </div>
+                            </div>
+
+                            <!-- Password Change Section -->
+                            <div class="password-section">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-lock me-2"></i>Change Password
+                                </h5>
+                                <div class="row g-4">
+                                    <div class="col-md-4">
+                                        {{ form_label(form.currentPassword) }}
+                                        {{ form_widget(form.currentPassword) }}
+                                        {{ form_errors(form.currentPassword) }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form_label(form.plainPassword.first) }}
+                                        {{ form_widget(form.plainPassword.first) }}
+                                        {{ form_errors(form.plainPassword.first) }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form_label(form.plainPassword.second) }}
+                                        {{ form_widget(form.plainPassword.second) }}
+                                        {{ form_errors(form.plainPassword.second) }}
+                                    </div>
+                                </div>
+                                <div class="alert alert-info mt-3 mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Password Requirements:</strong> At least 8 characters with uppercase, lowercase, number, and special character.
+                                </div>
+                            </div>
+
+                            <!-- Submit Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{{ path('app_home') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+                <!-- Profile Form END -->
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Page content END -->
+
+<!-- AI Chat Widget START -->
+<button class="ai-chat-toggle" id="aiChatToggle" title="AI Profile Assistant">
+    <i class="fas fa-robot"></i>
+    <span class="badge">AI</span>
+</button>
+
+<div class="ai-chat-box" id="aiChatBox">
+    <div class="ai-chat-header">
+        <div class="d-flex align-items-center">
+            <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+            <div class="ai-info">
+                <h6>UniLearn AI Assistant</h6>
+                <small>Helps you craft the perfect bio</small>
+            </div>
+        </div>
+        <button class="close-chat" id="aiChatClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="ai-chat-messages" id="aiChatMessages">
+        <!-- Welcome message -->
+        <div class="chat-msg ai">
+            <div class="msg-avatar"><i class="fas fa-robot"></i></div>
+            <div>
+                <div class="msg-bubble">
+                    Hi {{ user.fullName | split(' ') | first }}! 👋 I'm your AI assistant. Tell me about yourself — your skills, interests, experience, or goals — and I'll generate great bio suggestions for your profile!
+                </div>
+                <div class="quick-prompts">
+                    <button class="quick-prompt-btn" data-prompt="I'm a student interested in web development and AI">🎓 Student intro</button>
+                    <button class="quick-prompt-btn" data-prompt="I'm an instructor teaching programming courses">👨‍🏫 Instructor intro</button>
+                    <button class="quick-prompt-btn" data-prompt="Generate a bio for me based on my profile">✨ Auto-generate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ai-chat-input">
+        <input type="text" id="aiChatInput" placeholder="Tell me about yourself..." autocomplete="off">
+        <button class="send-btn" id="aiChatSend" title="Send">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+<!-- AI Chat Widget END -->
+
+</main>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // === Profile Image Preview ===
+    const profileImageInput = document.getElementById('{{ form.profileImage.vars.id }}');
+    const profilePreview = document.getElementById('profile-preview');
+
+    if (profileImageInput && profilePreview) {
+        profileImageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // === Password Validation ===
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const newPassword = document.querySelector('[id$="_plainPassword_first"]');
+            const currentPassword = document.querySelector('[id$="_currentPassword"]');
+
+            if (newPassword && newPassword.value && (!currentPassword || !currentPassword.value)) {
+                e.preventDefault();
+                alert('Please enter your current password to confirm the password change.');
+                if (currentPassword) currentPassword.focus();
+                return false;
+            }
+
+            if (newPassword && newPassword.value) {
+                const confirmPassword = document.querySelector('[id$="_plainPassword_second"]');
+                if (confirmPassword && newPassword.value !== confirmPassword.value) {
+                    e.preventDefault();
+                    alert('New password and confirm password do not match.');
+                    confirmPassword.focus();
+                    return false;
+                }
+            }
+        });
+    }
+
+    // === AI Chat Widget ===
+    const chatToggle = document.getElementById('aiChatToggle');
+    const chatBox = document.getElementById('aiChatBox');
+    const chatClose = document.getElementById('aiChatClose');
+    const chatMessages = document.getElementById('aiChatMessages');
+    const chatInput = document.getElementById('aiChatInput');
+    const chatSend = document.getElementById('aiChatSend');
+    const bioTextarea = document.getElementById('{{ form.bio.vars.id }}');
+
+    let conversationHistory = [];
+    let isProcessing = false;
+
+    // Toggle chat box
+    chatToggle.addEventListener('click', function() {
+        chatBox.classList.toggle('active');
+        if (chatBox.classList.contains('active')) {
+            chatInput.focus();
+        }
+    });
+
+    chatClose.addEventListener('click', function() {
+        chatBox.classList.remove('active');
+    });
+
+    // Send message
+    function sendMessage(text) {
+        if (!text || isProcessing) return;
+        text = text.trim();
+        if (!text) return;
+
+        // Add user message to UI
+        appendMessage('user', text);
+        chatInput.value = '';
+        isProcessing = true;
+        chatSend.disabled = true;
+
+        // Add to conversation history
+        conversationHistory.push({ role: 'user', content: text });
+
+        // Show typing indicator
+        const typingEl = showTypingIndicator();
+
+        // Call API
+        fetch('{{ path("app_ai_chat") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                message: text,
+                history: conversationHistory.slice(-10), // Last 10 messages for context
+                mode: 'bio' // Use bio mode to get structured suggestions
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            typingEl.remove();
+
+            if (data.type === 'suggestions' && data.suggestions) {
+                // Show bio suggestion cards
+                appendSuggestions(data.suggestions);
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: 'Here are your bio suggestions: ' + data.suggestions.join(' | ')
+                });
+            } else if (data.type === 'message') {
+                appendMessage('ai', data.content);
+                conversationHistory.push({ role: 'assistant', content: data.content });
+            } else if (data.error) {
+                appendMessage('ai', '⚠️ ' + data.error);
+            }
+        })
+        .catch(error => {
+            typingEl.remove();
+            appendMessage('ai', '⚠️ Sorry, something went wrong. Please try again.');
+            console.error('AI Chat Error:', error);
+        })
+        .finally(() => {
+            isProcessing = false;
+            chatSend.disabled = false;
+            chatInput.focus();
+        });
+    }
+
+    // Append message bubble
+    function appendMessage(sender, text) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'chat-msg ' + sender;
+
+        const icon = sender === 'ai' ? 'fa-robot' : 'fa-user';
+        msgDiv.innerHTML = `
+            <div class="msg-avatar"><i class="fas ${icon}"></i></div>
+            <div class="msg-bubble">${escapeHtml(text)}</div>
+        `;
+        chatMessages.appendChild(msgDiv);
+        scrollToBottom();
+    }
+
+    // Append bio suggestion cards
+    function appendSuggestions(suggestions) {
+        const labels = ['Professional', 'Friendly', 'Creative'];
+        const icons = ['💼', '😊', '🎨'];
+
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'chat-msg ai';
+        
+        let cardsHtml = `<div class="msg-avatar"><i class="fas fa-robot"></i></div><div>`;
+        cardsHtml += `<div class="msg-bubble">Here are 3 bio suggestions for you! Click "Use this" to apply one:</div>`;
+
+        suggestions.forEach((suggestion, index) => {
+            cardsHtml += `
+                <div class="bio-suggestion-card" data-bio="${escapeAttr(suggestion)}">
+                    <div class="suggestion-label">${icons[index] || '✨'} ${labels[index] || 'Option ' + (index + 1)}</div>
+                    <div class="suggestion-text">${escapeHtml(suggestion)}</div>
+                    <button class="use-btn" onclick="applyBio(this)" data-bio="${escapeAttr(suggestion)}">
+                        <i class="fas fa-check me-1"></i>Use this
+                    </button>
+                </div>
+            `;
+        });
+
+        cardsHtml += `</div>`;
+        msgDiv.innerHTML = cardsHtml;
+        chatMessages.appendChild(msgDiv);
+        scrollToBottom();
+    }
+
+    // Show typing indicator
+    function showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'chat-msg ai';
+        typingDiv.id = 'typing-indicator';
+        typingDiv.innerHTML = `
+            <div class="msg-avatar"><i class="fas fa-robot"></i></div>
+            <div class="msg-bubble">
+                <div class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        `;
+        chatMessages.appendChild(typingDiv);
+        scrollToBottom();
+        return typingDiv;
+    }
+
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function escapeAttr(text) {
+        return text.replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Apply bio to textarea — global function for onclick
+    window.applyBio = function(btn) {
+        const bio = btn.getAttribute('data-bio');
+        if (bioTextarea && bio) {
+            bioTextarea.value = bio;
+            bioTextarea.style.transition = 'background-color 0.3s';
+            bioTextarea.style.backgroundColor = '#e8f5e9';
+            setTimeout(() => { bioTextarea.style.backgroundColor = ''; }, 1500);
+
+            // Scroll to bio field
+            bioTextarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Confirm in chat
+            appendMessage('ai', '✅ Bio applied! You can edit it further or save your profile.');
+        }
+    };
+
+    // Send on button click
+    chatSend.addEventListener('click', function() {
+        sendMessage(chatInput.value);
+    });
+
+    // Send on Enter key
+    chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage(chatInput.value);
+        }
+    });
+
+    // Quick prompt buttons
+    document.querySelectorAll('.quick-prompt-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const prompt = this.getAttribute('data-prompt');
+            chatInput.value = prompt;
+            sendMessage(prompt);
+        });
+    });
+});
+</script>
+{% endblock %}

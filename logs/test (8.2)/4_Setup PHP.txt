@@ -1,0 +1,39 @@
+﻿2026-02-18T17:01:39.3216245Z ##[group]Run shivammathur/setup-php@v2
+2026-02-18T17:01:39.3216546Z with:
+2026-02-18T17:01:39.3216723Z   php-version: 8.2
+2026-02-18T17:01:39.3217201Z   extensions: ctype, iconv, intl, pdo_mysql, dom, filter, gd, hash, json, mbstring, pcre, session, simplexml, spl, tokenizer, xml
+2026-02-18T17:01:39.3217712Z   coverage: xdebug
+2026-02-18T17:01:39.3217903Z   ini-file: production
+2026-02-18T17:01:39.3218234Z   github-token: ***
+2026-02-18T17:01:39.3218422Z ##[endgroup]
+2026-02-18T17:01:39.3956557Z [command]/usr/bin/bash /home/runner/work/_actions/shivammathur/setup-php/v2/src/scripts/run.sh
+2026-02-18T17:01:39.4396218Z 
+2026-02-18T17:01:39.4397062Z [90;1m==> [0m[37;1mSetup PHP[0m
+2026-02-18T17:01:42.7131484Z [32;1m✓ [0m[34;1mPHP [0m[90;1mInstalled PHP 8.2.30[0m
+2026-02-18T17:01:42.7132588Z 
+2026-02-18T17:01:42.7133129Z [90;1m==> [0m[37;1mSetup Extensions[0m
+2026-02-18T17:01:42.7615054Z [32;1m✓ [0m[34;1mctype [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7647992Z [32;1m✓ [0m[34;1miconv [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7677499Z [32;1m✓ [0m[34;1mintl [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7699248Z [32;1m✓ [0m[34;1mpdo_mysql [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7730218Z [32;1m✓ [0m[34;1mdom [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7761531Z [32;1m✓ [0m[34;1mfilter [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7792325Z [32;1m✓ [0m[34;1mgd [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7824085Z [32;1m✓ [0m[34;1mhash [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7855476Z [32;1m✓ [0m[34;1mjson [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7887841Z [32;1m✓ [0m[34;1mmbstring [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7918852Z [32;1m✓ [0m[34;1mpcre [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7949549Z [32;1m✓ [0m[34;1msession [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7983155Z [32;1m✓ [0m[34;1msimplexml [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.8014379Z [32;1m✓ [0m[34;1mspl [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.8046191Z [32;1m✓ [0m[34;1mtokenizer [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.8077215Z [32;1m✓ [0m[34;1mxml [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.8077703Z 
+2026-02-18T17:01:42.8077968Z [90;1m==> [0m[37;1mSetup Tools[0m
+2026-02-18T17:01:43.1919411Z [32;1m✓ [0m[34;1mcomposer [0m[90;1mAdded composer 2.9.3[0m
+2026-02-18T17:01:43.1920384Z 
+2026-02-18T17:01:43.1920689Z [90;1m==> [0m[37;1mSetup Coverage[0m
+2026-02-18T17:01:43.2900192Z [32;1m✓ [0m[34;1mxdebug [0m[90;1mXdebug 3.5.0 enabled as coverage driver[0m
+2026-02-18T17:01:43.2901092Z 
+2026-02-18T17:01:43.2901396Z [90;1m==> [0m[37;1mSponsor setup-php[0m
+2026-02-18T17:01:43.2902181Z [32;1m✓ [0m[34;1msetup-php [0m[90;1mhttps://setup-php.com/sponsor[0m

@@ -1,0 +1,329 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Student List - Admin{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+<!-- =======================
+Admin Student List START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- Admin profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <!-- Avatar -->
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h6 class="mb-0">Admin User</h6>
+                        <p class="small mb-3">admin@unilearn.com</p>
+                        <hr>
+                        <!-- Admin detail -->
+                        <div class="text-start">
+                            <p class="mb-2"><i class="bi bi-shield-check fa-fw me-2"></i>Administrator</p>
+                            <p class="mb-0"><i class="bi bi-calendar fa-fw me-2"></i>Joined: January 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <ul class="nav nav-pills nav-pills-vertical">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_dashboard') }}">
+                                    <i class="bi bi-grid fa-fw me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_course_list') }}">
+                                    <i class="bi bi-book fa-fw me-2"></i>Courses
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ path('app_admin_student_list') }}">
+                                    <i class="bi bi-people fa-fw me-2"></i>Students
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_instructor_list') }}">
+                                    <i class="bi bi-person-badge fa-fw me-2"></i>Instructors
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_review') }}">
+                                    <i class="bi bi-star fa-fw me-2"></i>Reviews
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_earning') }}">
+                                    <i class="bi bi-currency-dollar fa-fw me-2"></i>Earnings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_setting') }}">
+                                    <i class="bi bi-gear fa-fw me-2"></i>Settings
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Left sidebar END -->
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Page title START -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Student Management</h2>
+                    <div>
+                        <button class="btn btn-primary">
+                            <i class="bi bi-person-plus me-2"></i>Add Student
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics cards START -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card shadow text-center">
+                            <div class="card-body">
+                                <h3 class="mb-0">2,456</h3>
+                                <p class="mb-0 small">Total Students</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow text-center">
+                            <div class="card-body">
+                                <h3 class="mb-0">312</h3>
+                                <p class="mb-0 small">New This Month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow text-center">
+                            <div class="card-body">
+                                <h3 class="mb-0">1,892</h3>
+                                <p class="mb-0 small">Active Students</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow text-center">
+                            <div class="card-body">
+                                <h3 class="mb-0">89%</h3>
+                                <p class="mb-0 small">Retention Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Statistics cards END -->
+
+                <!-- Search and filter START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search students...">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option selected>All Status</option>
+                                    <option>Active</option>
+                                    <option>Inactive</option>
+                                    <option>Suspended</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option selected>Join Date</option>
+                                    <option>Last Active</option>
+                                    <option>Name</option>
+                                    <option>Courses Enrolled</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student table START -->
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Email</th>
+                                        <th>Join Date</th>
+                                        <th>Courses</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded-circle" width="40" alt="student">
+                                                <div class="ms-3">
+                                                    <h6 class="mb-0">Sarah Johnson</h6>
+                                                    <p class="mb-0 small text-muted">ID: #STU001</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>sarah.johnson@email.com</td>
+                                        <td>Jan 15, 2024</td>
+                                        <td>12</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-envelope me-2"></i>Send Email</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-slash-circle me-2"></i>Suspend</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/02.jpg') }}" class="rounded-circle" width="40" alt="student">
+                                                <div class="ms-3">
+                                                    <h6 class="mb-0">Michael Chen</h6>
+                                                    <p class="mb-0 small text-muted">ID: #STU002</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>michael.chen@email.com</td>
+                                        <td>Jan 20, 2024</td>
+                                        <td>8</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-envelope me-2"></i>Send Email</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-slash-circle me-2"></i>Suspend</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/03.jpg') }}" class="rounded-circle" width="40" alt="student">
+                                                <div class="ms-3">
+                                                    <h6 class="mb-0">Emily Davis</h6>
+                                                    <p class="mb-0 small text-muted">ID: #STU003</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>emily.davis@email.com</td>
+                                        <td>Feb 01, 2024</td>
+                                        <td>15</td>
+                                        <td><span class="badge bg-warning">Inactive</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-envelope me-2"></i>Send Email</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-slash-circle me-2"></i>Suspend</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/avatar/04.jpg') }}" class="rounded-circle" width="40" alt="student">
+                                                <div class="ms-3">
+                                                    <h6 class="mb-0">Robert Wilson</h6>
+                                                    <p class="mb-0 small text-muted">ID: #STU004</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>robert.wilson@email.com</td>
+                                        <td>Feb 10, 2024</td>
+                                        <td>6</td>
+                                        <td><span class="badge bg-danger">Suspended</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-envelope me-2"></i>Send Email</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-success" href="#"><i class="bi bi-check-circle me-2"></i>Reactivate</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination START -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <p class="mb-0">Showing 1-10 of 2,456 students</p>
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- Pagination END -->
+                    </div>
+                </div>
+                <!-- Student table END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Admin Student List END -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

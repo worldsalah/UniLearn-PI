@@ -1,0 +1,249 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Manage Orders - Admin{% endblock %}
+
+{% block admin_content %}
+<!-- Title -->
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Orders Management</h1>
+            <a href="{{ path('app_admin_order_new') }}" class="btn btn-primary mb-0">Add New Order</a>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card bg-transparent">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0">Total Orders</h6>
+                        <h3 class="mb-0">{{ orderStats.totalOrders }}</h3>
+                    </div>
+                    <div class="text-primary">
+                        <i class="fas fa-shopping-cart fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-transparent">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0">Pending</h6>
+                        <h3 class="mb-0 text-warning">{{ orderStats.pendingOrders }}</h3>
+                    </div>
+                    <div class="text-warning">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-transparent">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0">Completed</h6>
+                        <h3 class="mb-0 text-success">{{ orderStats.completedOrders }}</h3>
+                    </div>
+                    <div class="text-success">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-transparent">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0">Revenue</h6>
+                        <h3 class="mb-0 text-info">${{ orderStats.totalRevenue|number_format(0) }}</h3>
+                    </div>
+                    <div class="text-info">
+                        <i class="fas fa-dollar-sign fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-transparent">
+    <!-- Card header START -->
+    <div class="card-header bg-transparent border-bottom px-0">
+        <!-- Search and select START -->
+        <div class="row g-3 align-items-center justify-content-between">
+            <!-- Search bar -->
+            <div class="col-md-8">
+                <form class="rounded position-relative" method="get">
+                    <input class="form-control bg-transparent" type="search" name="search" placeholder="Search orders..." aria-label="Search">
+                    <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                        <i class="fas fa-search fs-6"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!-- Search and select END -->
+    </div>
+    <!-- Card header END -->
+
+    <!-- Card body START -->
+    <div class="card-body px-0">
+        <div class="table-responsive border-0">
+            <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                <!-- Table head -->
+                <thead>
+                    <tr>
+                        <th scope="col" class="border-0 rounded-start">Order Info</th>
+                        <th scope="col" class="border-0">Customer</th>
+                        <th scope="col" class="border-0">Product</th>
+                        <th scope="col" class="border-0">Freelancer</th>
+                        <th scope="col" class="border-0">Amount</th>
+                        <th scope="col" class="border-0">Status</th>
+                        <th scope="col" class="border-0">Date</th>
+                        <th scope="col" class="border-0 rounded-end">Action</th>
+                    </tr>
+                </thead>
+
+                <!-- Table body START -->
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <!-- Table data -->
+                            <td>
+                                <div class="d-flex align-items-center position-relative">
+                                    <div class="mb-0 ms-3">
+                                        <!-- Title -->
+                                        <h6 class="mb-0"><a href="#" class="stretched-link">#{{ order.id }}</a></h6>
+                                        <span class="text-body small"><i class="fas fa-fw fa-hashtag me-1"></i>Order #{{ order.id }}</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                {% if order.buyer %}
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar avatar-sm me-2">
+                                            <div class="avatar-img rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center">
+                                                <span class="fw-bold">{{ order.buyer.name|slice(0, 1)|upper }}</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ order.buyer.name }}</h6>
+                                            <small class="text-muted">{{ order.buyer.email }}</small>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">No customer</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                {% if order.product %}
+                                    <div class="d-flex align-items-center">
+                                        {% if order.product.image %}
+                                            <div class="w-40px me-2">
+                                                <img src="{{ vich_uploader_asset(order.product, 'imageFile')|default(asset('assets/images/courses/4by3/08.jpg')) }}" class="rounded" alt="">
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <h6 class="mb-0">{{ order.product.title }}</h6>
+                                            <small class="text-muted">{{ order.product.category.name }}</small>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">No product</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                {% if order.product and order.product.freelancer %}
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar avatar-sm me-2">
+                                            <div class="avatar-img rounded-circle bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center">
+                                                <span class="fw-bold">{{ order.product.freelancer.name|slice(0, 1)|upper }}</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ order.product.freelancer.name }}</h6>
+                                            <small class="text-muted">{{ order.product.freelancer.role.name }}</small>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">No freelancer</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                <span class="h6 mb-0 fw-light">${{ order.product.price|number_format(2) }}</span>
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                {% if order.status is defined %}
+                                    {% if order.status == 'pending' %}
+                                        <span class="badge bg-warning bg-opacity-10 text-warning">Pending</span>
+                                    {% elseif order.status == 'completed' %}
+                                        <span class="badge bg-success bg-opacity-10 text-success">Completed</span>
+                                    {% elseif order.status == 'cancelled' %}
+                                        <span class="badge bg-danger bg-opacity-10 text-danger">Cancelled</span>
+                                    {% else %}
+                                        <span class="badge bg-info bg-opacity-10 text-info">{{ order.status|default('Active') }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-success bg-opacity-10 text-success">Active</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                <span class="text-body small"><i class="fas fa-fw fa-calendar-alt me-1"></i>{{ order.createdAt|date('d M Y') }}</span>
+                            </td>
+
+                            <!-- Table data -->
+                            <td>
+                                <a href="{{ path('app_admin_order_show', {id: order.id}) }}" class="btn btn-sm btn-info-soft me-1" title="View"><i class="bi bi-eye"></i></a>
+                                <a href="{{ path('app_admin_order_edit', {id: order.id}) }}" class="btn btn-sm btn-success-soft me-1" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                                <form method="post" action="{{ path('app_admin_order_delete', {id: order.id}) }}" onsubmit="return confirm('Are you sure you want to delete this order?');" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ order.id) }}">
+                                    <button class="btn btn-sm btn-danger-soft" title="Delete"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">No orders found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Card body END -->
+
+    <!-- Card footer START -->
+    <div class="card-footer bg-transparent pt-0">
+        <!-- Pagination -->
+        <div class="d-sm-flex justify-content-between align-items-center">
+            <!-- Content -->
+            <p class="mb-0 text-center text-sm-start">Showing {{ orders.currentPageNumber }} of {{ orders.getTotalItemCount }}</p>
+            <!-- Pagination -->
+            {{ knp_pagination_render(orders) }}
+        </div>
+    </div>
+    <!-- Card footer END -->
+</div>
+{% endblock %}

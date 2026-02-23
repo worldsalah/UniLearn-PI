@@ -1,0 +1,139 @@
+{
+    "name": "worldsalah/unilearn-pi",
+    "description": "UniLearn - Professional Learning Management System built with Symfony 6.4",
+    "type": "project",
+    "license": "proprietary",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.1",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "doctrine/dbal": "^3.8",
+        "doctrine/doctrine-bundle": "^2.18",
+        "doctrine/doctrine-migrations-bundle": "^3.7",
+        "doctrine/orm": "^2.19",
+        "dompdf/dompdf": "^3.1",
+        "friendsofsymfony/elastica-bundle": "^7.0",
+        "google/apiclient": "^2.19",
+        "google/apiclient-services": "^0.431.0",
+        "knplabs/knp-paginator-bundle": "^6.10",
+        "knplabs/knp-snappy-bundle": "^1.10",
+        "lexik/jwt-authentication-bundle": "^2.18",
+        "phpdocumentor/reflection-docblock": "^5.2",
+        "phpstan/phpdoc-parser": "^2.3",
+        "stof/doctrine-extensions-bundle": "^1.15",
+        "symfony/asset": "6.4.*",
+        "symfony/asset-mapper": "6.4.*",
+        "symfony/console": "6.4.*",
+        "symfony/doctrine-messenger": "6.4.*",
+        "symfony/dotenv": "6.4.*",
+        "symfony/expression-language": "6.4.*",
+        "symfony/flex": "^2",
+        "symfony/form": "6.4.*",
+        "symfony/framework-bundle": "6.4.*",
+        "symfony/google-mailer": "6.4.*",
+        "symfony/http-client": "6.4.*",
+        "symfony/intl": "6.4.*",
+        "symfony/mailer": "6.4.*",
+        "symfony/mime": "6.4.*",
+        "symfony/monolog-bundle": "^3.0|^4.0",
+        "symfony/notifier": "6.4.*",
+        "symfony/process": "6.4.*",
+        "symfony/property-access": "6.4.*",
+        "symfony/property-info": "6.4.*",
+        "symfony/runtime": "6.4.*",
+        "symfony/security-bundle": "6.4.*",
+        "symfony/serializer": "6.4.*",
+        "symfony/stimulus-bundle": "^2.32",
+        "symfony/string": "6.4.*",
+        "symfony/translation": "6.4.*",
+        "symfony/twig-bundle": "6.4.*",
+        "symfony/ux-turbo": "^2.32",
+        "symfony/validator": "6.4.*",
+        "symfony/web-link": "6.4.*",
+        "symfony/yaml": "6.4.*",
+        "twig/extra-bundle": "^2.12|^3.0",
+        "twig/string-extra": "^3.23",
+        "twig/twig": "^2.12|^3.0",
+        "vich/uploader-bundle": "^2.9",
+        "victor-prdh/recaptcha-bundle": "^2.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "symfony/flex": true,
+            "symfony/runtime": true
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Tests\\": "tests/"
+        }
+    },
+    "replace": {
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php72": "*",
+        "symfony/polyfill-php73": "*",
+        "symfony/polyfill-php74": "*",
+        "symfony/polyfill-php80": "*",
+        "symfony/polyfill-php81": "*"
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "importmap:install": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ],
+        "dev": [
+            "@check-elasticsearch-simple",
+            "@start:symfony"
+        ],
+        "check-elasticsearch-simple": "curl -s http://127.0.0.1:9200/_cluster/health && echo \"✅ Elasticsearch running\" || echo \"❌ Elasticsearch not running - please start it manually\"",
+        "start:symfony": "php bin/console fos:elastica:populate && php bin/console server:run",
+        "dev-simple": "php bin/console cache:clear && php bin/console fos:elastica:populate && php bin/console server:run",
+        "dev:windows": "start-dev.bat",
+        "dev:powershell": "powershell -ExecutionPolicy Bypass -File start-dev.ps1",
+        "dev:command": "php bin/console app:server",
+        "dev:no-docker": "start-dev-no-docker.bat"
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": true,
+            "require": "6.4.*"
+        }
+    },
+    "require-dev": {
+        "php-cs-fixer/shim": "^3.64",
+        "phpstan/phpstan": "^1.12",
+        "phpstan/phpstan-doctrine": "^1.5",
+        "phpstan/phpstan-strict-rules": "^1.6",
+        "phpstan/phpstan-symfony": "^1.4",
+        "phpunit/phpunit": "^10.5",
+        "symfony/browser-kit": "6.4.*",
+        "symfony/css-selector": "6.4.*",
+        "symfony/debug-bundle": "6.4.*",
+        "symfony/maker-bundle": "^1.0",
+        "symfony/stopwatch": "6.4.*",
+        "symfony/web-profiler-bundle": "6.4.*",
+        "symfony/phpunit-bridge": "6.4.*",
+        "doctrine/doctrine-fixtures-bundle": "^3.5",
+        "webmozart/assert": "^1.11"
+    }
+}

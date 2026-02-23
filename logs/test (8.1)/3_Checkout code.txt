@@ -1,0 +1,72 @@
+﻿2026-02-18T17:01:38.2216073Z ##[group]Run actions/checkout@v4
+2026-02-18T17:01:38.2216703Z with:
+2026-02-18T17:01:38.2216909Z   repository: worldsalah/UniLearn-PI
+2026-02-18T17:01:38.2217401Z   token: ***
+2026-02-18T17:01:38.2217585Z   ssh-strict: true
+2026-02-18T17:01:38.2217758Z   ssh-user: git
+2026-02-18T17:01:38.2217945Z   persist-credentials: true
+2026-02-18T17:01:38.2218161Z   clean: true
+2026-02-18T17:01:38.2218348Z   sparse-checkout-cone-mode: true
+2026-02-18T17:01:38.2218570Z   fetch-depth: 1
+2026-02-18T17:01:38.2218757Z   fetch-tags: false
+2026-02-18T17:01:38.2218931Z   show-progress: true
+2026-02-18T17:01:38.2219110Z   lfs: false
+2026-02-18T17:01:38.2219260Z   submodules: false
+2026-02-18T17:01:38.2219442Z   set-safe-directory: true
+2026-02-18T17:01:38.2219837Z ##[endgroup]
+2026-02-18T17:01:38.3351597Z Syncing repository: worldsalah/UniLearn-PI
+2026-02-18T17:01:38.3353648Z ##[group]Getting Git version info
+2026-02-18T17:01:38.3354369Z Working directory is '/home/runner/work/UniLearn-PI/UniLearn-PI'
+2026-02-18T17:01:38.3355888Z [command]/usr/bin/git version
+2026-02-18T17:01:38.3359843Z git version 2.52.0
+2026-02-18T17:01:38.3395476Z ##[endgroup]
+2026-02-18T17:01:38.3420200Z Temporarily overriding HOME='/home/runner/work/_temp/2458676a-c3fb-4ff9-a5c1-aaa3f8fa5b86' before making global git config changes
+2026-02-18T17:01:38.3421624Z Adding repository directory to the temporary git global config as a safe directory
+2026-02-18T17:01:38.3426967Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/UniLearn-PI/UniLearn-PI
+2026-02-18T17:01:38.3470740Z Deleting the contents of '/home/runner/work/UniLearn-PI/UniLearn-PI'
+2026-02-18T17:01:38.3475125Z ##[group]Initializing the repository
+2026-02-18T17:01:38.3480362Z [command]/usr/bin/git init /home/runner/work/UniLearn-PI/UniLearn-PI
+2026-02-18T17:01:38.3602836Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-02-18T17:01:38.3604072Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-02-18T17:01:38.3605235Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-02-18T17:01:38.3605757Z hint: call:
+2026-02-18T17:01:38.3605964Z hint:
+2026-02-18T17:01:38.3606558Z hint: 	git config --global init.defaultBranch <name>
+2026-02-18T17:01:38.3606975Z hint:
+2026-02-18T17:01:38.3607641Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-02-18T17:01:38.3608812Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-02-18T17:01:38.3609343Z hint:
+2026-02-18T17:01:38.3609812Z hint: 	git branch -m <name>
+2026-02-18T17:01:38.3610346Z hint:
+2026-02-18T17:01:38.3610987Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-02-18T17:01:38.3612201Z Initialized empty Git repository in /home/runner/work/UniLearn-PI/UniLearn-PI/.git/
+2026-02-18T17:01:38.3622796Z [command]/usr/bin/git remote add origin https://github.com/worldsalah/UniLearn-PI
+2026-02-18T17:01:38.3662834Z ##[endgroup]
+2026-02-18T17:01:38.3663470Z ##[group]Disabling automatic garbage collection
+2026-02-18T17:01:38.3668448Z [command]/usr/bin/git config --local gc.auto 0
+2026-02-18T17:01:38.3699720Z ##[endgroup]
+2026-02-18T17:01:38.3700332Z ##[group]Setting up auth
+2026-02-18T17:01:38.3708312Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-02-18T17:01:38.3742282Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-02-18T17:01:38.4120229Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-02-18T17:01:38.4155432Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-02-18T17:01:38.4394831Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-02-18T17:01:38.4430923Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-02-18T17:01:38.4680197Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-02-18T17:01:38.4717344Z ##[endgroup]
+2026-02-18T17:01:38.4718001Z ##[group]Fetching the repository
+2026-02-18T17:01:38.4726487Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0144d14c7a74c7d041ee67bff7d9edd73ad93141:refs/remotes/origin/main
+2026-02-18T17:01:39.3219987Z From https://github.com/worldsalah/UniLearn-PI
+2026-02-18T17:01:39.3220531Z  * [new ref]         0144d14c7a74c7d041ee67bff7d9edd73ad93141 -> origin/main
+2026-02-18T17:01:39.3254209Z ##[endgroup]
+2026-02-18T17:01:39.3254583Z ##[group]Determining the checkout info
+2026-02-18T17:01:39.3257563Z ##[endgroup]
+2026-02-18T17:01:39.3264216Z [command]/usr/bin/git sparse-checkout disable
+2026-02-18T17:01:39.3307265Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-02-18T17:01:39.3333783Z ##[group]Checking out the ref
+2026-02-18T17:01:39.3338580Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-02-18T17:01:39.6776248Z Switched to a new branch 'main'
+2026-02-18T17:01:39.6776992Z branch 'main' set up to track 'origin/main'.
+2026-02-18T17:01:39.6797915Z ##[endgroup]
+2026-02-18T17:01:39.6838428Z [command]/usr/bin/git log -1 --format=%H
+2026-02-18T17:01:39.6863914Z 0144d14c7a74c7d041ee67bff7d9edd73ad93141

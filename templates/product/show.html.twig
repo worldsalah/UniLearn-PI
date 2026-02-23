@@ -1,0 +1,159 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ product.title }} - Service Details{% endblock %}
+
+{% block content %}
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">{{ product.title }}</h1>
+                    <p class="lead mb-0">Professional service by {{ product.freelancer.name|default(product.freelancer.email) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Service Details START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main content START -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <!-- Service Image -->
+                        {% if product.image %}
+                            <div class="mb-4">
+                                <img src="{{ vich_uploader_asset(product, 'imageFile') }}" class="img-fluid rounded" alt="{{ product.title }}">
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Service Title and Meta -->
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div>
+                                <h2 class="mb-2">{{ product.title }}</h2>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary">{{ product.category.name }}</span>
+                                    <span class="text-muted small"><i class="fas fa-calendar-alt me-1"></i>{{ product.createdAt|date('d M Y') }}</span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h3 class="text-primary mb-0">${{ product.price|number_format(2) }}</h3>
+                            </div>
+                        </div>
+                        
+                        <!-- Service Description -->
+                        <div class="mb-4">
+                            <h4 class="mb-3">Service Description</h4>
+                            <div class="text-muted">
+                                {{ product.description|raw }}
+                            </div>
+                        </div>
+                        
+                        <!-- Freelancer Info -->
+                        <div class="border-top pt-4">
+                            <h4 class="mb-3">About the Freelancer</h4>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-md me-3">
+                                    <div class="avatar-img rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold">{{ product.freelancer.name|slice(0, 1)|upper }}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">{{ product.freelancer.name }}</h6>
+                                    <p class="text-muted small mb-0">Professional Service Provider</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar START -->
+            <div class="col-lg-4">
+                <!-- Order Card -->
+                <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-4">Order This Service</h5>
+                        
+                        <!-- Price Display -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="h5 mb-0">Total Price:</span>
+                            <span class="h4 text-primary mb-0">${{ product.price|number_format(2) }}</span>
+                        </div>
+                        
+                        <!-- Order Button -->
+                        <button class="btn btn-primary w-100 mb-3" data-bs-toggle="modal" data-bs-target="#orderModal">
+                            <i class="fas fa-shopping-cart me-2"></i>Order Now
+                        </button>
+                        
+                        <!-- Contact Button -->
+                        <button class="btn btn-outline-primary w-100">
+                            <i class="fas fa-envelope me-2"></i>Contact Freelancer
+                        </button>
+                        
+                        <!-- Service Features -->
+                        <div class="mt-4">
+                            <h6 class="mb-3">Service Includes:</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Professional delivery</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Quality assurance</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Support included</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Timely completion</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Service Details END -->
+
+<!-- Order Modal -->
+<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderModalLabel">Confirm Your Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-shopping-cart text-primary fa-3x mb-3"></i>
+                    <h6>{{ product.title }}</h6>
+                    <p class="text-muted">by {{ product.freelancer.name }}</p>
+                </div>
+                <div class="border-top pt-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Service Price:</span>
+                        <span>${{ product.price|number_format(2) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Total:</span>
+                        <span class="text-primary">${{ product.price|number_format(2) }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Confirm Order</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

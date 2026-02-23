@@ -1,0 +1,306 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Browse Certificates - UniLearn{% endblock %}
+
+{% block content %}
+<!-- =======================
+Page content START -->
+<section class="pt-4 pb-0">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- Advanced filter START -->
+                <div class="card card-filter mb-4">
+                    <!-- Card header -->
+                    <div class="card-header">
+                        <h5 class="mb-0">Filter Certificates</h5>
+                    </div>
+                    <!-- Card body -->
+                    <div class="card-body">
+                        <!-- Search box -->
+                        <div class="mb-4">
+                            <label class="form-label">Search</label>
+                            <input class="form-control" type="text" placeholder="Search certificates..." id="certificateSearch">
+                        </div>
+                        
+                        <!-- User filter -->
+                        <div class="mb-4">
+                            <label class="form-label">Student</label>
+                            <select class="form-select" id="userFilter">
+                                <option value="">All Students</option>
+                                {% for certificate in certificates %}
+                                    <option value="{{ certificate.user.id }}">{{ certificate.user.fullName|default(certificate.user.email) }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Course filter -->
+                        <div class="mb-4">
+                            <label class="form-label">Course</label>
+                            <select class="form-select" id="courseFilter">
+                                <option value="">All Courses</option>
+                                {% for certificate in certificates %}
+                                    <option value="{{ certificate.course.id }}">{{ certificate.course.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Score range -->
+                        <div class="mb-4">
+                            <label class="form-label">Score Range</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="number" class="form-control" placeholder="Min %" id="minScore" min="60" max="100">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" class="form-control" placeholder="Max %" id="maxScore" min="60" max="100">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary w-100" onclick="filterCertificates()">
+                            <i class="bi bi-search me-2"></i>Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Page title START -->
+                <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="mb-0">Browse Certificates</h1>
+                        <p class="mb-0 text-muted">{{ totalCertificates }} certificates found</p>
+                    </div>
+                    <div>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary active" onclick="setView('grid')">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="setView('list')">
+                                <i class="bi bi-list-ul"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if error %}
+                    <!-- Error message START -->
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        {{ error }}
+                    </div>
+                {% else %}
+                    {% if certificates is empty %}
+                        <!-- Empty state START -->
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="bi bi-award display-1 text-primary"></i>
+                            </div>
+                            <h3 class="mb-3">No certificates found</h3>
+                            <p class="text-muted mb-4">Certificates will appear here once students complete courses with passing scores.</p>
+                            <a href="{{ path('app_course_grid') }}" class="btn btn-primary">
+                                <i class="bi bi-book me-2"></i>Browse Courses
+                            </a>
+                        </div>
+                    {% else %}
+                        <!-- Certificate grid START -->
+                        <div class="row g-4" id="certificateGrid">
+                            {% for certificate in certificates %}
+                                <div class="col-md-6 col-lg-4 certificate-item" 
+                                     data-user="{{ certificate.user.fullName|default(certificate.user.email) }}" 
+                                     data-course="{{ certificate.course.title }}"
+                                     data-percentage="{{ certificate.percentage }}">
+                                    <!-- Certificate card START -->
+                                    <div class="card card-hover-shadow border-0 h-100">
+                                        <!-- Card body -->
+                                        <div class="card-body text-center">
+                                            <!-- Certificate icon -->
+                                            <div class="mb-3">
+                                                <div class="avatar avatar-lg bg-primary bg-opacity-10 rounded-circle">
+                                                    <i class="bi bi-award fs-2 text-primary"></i>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Certificate info -->
+                                            <h5 class="card-title mb-2">{{ certificate.course.title }}</h5>
+                                            <p class="card-text text-muted mb-3">{{ certificate.user.fullName|default(certificate.user.email) }}</p>
+                                            
+                                            <!-- Score badge -->
+                                            <div class="mb-3">
+                                                <span class="badge bg-success rounded-pill px-3 py-2">
+                                                    <i class="bi bi-check-circle me-1"></i>
+                                                    {{ certificate.percentage }}%
+                                                </span>
+                                            </div>
+                                            
+                                            <!-- Completion date -->
+                                            <p class="small text-muted mb-0">
+                                                <i class="bi bi-calendar me-1"></i>
+                                                {{ certificate.completionDate|date('M j, Y') }}
+                                            </p>
+                                        </div>
+                                        
+                                        <!-- Card footer -->
+                                        <div class="card-footer bg-transparent border-0 p-3">
+                                            <div class="d-grid gap-2">
+                                                <button class="btn btn-sm btn-outline-primary" onclick="viewCertificate({{ certificate.user.id }}, {{ certificate.course.id }})">
+                                                    <i class="bi bi-eye me-1"></i>View
+                                                </button>
+                                                <button class="btn btn-sm btn-success" onclick="downloadCertificate({{ certificate.user.id }}, {{ certificate.course.id }})">
+                                                    <i class="bi bi-download me-1"></i>Download
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Certificate card END -->
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <!-- Certificate grid END -->
+                        
+                        <!-- Pagination START -->
+                        {% if totalCertificates > 12 %}
+                        <nav class="d-flex justify-content-center mt-5">
+                            <ul class="pagination pagination-primary-soft">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">1</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">2</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page content END -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter functionality
+    window.filterCertificates = function() {
+        const userFilter = document.getElementById('userFilter').value;
+        const courseFilter = document.getElementById('courseFilter').value;
+        const minScore = document.getElementById('minScore').value;
+        const maxScore = document.getElementById('maxScore').value;
+        const search = document.getElementById('certificateSearch').value.toLowerCase();
+        
+        const certificates = document.querySelectorAll('.certificate-item');
+        
+        certificates.forEach(cert => {
+            const userName = cert.dataset.user.toLowerCase();
+            const courseTitle = cert.dataset.course.toLowerCase();
+            const percentage = parseFloat(cert.dataset.percentage);
+            
+            let show = true;
+            
+            // User filter
+            if (userFilter && cert.dataset.user !== userFilter) {
+                show = false;
+            }
+            
+            // Course filter
+            if (courseFilter && cert.dataset.course !== courseFilter) {
+                show = false;
+            }
+            
+            // Score range filter
+            if (minScore && percentage < parseFloat(minScore)) {
+                show = false;
+            }
+            if (maxScore && percentage > parseFloat(maxScore)) {
+                show = false;
+            }
+            
+            // Search filter
+            if (search && !userName.includes(search) && !courseTitle.includes(search)) {
+                show = false;
+            }
+            
+            cert.style.display = show ? 'block' : 'none';
+        });
+    };
+    
+    // View certificate
+    window.viewCertificate = function(userId, courseId) {
+        window.open(`/certificate/${userId}/${courseId}`, '_blank');
+    };
+    
+    // Download certificate
+    window.downloadCertificate = function(userId, courseId) {
+        window.location.href = `/certificate/${userId}/${courseId}`;
+    };
+    
+    // Set view (grid/list)
+    window.setView = function(view) {
+        const buttons = document.querySelectorAll('.btn-group button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        const grid = document.getElementById('certificateGrid');
+        if (view === 'list') {
+            grid.classList.remove('row', 'g-4');
+            grid.classList.add('list-group');
+        } else {
+            grid.classList.add('row', 'g-4');
+            grid.classList.remove('list-group');
+        }
+    };
+    
+    // Auto-filter on input change
+    ['certificateSearch', 'userFilter', 'courseFilter', 'minScore', 'maxScore'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', filterCertificates);
+            element.addEventListener('input', filterCertificates);
+        }
+    });
+});
+</script>
+
+<style>
+.certificate-item {
+    transition: all 0.3s ease;
+}
+
+.certificate-item:hover {
+    transform: translateY(-5px);
+}
+
+.card-hover-shadow {
+    transition: box-shadow 0.3s ease;
+}
+
+.card-hover-shadow:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+.badge {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.display-1 {
+    font-size: 4rem;
+}
+</style>
+{% endblock %}

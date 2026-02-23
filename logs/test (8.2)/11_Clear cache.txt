@@ -1,0 +1,13 @@
+﻿2026-02-18T17:02:02.6715206Z ##[group]Run php bin/console cache:clear --env=test
+2026-02-18T17:02:02.6715593Z [36;1mphp bin/console cache:clear --env=test[0m
+2026-02-18T17:02:02.6764379Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:02:02.6764628Z env:
+2026-02-18T17:02:02.6764815Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:02:02.6765078Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:02:02.6765311Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:02:02.6765534Z ##[endgroup]
+2026-02-18T17:02:02.7688901Z 
+2026-02-18T17:02:02.7716838Z  // Clearing the cache for the test environment with debug false                
+2026-02-18T17:02:02.7718193Z 
+2026-02-18T17:02:10.3708096Z  [OK] Cache for the "test" environment (debug=false) was successfully cleared.  
+2026-02-18T17:02:10.3708776Z 

@@ -1,0 +1,24 @@
+# Development Elasticsearch Configuration
+cluster.name: "unilearn-dev"
+node.name: "unilearn-node-1"
+
+# Network settings
+network.host: 127.0.0.1
+http.port: 9200
+
+# Disable security for development
+xpack.security.enabled: false
+xpack.security.enrollment.enabled: false
+
+# Disable monitoring for development
+xpack.monitoring.enabled: false
+
+# Disable machine learning for development
+xpack.ml.enabled: false
+
+# Basic settings
+path.data: "data"
+path.logs: "logs"
+
+# Memory settings
+bootstrap.memory_lock: false

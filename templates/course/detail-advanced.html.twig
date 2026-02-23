@@ -1,0 +1,746 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ course.title }} - Course Details{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Course Detail Advanced Styles */
+.course-hero-advanced {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.course-hero-advanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.5" fill="%23ffffff20" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.1;
+}
+
+.course-content-advanced {
+    position: relative;
+    z-index: 2;
+}
+
+.course-thumbnail-hero-advanced {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.course-title-advanced {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.course-badges-advanced {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.badge-advanced {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.course-meta-advanced {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.meta-item-advanced {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.meta-icon-advanced {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.course-description-advanced {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.instructor-info-advanced {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.instructor-avatar-advanced {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.course-content-section-advanced {
+    padding: 4rem 0;
+}
+
+.section-title-advanced {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.content-card-advanced {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.sidebar-card-advanced {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.price-tag-advanced {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #28a745;
+    margin-bottom: 1rem;
+}
+
+.btn-enroll-advanced {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-enroll-advanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    color: white;
+}
+
+.course-features-advanced {
+    list-style: none;
+    padding: 0;
+}
+
+.course-features-advanced li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.course-features-advanced li:last-child {
+    border-bottom: none;
+}
+
+.feature-icon-advanced {
+    width: 40px;
+    height: 40px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #667eea;
+}
+
+.tag-advanced {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    color: #6c757d;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tag-advanced:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+/* Book Recommendations Modern Styles */
+.books-showcase {
+    margin-top: 2rem;
+}
+
+.bg-gradient-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f1f3f5 100%);
+    position: relative;
+}
+
+.bg-gradient-light::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="books-grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.5" fill="%23667eea20" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23books-grid)"/></svg>');
+    opacity: 0.05;
+}
+
+.book-card-modern {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.book-card-modern:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.book-cover-container {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.book-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.book-card-modern:hover .book-cover {
+    transform: scale(1.05);
+}
+
+.book-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.book-card-modern:hover .book-overlay {
+    opacity: 1;
+}
+
+.book-actions-overlay {
+    display: flex;
+    gap: 0.75rem;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.book-card-modern:hover .book-actions-overlay {
+    transform: translateY(0);
+}
+
+.book-cover-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.book-info-modern {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.book-title-modern {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.book-author-modern {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    font-style: italic;
+}
+
+.book-description-modern {
+    color: #495057;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.book-meta-modern {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-top: auto;
+}
+
+.rating-modern {
+    color: #ffc107;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.pages-modern {
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.empty-state i {
+    color: #dee2e6;
+    margin-bottom: 1rem;
+}
+
+.empty-state h4 {
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.empty-state p {
+    color: #adb5bd;
+    margin-bottom: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .book-cover-container {
+        height: 200px;
+    }
+    
+    .book-card-modern {
+        margin-bottom: 1.5rem;
+    }
+    
+    .book-actions-overlay {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .book-actions-overlay .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .course-title-advanced {
+        font-size: 2rem;
+    }
+    
+    .course-meta-advanced {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .book-card {
+        flex-direction: column;
+    }
+    
+    .book-image {
+        width: 100%;
+        height: 200px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Course Hero Section -->
+<section class="course-hero-advanced">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="course-content-advanced">
+                    <h1 class="course-title-advanced">{{ course.title }}</h1>
+                    <div class="course-badges-advanced">
+                        <span class="badge-advanced">
+                            <i class="fas fa-graduation-cap me-1"></i>{{ course.level|default('All Levels') }}
+                        </span>
+                        <span class="badge-advanced">
+                            <i class="fas fa-clock me-1"></i>{{ course.duration ? course.duration ~ ' hours' : 'Self-paced' }}
+                        </span>
+                        <span class="badge-advanced">
+                            <i class="fas fa-globe me-1"></i>{{ course.language|default('English') }}
+                        </span>
+                    </div>
+                    <div class="course-meta-advanced">
+                        <div class="meta-item-advanced">
+                            <div class="meta-icon-advanced">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Students</div>
+                                <div class="fw-bold">{{ course.studentsCount|default(0) }}</div>
+                            </div>
+                        </div>
+                        <div class="meta-item-advanced">
+                            <div class="meta-icon-advanced">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Rating</div>
+                                <div class="fw-bold">{{ course.rating|default('4.5') }}/5.0</div>
+                            </div>
+                        </div>
+                        <div class="meta-item-advanced">
+                            <div class="meta-icon-advanced">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Certificate</div>
+                                <div class="fw-bold">Yes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                {% if course.thumbnailUrl %}
+                    <img src="{{ asset(course.thumbnailUrl) }}" alt="{{ course.title }}" class="course-thumbnail-hero-advanced">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Course Content Section -->
+<section class="course-content-section-advanced">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Course Description -->
+                <div class="content-card-advanced">
+                    <h2 class="section-title-advanced">About This Course</h2>
+                    <div class="course-description-advanced">
+                        {{ course.shortDescription|default('No description available for this course.') }}
+                    </div>
+                </div>
+
+                <!-- Course Curriculum -->
+                {% if course.chapters %}
+                <div class="content-card-advanced">
+                    <h2 class="section-title-advanced">Course Curriculum</h2>
+                    {% for chapter in course.chapters %}
+                        <div class="mb-4">
+                            <h4 class="h5 mb-3">
+                                <i class="fas fa-book-open me-2"></i>{{ chapter.title }}
+                            </h4>
+                            {% if chapter.lessons %}
+                                <ul class="list-unstyled">
+                                    {% for lesson in chapter.lessons %}
+                                        <li class="mb-2">
+                                            <i class="fas fa-play-circle me-2 text-primary"></i>
+                                            {{ lesson.title }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Course Pricing & Enrollment -->
+                <div class="sidebar-card-advanced">
+                    <div class="price-tag-advanced">
+                        {% if course.price > 0 %}
+                            ${{ course.price|number_format(2, '.', ',') }}
+                        {% else %}
+                            Free
+                        {% endif %}
+                    </div>
+                    
+                    {% if app.user %}
+                        {% if isEnrolled %}
+                            <a href="{{ path('app_course_dashboard', {'id': course.id}) }}" class="btn btn-success btn-lg w-100 mb-3">
+                                <i class="fas fa-play me-2"></i>Continue Learning
+                            </a>
+                            <a href="{{ path('app_my_courses') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-tachometer-alt me-2"></i>My Courses
+                            </a>
+                        {% else %}
+                            {% if enrollmentForm %}
+                                {{ form_start(enrollmentForm, {'attr': {'class': 'enrollment-form'}}) }}
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-shopping-cart me-2"></i>Enroll Now
+                                    </button>
+                                {{ form_end(enrollmentForm) }}
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login to Enroll
+                        </a>
+                    {% endif %}
+                    
+                    <!-- Course Features -->
+                    <ul class="course-features-advanced">
+                        <li>
+                            <div class="feature-icon-advanced">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Video Lectures</div>
+                                <div class="text-muted small">{{ course.chapters ? course.chapters|length : 0 }} chapters</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon-advanced">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Duration</div>
+                                <div class="text-muted small">{{ course.duration ? course.duration ~ 'h' : 'Self-paced' }}</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon-advanced">
+                                <i class="fas fa-signal"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Level</div>
+                                <div class="text-muted small">{{ course.level|default('All Levels') }}</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon-advanced">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Language</div>
+                                <div class="text-muted small">{{ course.language|default('English') }}</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon-advanced">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Certificate</div>
+                                <div class="text-muted small">Yes</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Popular Tags -->
+                <div class="sidebar-card-advanced">
+                    <h5 class="mb-3">Popular Tags</h5>
+                    <div class="course-tags-advanced">
+                        <a href="#" class="tag-advanced">{{ course.category.name|default('Programming') }}</a>
+                        <a href="#" class="tag-advanced">{{ course.level|default('Beginner') }}</a>
+                        <a href="#" class="tag-advanced">Online Course</a>
+                        <a href="#" class="tag-advanced">Certificate</a>
+                        <a href="#" class="tag-advanced">Self-paced</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Courses (Optional) -->
+{% if relatedCourses|default([])|length > 0 %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="h3 mb-4">Related Courses</h2>
+        <div class="row">
+            {% for relatedCourse in relatedCourses %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        {% if relatedCourse.thumbnailUrl %}
+                            <img src="{{ asset(relatedCourse.thumbnailUrl) }}" class="card-img-top" alt="{{ relatedCourse.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ relatedCourse.title }}</h5>
+                            <p class="card-text">{{ relatedCourse.shortDescription|slice(0, 100) ~ '...' }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-primary fw-bold">
+                                    {% if relatedCourse.price > 0 %}
+                                        ${{ relatedCourse.price|number_format(2, '.', ',') }}
+                                    {% else %}
+                                        Free
+                                    {% endif %}
+                                </span>
+                                <a href="{{ path('app_course_show', {'id': relatedCourse.id}) }}" class="btn btn-outline-primary btn-sm">
+                                    View Course
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Recommended Books Section -->
+<section class="py-5 bg-gradient-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">📚 Recommended Books</h2>
+            <p class="lead text-muted">Enhance your learning with these carefully selected books</p>
+        </div>
+        <div class="books-showcase">
+            {% if recommendedBooks|length > 0 %}
+                <div class="row g-4">
+                    {% for book in recommendedBooks %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="book-card-modern">
+                                <div class="book-cover-container">
+                                    {% if book.thumbnail %}
+                                        <img src="{{ book.thumbnail }}" alt="{{ book.title }}" class="book-cover">
+                                        <div class="book-overlay">
+                                            <div class="book-actions-overlay">
+                                                {% if book.previewLink %}
+                                                    <a href="{{ book.previewLink }}" target="_blank" class="btn btn-light btn-sm">
+                                                        <i class="fas fa-eye me-1"></i>Preview
+                                                    </a>
+                                                {% endif %}
+                                                {% if book.infoLink %}
+                                                    <a href="{{ book.infoLink }}" target="_blank" class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-external-link-alt me-1"></i>Details
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="book-cover-placeholder">
+                                            <i class="fas fa-book fa-3x"></i>
+                                            <p class="mt-2 mb-0">No Cover</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="book-info-modern">
+                                    <h5 class="book-title-modern">{{ book.title|slice(0, 60) }}</h5>
+                                    <p class="book-author-modern">by {{ book.authors }}</p>
+                                    <p class="book-description-modern">{{ book.description|slice(0, 100) }}...</p>
+                                    <div class="book-meta-modern">
+                                        {% if book.averageRating %}
+                                            <span class="rating-modern">
+                                                <i class="fas fa-star"></i>
+                                                {{ book.averageRating|number_format(1) }}
+                                            </span>
+                                        {% endif %}
+                                        {% if book.pageCount %}
+                                            <span class="pages-modern">
+                                                <i class="fas fa-file-alt"></i>
+                                                {{ book.pageCount }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-book-open fa-4x text-muted mb-3"></i>
+                        <h4 class="text-muted">No Book Recommendations Available</h4>
+                        <p class="text-muted">We couldn't find relevant books for this course at the moment.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

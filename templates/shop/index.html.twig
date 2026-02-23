@@ -1,0 +1,380 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Shop - Unilearn Store{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Unilearn <span class="text-primary">Store</span></h1>
+                    <p class="lead mb-0">Premium educational resources and tools to enhance your learning experience</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Shop START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Products START -->
+            <div class="col-lg-9">
+                <!-- Filter and sort -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <p class="mb-0">Showing <span class="fw-bold">1-12</span> of <span class="fw-bold">48</span> results</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <select class="form-select form-select-sm">
+                            <option selected>Sort by: Featured</option>
+                            <option>Price: Low to High</option>
+                            <option>Price: High to Low</option>
+                            <option>Newest First</option>
+                            <option>Best Selling</option>
+                        </select>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-secondary btn-sm active">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Products grid -->
+                <div class="row g-4">
+                    <!-- Product 1 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/book/01.jpg') }}" class="card-img-top" alt="Product">
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-2">
+                                    <span class="badge bg-primary">Book</span>
+                                </div>
+                                <h5 class="card-title mb-2">Complete JavaScript Guide 2024</h5>
+                                <p class="card-text text-muted small mb-3">Comprehensive guide to modern JavaScript development with practical examples.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">$29.99</h4>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <small>4.8 (234)</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100 mt-3">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 2 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/book/02.jpg') }}" class="card-img-top" alt="Product">
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-danger">Hot</span>
+                                </div>
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-2">
+                                    <span class="badge bg-success">Course</span>
+                                </div>
+                                <h5 class="card-title mb-2">React Advanced Patterns</h5>
+                                <p class="card-text text-muted small mb-3">Master advanced React patterns and best practices for enterprise applications.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">$49.99</h4>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <small>4.9 (156)</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100 mt-3">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 3 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/book/03.jpg') }}" class="card-img-top" alt="Product">
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-2">
+                                    <span class="badge bg-warning">Software</span>
+                                </div>
+                                <h5 class="card-title mb-2">Code Editor Pro License</h5>
+                                <p class="card-text text-muted small mb-3">Professional code editor with advanced features for developers.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">$89.99</h4>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <small>4.7 (89)</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100 mt-3">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 4 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/book/04.jpg') }}" class="card-img-top" alt="Product">
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-2">
+                                    <span class="badge bg-info">Template</span>
+                                </div>
+                                <h5 class="card-title mb-2">UI Kit Pro</h5>
+                                <p class="card-text text-muted small mb-3">Premium UI components and templates for modern web applications.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">$39.99</h4>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <small>4.6 (123)</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100 mt-3">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 5 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/book/05.jpg') }}" class="card-img-top" alt="Product">
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-2">
+                                    <span class="badge bg-primary">Book</span>
+                                </div>
+                                <h5 class="card-title mb-2">Python Data Science</h5>
+                                <p class="card-text text-muted small mb-3">Learn data science with Python through practical projects and examples.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">$34.99</h4>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <small>4.8 (267)</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100 mt-3">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 6 -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="position-relative">
+                                <img src="{{ asset('assets/images/book/06.jpg') }}" class="card-img-top" alt="Product">
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <button class="btn btn-white btn-sm mb-0 rounded-pill" role="button">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-2">
+                                    <span class="badge bg-success">Course</span>
+                                </div>
+                                <h5 class="card-title mb-2">CSS Masterclass</h5>
+                                <p class="card-text text-muted small mb-3">Advanced CSS techniques including animations, layouts, and responsive design.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">$44.99</h4>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <small>4.9 (189)</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100 mt-3">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- Products END -->
+            
+            <!-- Sidebar START -->
+            <div class="col-lg-3">
+                <!-- Categories -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">Categories</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Books
+                                <span class="badge bg-primary rounded-pill">15</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Courses
+                                <span class="badge bg-success rounded-pill">12</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Software
+                                <span class="badge bg-warning rounded-pill">8</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Templates
+                                <span class="badge bg-info rounded-pill">6</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Tools
+                                <span class="badge bg-danger rounded-pill">7</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Price Range -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">Price Range</h5>
+                        <div class="mb-3">
+                            <label class="form-label">$0 - $100</label>
+                            <input type="range" class="form-range" value="100">
+                        </div>
+                        {{ form_start(filterForm, {'attr': {'novalidate': 'novalidate'}}) }}
+                            <div class="d-flex gap-2">
+                                {{ form_widget(filterForm.minPrice) }}
+                                {{ form_widget(filterForm.maxPrice) }}
+                            </div>
+                            {{ form_widget(filterForm.submit) }}
+                        {{ form_end(filterForm) }}
+                    </div>
+                </div>
+                
+                <!-- Rating -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">Customer Rating</h5>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="rating5">
+                            <label class="form-check-label" for="rating5">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="text-muted ms-1">& Up</span>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="rating4">
+                            <label class="form-check-label" for="rating4">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <span class="text-muted ms-1">& Up</span>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="rating3">
+                            <label class="form-check-label" for="rating3">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <span class="text-muted ms-1">& Up</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Special Offers -->
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3">Special Offers</h5>
+                        <div class="alert alert-success mb-3" role="alert">
+                            <h6 class="alert-heading">Flash Sale!</h6>
+                            <p class="mb-0">Get 20% off on all books this week only.</p>
+                            <small class="text-muted">Use code: BOOK20</small>
+                        </div>
+                        <div class="alert alert-info mb-0" role="alert">
+                            <h6 class="alert-heading">Bundle Deal</h6>
+                            <p class="mb-0">Buy any 2 courses and get 1 free.</p>
+                            <small class="text-muted">Auto-applied at checkout</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Shop END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

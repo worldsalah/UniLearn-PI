@@ -1,0 +1,493 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Session - UniLearn{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Modern Instructor Dashboard Styles */
+.instructor-gradient {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    position: relative;
+    overflow: hidden;
+}
+.instructor-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center;
+    background-size: cover;
+    opacity: 0.1;
+}
+.profile-banner {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+.profile-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(13, 110, 253, 0.05) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+.avatar-enhanced {
+    border: 4px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+.avatar-enhanced:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+.stat-card-instructor {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.stat-card-instructor::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+.stat-card-instructor:hover::before {
+    left: 100%;
+}
+.stat-card-instructor:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+.stat-icon-courses {
+    color: #ffc107;
+}
+.stat-icon-students {
+    color: #6f42c1;
+}
+.stat-icon-earnings {
+    color: #fd7e14;
+}
+.sidebar-modern {
+    background: #212529;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.sidebar-modern .list-group-item {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    margin: 5px;
+}
+.sidebar-modern .list-group-item:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(5px);
+}
+.sidebar-modern .list-group-item.active {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+.sidebar-modern .list-group-item.text-danger:hover {
+    background: rgba(220, 53, 69, 0.2);
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+.verified-badge {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+.create-course-btn {
+    background: #198754;
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(25, 135, 84, 0.3);
+}
+.create-course-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(25, 135, 84, 0.4);
+    color: white;
+}
+.form-control-lg:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+.btn-primary {
+    background: #0d6efd;
+    border-color: #0d6efd;
+}
+.btn-primary:hover {
+    background: #0b5ed7;
+    border-color: #0a58ca;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Header START -->
+{% include 'components/header.html.twig' %}
+<!-- Header END -->
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+	
+<!-- =======================
+Page Banner START -->
+<section class="pt-0">
+	<!-- Main banner background image -->
+	<div class="container-fluid px-0">
+		<div class="bg-blue h-100px h-md-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
+		</div>
+	</div>
+	<div class="container mt-n4">
+		<div class="row">
+			<!-- Profile banner START -->
+			<div class="col-12">
+				<div class="profile-banner card-body p-4">
+					<div class="row d-flex justify-content-between">
+						<!-- Avatar -->
+						<div class="col-auto mt-4 mt-md-0">
+							<div class="avatar avatar-xxl mt-n3 position-relative">
+								<img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+								<div class="position-absolute bottom-0 end-0">
+									<span class="verified-badge">
+										<i class="bi bi-patch-check-fill"></i> Verified
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- Profile info -->
+						<div class="col d-md-flex justify-content-between align-items-center mt-4">
+							<div>
+								<h1 class="my-1 fs-3 fw-bold">Edit Session</h1>
+								<div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+									<span class="badge bg-warning bg-opacity-10 text-warning">
+										<i class="fas fa-envelope me-1"></i>{{ app.user.email }}
+									</span>
+									<span class="badge bg-purple bg-opacity-10 text-purple">
+										<i class="fas fa-calendar-check me-1"></i>{{ totalCourses }} Sessions
+									</span>
+									<span class="badge bg-orange bg-opacity-10 text-orange">
+										<i class="fas fa-user-tag me-1"></i>{{ app.user.role.name|capitalize }}
+									</span>
+								</div>
+								<p class="text-muted mb-0">Professional Instructor | Content Creator | Educator</p>
+							</div>
+							<!-- Button -->
+							<div class="d-flex align-items-center mt-2 mt-md-0">
+								<a href="{{ path('instructor_sessions') }}" class="create-course-btn">
+									<i class="fas fa-arrow-left me-2"></i>Back to Sessions
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Profile banner END -->
+
+				<!-- Advanced filter responsive toggler START -->
+				<!-- Divider -->
+				<hr class="d-xl-none">
+				<div class="col-12 col-xl-3 d-flex justify-content-between align-items-center">
+					<a class="h6 mb-0 fw-bold d-xl-none" href="#">Menu</a>
+					<button class="btn btn-primary d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+						<i class="fas fa-sliders-h"></i>
+					</button>
+				</div>
+				<!-- Advanced filter responsive toggler END -->
+			</div>
+		</div>
+	</div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Page content START -->
+<section class="pt-0">
+	<div class="container">
+		<div class="row">
+			<!-- Left sidebar START -->
+			<div class="col-xl-3">
+				<!-- Responsive offcanvas body START -->
+				<div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
+					<!-- Offcanvas header -->
+					<div class="offcanvas-header bg-light">
+						<h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+						<button  type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+					</div>
+					<!-- Offcanvas body -->
+					<div class="offcanvas-body p-3 p-xl-0">
+						<div class="sidebar-modern pb-0 p-3 w-100">
+							<!-- Dashboard menu -->
+							<div class="list-group list-group-borderless">
+								<a class="list-group-item" href="{{ path('app_instructor_dashboard') }}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+								<a class="list-group-item active" href="{{ path('instructor_sessions') }}"><i class="bi bi-calendar-check fa-fw me-2"></i>Session</a>
+								<a class="list-group-item" href="{{ path('app_instructor_quiz') }}"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
+								<a class="list-group-item" href="{{ path('app_instructor_earnings') }}"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+								<a class="list-group-item" href="{{ path('app_instructor_students') }}"><i class="bi bi-people fa-fw me-2"></i>Students</a>
+								<a class="list-group-item" href="{{ path('app_instructor_orders') }}"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
+								<a class="list-group-item" href="{{ path('app_instructor_reviews') }}"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
+								<a class="list-group-item" href="{{ path('app_instructor_edit_profile') }}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+								<a class="list-group-item" href="{{ path('app_instructor_payout') }}"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
+								<a class="list-group-item" href="{{ path('app_instructor_settings') }}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+								<a class="list-group-item" href="{{ path('app_instructor_delete_account') }}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+								<a class="list-group-item text-danger" href="{{ path('app_login') }}"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Responsive offcanvas body END -->
+			</div>
+			<!-- Left sidebar END -->
+
+			<!-- Main content START -->
+			<div class="col-xl-9">
+
+				<!-- Counter boxes START -->
+				<div class="row g-4 mb-4">
+					<div class="col-md-6 col-lg-3">
+						<div class="stat-card-instructor">
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<h6 class="mb-0">{{ totalCourses }}</h6>
+									<p class="mb-0 small">Total Sessions</p>
+								</div>
+								<div class="stat-icon-courses">
+									<i class="fas fa-calendar-check"></i>
+								</div>
+							</div>
+							<div class="mt-2">
+								<small class="text-success"><i class="bi bi-arrow-up"></i> +18% from sessions</small>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-3">
+						<div class="stat-card-instructor">
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<h6 class="mb-0">{{ totalStudents }}</h6>
+									<p class="mb-0 small">Total Students</p>
+								</div>
+								<div class="stat-icon-students">
+									<i class="fas fa-user-graduate"></i>
+								</div>
+							</div>
+							<div class="mt-2">
+								<small class="text-success"><i class="bi bi-arrow-up"></i> +12% from sessions</small>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-3">
+						<div class="stat-card-instructor">
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<h6 class="mb-0">{{ averageRating }}/5.0</h6>
+									<p class="mb-0 small">Average Rating</p>
+								</div>
+								<div class="stat-icon-earnings">
+									<i class="fas fa-star"></i>
+								</div>
+							</div>
+							<div class="mt-2">
+								<small class="text-success"><i class="bi bi-arrow-up"></i> +8% from sessions</small>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-3">
+						<div class="stat-card-instructor">
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<h6 class="mb-0">98%</h6>
+									<p class="mb-0 small">Completion Rate</p>
+								</div>
+								<div class="stat-icon-earnings">
+									<i class="fas fa-chart-line"></i>
+								</div>
+							</div>
+							<div class="mt-2">
+								<small class="text-success"><i class="bi bi-arrow-up"></i> +5% from sessions</small>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Counter boxes END -->
+
+				<!-- Edit Session Form START -->
+				<div class="card card-body bg-transparent border p-4">
+					<div class="d-flex justify-content-between align-items-center mb-4">
+						<h5 class="mb-0 fw-bold">Edit Session</h5>
+						<span class="badge bg-info bg-opacity-10 text-info">
+							<i class="fas fa-edit me-1"></i>Update Session Details
+						</span>
+					</div>
+
+					<!-- Flash Messages -->
+					{% for message in app.flashes('success') %}
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<div class="d-flex align-items-center">
+								<i class="bi bi-check-circle-fill me-3 fs-5"></i>
+								<div>
+									<strong>Success!</strong><br>
+									<small class="opacity-75">{{ message }}</small>
+								</div>
+							</div>
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					{% endfor %}
+
+					{% for message in app.flashes('error') %}
+						<div class="alert alert-danger alert-dismissible fade show" role="alert">
+							<div class="d-flex align-items-center">
+								<i class="bi bi-exclamation-circle-fill me-3 fs-5"></i>
+								<div>
+									<strong>Error!</strong><br>
+									<small class="opacity-75">{{ message }}</small>
+								</div>
+							</div>
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					{% endfor %}
+
+					<form method="post" action="{{ path('instructor_edit_session', {'id': session.id}) }}">
+						<div class="row g-3">
+							<!-- Session Name -->
+							<div class="col-md-12">
+								<label for="name" class="form-label fw-semibold">Session Name *</label>
+								<input type="text" class="form-control form-control-lg {{ errors.name is defined ? 'is-invalid' : '' }}" id="name" name="name" placeholder="Enter session name" value="{{ formData.name is defined ? formData.name : session.name }}">
+								<small class="text-muted">Give your session a clear, descriptive name</small>
+								{% if errors.name is defined %}
+									<div class="invalid-feedback d-block">
+										<i class="bi bi-exclamation-circle me-1"></i>{{ errors.name }}
+									</div>
+								{% endif %}
+							</div>
+
+							<!-- Session Level -->
+							<div class="col-md-6">
+								<label for="level" class="form-label fw-semibold">Session Level *</label>
+								<select class="form-select form-select-lg {{ errors.level is defined ? 'is-invalid' : '' }}" id="level" name="level">
+									<option value="">Select level</option>
+									<option value="beginner" {{ (formData.level is defined ? formData.level : session.level) == 'beginner' ? 'selected' : '' }}>Beginner</option>
+									<option value="intermediate" {{ (formData.level is defined ? formData.level : session.level) == 'intermediate' ? 'selected' : '' }}>Intermediate</option>
+									<option value="advanced" {{ (formData.level is defined ? formData.level : session.level) == 'advanced' ? 'selected' : '' }}>Advanced</option>
+								</select>
+								<small class="text-muted">Choose the appropriate difficulty level</small>
+								{% if errors.level is defined %}
+									<div class="invalid-feedback d-block">
+										<i class="bi bi-exclamation-circle me-1"></i>{{ errors.level }}
+									</div>
+								{% endif %}
+							</div>
+
+							<!-- Session Duration -->
+							<div class="col-md-6">
+								<label for="duration" class="form-label fw-semibold">Duration (minutes) *</label>
+								<input type="number" class="form-control form-control-lg {{ errors.duration is defined ? 'is-invalid' : '' }}" id="duration" name="duration" placeholder="60" value="{{ formData.duration is defined ? formData.duration : session.duration }}">
+								<small class="text-muted">Session length in minutes (15-480 min)</small>
+								{% if errors.duration is defined %}
+									<div class="invalid-feedback d-block">
+										<i class="bi bi-exclamation-circle me-1"></i>{{ errors.duration }}
+									</div>
+								{% endif %}
+							</div>
+
+							<!-- Session Date Range -->
+							<div class="col-md-6">
+								<label for="startDate" class="form-label fw-semibold">Start Date *</label>
+								<input type="date" class="form-control form-control-lg {{ errors.startDate is defined ? 'is-invalid' : '' }}" id="startDate" name="startDate" value="{{ formData.startDate is defined ? formData.startDate : session.startDate ? session.startDate|date('Y-m-d') : '' }}">
+								<small class="text-muted">When this session period starts</small>
+								{% if errors.startDate is defined %}
+									<div class="invalid-feedback d-block">
+										<i class="bi bi-exclamation-circle me-1"></i>{{ errors.startDate }}
+									</div>
+								{% endif %}
+							</div>
+
+							<div class="col-md-6">
+								<label for="endDate" class="form-label fw-semibold">End Date *</label>
+								<input type="date" class="form-control form-control-lg {{ errors.endDate is defined ? 'is-invalid' : '' }}" id="endDate" name="endDate" value="{{ formData.endDate is defined ? formData.endDate : session.endDate ? session.endDate|date('Y-m-d') : '' }}">
+								<small class="text-muted">When this session period ends</small>
+								{% if errors.endDate is defined %}
+									<div class="invalid-feedback d-block">
+										<i class="bi bi-exclamation-circle me-1"></i>{{ errors.endDate }}
+									</div>
+								{% endif %}
+							</div>
+
+							<!-- Session Description -->
+							<div class="col-md-12">
+								<label for="sessionDescription" class="form-label fw-semibold">Session Description *</label>
+								<textarea class="form-control {{ errors.sessionDescription is defined ? 'is-invalid' : '' }}" id="sessionDescription" name="sessionDescription" rows="4" placeholder="Describe what students will learn in this session...">{{ formData.sessionDescription is defined ? formData.sessionDescription : session.sessionDescription }}</textarea>
+								<small class="text-muted">Provide a detailed description of the session content</small>
+								{% if errors.sessionDescription is defined %}
+									<div class="invalid-feedback d-block">
+										<i class="bi bi-exclamation-circle me-1"></i>{{ errors.sessionDescription }}
+									</div>
+								{% endif %}
+							</div>
+
+							<!-- Submit Button -->
+							<div class="col-12">
+								<div class="d-flex gap-3">
+									<button type="submit" class="btn btn-primary btn-lg px-5">
+										<i class="fas fa-save me-2"></i>Update Session
+									</button>
+									<a href="{{ path('instructor_sessions') }}" class="btn btn-outline-secondary btn-lg px-5">
+										<i class="fas fa-times me-2"></i>Cancel
+									</a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- Edit Session Form END -->
+
+			</div>
+			<!-- Main content END -->
+		</div>
+	</div>
+</section>
+<!-- =======================
+Page content END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Footer START -->
+{% include 'components/footer.html.twig' %}
+<!-- Footer END -->
+
+{% endblock %}

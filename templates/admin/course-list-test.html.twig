@@ -1,0 +1,21 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Course List Test - Admin Dashboard{% endblock %}
+
+{% block admin_content %}
+<div class="container">
+    <h1>Course List Test</h1>
+    <p>Testing if courses variable is accessible...</p>
+    <p>Courses variable type: {{ courses is defined ? 'defined' : 'not defined' }}</p>
+    <p>Courses count: {{ courses|length }}</p>
+    {% if courses %}
+        <ul>
+            {% for course in courses %}
+                <li>{{ course.title }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No courses available</p>
+    {% endif %}
+</div>
+{% endblock %}

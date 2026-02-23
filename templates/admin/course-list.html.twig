@@ -1,0 +1,1495 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Admin Course List - Unilearn{% endblock %}
+
+{% block admin_styles %}
+/* Enhanced Admin Course List Styles */
+.stats-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #0d6efd;
+}
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 12px 12px 0 0;
+}
+.stats-primary::before { background: #0d6efd; }
+.stats-success::before { background: #198754; }
+.stats-warning::before { background: #ffc107; }
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    line-height: 1.1;
+    color: #1a1a1a;
+}
+.stats-icon {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    opacity: 0.3;
+}
+.stats-primary .stats-icon { color: #0d6efd; }
+.stats-success .stats-icon { color: #198754; }
+.stats-warning .stats-icon { color: #ffc107; }
+
+.bg-success {
+    background-color: #198754 !important;
+}
+.bg-warning {
+    background-color: #ffc107 !important;
+}
+.bg-opacity-10 {
+    background-color: rgba(var(--bs-success-rgb), 0.1) !important;
+}
+.bg-opacity-15 {
+    background-color: rgba(var(--bs-warning-rgb), 0.15) !important;
+}
+.text-success {
+    color: #198754 !important;
+}
+.text-warning {
+    color: #ffc107 !important;
+}
+.btn-success-soft {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.2);
+}
+.btn-success-soft:hover {
+    background-color: #198754;
+    color: white;
+}
+.btn-secondary-soft {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+    border: 1px solid rgba(108, 117, 125, 0.2);
+}
+.btn-secondary-soft:hover {
+    background-color: #6c757d;
+    color: white;
+}
+.btn-dark {
+    background-color: #212529;
+    color: white;
+    border: 1px solid #212529;
+}
+.btn-dark:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+/* Clean Modern Table */
+.enhanced-table {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+.enhanced-table thead th {
+    background: #f8fafc;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 1rem 0.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.enhanced-table tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f3f4f6;
+}
+.enhanced-table tbody tr:hover {
+    background: #f9fafb;
+}
+.enhanced-table tbody tr:last-child {
+    border-bottom: none;
+}
+.enhanced-table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    color: #1f2937;
+    font-size: 0.9rem;
+}
+
+/* Clean Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    text-transform: capitalize;
+    letter-spacing: 0.25px;
+    transition: all 0.2s ease;
+}
+.status-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.status-badge.bg-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+.status-badge.bg-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+.status-badge.bg-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+}
+
+/* Clean Course Images */
+.course-image {
+    width: 60px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.course-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Clean Dropdown Menu */
+.dropdown-menu {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}
+.dropdown-item {
+    border-radius: 6px;
+    padding: 0.625rem 0.875rem;
+    transition: all 0.2s ease;
+    margin: 0.125rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+    color: #374151;
+}
+.dropdown-item:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+.dropdown-item i {
+    font-size: 1rem;
+    width: 16px;
+    text-align: center;
+}
+
+/* Clean Star Ratings */
+.bi-star-fill, .bi-star {
+    transition: all 0.2s ease;
+    color: #fbbf24;
+}
+.bi-star {
+    color: #e5e7eb;
+}
+.bi-star-fill:hover, .bi-star:hover {
+    transform: scale(1.1);
+}
+
+/* Clean Search Box */
+.search-box input {
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    transition: all 0.2s ease;
+    background: #ffffff;
+    font-size: 0.875rem;
+}
+.search-box input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+    outline: none;
+}
+.search-box .bi-search, .search-box .bi-x-lg {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    z-index: 5;
+    font-size: 1rem;
+}
+.search-box .bi-search {
+    left: 0.75rem;
+}
+.search-box .bi-x-lg {
+    right: 0.75rem;
+}
+.search-box .bi-search:hover, .search-box .bi-x-lg:hover {
+    color: #0d6efd;
+}
+
+/* Clean Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.btn-light {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+}
+.btn-light:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+.btn-primary {
+    background: #0d6efd;
+    border: 1px solid #0d6efd;
+    color: #ffffff;
+}
+.btn-primary:hover {
+    background: #0b5ed7;
+    border-color: #0b5ed7;
+}
+
+/* Action Buttons for Pending Courses */
+.btn-success {
+    background: #198754;
+    border: 1px solid #198754;
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+.btn-success:hover {
+    background: #157347;
+    border-color: #157347;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(25, 135, 84, 0.2);
+}
+.btn-danger {
+    background: #dc3545;
+    border: 1px solid #dc3545;
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+.btn-danger:hover {
+    background: #bb2d3b;
+    border-color: #bb2d3b;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+}
+.btn-warning {
+    background: #ffc107;
+    border: 1px solid #ffc107;
+    color: #000000;
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+.btn-warning:hover {
+    background: #e0a800;
+    border-color: #e0a800;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+}
+{% endblock %}
+
+{% block admin_content %}
+
+        <!-- Title -->
+        <div class="row mb-3">
+            <div class="col-12 d-sm-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-2 mb-sm-0">Courses</h1>
+                <a href="{{ path('app_course_create') }}" class="btn btn-sm btn-primary mb-0">Create a Course</a>
+            </div>
+        </div>
+
+        <!-- Course boxes START -->
+        <div class="row g-4 mb-4">
+            <!-- Course item -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="stats-card stats-primary">
+                    <i class="bi bi-book stats-icon text-primary"></i>
+                    <h6 class="text-muted mb-3">Total Courses</h6>
+                    <div class="stats-number text-primary">{{ courses|length }}</div>
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course item -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="stats-card stats-success">
+                    <i class="bi bi-check-circle stats-icon text-success"></i>
+                    <h6 class="text-muted mb-3">Activated Courses</h6>
+                    <div class="stats-number text-success">{{ courses|filter(c => c.status == 'live')|length }}</div>
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course item -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="stats-card stats-warning">
+                    <i class="bi bi-clock stats-icon text-warning"></i>
+                    <h6 class="text-muted mb-3">Pending Courses</h6>
+                    <div class="stats-number text-warning">{{ courses|filter(c => c.status == 'pending')|length }}</div>
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course item - Unacceptable Courses -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="stats-card stats-danger">
+                    <i class="bi bi-x-circle stats-icon text-danger"></i>
+                    <h6 class="text-muted mb-3">Unacceptable Courses</h6>
+                    <div class="stats-number text-danger">{{ courses|filter(c => c.status == 'unaccept')|length }}</div>
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 15%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Course boxes END -->
+
+        <!-- Course table START -->
+        <div class="card">
+            <!-- Card header START -->
+            <div class="card-header bg-transparent border-bottom-0 p-4">
+                <!-- Search and select START -->
+                <div class="row g-3 align-items-center justify-content-between">
+                    <!-- Search bar -->
+                    <div class="col-md-8">
+                        <form class="search-box position-relative">
+                            <input class="form-control bg-light border-0 ps-4" type="search" id="searchInput" placeholder="Search courses..." aria-label="Search" style="padding-left: 2.5rem;">
+                            <button class="bg-transparent p-2 position-absolute top-50 start-0 translate-middle-y border-0 text-primary-hover text-reset ms-2" type="button" id="clearSearch" title="Clear search">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset me-2" type="submit" id="searchButton" title="Search">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Select option and filters -->
+                    <div class="col-md-4">
+                        <div class="d-flex gap-2">
+                            <!-- Enhanced Short by filter -->
+                            <div class="sort-dropdown">
+                                <select class="form-select" id="sortSelect" aria-label=".form-select-sm">
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                    <option value="name">Title (A-Z)</option>
+                                    <option value="price-low">Price (Low to High)</option>
+                                    <option value="price-high">Price (High to Low)</option>
+                                    <option value="students">Most Students</option>
+                                    <option value="rating">Highest Rated</option>
+                                    <option value="popular">Most Popular</option>
+                                </select>
+                            </div>
+                            <!-- Enhanced Filter button -->
+                            <button class="btn btn-light border-0 rounded-3" data-bs-toggle="collapse" data-bs-target="#filterCollapse" title="Advanced Filters">
+                                <i class="bi bi-funnel-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search and select END -->
+            </div>
+            <!-- Card header END -->
+
+            <!-- Card body START -->
+            <div class="card-body p-0">
+                <!-- Course table START -->
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 enhanced-table">
+                        <!-- Table head START -->
+                        <thead>
+                            <tr>
+                                <th scope="col" class="border-0 rounded-start ps-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="selectAll">
+                                        <label class="form-check-label" for="selectAll"></label>
+                                    </div>
+                                </th>
+                                <th scope="col">Course</th>
+                                <th scope="col">Instructor</th>
+                                <th scope="col">Students</th>
+                                <th scope="col">Rating</th>
+                                <th scope="col">Price</th>
+                                <th scope="col" class="border-0 rounded-end pe-4">Action</th>
+                            </tr>
+                        </thead>
+                        <!-- Table head END -->
+                        <!-- Table body START -->
+                        <tbody>
+                            {% for course in courses %}
+                            <!-- Table row -->
+                            <tr>
+                                <!-- Table data -->
+                                <td class="ps-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input course-checkbox" type="checkbox" value="{{ course.id|default(loop.index) }}">
+                                        <label class="form-check-label"></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center position-relative">
+                                        <!-- Image -->
+                                        <div class="me-3">
+                                            <a href="{{ path('admin_course_show', {'id': course.id}) }}" class="text-decoration-none">
+                                                <img src="{{ course.image|default(asset('assets/images/courses/4by3/08.jpg')) }}" class="course-image" alt="{{ course.title }}">
+                                            </a>
+                                        </div>
+                                        <!-- Title -->
+                                        <div>
+                                            <h6 class="mb-1 fw-semibold">    
+                                                <a href="{{ path('admin_course_show', {'id': course.id}) }}" class="text-decoration-none text-primary-hover">{{ course.title|default('Building Scalable APIs with GraphQL') }}</a>
+                                            </h6>
+                                            <small class="text-muted">{{ course.category|default('Development') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Table data -->
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <!-- Avatar -->
+                                        <div class="avatar avatar-xs flex-shrink-0 me-2">
+                                            <img class="avatar-img rounded-circle" src="{{ course.instructor.image|default(asset('assets/images/avatar/09.jpg')) }}" alt="{{ course.instructor.name|default('Instructor') }}">
+                                        </div>
+                                        <!-- Info -->
+                                        <div>
+                                            <h6 class="mb-0 fw-light">{{ course.instructor.name|default('Lori Stevens') }}</h6>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Table data -->
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-people me-2 text-muted"></i>
+                                        <span>{{ course.students|default(random(50, 500)) }}</span>
+                                    </div>
+                                </td>
+
+                                <!-- Table data -->
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-2">
+                                            {% set rating = course.rating|default(random(3.5, 5.0)) %}
+                                            {% for i in 1..5 %}
+                                                {% if i <= rating %}
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                {% else %}
+                                                    <i class="bi bi-star text-warning"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <small class="text-muted">({{ rating }})</small>
+                                    </div>
+                                </td>
+
+                                <!-- Table data -->
+                                <td>
+                                    <span class="fw-bold text-primary">${{ course.price|default('350') }}</span>
+                                </td>
+
+                                <!-- Table data -->
+                                <td> 
+                                    {% if course.status == 'live' %}
+                                        <div class="d-flex flex-column gap-2">
+                                            <span class="status-badge bg-success bg-opacity-10 text-success">
+                                                <i class="bi bi-check-circle me-1"></i>Live
+                                            </span>
+                                            <button class="btn btn-sm btn-warning" onclick="deactivateCourse({{ course.id }})" title="Deactivate Course">
+                                                <i class="bi bi-pause-circle me-1"></i>Deactivate
+                                            </button>
+                                        </div>
+                                    {% elseif course.status == 'unaccept' %}
+                                        <div class="d-flex flex-column gap-2">
+                                            <span class="status-badge bg-danger bg-opacity-15 text-danger">
+                                                <i class="bi bi-x-circle me-1"></i>Unacceptable
+                                            </span>
+                                            <div class="d-flex gap-1">
+                                                <button class="btn btn-sm btn-success" onclick="activateCourse({{ course.id }})" title="Activate Course">
+                                                    <i class="bi bi-check-circle me-1"></i>Activate
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="d-flex flex-column gap-2">
+                                            <span class="status-badge bg-warning bg-opacity-15 text-warning">
+                                                <i class="bi bi-clock me-1"></i>Pending
+                                            </span>
+                                            <div class="d-flex gap-1">
+                                                <button class="btn btn-sm btn-success" onclick="activateCourse({{ course.id }})" title="Activate Course">
+                                                    <i class="bi bi-check-circle me-1"></i>Activate
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" onclick="unacceptCourse({{ course.id }})" title="Unaccept Course">
+                                                    <i class="bi bi-x-circle me-1"></i>Unaccept
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Table data -->
+                                <td class="pe-4">
+                                            <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="More Options">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="{{ path('admin_course_show', {'id': course.id}) }}" title="View Course">
+                                                    <i class="bi bi-eye me-2"></i>View
+                                                </a></li>
+                                                <li><a class="dropdown-item" href="{{ path('admin_course_edit', {'id': course.id}) }}" title="Edit Course">
+                                                    <i class="bi bi-pencil me-2"></i>Edit
+                                                </a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="viewCourseLessons({{ course.id }})" title="View Lessons">
+                                                    <i class="bi bi-book-open me-2"></i>Lessons
+                                                </a></li>
+                                                {% if course.status == 'live' %}
+                                                    <li><a class="dropdown-item text-warning" href="#" onclick="deactivateCourse({{ course.id }})" title="Deactivate Course">
+                                                        <i class="bi bi-pause-circle me-2"></i>Deactivate
+                                                    </a></li>
+                                                {% elseif course.status == 'unaccept' %}
+                                                    <li><a class="dropdown-item text-success" href="#" onclick="activateCourse({{ course.id }})" title="Activate Course">
+                                                        <i class="bi bi-check-circle me-2"></i>Activate
+                                                    </a></li>
+                                                {% else %}
+                                                    <li><a class="dropdown-item text-success" href="#" onclick="activateCourse({{ course.id }})" title="Activate Course">
+                                                        <i class="bi bi-check-circle me-2"></i>Activate
+                                                    </a></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="unacceptCourse({{ course.id }})" title="Unaccept Course">
+                                                        <i class="bi bi-x-circle me-2"></i>Unaccept
+                                                    </a></li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center py-5">
+                                    <i class="bi bi-inbox display-1 text-muted"></i>
+                                    <p class="text-muted mt-3">No courses found.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <!-- Table body END -->
+                    </table>
+                    <!-- Table END -->
+                </div>
+                <!-- Course table END -->
+            </div>
+            <!-- Card body END -->
+        </div>
+        <!-- Course table END -->
+    </div>
+    <!-- Card footer START -->
+    <div class="card-footer bg-transparent border-0 pt-0">
+        <!-- Bulk actions and Pagination START -->
+        <div class="d-sm-flex justify-content-sm-between align-items-sm-center">
+            <!-- Bulk actions -->
+            <div class="d-flex align-items-center mb-3 mb-sm-0">
+                <div class="dropdown me-2">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="bulkActions" data-bs-toggle="dropdown" aria-expanded="false" disabled>
+                        <i class="bi bi-gear me-1"></i>Bulk Actions
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-check-circle me-2 text-success"></i>Approve Selected</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-x-circle me-2 text-danger"></i>Reject Selected</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-trash me-2 text-danger"></i>Delete Selected</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary" id="clearSelection" disabled>
+                    <i class="bi bi-x-circle me-1"></i>Clear Selection
+                </button>
+            </div>
+            
+            <!-- Pagination -->
+            <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">4</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">5</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- Pagination END -->
+        </div>
+        <!-- Bulk actions and Pagination END -->
+    </div>
+    <!-- Card footer END -->
+</div>
+<!-- Page main content END -->
+
+<!-- Reason Modal -->
+<div class="modal fade" id="unacceptModal" tabindex="-1" aria-labelledby="unacceptModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="unacceptModalLabel">Unaccept Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="unacceptForm">
+                    <div class="mb-3">
+                        <label for="courseTitle" class="form-label">Course Title</label>
+                        <input type="text" class="form-control" id="courseTitle" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="instructorName" class="form-label">Instructor Name</label>
+                        <input type="text" class="form-control" id="instructorName" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="unacceptReason" class="form-label">Reason for Unaccepting <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="unacceptReason" rows="4" placeholder="Please provide a detailed reason why this course was not accepted..." required oninput="validateUnacceptForm()"></textarea>
+                        <div class="invalid-feedback">Please provide a reason for unaccepting this course.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="submitUnacceptBtn" onclick="submitUnaccept()" disabled>Send Unacceptance</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+// Enhanced Admin Course List JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize simple dropdown (no Choices.js)
+    // Choices.js removed to fix display issues
+
+    // Initialize table and rows reference
+    const table = document.querySelector('tbody');
+    const rows = table ? Array.from(table.querySelectorAll('tr')) : [];
+
+    // Enhanced sort functionality
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const sortValue = this.value;
+            if (sortValue) {
+                // Add loading state
+                this.classList.add('is-loading');
+                
+                // Simulate sorting delay
+                setTimeout(() => {
+                    sortCourses(sortValue);
+                    this.classList.remove('is-loading');
+                    
+                    // Show success feedback
+                    showSortFeedback(sortValue);
+                }, 500);
+            }
+        });
+    }
+
+    function sortCourses(sortBy) {
+        // Get currently visible rows (not filtered out by search)
+        const visibleRows = rows.filter(row => row.style.display !== 'none');
+        
+        visibleRows.sort((a, b) => {
+            switch(sortBy) {
+                case 'newest':
+                    return new Date(b.dataset.date || '2024-01-01') - new Date(a.dataset.date || '2024-01-01');
+                case 'oldest':
+                    return new Date(a.dataset.date || '2024-01-01') - new Date(b.dataset.date || '2024-01-01');
+                case 'name':
+                    return a.querySelector('h6 a')?.textContent.localeCompare(b.querySelector('h6 a')?.textContent) || 0;
+                case 'price-low':
+                    return parseFloat(a.querySelector('.fw-bold')?.textContent.replace('$', '') || 0) - 
+                           parseFloat(b.querySelector('.fw-bold')?.textContent.replace('$', '') || 0);
+                case 'price-high':
+                    return parseFloat(b.querySelector('.fw-bold')?.textContent.replace('$', '') || 0) - 
+                           parseFloat(a.querySelector('.fw-bold')?.textContent.replace('$', '') || 0);
+                case 'students':
+                    return parseInt(b.querySelector('.bi-people').nextElementSibling?.textContent || 0) - 
+                           parseInt(a.querySelector('.bi-people').nextElementSibling?.textContent || 0);
+                case 'rating':
+                    const ratingA = parseFloat(a.querySelector('.text-muted')?.textContent.match(/[\d.]+/)?.[0] || 0);
+                    const ratingB = parseFloat(b.querySelector('.text-muted')?.textContent.match(/[\d.]+/)?.[0] || 0);
+                    return ratingB - ratingA;
+                case 'popular':
+                    // Sort by students count as proxy for popularity
+                    return parseInt(b.querySelector('.bi-people').nextElementSibling?.textContent || 0) - 
+                           parseInt(a.querySelector('.bi-people').nextElementSibling?.textContent || 0);
+                default:
+                    return 0;
+            }
+        });
+        
+        // Re-append sorted rows with animation
+        visibleRows.forEach((row, index) => {
+            row.style.animation = 'none';
+            table.appendChild(row);
+            setTimeout(() => {
+                row.style.animation = `fadeIn 0.3s ease ${index * 0.05}s`;
+            }, 10);
+        });
+        
+        // Update pagination info
+        updatePaginationInfo();
+    }
+
+    function showSortFeedback(sortValue) {
+        const labels = {
+            'newest': 'Newest First',
+            'oldest': 'Oldest First',
+            'popular': 'Most Popular',
+            'rating': 'Highest Rated',
+            'price-low': 'Price: Low to High',
+            'price-high': 'Price: High to Low',
+            'students': 'Most Students',
+            'name': 'Name: A to Z'
+        };
+        
+        // Create feedback toast
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed top-0 end-0 m-3 p-3 bg-white rounded-3 shadow-lg';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span class="text-muted">Sorted by ${labels[sortValue]}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove after 2 seconds
+        setTimeout(() => {
+            toast.style.animation = 'fadeOut 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    }
+
+    // Activate course function
+    window.activateCourse = function(courseId) {
+        if (confirm('Are you sure you want to activate this course?')) {
+            // Find the course row
+            const courseRow = document.querySelector(`tr:has([onclick*="${courseId}"])`);
+            if (courseRow) {
+                // Show loading state
+                const activateBtn = courseRow.querySelector('.btn-success');
+                const originalText = activateBtn.innerHTML;
+                activateBtn.innerHTML = '<i class="bi bi-arrow-repeat me-1 fa-spin"></i> Activating...';
+                activateBtn.disabled = true;
+                
+                // Call API endpoint
+                fetch(`/api/course/${courseId}/activate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Update status badge
+                        const statusBadge = courseRow.querySelector('.status-badge');
+                        statusBadge.className = 'status-badge bg-success bg-opacity-10 text-success';
+                        statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i>Live';
+                        
+                        // Update action buttons
+                        const actionDiv = statusBadge.parentElement;
+                        actionDiv.innerHTML = `
+                            <span class="status-badge bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-check-circle me-1"></i>Live
+                            </span>
+                            <button class="btn btn-sm btn-warning" onclick="deactivateCourse(${courseId})" title="Deactivate Course">
+                                <i class="bi bi-pause-circle me-1"></i>Deactivate
+                            </button>
+                        `;
+                        
+                        // Update dropdown menu
+                        const dropdownMenu = courseRow.querySelector('.dropdown-menu');
+                        const activateItem = dropdownMenu.querySelector('a[onclick*="activateCourse"]');
+                        const deactivateItem = dropdownMenu.querySelector('a[onclick*="deactivateCourse"]');
+                        const divider = dropdownMenu.querySelector('hr');
+                        
+                        // Remove existing items to avoid duplicates
+                        if (activateItem && activateItem.parentElement) {
+                            activateItem.parentElement.remove();
+                        }
+                        if (deactivateItem && deactivateItem.parentElement) {
+                            deactivateItem.parentElement.remove();
+                        }
+                        
+                        // Add new item based on current status
+                        if (!activateItem && divider) {
+                            const newItem = document.createElement('li');
+                            newItem.innerHTML = `<a class="dropdown-item text-warning" href="#" onclick="deactivateCourse(${courseId})" title="Deactivate Course">
+                                <i class="bi bi-pause-circle me-2"></i>Deactivate
+                            </a>`;
+                            dropdownMenu.insertBefore(newItem, divider);
+                        }
+                        
+                        showActionFeedback('Course activated successfully', 'success');
+                    } else {
+                        showActionFeedback(data.message || 'Failed to activate course', 'danger');
+                        activateBtn.innerHTML = originalText;
+                        activateBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showActionFeedback('Network error occurred', 'danger');
+                    activateBtn.innerHTML = originalText;
+                    activateBtn.disabled = false;
+                });
+            }
+        }
+    };
+
+    // Deactivate course function
+    window.deactivateCourse = function(courseId) {
+        if (confirm('Are you sure you want to deactivate this course?')) {
+            // Find the course row
+            const courseRow = document.querySelector(`tr:has([onclick*="${courseId}"])`);
+            if (courseRow) {
+                // Show loading state
+                const deactivateBtn = courseRow.querySelector('.btn-warning');
+                const originalText = deactivateBtn.innerHTML;
+                deactivateBtn.innerHTML = '<i class="bi bi-arrow-repeat me-1 fa-spin"></i> Deactivating...';
+                deactivateBtn.disabled = true;
+                
+                // Call API endpoint
+                fetch(`/api/course/${courseId}/deactivate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Update status badge
+                        const statusBadge = courseRow.querySelector('.status-badge');
+                        statusBadge.className = 'status-badge bg-secondary bg-opacity-15 text-secondary';
+                        statusBadge.innerHTML = '<i class="bi bi-pause-circle me-1"></i>Inactive';
+                        
+                        // Update action buttons
+                        const actionDiv = statusBadge.parentElement;
+                        actionDiv.innerHTML = `
+                            <span class="status-badge bg-secondary bg-opacity-15 text-secondary">
+                                <i class="bi bi-pause-circle me-1"></i>Inactive
+                            </span>
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-sm btn-success" onclick="activateCourse(${courseId})" title="Activate Course">
+                                    <i class="bi bi-check-circle me-1"></i>Activate
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Update dropdown menu
+                        const dropdownMenu = courseRow.querySelector('.dropdown-menu');
+                        const deactivateItem = dropdownMenu.querySelector('a[onclick*="deactivateCourse"]');
+                        const activateItem = dropdownMenu.querySelector('a[onclick*="activateCourse"]');
+                        const divider = dropdownMenu.querySelector('hr');
+                        
+                        // Remove existing items to avoid duplicates
+                        if (deactivateItem && deactivateItem.parentElement) {
+                            deactivateItem.parentElement.remove();
+                        }
+                        if (activateItem && activateItem.parentElement) {
+                            activateItem.parentElement.remove();
+                        }
+                        
+                        // Add new item based on current status
+                        if (!deactivateItem && divider) {
+                            const newItem = document.createElement('li');
+                            newItem.innerHTML = `<a class="dropdown-item text-success" href="#" onclick="activateCourse(${courseId})" title="Activate Course">
+                                <i class="bi bi-check-circle me-2"></i>Activate
+                            </a>`;
+                            dropdownMenu.insertBefore(newItem, divider);
+                        }
+                        
+                        showActionFeedback('Course deactivated successfully', 'warning');
+                    } else {
+                        showActionFeedback(data.message || 'Failed to deactivate course', 'danger');
+                        deactivateBtn.innerHTML = originalText;
+                        deactivateBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showActionFeedback('Network error occurred', 'danger');
+                    deactivateBtn.innerHTML = originalText;
+                    deactivateBtn.disabled = false;
+                });
+            }
+        }
+    };
+
+    // Validate unaccept form
+    window.validateUnacceptForm = function() {
+        const reason = document.getElementById('unacceptReason').value.trim();
+        const submitBtn = document.getElementById('submitUnacceptBtn');
+        const reasonField = document.getElementById('unacceptReason');
+        
+        if (reason.length > 0) {
+            submitBtn.disabled = false;
+            reasonField.classList.remove('is-invalid');
+            reasonField.classList.add('is-valid');
+        } else {
+            submitBtn.disabled = true;
+            reasonField.classList.remove('is-valid');
+            reasonField.classList.add('is-invalid');
+        }
+    };
+
+    // Unaccept course function
+    window.unacceptCourse = function(courseId) {
+        // Find course data from the row
+        const courseRow = document.querySelector(`tr:has([onclick*="${courseId}"])`);
+        if (courseRow) {
+            // Extract course information
+            const courseTitle = courseRow.querySelector('td:nth-child(2) a')?.textContent || 'Unknown Course';
+            const instructorName = courseRow.querySelector('td:nth-child(3) div')?.textContent?.trim() || 'Unknown Instructor';
+            
+            // Populate modal fields
+            document.getElementById('courseTitle').value = courseTitle;
+            document.getElementById('instructorName').value = instructorName;
+            document.getElementById('unacceptReason').value = '';
+            
+            // Reset validation state
+            const submitBtn = document.getElementById('submitUnacceptBtn');
+            const reasonField = document.getElementById('unacceptReason');
+            submitBtn.disabled = true;
+            reasonField.classList.remove('is-valid', 'is-invalid');
+            
+            // Store current course ID for submission
+            window.currentCourseId = courseId;
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('unacceptModal'));
+            modal.show();
+        }
+    };
+
+    // Submit unacceptance
+    window.submitUnaccept = function() {
+        const reason = document.getElementById('unacceptReason').value.trim();
+        const courseId = window.currentCourseId;
+        
+        if (!reason) {
+            alert('Please provide a reason for unaccepting this course.');
+            return;
+        }
+        
+        // Add validation check
+        if (reason.trim().length === 0) {
+            document.getElementById('unacceptReason').classList.add('is-invalid');
+            return;
+        }
+        
+        // Hide modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('unacceptModal'));
+        modal.hide();
+        
+        // Send notification to instructor
+        sendInstructorNotification(courseId, reason);
+    };
+
+    // Send notification to instructor
+    function sendInstructorNotification(courseId, reason) {
+        // Find course row for loading state
+        const courseRow = document.querySelector(`tr:has([onclick*="${courseId}"])`);
+        const unacceptBtn = courseRow.querySelector('.btn-danger[onclick*="unacceptCourse"]');
+        const originalText = unacceptBtn.innerHTML;
+        
+        // Show loading state
+        unacceptBtn.innerHTML = '<i class="bi bi-arrow-repeat me-1 fa-spin"></i> Sending...';
+        unacceptBtn.disabled = true;
+        
+        // Get course data
+        const courseTitle = document.getElementById('courseTitle').value;
+        const instructorName = document.getElementById('instructorName').value;
+        
+        // Call API to update course status and send notification
+        fetch('/api/course/' + courseId + '/unaccept', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                reason: reason,
+                courseTitle: courseTitle,
+                instructorName: instructorName
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Update course status to unaccept
+                const statusBadge = courseRow.querySelector('.status-badge');
+                statusBadge.className = 'status-badge bg-danger bg-opacity-15 text-danger';
+                statusBadge.innerHTML = '<i class="bi bi-x-circle me-1"></i>Unaccept';
+                
+                // Update action buttons - keep only activate button
+                const actionDiv = statusBadge.parentElement;
+                actionDiv.innerHTML = `
+                    <span class="status-badge bg-danger bg-opacity-15 text-danger">
+                        <i class="bi bi-x-circle me-1"></i>Unaccept
+                    </span>
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-sm btn-success" onclick="activateCourse(${courseId})" title="Activate Course">
+                            <i class="bi bi-check-circle me-1"></i>Activate
+                        </button>
+                    </div>
+                `;
+                
+                // Update dropdown menu - remove unaccept option, keep activate option
+                const dropdownMenu = courseRow.querySelector('.dropdown-menu');
+                const unacceptItem = dropdownMenu.querySelector('a[onclick*="unacceptCourse"]');
+                const activateItem = dropdownMenu.querySelector('a[onclick*="activateCourse"]');
+                const divider = dropdownMenu.querySelector('hr');
+                
+                if (unacceptItem && unacceptItem.parentElement) {
+                    unacceptItem.parentElement.remove();
+                }
+                if (!activateItem && divider) {
+                    const newItem = document.createElement('li');
+                    newItem.innerHTML = `<a class="dropdown-item text-success" href="#" onclick="activateCourse(${courseId})" title="Activate Course">
+                        <i class="bi bi-check-circle me-2"></i>Activate
+                    </a>`;
+                    dropdownMenu.insertBefore(newItem, divider);
+                }
+                
+                showActionFeedback('Unacceptance notification sent successfully', 'warning');
+            } else {
+                showActionFeedback(data.message || 'Failed to send notification', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showActionFeedback('Network error occurred', 'danger');
+        })
+        .finally(() => {
+            // Reset button state
+            unacceptBtn.innerHTML = originalText;
+            unacceptBtn.disabled = false;
+        });
+    };
+
+    // View course lessons function
+    window.viewCourseLessons = function(courseId) {
+        // Redirect to course lessons page
+        window.location.href = `/admin/course/${courseId}/lessons`;
+    };
+
+    // Delete course function (keep for completeness)
+    window.deleteCourse = function(courseId) {
+        if (confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
+            // Find the course row
+            const courseRow = document.querySelector(`tr:has([onclick*="${courseId}"])`);
+            if (courseRow) {
+                // Show loading state
+                const deleteBtn = courseRow.querySelector('.btn-danger');
+                const originalText = deleteBtn.innerHTML;
+                deleteBtn.innerHTML = '<i class="bi bi-arrow-repeat me-1 fa-spin"></i> Deleting...';
+                deleteBtn.disabled = true;
+                
+                // Call API endpoint
+                fetch(`/api/course/${courseId}/delete`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Remove course row with animation
+                        courseRow.style.animation = 'fadeOut 0.5s ease';
+                        setTimeout(() => {
+                            courseRow.remove();
+                            updatePaginationInfo();
+                            showActionFeedback('Course deleted successfully', 'danger');
+                        }, 500);
+                    } else {
+                        showActionFeedback(data.message || 'Failed to delete course', 'danger');
+                        deleteBtn.innerHTML = originalText;
+                        deleteBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showActionFeedback('Network error occurred', 'danger');
+                    deleteBtn.innerHTML = originalText;
+                    deleteBtn.disabled = false;
+                });
+            }
+        }
+    };
+
+    // Show action feedback function
+    function showActionFeedback(message, type) {
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+        toast.style.zIndex = '9999';
+        toast.style.minWidth = '250px';
+        toast.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle me-2"></i>
+                ${message}
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove after 2 seconds
+        setTimeout(() => {
+            toast.style.animation = 'fadeOut 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    }
+
+    // Bulk selection functionality
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const courseCheckboxes = document.querySelectorAll('.course-checkbox');
+    const bulkActionsBtn = document.getElementById('bulkActions');
+    const clearSelectionBtn = document.getElementById('clearSelection');
+
+    function updateBulkActionsState() {
+        const checkedCount = document.querySelectorAll('.course-checkbox:checked').length;
+        const hasSelection = checkedCount > 0;
+        
+        if (bulkActionsBtn) {
+            bulkActionsBtn.disabled = !hasSelection;
+        }
+        if (clearSelectionBtn) {
+            clearSelectionBtn.disabled = !hasSelection;
+        }
+
+        // Update select all checkbox state
+        if (selectAllCheckbox) {
+            const totalCheckboxes = courseCheckboxes.length;
+            if (checkedCount === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            } else if (checkedCount === totalCheckboxes) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = true;
+            }
+        }
+    }
+
+    // Select all functionality
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            courseCheckboxes.forEach(function(checkbox) {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            updateBulkActionsState();
+        });
+    }
+
+    // Individual checkbox changes
+    courseCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateBulkActionsState);
+    });
+
+    // Clear selection functionality
+    if (clearSelectionBtn) {
+        clearSelectionBtn.addEventListener('click', function() {
+            courseCheckboxes.forEach(function(checkbox) {
+                checkbox.checked = false;
+            });
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            }
+            updateBulkActionsState();
+        });
+    }
+
+    // Add smooth animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe stats cards for animation
+    document.querySelectorAll('.stats-card').forEach(function(card) {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+
+    // Enhanced search functionality
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearch');
+    const searchButton = document.getElementById('searchButton');
+    
+    // Clear search functionality
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            searchInput.focus();
+            
+            // Show all rows
+            rows.forEach(function(row) {
+                row.style.display = '';
+                row.style.animation = 'fadeIn 0.3s ease';
+            });
+            
+            // Update pagination info
+            updatePaginationInfo();
+        });
+    }
+    
+    // Search functionality
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            // Filter rows based on search
+            rows.forEach(function(row) {
+                const text = row.textContent.toLowerCase();
+                const shouldShow = searchTerm === '' || text.includes(searchTerm);
+                
+                if (shouldShow) {
+                    row.style.display = '';
+                    row.style.animation = 'fadeIn 0.3s ease';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Update pagination info
+            updatePaginationInfo();
+        });
+        
+        // Search on Enter key
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchButton.click();
+            }
+        });
+    }
+    
+    // Search button click
+    if (searchButton) {
+        searchButton.addEventListener('click', function(e) {
+            e.preventDefault();
+                // Trigger search animation
+                this.innerHTML = '<i class="bi bi-arrow-repeat fa-spin"></i> Searching...';
+                this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="bi bi-search"></i>';
+            }, 500);
+        });
+    }
+
+    function updatePaginationInfo() {
+        const visibleRows = rows.filter(row => row.style.display !== 'none');
+        const totalRows = rows.length;
+        const paginationInfo = document.querySelector('.card-footer p');
+        
+        if (paginationInfo) {
+            if (visibleRows.length === 0) {
+                paginationInfo.textContent = 'No courses found';
+            } else {
+                paginationInfo.textContent = `Showing ${visibleRows.length} of ${totalRows} courses`;
+            }
+        }
+    }
+
+    // Add loading states for buttons
+    document.querySelectorAll('.btn-action').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Loading...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.disabled = false;
+            }, 1500);
+        });
+    });
+});
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .stats-card {
+        animation: slideInUp 0.6s ease forwards;
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Loading state for sort dropdown */
+    .sort-dropdown .form-select.is-loading {
+        background-image: none;
+        padding-right: 2.5rem;
+    }
+    .sort-dropdown .form-select.is-loading::after {
+        content: '';
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid #dee2e6;
+        border-top: 2px solid #0d6efd;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: translateY(-50%) rotate(0deg); }
+        100% { transform: translateY(-50%) rotate(360deg); }
+    }
+    
+    /* Spinning animation for Bootstrap Icons */
+    .fa-spin {
+        animation: fa-spin 1s linear infinite;
+    }
+    
+    @keyframes fa-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Enhanced pagination */
+    .pagination .page-link {
+        border: 1px solid #dee2e6;
+        color: #6c757d;
+        transition: all 0.2s ease;
+        margin: 0 2px;
+        border-radius: 8px;
+    }
+    
+    .pagination .page-link:hover {
+        background: #f8f9fa;
+        color: #0d6efd;
+        border-color: #0d6efd;
+        transform: translateY(-1px);
+    }
+    
+    .pagination .page-item.active .page-link {
+        background: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
+    }
+    
+    .pagination .page-item.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

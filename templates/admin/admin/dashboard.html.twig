@@ -1,0 +1,516 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block title %}Admin Dashboard - Unilearn{% endblock %}
+
+{% block admin_content %}
+<!-- Welcome Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-gradient-primary text-white shadow-lg">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="h2 mb-2">Welcome to Admin Dashboard</h1>
+                        <p class="mb-0 opacity-75">Here's what's happening with your platform today</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <div class="d-flex flex-column align-items-md-end">
+                            <small class="opacity-75">Current Date</small>
+                            <h5 class="mb-0">{{ "now"|date("F d, Y") }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Overview -->
+<div class="row g-4 mb-4">
+    <!-- Freelancers Card -->
+    <div class="col-md-6 col-xxl-3">
+        <div class="card shadow h-100 border-0 bg-gradient-warning">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-white">
+                        <h3 class="mb-0 fw-bold counter-number" data-target="{{ stats.students }}">0</h3>
+                        <p class="mb-0 opacity-75">Total Freelancers</p>
+                    </div>
+                    <div class="icon-xl text-white opacity-50">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-white" role="progressbar" style="width: 75%"></div>
+                    </div>
+                    <small class="text-white opacity-75">12% increase from last month</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Card -->
+    <div class="col-md-6 col-xxl-3">
+        <div class="card shadow h-100 border-0 bg-gradient-purple">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-white">
+                        <h3 class="mb-0 fw-bold counter-number" data-target="{{ stats.products }}">0</h3>
+                        <p class="mb-0 opacity-75">Active Services</p>
+                    </div>
+                    <div class="icon-xl text-white opacity-50">
+                        <i class="fas fa-box"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-white" role="progressbar" style="width: 60%"></div>
+                    </div>
+                    <small class="text-white opacity-75">8% increase from last month</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Requests Card -->
+    <div class="col-md-6 col-xxl-3">
+        <div class="card shadow h-100 border-0 bg-gradient-info">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-white">
+                        <h3 class="mb-0 fw-bold counter-number" data-target="{{ stats.jobs }}">0</h3>
+                        <p class="mb-0 opacity-75">Job Requests</p>
+                    </div>
+                    <div class="icon-xl text-white opacity-50">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-white" role="progressbar" style="width: 85%"></div>
+                    </div>
+                    <small class="text-white opacity-75">23% increase from last month</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Card -->
+    <div class="col-md-6 col-xxl-3">
+        <div class="card shadow h-100 border-0 bg-gradient-success">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-white">
+                        <h3 class="mb-0 fw-bold">${{ stats.revenue|number_format(0) }}</h3>
+                        <p class="mb-0 opacity-75">Total Revenue</p>
+                    </div>
+                    <div class="icon-xl text-white opacity-50">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-white" role="progressbar" style="width: 92%"></div>
+                    </div>
+                    <small class="text-white opacity-75">31% increase from last month</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Analytics Dashboard -->
+<div class="row g-4 mb-4">
+    <!-- Revenue Analytics -->
+    <div class="col-lg-8">
+        <div class="card shadow h-100">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-header-title mb-0">Revenue Analytics</h5>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary active" onclick="updateChart('week')">Week</button>
+                        <button class="btn btn-outline-secondary" onclick="updateChart('month')">Month</button>
+                        <button class="btn btn-outline-secondary" onclick="updateChart('year')">Year</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="revenueChart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="col-lg-4">
+        <div class="card shadow h-100">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="card-header-title mb-0">Quick Stats</h5>
+            </div>
+            <div class="card-body">
+                <!-- Conversion Rate -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-0 text-muted">Conversion Rate</h6>
+                        <h4 class="mb-0 fw-bold text-success">3.2%</h4>
+                    </div>
+                    <div class="text-success">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                </div>
+                
+                <!-- Active Users -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-0 text-muted">Active Users</h6>
+                        <h4 class="mb-0 fw-bold text-primary">1,234</h4>
+                    </div>
+                    <div class="text-primary">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                </div>
+                
+                <!-- Avg. Order Value -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-0 text-muted">Avg. Order Value</h6>
+                        <h4 class="mb-0 fw-bold text-info">$156</h4>
+                    </div>
+                    <div class="text-info">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                </div>
+                
+                <!-- Pending Tasks -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0 text-muted">Pending Tasks</h6>
+                        <h4 class="mb-0 fw-bold text-warning">28</h4>
+                    </div>
+                    <div class="text-warning">
+                        <i class="fas fa-minus"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity & Performance -->
+<div class="row g-4 mb-4">
+    <!-- Recent Activity -->
+    <div class="col-lg-6">
+        <div class="card shadow h-100">
+            <div class="card-header bg-white border-bottom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-header-title mb-0">Recent Activity</h5>
+                    <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <!-- Activity Item 1 -->
+                    <div class="list-group-item">
+                        <div class="d-flex align-items-start">
+                            <div class="activity-icon bg-success bg-opacity-10 rounded-circle me-3 flex-shrink-0">
+                                <i class="fas fa-user-plus text-success"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="mb-1 fw-semibold">New Freelancer Registered</h6>
+                                        <p class="mb-0 text-muted small">John Doe joined as a Web Developer</p>
+                                    </div>
+                                    <small class="text-muted whitespace-nowrap">2 min ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Item 2 -->
+                    <div class="list-group-item">
+                        <div class="d-flex align-items-start">
+                            <div class="activity-icon bg-primary bg-opacity-10 rounded-circle me-3 flex-shrink-0">
+                                <i class="fas fa-shopping-cart text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="mb-1 fw-semibold">New Order Placed</h6>
+                                        <p class="mb-0 text-muted small">Sarah Smith purchased "Logo Design Service"</p>
+                                    </div>
+                                    <small class="text-muted whitespace-nowrap">15 min ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Item 3 -->
+                    <div class="list-group-item">
+                        <div class="d-flex align-items-start">
+                            <div class="activity-icon bg-warning bg-opacity-10 rounded-circle me-3 flex-shrink-0">
+                                <i class="fas fa-briefcase text-warning"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="mb-1 fw-semibold">Job Request Posted</h6>
+                                        <p class="mb-0 text-muted small">Mike Johnson posted "Mobile App Development"</p>
+                                    </div>
+                                    <small class="text-muted whitespace-nowrap">1 hour ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Item 4 -->
+                    <div class="list-group-item">
+                        <div class="d-flex align-items-start">
+                            <div class="activity-icon bg-info bg-opacity-10 rounded-circle me-3 flex-shrink-0">
+                                <i class="fas fa-star text-info"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="mb-1 fw-semibold">New Review Submitted</h6>
+                                        <p class="mb-0 text-muted small">Emma Wilson rated 5-star service</p>
+                                    </div>
+                                    <small class="text-muted whitespace-nowrap">2 hours ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="col-lg-6">
+        <div class="card shadow h-100">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="card-header-title mb-0">Performance Metrics</h5>
+            </div>
+            <div class="card-body">
+                <div id="performanceChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+}
+.bg-gradient-purple {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+}
+.bg-gradient-info {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+}
+.bg-gradient-success {
+    background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%) !important;
+}
+
+.counter-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.list-group-item {
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 8px;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+    border-left-color: #0d6efd;
+    transform: translateX(5px);
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+.fw-semibold {
+    font-weight: 600;
+}
+</style>
+
+<script>
+// Counter animation
+function animateCounters() {
+    const counters = document.querySelectorAll('.counter-number');
+    
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const duration = 2000;
+        const increment = target / (duration / 16);
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += increment;
+            if (current < target) {
+                counter.textContent = Math.floor(current).toLocaleString();
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target.toLocaleString();
+            }
+        };
+        
+        updateCounter();
+    });
+}
+
+// Revenue Chart
+let revenueChart;
+const revenueChartOptions = {
+    series: [{
+        name: 'Revenue',
+        data: [12000, 19000, 15000, 25000, 22000, 30000, 28000]
+    }],
+    chart: {
+        height: 300,
+        type: 'area',
+        toolbar: { show: false },
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 1000
+        }
+    },
+    colors: ['#667eea'],
+    stroke: {
+        curve: 'smooth',
+        width: 3
+    },
+    fill: {
+        type: 'gradient',
+        gradient: {
+            shade: 'light',
+            type: 'vertical',
+            shadeIntensity: 0.5,
+            gradientToColors: ['#667eea'],
+            inverseColors: false,
+            opacityFrom: 0.8,
+            opacityTo: 0.1,
+            stops: [0, 100]
+        }
+    },
+    dataLabels: { enabled: false },
+    xaxis: {
+        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    tooltip: {
+        y: {
+            formatter: function(val) {
+                return "$" + val.toLocaleString()
+            }
+        }
+    }
+};
+
+// Performance Radar Chart
+const performanceOptions = {
+    series: [{
+        name: 'Performance',
+        data: [85, 92, 78, 88, 95, 82]
+    }],
+    chart: {
+        height: 300,
+        type: 'radar',
+        toolbar: { show: false },
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 1200
+        }
+    },
+    colors: ['#764ba2'],
+    stroke: {
+        width: 2
+    },
+    fill: {
+        opacity: 0.3
+    },
+    markers: {
+        size: 6,
+        colors: ['#ffffff'],
+        strokeColors: ['#764ba2'],
+        strokeWidth: 2
+    },
+    xaxis: {
+        categories: ['Quality', 'Speed', 'Reliability', 'Support', 'Value', 'Innovation']
+    }
+};
+
+// Initialize charts
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate counters
+    animateCounters();
+    
+    // Initialize revenue chart
+    revenueChart = new ApexCharts(document.querySelector("#revenueChart"), revenueChartOptions);
+    revenueChart.render();
+    
+    // Initialize performance chart
+    const performanceChart = new ApexCharts(document.querySelector("#performanceChart"), performanceOptions);
+    performanceChart.render();
+});
+
+function updateChart(period) {
+    // Update button states
+    document.querySelectorAll('.btn-group button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Update chart data based on period
+    let newData;
+    switch(period) {
+        case 'week':
+            newData = [12000, 19000, 15000, 25000, 22000, 30000, 28000];
+            break;
+        case 'month':
+            newData = [45000, 52000, 48000, 61000, 58000, 65000, 72000, 68000, 75000, 82000, 78000, 85000];
+            break;
+        case 'year':
+            newData = [280000, 320000, 310000, 380000, 360000, 420000, 450000, 480000, 510000, 490000, 520000, 550000];
+            break;
+    }
+    
+    revenueChart.updateSeries([{
+        name: 'Revenue',
+        data: newData
+    }]);
+}
+</script>
+{% endblock %}

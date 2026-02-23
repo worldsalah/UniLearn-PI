@@ -1,0 +1,11 @@
+﻿2026-02-18T17:01:59.2741936Z ##[group]Run timeout 60 bash -c 'until mysql -h 127.0.0.1 -P 3306 -u root -proot -e "SELECT 1"; do sleep 2; done'
+2026-02-18T17:01:59.2742680Z [36;1mtimeout 60 bash -c 'until mysql -h 127.0.0.1 -P 3306 -u root -proot -e "SELECT 1"; do sleep 2; done'[0m
+2026-02-18T17:01:59.2796060Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:01:59.2796291Z env:
+2026-02-18T17:01:59.2796469Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:01:59.2796705Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:01:59.2796918Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:01:59.2797102Z ##[endgroup]
+2026-02-18T17:01:59.7009736Z mysql: [Warning] Using a password on the command line interface can be insecure.
+2026-02-18T17:01:59.7645778Z 1
+2026-02-18T17:01:59.7646128Z 1

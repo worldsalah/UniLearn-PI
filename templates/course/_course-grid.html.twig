@@ -1,0 +1,86 @@
+<!-- Course Grid Only (for AJAX responses) -->
+<div class="row g-4">
+    {% for course in courses %}
+        <div class="col-sm-6 col-xl-4">
+            <div class="card course-card shadow h-100">
+                <!-- Course Image -->
+                {% if course.thumbnailUrl %}
+                    <img src="{{ asset(course.thumbnailUrl) }}" class="card-img-top" alt="{{ course.title }}">
+                {% else %}
+                    <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="card-img-top" alt="{{ course.title }}">
+                {% endif %}
+                
+                <!-- Card Body -->
+                <div class="card-body pb-0">
+                    <!-- Badge and Favorite -->
+                    <div class="d-flex justify-content-between mb-2">
+                        {% if course.level %}
+                            <span class="badge course-badge bg-primary bg-opacity-10 text-primary">
+                                {{ course.level }}
+                            </span>
+                        {% else %}
+                            <span class="badge course-badge bg-secondary bg-opacity-10 text-secondary">
+                                All Levels
+                            </span>
+                        {% endif %}
+                        <a href="#" class="text-muted">
+                            <i class="far fa-heart"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- Course Title -->
+                    <h5 class="course-title">
+                        <a href="{{ path('app_course_show', {'id': course.id}) }}">
+                            {{ course.title }}
+                        </a>
+                    </h5>
+                    
+                    <!-- Course Description -->
+                    <p class="course-description">
+                        {{ course.shortDescription|default('No description available') }}
+                    </p>
+                    
+                    <!-- Rating -->
+                    <div class="rating-stars mb-2">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span class="ms-2">{{ random(4.0, 4.9) }}/5.0</span>
+                    </div>
+                </div>
+                
+                <!-- Card Footer -->
+                <div class="card-footer pt-0 pb-3">
+                    <hr>
+                    <div class="course-meta">
+                        <span>
+                            <i class="far fa-clock text-danger me-2"></i>
+                            {% if course.duration %}
+                                {{ course.duration }}h
+                            {% else %}
+                                Self-paced
+                            {% endif %}
+                        </span>
+                        <span>
+                            {% if course.chapters %}
+                                {{ course.chapters|length }} chapters
+                            {% else %}
+                                0 chapters
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No courses found</h4>
+                <p class="text-muted">Try adjusting your search or filters</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>

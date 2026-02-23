@@ -1,0 +1,239 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Reviews - Admin{% endblock %}
+
+{% block admin_content %}
+
+	<!-- Title -->
+	<div class="row">
+		<div class="col-12 mb-3">
+			<div class="d-flex justify-content-between align-items-center">
+				<h1 class="h3 mb-2 mb-sm-0">Reviews</h1>
+				<a href="#" class="btn btn-primary mb-0">
+					<i class="fas fa-plus me-2"></i>Add Review
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Counter boxes START -->
+	<div class="row g-4 mb-4">
+		<!-- Counter item -->
+		<div class="col-md-6 col-xxl-3">
+			<div class="card card-body bg-warning bg-opacity-15 p-4 h-100">
+				<div class="d-flex justify-content-between align-items-center">
+					<!-- Digit -->
+					<div>
+						<h2 class="mb-0 fw-bold">0</h2>
+						<span class="mb-0 h6 fw-light">Total Reviews</span>
+					</div>
+					<!-- Icon -->
+					<div class="icon-lg rounded-circle bg-warning text-white mb-0"><i class="fas fa-star fa-fw"></i></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Counter item -->
+		<div class="col-md-6 col-xxl-3">
+			<div class="card card-body bg-success bg-opacity-10 p-4 h-100">
+				<div class="d-flex justify-content-between align-items-center">
+					<!-- Digit -->
+					<div>
+						<h2 class="mb-0 fw-bold">0</h2>
+						<span class="mb-0 h6 fw-light">Published</span>
+					</div>
+					<!-- Icon -->
+					<div class="icon-lg rounded-circle bg-success text-white mb-0"><i class="fas fa-check-circle fa-fw"></i></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Counter item -->
+		<div class="col-md-6 col-xxl-3">
+			<div class="card card-body bg-primary bg-opacity-10 p-4 h-100">
+				<div class="d-flex justify-content-between align-items-center">
+					<!-- Digit -->
+					<div>
+						<h2 class="mb-0 fw-bold">0</h2>
+						<span class="mb-0 h6 fw-light">Pending</span>
+					</div>
+					<!-- Icon -->
+					<div class="icon-lg rounded-circle bg-primary text-white mb-0"><i class="fas fa-clock fa-fw"></i></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Counter item -->
+		<div class="col-md-6 col-xxl-3">
+			<div class="card card-body bg-danger bg-opacity-10 p-4 h-100">
+				<div class="d-flex justify-content-between align-items-center">
+					<!-- Digit -->
+					<div>
+						<h2 class="mb-0 fw-bold">0</h2>
+						<span class="mb-0 h6 fw-light">Average Rating</span>
+					</div>
+					<!-- Icon -->
+					<div class="icon-lg rounded-circle bg-danger text-white mb-0"><i class="fas fa-chart-line fa-fw"></i></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Counter boxes END -->
+
+	<!-- Search and filter START -->
+	<div class="card shadow mb-4">
+		<div class="card-header bg-light border-bottom">
+			<!-- Search and select START -->
+			<div class="row g-3 align-items-center justify-content-between">
+				<!-- Search bar -->
+				<div class="col-md-4">
+					<form method="GET" class="position-relative">
+						<input class="form-control bg-body pe-5" type="search" name="search" placeholder="Search reviews..." aria-label="Search">
+						<button class="bg-transparent px-2 py-0 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+							<i class="fas fa-search fs-6"></i>
+						</button>
+					</form>
+				</div>
+
+				<!-- Status filter -->
+				<div class="col-md-2">
+					<select class="form-select" name="status">
+						<option value="">All Status</option>
+						<option value="published">Published</option>
+						<option value="pending">Pending</option>
+						<option value="rejected">Rejected</option>
+					</select>
+				</div>
+
+				<!-- Rating filter -->
+				<div class="col-md-2">
+					<select class="form-select" name="rating">
+						<option value="">All Ratings</option>
+						<option value="5">5 Stars</option>
+						<option value="4">4 Stars</option>
+						<option value="3">3 Stars</option>
+						<option value="2">2 Stars</option>
+						<option value="1">1 Star</option>
+					</select>
+				</div>
+
+				<!-- Sort filter -->
+				<div class="col-md-2">
+					<select class="form-select" name="sort">
+						<option value="createdAt">Created Date</option>
+						<option value="rating">Rating</option>
+						<option value="course">Course</option>
+					</select>
+				</div>
+			</div>
+			<!-- Search and select END -->
+		</div>
+	</div>
+	<!-- Search and filter END -->
+
+	<!-- Review table START -->
+	<div class="card bg-transparent border shadow">
+
+		<!-- Card header START -->
+		<div class="card-header bg-light border-bottom">
+			<div class="d-flex justify-content-between align-items-center">
+				<h5 class="mb-0">Review List</h5>
+				<span class="badge bg-primary">0 results</span>
+			</div>
+		</div>
+		<!-- Card header END -->
+
+		<!-- Card body START -->
+		<div class="card-body">
+
+			<!-- Review table START -->
+			<div class="table-responsive border-0 rounded-3">
+				<!-- Table START -->
+				<table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+					<!-- Table head -->
+					<thead>
+						<tr>
+							<th scope="col" class="border-0 rounded-start">Student</th>
+							<th scope="col" class="border-0">Course</th>
+							<th scope="col" class="border-0">Rating</th>
+							<th scope="col" class="border-0">Comment</th>
+							<th scope="col" class="border-0">Status</th>
+							<th scope="col" class="border-0">Created</th>
+							<th scope="col" class="border-0 rounded-end">Action</th>
+						</tr>
+					</thead>
+					
+					<!-- Table body START -->
+					<tbody>
+						<tr>
+							<td colspan="7" class="text-center py-5">
+								<div class="text-muted">
+									<i class="bi bi-star fs-1 mb-3"></i>
+									<p class="mb-0">No reviews found</p>
+									<small class="text-muted">There are no reviews in the system yet.</small>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+					<!-- Table body END -->
+				</table>
+				<!-- Table END -->
+			</div>
+			
+			<!-- Pagination START -->
+			<div class="d-flex justify-content-between align-items-center mt-4">
+				<p class="mb-0">Showing 0 reviews</p>
+				<nav>
+					<ul class="pagination pagination-sm mb-0">
+						<li class="page-item disabled">
+							<a class="page-link" href="#" tabindex="-1">Previous</a>
+						</li>
+						<li class="page-item active"><a class="page-link" href="#">1</a></li>
+						<li class="page-item disabled">
+							<a class="page-link" href="#" tabindex="-1">Next</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<!-- Pagination END -->
+		</div>
+		<!-- Card body END -->
+	</div>
+	<!-- Review table END -->
+
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Table row hover effects
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        });
+        row.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
+        });
+    });
+    
+    // Search functionality
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            // Add search functionality here
+            console.log('Searching for:', this.value);
+        });
+    }
+    
+    // Filter functionality
+    const filters = document.querySelectorAll('select');
+    filters.forEach(filter => {
+        filter.addEventListener('change', function() {
+            // Add filter functionality here
+            console.log('Filter changed:', this.name, this.value);
+        });
+    });
+});
+</script>
+{% endblock %}

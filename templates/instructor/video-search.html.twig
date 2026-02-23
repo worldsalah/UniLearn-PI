@@ -1,0 +1,1167 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Video Search - Unilearn{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/apexcharts/css/apexcharts.css') }}">
+<style>
+/* Modern Instructor Dashboard Styles */
+.instructor-gradient {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    position: relative;
+    overflow: hidden;
+}
+.instructor-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center;
+    background-size: cover;
+    opacity: 0.1;
+}
+.profile-banner {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+.profile-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(13, 110, 253, 0.05) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+.avatar-enhanced {
+    border: 4px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+.avatar-enhanced:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+.stat-card-instructor {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.stat-card-instructor::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+.stat-card-instructor:hover::before {
+    left: 100%;
+}
+.stat-card-instructor:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+.stat-icon-courses {
+    color: #ffc107;
+}
+.stat-icon-students {
+    color: #6f42c1;
+}
+.stat-icon-earnings {
+    color: #fd7e14;
+}
+.course-card-modern {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+.course-card-modern:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+.course-card-modern .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+.course-card-modern:hover .card-img-top {
+    transform: scale(1.05);
+}
+.sidebar-modern {
+    background: #212529;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.sidebar-modern .list-group-item {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    margin: 5px;
+}
+.sidebar-modern .list-group-item:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(5px);
+}
+.sidebar-modern .list-group-item.active {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+.sidebar-modern .list-group-item.text-danger:hover {
+    background: rgba(220, 53, 69, 0.2);
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* No Courses Available Styles */
+.no-courses-container {
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.no-courses-icon {
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.no-courses-icon:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.step-icon {
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.step-icon:hover {
+    transform: translateY(-5px);
+}
+
+.help-section {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.help-section .card {
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.help-section .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border: none;
+}
+
+.help-section .card-body {
+    padding: 2rem;
+}
+
+/* Video Search Styles */
+.video-search-container {
+    padding: 2rem;
+}
+
+.search-box {
+    margin-bottom: 2rem;
+}
+
+.search-results {
+    min-height: 400px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.loading {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+.error {
+    color: #dc3545;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.video-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.video-thumbnail {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+/* Enhanced Dropdown Styling */
+.course-header {
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border-bottom: 2px solid #dee2e6 !important;
+    padding: 8px 12px !important;
+    margin: 4px 0 !important;
+    border-radius: 4px !important;
+}
+
+.chapter-header {
+    color: #6c757d !important;
+    background: linear-gradient(90deg, #ffffff 0%, #f8f9fa 100%) !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    padding: 6px 12px 6px 32px !important;
+    margin: 2px 0 !important;
+    font-style: italic;
+}
+
+.lesson-option {
+    color: #495057 !important;
+    background: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 6px 12px 6px 52px !important;
+    margin: 1px 0 !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+}
+
+.lesson-option:hover {
+    background: #e3f2fd !important;
+    border-color: #2196f3 !important;
+    color: #1976d2 !important;
+}
+
+.lesson-option:selected {
+    background: #2196f3 !important;
+    border-color: #1976d2 !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+}
+
+/* Custom select styling */
+#lessonSelect {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2366777'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 20px;
+    padding-right: 32px;
+}
+
+#lessonSelect:focus {
+    border-color: #2196f3 !important;
+    box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25) !important;
+}
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+.create-course-btn {
+    background: #198754;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+}
+.create-course-btn:hover {
+    background: #157347;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+}
+
+/* Video Search Specific Styles */
+.video-search-container {
+    max-width: 100%;
+    padding: 20px;
+}
+
+.search-box {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.video-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.video-thumbnail {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: #f8f9fa;
+}
+
+.video-info {
+    padding: 20px;
+}
+
+.video-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.video-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.video-duration {
+    background: #0d6efd;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.video-channel {
+    color: #666;
+}
+
+.add-video-btn {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.add-video-btn:hover {
+    background: #0b5ed7;
+}
+
+.search-results {
+    min-height: 300px;
+}
+
+.loading {
+    text-align: center;
+    padding: 60px;
+    color: #666;
+}
+
+.error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 30px;
+    border-radius: 8px;
+    margin: 30px 0;
+}
+
+/* Enhanced Search Box */
+.form-control-lg {
+    font-size: 16px;
+    padding: 12px 20px;
+}
+
+.form-select-lg {
+    font-size: 16px;
+    padding: 12px 20px;
+}
+
+/* Better Video Grid */
+.video-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .video-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .search-box {
+        padding: 20px;
+    }
+    
+    .video-card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Beautiful Lesson Selection Styles */
+.lesson-selector {
+    position: relative;
+}
+
+.lesson-dropdown {
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.course-item {
+    font-weight: 600;
+    color: #495057;
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-bottom: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.course-item:hover {
+    background: #e9ecef;
+    color: #0d6efd;
+}
+
+.course-item:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.course-item:last-child {
+    border-radius: 0 0 8px 8px;
+}
+
+.chapter-item {
+    padding: 8px 15px 8px 30px;
+    border-left: 3px solid #0d6efd;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.chapter-item:hover {
+    background: #e3f2fd;
+    color: #0d6efd;
+    border-left-color: #0a58ca;
+}
+
+.lesson-item {
+    padding: 6px 15px 6px 45px;
+    background: white;
+    border-left: 2px solid #6c757d;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 13px;
+    color: #495057;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.lesson-item:hover {
+    background: #f1f3f5;
+    color: #0d6efd;
+    border-left-color: #0d6efd;
+}
+
+.lesson-item.selected {
+    background: #d1ecf1;
+    color: #0d6efd;
+    border-left-color: #0d6efd;
+    font-weight: 600;
+}
+
+.course-icon {
+    margin-right: 8px;
+    color: #0d6efd;
+}
+
+.chapter-icon {
+    margin-right: 6px;
+    color: #6c757d;
+}
+
+.lesson-icon {
+    margin-right: 6px;
+    color: #495057;
+}
+
+.no-lessons {
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+    <!-- =======================
+Page Banner START -->
+    <section class="pt-0">
+        <!-- Main banner background image -->
+        <div class="container-fluid px-0">
+            <div class="bg-blue h-100px h-md-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;"></div>
+        </div>
+        <div class="container mt-n4">
+            <div class="row">
+                <!-- Profile banner START -->
+                <div class="col-12">
+                    <div class="profile-banner card-body p-4">
+                        <div class="row d-flex justify-content-between">
+                            <!-- Avatar -->
+                            <div class="col-auto mt-4 mt-md-0">
+                                <div class="avatar avatar-xxl mt-n3 position-relative">
+                                    <img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+                                    <div class="position-absolute bottom-0 end-0">
+                                        <span class="verified-badge">
+                                            <i class="bi bi-patch-check-fill"></i> Verified
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Profile info -->
+                            <div class="col d-md-flex justify-content-between align-items-center mt-4">
+                                <div>
+                                    <h1 class="my-1 fs-3 fw-bold">Instructor</h1>
+                                    <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+                                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                                            <i class="fas fa-tv me-1"></i>0 Courses
+                                        </span>
+                                        <span class="badge bg-success bg-opacity-10 text-success">
+                                            <i class="fas fa-user-graduate me-1"></i>0K Students
+                                        </span>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning">
+                                            <i class="fas fa-star me-1"></i>0.0/5.0 Rating
+                                        </span>
+                                    </div>
+                                    <p class="text-muted mb-0">Professional Instructor | Content Creator | Educator</p>
+                                </div>
+                                <!-- Button -->
+                                <div class="d-flex align-items-center mt-2 mt-md-0">
+                                    <a href="{{ path('app_course_create') }}" class="create-course-btn">
+                                        <i class="fas fa-plus me-2"></i>Create a course
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Profile banner END -->
+
+                    <!-- Advanced filter responsive toggler START -->
+                    <!-- Divider -->
+                    <hr class="d-xl-none">
+                    <div class="col-12 col-xl-3 d-flex justify-content-between align-items-center">
+                        <a class="h6 mb-0 fw-bold d-xl-none" href="#">Menu</a>
+                        <button class="btn btn-primary d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                            <i class="fas fa-sliders-h"></i>
+                        </button>
+                    </div>
+                    <!-- Advanced filter responsive toggler END -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- =======================
+Page Banner END -->
+
+    <!-- =======================
+Page content START -->
+    <section class="pt-0">
+        <div class="container">
+            <div class="row">
+                <!-- Left sidebar START -->
+                <div class="col-xl-3">
+                    <!-- Responsive offcanvas body START -->
+                    <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
+                        <!-- Offcanvas header -->
+                        <div class="offcanvas-header bg-light">
+                            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+                            <button  type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+                        </div>
+                        <!-- Offcanvas body -->
+                        <div class="offcanvas-body p-3 p-xl-0">
+                            {% include 'instructor/_sidebar.html.twig' %}
+                        </div>
+                    </div>
+                    <!-- Responsive offcanvas body END -->
+                </div>
+                <!-- Left sidebar END -->
+                
+                <!-- Main content START -->
+                <div class="col-xl-9">
+                    <div class="video-search-container">
+                        <div class="text-center mb-4">
+                            <h1 class="mb-4">
+                                <i class="fas fa-search me-2"></i>
+                                YouTube Video Search
+                            </h1>
+                            <p class="text-muted">Find and add educational videos to your courses</p>
+                        </div>
+                        
+                        {% if hasCourses %}
+                            <!-- Search Box -->
+                            <div class="search-box">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" 
+                                                   id="searchInput" 
+                                                   class="form-control form-control-lg" 
+                                                   placeholder="Search for educational videos...">
+                                            <button class="btn btn-primary btn-lg" 
+                                                    type="button" 
+                                                    onclick="searchVideos()">
+                                                <i class="fas fa-search me-2"></i>
+                                                Search
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select id="lessonSelect" class="form-select form-select-lg">
+                                            <option value="">Choose a course and lesson...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Debug Section -->
+                            <div class="debug-section mt-3">
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-info btn-sm" onclick="debugCourses()">
+                                        <i class="fas fa-bug me-2"></i>
+                                        Debug Courses
+                                    </button>
+                                    <button class="btn btn-outline-warning btn-sm" onclick="debugLessons()">
+                                        <i class="fas fa-bug me-2"></i>
+                                        Debug Lessons
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="debugTemplate()">
+                                        <i class="fas fa-bug me-2"></i>
+                                        Debug Template
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Search Results -->
+                            <div id="searchResults" class="search-results">
+                                <div class="loading">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>
+                                    Loading videos...
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- No Courses Available Message -->
+                            <div class="no-courses-container">
+                                <div class="text-center">
+                                    <div class="no-courses-icon mb-4">
+                                        <i class="fas fa-video-slash fa-5x text-muted"></i>
+                                    </div>
+                                    <h3 class="mb-3">No Courses Available</h3>
+                                    <p class="text-muted mb-4">
+                                        You haven't created any courses yet. To search and add videos to your courses, you first need to create a course.
+                                    </p>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <a href="{{ path('app_course_create') }}" class="btn btn-primary btn-lg">
+                                            <i class="fas fa-plus me-2"></i>
+                                            Create Your First Course
+                                        </a>
+                                        <a href="{{ path('app_instructor_dashboard') }}" class="btn btn-outline-secondary btn-lg">
+                                            <i class="fas fa-arrow-left me-2"></i>
+                                            Back to Dashboard
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Additional Help Section -->
+                                <div class="help-section mt-5">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                How to Get Started
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="text-center mb-3">
+                                                        <div class="step-icon">
+                                                            <i class="fas fa-plus-circle fa-2x text-primary"></i>
+                                                        </div>
+                                                        <h6>Step 1</h6>
+                                                        <p class="text-muted small">Create a new course with basic information</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="text-center mb-3">
+                                                        <div class="step-icon">
+                                                            <i class="fas fa-book fa-2x text-success"></i>
+                                                        </div>
+                                                        <h6>Step 2</h6>
+                                                        <p class="text-muted small">Add chapters and lessons to your course</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="text-center mb-3">
+                                                        <div class="step-icon">
+                                                            <i class="fas fa-video fa-2x text-warning"></i>
+                                                        </div>
+                                                        <h6>Step 3</h6>
+                                                        <p class="text-muted small">Search and add educational videos to lessons</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- Main content END -->
+            </div>
+        </div>
+    </section>
+    <!-- =======================
+Page content END -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        let courses = [];
+        let selectedLessonId = null;
+        let selectedLessonTitle = null;
+        
+        // Load lessons on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== PAGE LOAD DEBUG ===');
+            console.log('hasCourses variable:', '{{ hasCourses }}');
+            console.log('courses count:', '{{ courses|length }}');
+            
+            loadCourses();
+            getWebDevVideos(); // Auto-load web development videos
+            
+            // Handle lesson selection change
+            const lessonSelect = document.getElementById('lessonSelect');
+            if (lessonSelect) {
+                lessonSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        selectedLessonId = this.value;
+                        selectedLessonTitle = this.options[this.selectedIndex].text;
+                    } else {
+                        selectedLessonId = null;
+                        selectedLessonTitle = null;
+                    }
+                });
+            }
+            
+            // Auto-run debug on page load
+            setTimeout(() => {
+                debugCourses();
+                debugLessons();
+                debugTemplate();
+            }, 1000);
+        });
+        
+        // Load courses with hierarchical structure
+        function loadCourses() {
+            // Only load courses if we have courses available
+            {% if hasCourses %}
+                fetch('/api/lessons')
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            courses = data.courses;
+                            populateLessonDropdown();
+                        } else {
+                            // Show error message in dropdown
+                            const lessonSelect = document.getElementById('lessonSelect');
+                            lessonSelect.innerHTML = `<option value="">Error: ${data.error}</option>`;
+                        }
+                    })
+                    .catch(error => {
+                        // Show error message in dropdown
+                        const lessonSelect = document.getElementById('lessonSelect');
+                        lessonSelect.innerHTML = `<option value="">Network error: ${error.message}</option>`;
+                    });
+            {% endif %}
+        }
+        
+        // Create beautiful hierarchical dropdown
+        function populateLessonDropdown() {
+            const lessonSelect = document.getElementById('lessonSelect');
+            
+            if (!courses || courses.length === 0) {
+                lessonSelect.innerHTML = '<option value="">No courses available</option>';
+                return;
+            }
+            
+            let html = '<option value="">📚 Select a course and lesson...</option>';
+            
+            courses.forEach(course => {
+                // Add course as a disabled option (for visual separation)
+                html += `<option value="" disabled class="course-header">📚 ${course.title}</option>`;
+                
+                if (course.chapters && Object.keys(course.chapters).length > 0) {
+                    Object.values(course.chapters).forEach(chapter => {
+                        // Add chapter as a disabled option (for visual separation)
+                        html += `<option value="" disabled class="chapter-header">📁 ${chapter.title}</option>`;
+                        
+                        if (chapter.lessons && chapter.lessons.length > 0) {
+                            chapter.lessons.forEach(lesson => {
+                                // Add lessons as selectable options
+                                html += `<option value="${lesson.id}" class="lesson-option">📹 ${lesson.title}</option>`;
+                            });
+                        }
+                    });
+                }
+            });
+            
+            lessonSelect.innerHTML = html;
+        }
+        
+        function toggleCourse(courseId) {
+            const courseLessons = document.getElementById('course-' + courseId);
+            const allCourseLessons = document.querySelectorAll('.course-lessons');
+            
+            // Close all other course dropdowns
+            allCourseLessons.forEach(el => {
+                if (el.id !== 'course-' + courseId) {
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Toggle current course
+            courseLessons.style.display = courseLessons.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function toggleChapter(courseId, chapterId) {
+            const chapterLessons = document.getElementById('chapter-' + courseId + '-' + chapterId);
+            const allChapterLessons = document.querySelectorAll('.chapter-lessons');
+            
+            // Close all other chapter dropdowns
+            allChapterLessons.forEach(el => {
+                if (el.id !== 'chapter-' + courseId + '-' + chapterId) {
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Toggle current chapter
+            chapterLessons.style.display = chapterLessons.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function selectLesson(lessonId, lessonTitle) {
+            // Remove previous selection
+            document.querySelectorAll('.lesson-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Add selection to current lesson
+            event.currentTarget.classList.add('selected');
+            selectedLessonId = lessonId;
+            
+            // Show notification
+            showNotification(`Selected: ${lessonTitle}`, 'success');
+        }
+        
+        function closeAllDropdowns() {
+            document.querySelectorAll('.course-lessons').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+        
+        function searchVideos() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin me-2"></i>Searching...</div>';
+            
+            fetch(`/api/youtube/search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayVideos(data.videos);
+                    } else {
+                        resultsDiv.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle me-2"></i>${data.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    resultsDiv.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle me-2"></i>Search failed: ${error.message}</div>`;
+                });
+        }
+        
+        function getWebDevVideos() {
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin me-2"></i>Loading web development videos...</div>';
+            
+            fetch('/api/youtube/web-dev-videos')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayVideos(data.videos);
+                    } else {
+                        resultsDiv.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle me-2"></i>${data.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    resultsDiv.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle me-2"></i>Failed to load videos: ${error.message}</div>`;
+                });
+        }
+        
+        function displayVideos(videos) {
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!videos || videos.length === 0) {
+                resultsDiv.innerHTML = '<div class="error"><i class="fas fa-info-circle me-2"></i>No videos found</div>';
+                return;
+            }
+            
+            let html = '<div class="video-grid">';
+            videos.forEach(video => {
+                html += `
+                    <div class="video-card">
+                        <img src="${video.thumbnailUrl}" alt="${video.title}" class="video-thumbnail">
+                        <div class="video-info">
+                            <h3 class="video-title">${video.title}</h3>
+                            <div class="video-meta">
+                                <span class="video-duration">${video.duration || 'N/A'}</span>
+                                <span class="video-channel">${video.channelTitle || 'YouTube'}</span>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-primary btn-sm" onclick="selectVideo('${video.id}', '${video.title}', '${video.embedUrl}')">
+                                    <i class="fas fa-plus me-2"></i>
+                                    Add to Lesson
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm ms-2" onclick="previewVideo('${video.embedUrl}')">
+                                    <i class="fas fa-play me-2"></i>
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        function selectVideo(videoId, videoTitle, embedUrl) {
+            // Check if a lesson is selected
+            const lessonSelect = document.getElementById('lessonSelect');
+            if (!lessonSelect.value || lessonSelect.value === '') {
+                showNotification('Please select a course and lesson first', 'warning');
+                lessonSelect.focus();
+                return;
+            }
+            
+            // Show confirmation dialog with lesson info
+            if (confirm(`Add "${videoTitle}" to:\n${selectedLessonTitle}?`)) {
+                addVideoToLesson(videoId, videoTitle, selectedLessonId);
+            }
+        }
+        
+        function addVideoToLesson(videoId, videoTitle, lessonId) {
+            const data = {
+                videoId: videoId,
+                videoTitle: videoTitle,
+                lessonId: parseInt(lessonId)
+            };
+            
+            fetch('/api/lesson/add-video', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(`Video "${videoTitle}" added to lesson successfully!`, 'success');
+                } else {
+                    showNotification(`Failed to add video: ${data.error}`, 'danger');
+                }
+            })
+            .catch(error => {
+                showNotification(`Failed to add video: ${error.message}`, 'danger');
+            });
+        }
+        
+        function previewVideo(embedUrl) {
+            window.open(embedUrl, '_blank');
+        }
+        
+        // Debug functions
+        function debugCourses() {
+            console.log('=== DEBUG: Template Variables ===');
+            console.log('hasCourses:', '{{ hasCourses }}');
+            console.log('courses count:', '{{ courses|length }}');
+            
+            {% if courses %}
+                console.log('Courses available:');
+                {% for course in courses %}
+                    console.log('- Course: {{ course.title }} (ID: {{ course.id }})');
+                {% endfor %}
+            {% else %}
+                console.log('No courses found in template');
+            {% endif %}
+        }
+        
+        function debugLessons() {
+            console.log('=== DEBUG: Lessons API ===');
+            fetch('/api/debug/lessons')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Response:', data);
+                    if (data.success) {
+                        console.log('Courses from API:', data.courses);
+                        console.log('Courses count:', data.courses.length);
+                    } else {
+                        console.log('API Error:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.log('Network Error:', error);
+                });
+        }
+        
+        function debugTemplate() {
+            console.log('=== DEBUG: Template Check ===');
+            const lessonSelect = document.getElementById('lessonSelect');
+            console.log('Select element found:', !!lessonSelect);
+            console.log('Current HTML:', lessonSelect.innerHTML);
+            
+            // Check hasCourses variable
+            const hasCoursesCheck = '{{ hasCourses }}' === '1';
+            console.log('hasCourses check:', hasCoursesCheck);
+            
+            // Check if courses are available
+            {% if courses %}
+                const coursesCount = '{{ courses|length }}';
+                console.log('Courses count in template:', coursesCount);
+            {% endif %}
+        }
+        
+        function searchVideos() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin me-2"></i>Searching...</div>';
+            
+            fetch(`/api/youtube/search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayVideos(data.videos);
+                    } else {
+                        resultsDiv.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle me-2"></i>${data.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    resultsDiv.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle me-2"></i>Search failed: ${error.message}</div>`;
+                });
+        }
+        
+        // Handle Enter key in search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchVideos();
+            }
+        });
+        
+        // Notification system
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+    </script>
+{% endblock %}

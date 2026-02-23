@@ -1,0 +1,269 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Checkout START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Checkout form -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <!-- Flash messages -->
+                        {% for type, messages in app.session.flashbag.all() %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        
+                        <h4 class="mb-4">Billing Information</h4>
+                        
+                        {{ form_start(checkoutForm, {'attr': {'novalidate': 'novalidate'}}) }}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    {{ form_label(checkoutForm.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.firstName) }}
+                                    {{ form_widget(checkoutForm.firstName) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(checkoutForm.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.lastName) }}
+                                    {{ form_widget(checkoutForm.lastName) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form_label(checkoutForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.email) }}
+                                    {{ form_widget(checkoutForm.email) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form_label(checkoutForm.phone, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.phone) }}
+                                    {{ form_widget(checkoutForm.phone) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form_label(checkoutForm.address, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.address) }}
+                                    {{ form_widget(checkoutForm.address) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(checkoutForm.city, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.city) }}
+                                    {{ form_widget(checkoutForm.city) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(checkoutForm.state, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.state) }}
+                                    {{ form_widget(checkoutForm.state) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(checkoutForm.zipCode, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.zipCode) }}
+                                    {{ form_widget(checkoutForm.zipCode) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(checkoutForm.country, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.country) }}
+                                    {{ form_widget(checkoutForm.country) }}
+                                </div>
+                            </div>
+                        {{ form_end(checkoutForm) }}
+                    </div>
+                </div>
+                
+                <!-- Payment Method -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Payment Method</h4>
+                        
+                        {{ form_label(checkoutForm.paymentMethod, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_errors(checkoutForm.paymentMethod) }}
+                        {{ form_widget(checkoutForm.paymentMethod) }}
+                        
+                        <!-- Credit Card Form -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Carte de crédit</h5>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    {{ form_label(checkoutForm.cardNumber, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.cardNumber) }}
+                                    {{ form_widget(checkoutForm.cardNumber) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(checkoutForm.expiryDate, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.expiryDate) }}
+                                    {{ form_widget(checkoutForm.expiryDate) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(checkoutForm.cvv, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.cvv) }}
+                                    {{ form_widget(checkoutForm.cvv) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form_label(checkoutForm.cardholderName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(checkoutForm.cardholderName) }}
+                                    {{ form_widget(checkoutForm.cardholderName) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Review -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Order Review</h4>
+                        
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/book/01.jpg') }}" class="rounded me-3" width="40" alt="Product">
+                                                <div>
+                                                    <h6 class="mb-0 small">Complete JavaScript Guide 2024</h6>
+                                                    <p class="mb-0 small text-muted">Book</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$29.99</td>
+                                        <td>1</td>
+                                        <td>$29.99</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/book/02.jpg') }}" class="rounded me-3" width="40" alt="Product">
+                                                <div>
+                                                    <h6 class="mb-0 small">React Advanced Patterns</h6>
+                                                    <p class="mb-0 small text-muted">Course</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$49.99</td>
+                                        <td>1</td>
+                                        <td>$49.99</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('assets/images/book/03.jpg') }}" class="rounded me-3" width="40" alt="Product">
+                                                <div>
+                                                    <h6 class="mb-0 small">Code Editor Pro License</h6>
+                                                    <p class="mb-0 small text-muted">Software</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$89.99</td>
+                                        <td>1</td>
+                                        <td>$89.99</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Terms and conditions -->
+                        <div class="form-check mb-4">
+                            {{ form_widget(checkoutForm.agreeTerms) }}
+                            {{ form_label(checkoutForm.agreeTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                        </div>
+                        
+                        <!-- Total amount display -->
+                        <div class="mb-3">
+                            {{ form_label(checkoutForm.totalAmount, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(checkoutForm.totalAmount) }}
+                        </div>
+                        
+                        <!-- Place order button -->
+                        {{ form_widget(checkoutForm.submit) }}
+                        
+                        <p class="mb-0 small text-muted text-center mt-2">
+                            <i class="fas fa-lock me-1"></i>Your payment information is secure and encrypted
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Order Summary -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Order Summary</h5>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal (3 items)</span>
+                            <span>$169.97</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax</span>
+                            <span>$13.60</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Discount</span>
+                            <span class="text-danger">-$0.00</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-0">Total</h6>
+                            <h6 class="mb-0">$183.57</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Promo Code -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h6 class="mb-3">Have a promo code?</h6>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter promo code">
+                            <button class="btn btn-outline-secondary" type="button">Apply</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Customer Support -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-headset fa-2x"></i>
+                        </div>
+                        <h6 class="mb-2">Need Help?</h6>
+                        <p class="mb-3 small text-muted">Our customer support team is here to help you 24/7</p>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Checkout END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

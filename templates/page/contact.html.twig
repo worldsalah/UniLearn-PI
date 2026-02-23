@@ -1,0 +1,237 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact Us - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Contact <span class="text-primary">Unilearn</span></h1>
+                    <p class="lead mb-0">We're here to help and answer any questions you might have</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Contact START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <!-- Flash messages -->
+                        {% for type, messages in app.session.flashbag.all() %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        
+                        <h4 class="mb-4">Send us a Message</h4>
+                        {{ form_start(contactForm, {'attr': {'novalidate': 'novalidate'}}) }}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    {{ form_label(contactForm.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.firstName) }}
+                                    {{ form_widget(contactForm.firstName) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(contactForm.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.lastName) }}
+                                    {{ form_widget(contactForm.lastName) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(contactForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.email) }}
+                                    {{ form_widget(contactForm.email) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(contactForm.phone, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.phone) }}
+                                    {{ form_widget(contactForm.phone) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form_label(contactForm.subject, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.subject) }}
+                                    {{ form_widget(contactForm.subject) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form_label(contactForm.message, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_errors(contactForm.message) }}
+                                    {{ form_widget(contactForm.message) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form_widget(contactForm.submit) }}
+                                </div>
+                            </div>
+                        {{ form_end(contactForm) }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Contact Information</h5>
+                        
+                        <div class="d-flex mb-3">
+                            <div class="icon-md bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Address</h6>
+                                <p class="mb-0 small text-muted">123 Education Street<br>Learning City, LC 12345<br>United States</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex mb-3">
+                            <div class="icon-md bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Phone</h6>
+                                <p class="mb-0 small text-muted">+1 (555) 123-4567<br>Mon-Fri: 9AM-6PM EST</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex mb-3">
+                            <div class="icon-md bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Email</h6>
+                                <p class="mb-0 small text-muted">support@unilearn.com<br>info@unilearn.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Follow Us</h5>
+                        <p class="mb-3 small text-muted">Stay connected with us on social media</p>
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-primary btn-sm"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="btn btn-info btn-sm"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="btn btn-danger btn-sm"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="btn btn-primary btn-sm"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="btn btn-danger btn-sm"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Contact END -->
+
+<!-- =======================
+FAQ START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mb-5">
+                    <h2 class="mb-3">Frequently Asked <span class="text-primary">Questions</span></h2>
+                    <p class="mb-0">Find answers to common questions about Unilearn</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item mb-3">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                How do I enroll in a course?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Enrolling in a course is simple! Browse our course catalog, select the course you're interested in, click "Enroll Now," and follow the payment instructions. You'll get instant access to the course materials.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item mb-3">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                Do you offer certificates upon completion?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! All our courses come with a certificate of completion. Once you finish all course requirements, you can download your certificate from your dashboard.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item mb-3">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                What is your refund policy?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We offer a 30-day money-back guarantee. If you're not satisfied with your course within the first 30 days, contact our support team for a full refund.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item mb-3">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                Can I access courses offline?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! With our mobile app, you can download course videos and materials for offline viewing. Perfect for learning on the go without an internet connection.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                                How long do I have access to the course?
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Once enrolled, you get lifetime access to the course materials. You can learn at your own pace and revisit the content whenever you need.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+FAQ END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

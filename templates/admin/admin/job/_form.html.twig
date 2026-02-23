@@ -1,0 +1,35 @@
+<div class="card shadow">
+    <div class="card-body">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form_row(form.title, {
+                        'label': 'Job Title',
+                        'attr': {'class': 'form-control', 'placeholder': 'e.g. Need a Python Tutor'}
+                    }) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.budget, {
+                        'label': 'Budget ($)',
+                        'attr': {'class': 'form-control', 'placeholder': '0.00'}
+                    }) }}
+                </div>
+                <div class="col-12">
+                    {{ form_row(form.client, {
+                        'label': 'Client (User)',
+                        'attr': {'class': 'form-select js-choice'}
+                    }) }}
+                </div>
+                <div class="col-12">
+                    {{ form_row(form.description, {
+                        'label': 'Job Description',
+                        'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Describe the job requirements...'}
+                    }) }}
+                </div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+                <button class="btn btn-primary mb-0">{{ button_label|default('Save Changes') }}</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>

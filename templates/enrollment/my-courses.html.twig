@@ -1,0 +1,196 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}My Courses - UniLearn{% endblock %}
+
+{% block stylesheets %}
+<style>
+.my-courses {
+    padding: 2rem 0;
+}
+
+.course-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+}
+
+.course-image {
+    height: 200px;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+}
+
+.course-content {
+    padding: 1.5rem;
+}
+
+.course-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.course-meta {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.progress-bar-custom {
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+}
+
+.course-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.continue-btn {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+.continue-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+}
+
+.dashboard-btn {
+    background: transparent;
+    color: #007bff;
+    border-color: #007bff;
+}
+
+.dashboard-btn:hover {
+    background: #007bff;
+    color: white;
+}
+
+.enrollment-date {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-courses">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h2 mb-4">My Courses</h1>
+            
+            {% if enrollments|length > 0 %}
+                <div class="row">
+                    {% for enrollment in enrollments %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="course-card">
+                                <!-- Course Image/Placeholder -->
+                                <div class="course-image">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                
+                                <!-- Course Content -->
+                                <div class="course-content">
+                                    <h3 class="course-title">{{ enrollment.course.title }}</h3>
+                                    
+                                    <div class="course-meta">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span>
+                                                <i class="fas fa-clock me-1"></i>
+                                                {{ enrollment.course.duration|default('Self-paced') }}
+                                            </span>
+                                            <span>
+                                                <i class="fas fa-signal me-1"></i>
+                                                {{ enrollment.course.level|default('All Levels') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Progress -->
+                                    <div class="progress-info">
+                                        <span class="fw-semibold">Progress</span>
+                                        <span class="fw-bold">{{ enrollment.progress|round }}%</span>
+                                    </div>
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar progress-bar-custom" style="width: {{ enrollment.progress }}%"></div>
+                                    </div>
+                                    
+                                    <!-- Actions -->
+                                    <div class="course-actions">
+                                        <a href="{{ path('app_course_dashboard', {'id': enrollment.course.id}) }}" class="action-btn continue-btn">
+                                            <i class="fas fa-play me-1"></i>Continue
+                                        </a>
+                                        <a href="{{ path('app_course_show', {'id': enrollment.course.id}) }}" class="action-btn dashboard-btn">
+                                            <i class="fas fa-info-circle me-1"></i>Details
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Enrollment Date -->
+                                    <div class="enrollment-date">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Enrolled on {{ enrollment.enrolledAt|date('M d, Y') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-book-open"></i>
+                    <h3 class="h4 mb-3">No Courses Yet</h3>
+                    <p class="text-muted">You haven't enrolled in any courses yet. Start your learning journey by exploring our course catalog.</p>
+                    <a href="{{ path('app_course_grid') }}" class="btn btn-primary mt-3">
+                        <i class="fas fa-search me-2"></i>Browse Courses
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

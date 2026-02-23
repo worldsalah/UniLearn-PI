@@ -1,0 +1,107 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Edit Service - {{ product.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>Edit Service
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="row g-3">
+                        <!-- Title -->
+                        <div class="col-12">
+                            <label for="{{ form.title.vars.id }}" class="form-label">Service Title *</label>
+                            {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter service title'}}) }}
+                            {% if form.title.vars.errors|length > 0 %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form_errors(form.title) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-12">
+                            <label for="{{ form.description.vars.id }}" class="form-label">Description *</label>
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Describe your service in detail'}}) }}
+                            {% if form.description.vars.errors|length > 0 %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form_errors(form.description) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Price -->
+                        <div class="col-md-6">
+                            <label for="{{ form.price.vars.id }}" class="form-label">Price ($) *</label>
+                            {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': '0.00'}}) }}
+                            {% if form.price.vars.errors|length > 0 %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form_errors(form.price) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Category -->
+                        <div class="col-md-6">
+                            <label for="{{ form.category.vars.id }}" class="form-label">Category *</label>
+                            {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
+                            {% if form.category.vars.errors|length > 0 %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form_errors(form.category) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Image -->
+                        <div class="col-12">
+                            <label for="{{ form.imageFile.vars.id }}" class="form-label">Service Image</label>
+                            {{ form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }}
+                            {% if form.imageFile.vars.errors|length > 0 %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form_errors(form.imageFile) }}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Upload an image for your service (optional)</div>
+                        </div>
+
+                        <!-- Current Image Preview -->
+                        {% if product.image %}
+                        <div class="col-12">
+                            <label class="form-label">Current Image</label>
+                            <div class="mb-3">
+                                <img src="{{ asset('uploads/products/' ~ product.image) }}" alt="{{ product.title }}" class="img-thumbnail" style="max-height: 200px;">
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Form Row for Actions -->
+                        <div class="col-12">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                                <a href="{{ path('app_product_show', {slug: product.slug}) }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                                <a href="{{ path('app_marketplace_shop') }}" class="btn btn-outline-info">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Marketplace
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

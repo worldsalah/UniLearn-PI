@@ -1,0 +1,34 @@
+﻿2026-02-18T17:01:10.6578112Z Current runner version: '2.331.0'
+2026-02-18T17:01:10.6602773Z ##[group]Runner Image Provisioner
+2026-02-18T17:01:10.6603582Z Hosted Compute Agent
+2026-02-18T17:01:10.6604288Z Version: 20260123.484
+2026-02-18T17:01:10.6604843Z Commit: 6bd6555ca37d84114959e1c76d2c01448ff61c5d
+2026-02-18T17:01:10.6606035Z Build Date: 2026-01-23T19:41:17Z
+2026-02-18T17:01:10.6606749Z Worker ID: {2b3ac87d-310a-41e7-824d-def6e06efce2}
+2026-02-18T17:01:10.6607500Z Azure Region: eastus2
+2026-02-18T17:01:10.6608091Z ##[endgroup]
+2026-02-18T17:01:10.6609592Z ##[group]Operating System
+2026-02-18T17:01:10.6610273Z Ubuntu
+2026-02-18T17:01:10.6610698Z 24.04.3
+2026-02-18T17:01:10.6611232Z LTS
+2026-02-18T17:01:10.6611667Z ##[endgroup]
+2026-02-18T17:01:10.6612162Z ##[group]Runner Image
+2026-02-18T17:01:10.6612748Z Image: ubuntu-24.04
+2026-02-18T17:01:10.6613234Z Version: 20260209.23.1
+2026-02-18T17:01:10.6614277Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260209.23/images/ubuntu/Ubuntu2404-Readme.md
+2026-02-18T17:01:10.6616636Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260209.23
+2026-02-18T17:01:10.6617600Z ##[endgroup]
+2026-02-18T17:01:10.6619221Z ##[group]GITHUB_TOKEN Permissions
+2026-02-18T17:01:10.6621170Z Contents: read
+2026-02-18T17:01:10.6621822Z Metadata: read
+2026-02-18T17:01:10.6622414Z Packages: read
+2026-02-18T17:01:10.6622912Z ##[endgroup]
+2026-02-18T17:01:10.6626286Z Secret source: Actions
+2026-02-18T17:01:10.6627525Z Prepare workflow directory
+2026-02-18T17:01:10.7072001Z Prepare all required actions
+2026-02-18T17:01:10.7111552Z Getting action download info
+2026-02-18T17:01:11.0499674Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-02-18T17:01:11.1876427Z Download action repository 'shivammathur/setup-php@v2' (SHA:44454db4f0199b8b9685a5d763dc37cbf79108e1)
+2026-02-18T17:01:11.4261032Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-02-18T17:01:11.5258276Z Download action repository 'codecov/codecov-action@v4' (SHA:b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238)
+2026-02-18T17:01:11.8834424Z Complete job name: test (8.1)

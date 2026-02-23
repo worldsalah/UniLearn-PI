@@ -1,0 +1,178 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Course Dashboard - {{ course.title }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+.course-dashboard {
+    padding: 2rem 0;
+}
+
+.progress-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.progress-bar-custom {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+}
+
+.lesson-list {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.lesson-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lesson-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.lesson-item:last-child {
+    border-bottom: none;
+}
+
+.lesson-info {
+    flex: 1;
+}
+
+.lesson-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.lesson-meta {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.lesson-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-completed {
+    color: #28a745;
+}
+
+.status-current {
+    color: #007bff;
+}
+
+.status-locked {
+    color: #6c757d;
+}
+
+.continue-btn {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.continue-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+}
+
+.course-info-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container course-dashboard">
+    <div class="row">
+        <!-- Course Info -->
+        <div class="col-12">
+            <div class="course-info-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h2 class="h3 mb-2">{{ course.title }}</h2>
+                        <p class="text-muted mb-0">{{ course.shortDescription|default('Learn and master this course') }}</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-primary">Enrolled</span>
+                    </div>
+                </div>
+                
+                <!-- Progress -->
+                <div class="progress-container">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-semibold">Course Progress</span>
+                        <span class="fw-bold">{{ progress|round }}%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-custom" style="width: {{ progress }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lessons List -->
+        <div class="col-12">
+            <h3 class="h4 mb-4">Course Content</h3>
+            <div class="lesson-list">
+                {% for lesson in lessons %}
+                    <div class="lesson-item">
+                        <div class="lesson-info">
+                            <div class="lesson-title">{{ lesson.title }}</div>
+                            <div class="lesson-meta">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ lesson.duration|default('15 min') }}
+                                {% if lesson.description %}
+                                    <span class="ms-3">• {{ lesson.description|slice(0, 50) }}...</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="lesson-status">
+                            {% if loop.index == 1 %}
+                                <span class="status-current">
+                                    <i class="fas fa-play-circle"></i> Current
+                                </span>
+                                <a href="{{ path('app_lesson_show', {'id': lesson.id}) }}" class="continue-btn">
+                                    Continue Learning
+                                </a>
+                            {% else %}
+                                <span class="status-locked">
+                                    <i class="fas fa-lock"></i> Locked
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No lessons available yet for this course.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+fos_elastica:
+    clients:
+        default: { hosts: [localhost:9200] }
+    indexes:
+        jobs:
+            properties:
+                title: { type: text }
+                description: { type: text }
+            persistence:
+                driver: orm
+                model: App\Entity\Job
+                provider: ~
+                finder: ~
+        products:
+            properties:
+                title: { type: text }
+                description: { type: text }
+                price: { type: float }
+            persistence:
+                driver: orm
+                model: App\Entity\Product
+                provider: ~
+                finder: ~
+        courses:
+            properties:
+                title: { type: text }
+                description: { type: text }
+                level: { type: keyword }
+                price: { type: float }
+            persistence:
+                driver: orm
+                model: App\Entity\Course
+                provider: ~
+                finder: ~
+        users:
+            properties:
+                fullName: { type: text }
+                email: { type: text }
+            persistence:
+                driver: orm
+                model: App\Entity\User
+                provider: ~
+                finder: ~

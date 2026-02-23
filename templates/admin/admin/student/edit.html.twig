@@ -1,0 +1,29 @@
+{% extends 'admin/admin_base.html.twig' %}
+
+{% block title %}Edit Student - Admin{% endblock %}
+
+{% block admin_content %}
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">Edit Student: {{ student.fullName }}</h1>
+            <a href="{{ path('app_admin_student_index') }}" class="btn btn-secondary-soft mb-0">Back to List</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        {{ include('admin/student/_form.html.twig', {'button_label': 'Update Student'}) }}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8 mx-auto text-end">
+        <form method="post" action="{{ path('app_admin_student_delete', {id: student.id}) }}" onsubmit="return confirm('Are you sure you want to delete this freelancer? This action cannot be undone.');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ student.id) }}">
+            <button class="btn btn-danger">Delete This Profile</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

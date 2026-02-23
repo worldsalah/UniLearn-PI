@@ -308,22 +308,22 @@
             <!-- Main Content -->
             <div class="col-lg-8 col-xl-9">
                 <!-- Search and Filter Bar -->
-                <form class="row mb-4 align-items-center" method="get" action="{{ path('app_course_grid') }}" id="main-search-form">
+                <div class="row mb-4 align-items-center">
                     <!-- Search Bar -->
                     <div class="col-xl-6">
-                        <div class="search-form p-2">
+                        <form class="search-form p-2">
                             <div class="input-group input-borderless">
-                                <input class="form-control me-1" type="search" name="search" placeholder="Find your course" value="{{ app.request.query.get('search') }}">
+                                <input class="form-control me-1" type="search" placeholder="Find your course" value="{{ app.request.query.get('search') }}">
                                 <button type="submit" class="btn btn-primary mb-0 rounded">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
-                        </div>
+                        </form>
                     </div>
 
                     <!-- Sort Options -->
                     <div class="col-xl-3 mt-3 mt-xl-0">
-                        <div class="search-form p-2">
+                        <form class="search-form p-2">
                             <select class="form-select form-select-sm border-0" name="sort" onchange="this.form.submit()">
                                 <option value="popular" {{ app.request.query.get('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
                                 <option value="newest" {{ app.request.query.get('sort') == 'newest' ? 'selected' : '' }}>Newest First</option>
@@ -331,7 +331,7 @@
                                 <option value="price_low" {{ app.request.query.get('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
                                 <option value="price_high" {{ app.request.query.get('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
                             </select>
-                        </div>
+                        </form>
                     </div>
 
                     <!-- Results Count -->
@@ -341,7 +341,7 @@
                         </button>
                         <span class="results-count">Showing {{ courses|length }} courses</span>
                     </div>
-                </form>
+                </div>
 
                 <!-- Course Grid -->
                 <div class="row g-4">
@@ -422,32 +422,9 @@
                     {% else %}
                         <div class="col-12">
                             <div class="text-center py-5">
-                                <div class="mb-4">
-                                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
-                                </div>
-                                <h3 class="text-muted mb-3">No courses found</h3>
-                                <p class="text-muted mb-4">We couldn't find any courses matching your search.</p>
-                                
-                                <div class="alert alert-info mx-auto" style="max-width: 500px;">
-                                    <h5 class="alert-heading">
-                                        <i class="fas fa-lightbulb me-2"></i>Suggestions:
-                                    </h5>
-                                    <ul class="text-start mb-0">
-                                        <li>Check your spelling for typos</li>
-                                        <li>Try more general keywords (e.g., "web" instead of "web development advanced")</li>
-                                        <li>Use different search terms</li>
-                                        <li>Browse our <a href="{{ path('app_course_categories') }}" class="alert-link">course categories</a></li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="mt-4">
-                                    <a href="{{ path('app_course_grid') }}" class="btn btn-primary">
-                                        <i class="fas fa-times me-2"></i>Clear Search
-                                    </a>
-                                    <a href="{{ path('app_course_categories') }}" class="btn btn-outline-primary ms-2">
-                                        <i class="fas fa-th me-2"></i>Browse All Courses
-                                    </a>
-                                </div>
+                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                <h4 class="text-muted">No courses found</h4>
+                                <p class="text-muted">Try adjusting your search or filters</p>
                             </div>
                         </div>
                     {% endfor %}
@@ -480,10 +457,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body p-3 p-lg-0">
-                        <form method="get" action="{{ path('app_course_grid') }}" id="filter-form">
-                            <!-- Preserve current search and sort parameters -->
-                            <input type="hidden" name="search" value="{{ app.request.query.get('search') }}">
-                            <input type="hidden" name="sort" value="{{ app.request.query.get('sort') }}">
+                        <form>
                             <!-- Category START -->
                             <div class="card card-body shadow p-4 mb-4">
                                 <!-- Title -->
@@ -533,17 +507,17 @@
                                 <ul class="list-inline mb-0">
                                     <!-- All -->
                                     <li class="list-inline-item">
-                                        <input type="radio" class="btn-check price-filter" name="price_type" id="price-option1" value="" {{ currentFilters.price_type is empty ? 'checked' : '' }}>
+                                        <input type="radio" class="btn-check price-filter" name="price-options" id="price-option1" value="" {{ currentFilters.price_type is empty ? 'checked' : '' }}>
                                         <label class="btn btn-light btn-primary-soft-check" for="price-option1">All</label>
                                     </li>
                                     <!-- Free -->
                                     <li class="list-inline-item">
-                                        <input type="radio" class="btn-check price-filter" name="price_type" id="price-option2" value="free" {{ currentFilters.price_type == 'free' ? 'checked' : '' }}>
+                                        <input type="radio" class="btn-check price-filter" name="price-options" id="price-option2" value="free" {{ currentFilters.price_type == 'free' ? 'checked' : '' }}>
                                         <label class="btn btn-light btn-primary-soft-check" for="price-option2">Free</label>
                                     </li>
                                     <!-- Paid -->
                                     <li class="list-inline-item">
-                                        <input type="radio" class="btn-check price-filter" name="price_type" id="price-option3" value="paid" {{ currentFilters.price_type == 'paid' ? 'checked' : '' }}>
+                                        <input type="radio" class="btn-check price-filter" name="price-options" id="price-option3" value="paid" {{ currentFilters.price_type == 'paid' ? 'checked' : '' }}>
                                         <label class="btn btn-light btn-primary-soft-check" for="price-option3">Paid</label>
                                     </li>
                                 </ul>
@@ -557,7 +531,7 @@
                                 <ul class="list-inline mb-0">
                                     <!-- All levels -->
                                     <li class="list-inline-item mb-2">
-                                        <input type="checkbox" class="btn-check level-filter" id="btn-check-all" value="" {{ currentFilters.levels is empty or (currentFilters.levels|length == 1 and currentFilters.levels[0] == '') ? 'checked' : '' }}>
+                                        <input type="checkbox" class="btn-check level-filter" id="btn-check-all" value="" {{ currentFilters.levels is empty ? 'checked' : '' }}>
                                         <label class="btn btn-light btn-primary-soft-check" for="btn-check-all">All levels</label>
                                     </li>
                                     <!-- Beginner -->
@@ -611,25 +585,115 @@
 {% block javascripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // AJAX filtering without page refresh
-    const levelFilters = document.querySelectorAll('.level-filter');
-    const levelAll = document.getElementById('btn-check-all');
+    // Get current URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Handle category filter changes
     const categoryFilters = document.querySelectorAll('.category-filter');
+    categoryFilters.forEach(filter => {
+        filter.addEventListener('change', function() {
+            updateFilters();
+        });
+    });
+    
+    // Handle "All" category checkbox
     const categoryAll = document.getElementById('category-all');
+    if (categoryAll) {
+        categoryAll.addEventListener('change', function() {
+            if (this.checked) {
+                // Uncheck all other categories
+                categoryFilters.forEach(filter => filter.checked = false);
+            }
+            updateFilters();
+        });
+    }
+    
+    // Handle price filter changes
+    const priceFilters = document.querySelectorAll('.price-filter');
+    priceFilters.forEach(filter => {
+        filter.addEventListener('change', function() {
+            updateFilters();
+        });
+    });
+    
+    // Handle level filter changes
+    const levelFilters = document.querySelectorAll('.level-filter');
+    levelFilters.forEach(filter => {
+        filter.addEventListener('change', function() {
+            updateFilters();
+        });
+    });
+    
+    // Handle "All" level checkbox
+    const levelAll = document.getElementById('btn-check-all');
+    if (levelAll) {
+        levelAll.addEventListener('change', function() {
+            if (this.checked) {
+                // Uncheck all other levels
+                levelFilters.forEach(filter => {
+                    if (filter.id !== 'btn-check-all') {
+                        filter.checked = false;
+                    }
+                });
+            }
+            updateFilters();
+        });
+    }
+    
+    // Handle language filter changes
+    const languageFilters = document.querySelectorAll('.language-filter');
+    languageFilters.forEach(filter => {
+        filter.addEventListener('change', function() {
+            updateFilters();
+        });
+    });
+    
+    // Handle filter results button
+    const filterButton = document.querySelector('.btn-primary.mb-0');
+    if (filterButton) {
+        filterButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            updateFilters();
+        });
+    }
+    
+    // Also handle form submission
+    const filterForm = document.querySelector('form');
+    if (filterForm) {
+        filterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            updateFilters();
+        });
+    }
     
     function updateFilters() {
-        // Get all form data
-        const formData = new FormData(document.getElementById('filter-form'));
         const params = new URLSearchParams();
         
-        // Add all form parameters
-        for (let [key, value] of formData.entries()) {
-            if (value !== '') {
-                params.append(key, value);
-            }
+        // Add search parameter
+        const searchValue = document.querySelector('input[type="search"]').value;
+        if (searchValue) {
+            params.set('search', searchValue);
         }
         
-        // Handle level filters separately to ensure proper array format
+        // Add sort parameter
+        const sortValue = document.querySelector('select[name="sort"]').value;
+        if (sortValue && sortValue !== 'newest') {
+            params.set('sort', sortValue);
+        }
+        
+        // Add category parameters
+        const selectedCategories = [];
+        categoryFilters.forEach(filter => {
+            if (filter.checked) {
+                selectedCategories.push(filter.value);
+            }
+        });
+        
+        if (selectedCategories.length > 0) {
+            selectedCategories.forEach(cat => params.append('categories[]', cat));
+        }
+        
+        // Add level parameters
         const selectedLevels = [];
         levelFilters.forEach(filter => {
             if (filter.checked && filter.value) {
@@ -637,150 +701,52 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Remove existing levels and add as array
-        params.delete('levels');
-        params.delete('levels[]');
-        selectedLevels.forEach(level => {
-            params.append('levels[]', level);
-        });
+        if (selectedLevels.length > 0) {
+            selectedLevels.forEach(level => params.append('levels[]', level));
+        }
         
-        // Handle category filters separately to ensure proper array format
-        const selectedCategories = [];
-        categoryFilters.forEach(filter => {
-            if (filter.checked && filter.value) {
-                selectedCategories.push(filter.value);
-            }
-        });
+        // Add price parameter
+        const selectedPrice = document.querySelector('input[name="price-options"]:checked');
+        if (selectedPrice && selectedPrice.value && selectedPrice.value !== '') {
+            params.set('price_type', selectedPrice.value);
+        }
         
-        // Remove existing categories and add as array
-        params.delete('categories');
-        params.delete('categories[]');
-        selectedCategories.forEach(category => {
-            params.append('categories[]', category);
-        });
-        
-        // Handle language filters separately to ensure proper array format
-        const languageFilters = document.querySelectorAll('.language-filter');
+        // Add language parameters
         const selectedLanguages = [];
         languageFilters.forEach(filter => {
-            if (filter.checked && filter.value) {
+            if (filter.checked) {
                 selectedLanguages.push(filter.value);
             }
         });
         
-        // Remove existing languages and add as array
-        params.delete('languages');
-        params.delete('languages[]');
-        selectedLanguages.forEach(language => {
-            params.append('languages[]', language);
-        });
+        if (selectedLanguages.length > 0) {
+            selectedLanguages.forEach(lang => params.append('languages[]', lang));
+        }
         
-        console.log('Filter params:', params.toString());
-        
-        // Update URL without page refresh
+        // Redirect to new URL with filters
         const newUrl = window.location.pathname + '?' + params.toString();
-        window.history.pushState({}, '', newUrl);
-        
-        // Fetch filtered results via AJAX
-        fetchFilteredResults(params.toString());
+        window.location.href = newUrl;
     }
     
-    levelFilters.forEach(filter => {
-        filter.addEventListener('change', function() {
-            // Handle "All levels" logic
-            if (this.id !== 'btn-check-all' && this.checked && levelAll) {
-                levelAll.checked = false;
-            }
-            if (this.id === 'btn-check-all' && this.checked) {
-                levelFilters.forEach(f => {
-                    if (f.id !== 'btn-check-all') {
-                        f.checked = false;
-                    }
-                });
-            }
-            
-            updateFilters();
-        });
-    });
-    
-    // Handle category filters
+    // Handle category "All" logic
     categoryFilters.forEach(filter => {
         filter.addEventListener('change', function() {
             if (this.checked && categoryAll) {
                 categoryAll.checked = false;
             }
-            if (this.id === 'category-all' && this.checked) {
-                categoryFilters.forEach(f => {
-                    if (f.id !== 'category-all') {
-                        f.checked = false;
-                    }
-                });
-            }
-            updateFilters();
         });
     });
     
-    const priceFilters = document.querySelectorAll('.price-filter');
-    priceFilters.forEach(filter => {
-        filter.addEventListener('change', updateFilters);
-    });
-    
-    const languageFilters = document.querySelectorAll('.language-filter');
-    languageFilters.forEach(filter => {
-        filter.addEventListener('change', updateFilters);
-    });
-    
-    // Function to fetch filtered results via AJAX
-    function fetchFilteredResults(queryString) {
-        console.log('Fetching results with:', queryString);
-        
-        // Show loading state
-        const courseGrid = document.querySelector('.row.g-4');
-        if (courseGrid) {
-            courseGrid.style.opacity = '0.5';
-            courseGrid.innerHTML = '<div class="col-12 text-center py-5"><i class="fas fa-spinner fa-spin me-2"></i>Loading...</div>';
+    // Handle level "All" logic
+    levelFilters.forEach(filter => {
+        if (filter.id !== 'btn-check-all') {
+            filter.addEventListener('change', function() {
+                if (this.checked && levelAll) {
+                    levelAll.checked = false;
+                }
+            });
         }
-        
-        // Fetch filtered courses
-        fetch(`/courses/filter${queryString ? '?' + queryString : ''}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Received data:', data);
-            
-            if (data.success) {
-                // Update the course grid with new results
-                if (courseGrid) {
-                    courseGrid.innerHTML = data.html;
-                    courseGrid.style.opacity = '1';
-                }
-                
-                // Update results count
-                const resultsCount = document.querySelector('.results-count');
-                if (resultsCount) {
-                    resultsCount.textContent = `Showing ${data.count} courses`;
-                }
-            } else {
-                throw new Error('Filter request failed');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching filtered results:', error);
-            if (courseGrid) {
-                courseGrid.style.opacity = '1';
-                courseGrid.innerHTML = '<div class="col-12 text-center py-5"><i class="fas fa-exclamation-triangle me-2"></i>Error loading results. Please try again.</div>';
-            }
-        });
-    }
+    });
 });
 </script>
 {% endblock %}

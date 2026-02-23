@@ -113,7 +113,7 @@ class DiscoveryRecommendationService
      */
     public function getPersonalizedRecommendations(?\Symfony\Component\Security\Core\User\UserInterface $user, int $limit = 10): array
     {
-        if ($user === null) {
+        if (!$user) {
             return $this->getPopularListings($limit);
         }
 
@@ -306,7 +306,7 @@ class DiscoveryRecommendationService
     /**
      * Get user's interests based on their activity.
      */
-    private function getUserInterests(\Symfony\Component\Security\Core\User\UserInterface $user): array
+    private function getUserInterests(User $user): array
     {
         $categories = [];
 

@@ -339,13 +339,13 @@
                         <button class="btn btn-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
                             <i class="fas fa-sliders-h me-1"></i> Show filter
                         </button>
-                        <span class="results-count">Showing {{ courses|length }} courses</span>
+                        <span class="results-count">Showing {{ pagination|length }} of {{ pagination.getTotalItemCount }} courses</span>
                     </div>
                 </div>
 
                 <!-- Course Grid -->
                 <div class="row g-4">
-                    {% for course in courses %}
+                    {% for course in pagination %}
                         <div class="col-sm-6 col-xl-4">
                             <div class="card course-card shadow h-100">
                                 <!-- Course Image -->
@@ -431,19 +431,11 @@
                 </div>
 
                 <!-- Pagination -->
-                {% if courses|length > 9 %}
+                {% if pagination is defined and pagination.getTotalItemCount > 9 %}
                     <nav aria-label="Course pagination" class="mt-5">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">Previous</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Next</a>
-                            </li>
-                        </ul>
+                        <div class="d-flex justify-content-center">
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
                     </nav>
                 {% endif %}
             </div>
@@ -470,7 +462,7 @@
                                             <input class="form-check-input" type="checkbox" value="" id="category-all" {{ currentFilters.categories is empty ? 'checked' : '' }}>
                                             <label class="form-check-label" for="category-all">All</label>
                                         </div>
-                                        <span class="small">({{ courses|length }})</span>
+                                        <span class="small">({{ pagination.getTotalItemCount() }})</span>
                                     </div>
                                     
                                     {% for category in categories %}
@@ -744,9 +736,172 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (this.checked && levelAll) {
                     levelAll.checked = false;
                 }
-            });
-        }
+            } else {
+                throw new Error('Filter request failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching filtered results:', error);
+            if (courseGrid) {
+                courseGrid.style.opacity = '1';
+                courseGrid.innerHTML = '<div class="col-12 text-center py-5"><i class="fas fa-exclamation-triangle me-2"></i>Error loading results. Please try again.</div>';
+            }
+        });
     });
-});
 </script>
+
+<style>
+    /* Custom Pagination Styles for Basic HTML Structure */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 2rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border: 1px solid #dee2e6;
+    }
+    
+    .pagination span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .pagination .first a,
+    .pagination .previous a,
+    .pagination .next a,
+    .pagination .last a,
+    .pagination .page a,
+    .pagination .current {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        color: #495057;
+        background: white;
+        border: 2px solid #dee2e6;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .pagination .first a:hover,
+    .pagination .previous a:hover,
+    .pagination .next a:hover,
+    .pagination .last a:hover,
+    .pagination .page a:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .pagination .first a:active,
+    .pagination .previous a:active,
+    .pagination .next a:active,
+    .pagination .last a:active,
+    .pagination .page a:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: all 0.1s ease;
+    }
+    
+    .pagination .current {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        transform: scale(1.1);
+        font-weight: 700;
+    }
+    
+    .pagination .first a,
+    .pagination .previous a {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+        border-color: #6c757d;
+    }
+    
+    .pagination .next a,
+    .pagination .last a {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border-color: #28a745;
+    }
+    
+    .pagination .first a:hover,
+    .pagination .previous a:hover {
+        background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+        border-color: #5a6268;
+    }
+    
+    .pagination .next a:hover,
+    .pagination .last a:hover {
+        background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+        border-color: #218838;
+    }
+    
+    .pagination .page a {
+        background: white;
+        border-color: #dee2e6;
+    }
+    
+    /* Special styling for current page indicator */
+    .pagination .current {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .pagination .current::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+        border-radius: 50%;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .pagination {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            padding: 1rem;
+        }
+        
+        .pagination span {
+            width: 35px;
+            height: 35px;
+            font-size: 0.75rem;
+        }
+    }
+    
+    /* Add some animation */
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    .pagination .current {
+        animation: pulse 2s infinite;
+    }
+</style>
 {% endblock %}

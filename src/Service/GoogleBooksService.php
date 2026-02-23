@@ -5,17 +5,15 @@ namespace App\Service;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-#[Autowire]
 class GoogleBooksService
 {
     private HttpClientInterface $httpClient;
     private string $apiKey;
 
-    public function __construct(HttpClientInterface $httpClient)
+    public function __construct(HttpClientInterface $httpClient, string $googleBooksApiKey)
     {
         $this->httpClient = $httpClient;
-        // Direct environment variable access
-        $this->apiKey = $_ENV['GOOGLE_BOOKS_API_KEY'] ?? '';
+        $this->apiKey = $googleBooksApiKey;
     }
 
     /**

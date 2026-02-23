@@ -5,6 +5,10 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     google_youtube_api_key: '%env(GOOGLE_YOUTUBE_API_KEY)%'
+    gemini_api_key: '%env(GEMINI_API_KEY)%'
+    google_books_api_key: '%env(GOOGLE_BOOKS_API_KEY)%'
+    exchangerate_api_key: '%env(EXCHANGERATE_API_KEY)%'
+    huggingface_api_key: '%env(HUGGINGFACE_API_KEY)%'
 
 services:
     # default configuration for services in *this* file
@@ -25,6 +29,11 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    # Chatbot Controller Configuration
+    App\Controller\Api\ChatbotController:
+        arguments:
+            $geminiApiKey: '%gemini_api_key%'
+
     # YouTube Service Configuration
     App\Service\YouTubeService:
         arguments:
@@ -32,16 +41,23 @@ services:
 
     # Currency Service Configuration
     App\Service\CurrencyService:
-        autowire: true
+        arguments:
+            $exchangerateApiKey: '%exchangerate_api_key%'
+
+    # Google Books Service Configuration
+    App\Service\GoogleBooksService:
+        arguments:
+            $googleBooksApiKey: '%google_books_api_key%'
+
+    # AI Analyst Service Configuration
+    App\Service\AIAnalystService:
+        arguments:
+            $huggingfaceApiKey: '%huggingface_api_key%'
 
     # Twig Extension Configuration
     App\Twig\CurrencyExtension:
         tags:
             - { name: twig.extension }
-
-    # AI Analyst Service Configuration
-    App\Service\AIAnalystService:
-        autowire: true
 
     # AI Analyst Twig Extension Configuration
     App\Twig\AIAnalystExtension:

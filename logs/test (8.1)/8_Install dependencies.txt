@@ -1,0 +1,337 @@
+﻿2026-02-18T17:01:44.4697377Z ##[group]Run composer install --prefer-dist --no-progress --no-suggest --no-interaction
+2026-02-18T17:01:44.4698000Z [36;1mcomposer install --prefer-dist --no-progress --no-suggest --no-interaction[0m
+2026-02-18T17:01:44.4748420Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:01:44.4748669Z env:
+2026-02-18T17:01:44.4748845Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:01:44.4749082Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:01:44.4749298Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:01:44.4749482Z ##[endgroup]
+2026-02-18T17:01:44.6670219Z You are using the deprecated option "--no-suggest". It has no effect and will break in Composer 3.
+2026-02-18T17:01:44.6720990Z Installing dependencies from lock file (including require-dev)
+2026-02-18T17:01:44.6793022Z Verifying lock file contents can be installed on current platform.
+2026-02-18T17:01:44.7210266Z Package operations: 157 installs, 0 updates, 0 removals
+2026-02-18T17:01:44.7228785Z   - Downloading symfony/flex (v2.10.0)
+2026-02-18T17:01:44.7237702Z   - Downloading symfony/runtime (v6.4.30)
+2026-02-18T17:01:44.7240843Z   - Downloading symfony/polyfill-php83 (v1.33.0)
+2026-02-18T17:01:44.7243537Z   - Downloading symfony/polyfill-mbstring (v1.33.0)
+2026-02-18T17:01:44.7246740Z   - Downloading symfony/deprecation-contracts (v3.6.0)
+2026-02-18T17:01:44.7249651Z   - Downloading symfony/http-foundation (v6.4.33)
+2026-02-18T17:01:44.7253028Z   - Downloading psr/event-dispatcher (1.0.0)
+2026-02-18T17:01:44.7256391Z   - Downloading symfony/event-dispatcher-contracts (v3.6.0)
+2026-02-18T17:01:44.7259083Z   - Downloading symfony/event-dispatcher (v6.4.32)
+2026-02-18T17:01:44.7262001Z   - Downloading symfony/var-dumper (v6.4.32)
+2026-02-18T17:01:44.7264882Z   - Downloading psr/log (3.0.2)
+2026-02-18T17:01:44.7268531Z   - Downloading symfony/error-handler (v6.4.32)
+2026-02-18T17:01:44.7271173Z   - Downloading symfony/http-kernel (v6.4.33)
+2026-02-18T17:01:44.7272663Z   - Downloading psr/container (2.0.2)
+2026-02-18T17:01:44.7274441Z   - Downloading symfony/service-contracts (v3.6.1)
+2026-02-18T17:01:44.7276355Z   - Downloading psr/cache (3.0.0)
+2026-02-18T17:01:44.7278928Z   - Downloading doctrine/event-manager (2.1.1)
+2026-02-18T17:01:44.7280396Z   - Downloading doctrine/persistence (3.4.3)
+2026-02-18T17:01:44.7282116Z   - Downloading symfony/doctrine-bridge (v6.4.32)
+2026-02-18T17:01:44.7283824Z   - Downloading symfony/var-exporter (v6.4.26)
+2026-02-18T17:01:44.7285827Z   - Downloading symfony/dependency-injection (v6.4.32)
+2026-02-18T17:01:44.7287578Z   - Downloading symfony/polyfill-intl-normalizer (v1.33.0)
+2026-02-18T17:01:44.7289287Z   - Downloading symfony/polyfill-intl-grapheme (v1.33.0)
+2026-02-18T17:01:44.7290867Z   - Downloading symfony/string (v6.4.30)
+2026-02-18T17:01:44.7292587Z   - Downloading symfony/console (v6.4.32)
+2026-02-18T17:01:44.7294325Z   - Downloading symfony/filesystem (v6.4.30)
+2026-02-18T17:01:44.7296615Z   - Downloading symfony/config (v6.4.32)
+2026-02-18T17:01:44.7298238Z   - Downloading doctrine/lexer (3.0.1)
+2026-02-18T17:01:44.7299926Z   - Downloading doctrine/instantiator (2.0.0)
+2026-02-18T17:01:44.7301600Z   - Downloading doctrine/inflector (2.1.0)
+2026-02-18T17:01:44.7303578Z   - Downloading doctrine/deprecations (1.1.6)
+2026-02-18T17:01:44.7305298Z   - Downloading doctrine/dbal (3.10.4)
+2026-02-18T17:01:44.7307010Z   - Downloading doctrine/common (3.5.0)
+2026-02-18T17:01:44.7308750Z   - Downloading symfony/polyfill-php84 (v1.33.0)
+2026-02-18T17:01:44.7310379Z   - Downloading doctrine/collections (2.6.0)
+2026-02-18T17:01:44.7312026Z   - Downloading doctrine/cache (2.2.0)
+2026-02-18T17:01:44.7313711Z   - Downloading doctrine/orm (2.20.9)
+2026-02-18T17:01:44.7315586Z   - Downloading symfony/routing (v6.4.32)
+2026-02-18T17:01:44.7317258Z   - Downloading symfony/finder (v6.4.33)
+2026-02-18T17:01:44.7319009Z   - Downloading symfony/cache-contracts (v3.6.0)
+2026-02-18T17:01:44.7320643Z   - Downloading symfony/cache (v6.4.33)
+2026-02-18T17:01:44.7322405Z   - Downloading symfony/framework-bundle (v6.4.33)
+2026-02-18T17:01:44.7324059Z   - Downloading doctrine/sql-formatter (1.5.4)
+2026-02-18T17:01:44.7325956Z   - Downloading doctrine/doctrine-bundle (2.18.2)
+2026-02-18T17:01:44.7327670Z   - Downloading doctrine/data-fixtures (2.2.0)
+2026-02-18T17:01:44.7329458Z   - Downloading doctrine/doctrine-fixtures-bundle (3.7.3)
+2026-02-18T17:01:44.7331047Z   - Downloading symfony/stopwatch (v6.4.24)
+2026-02-18T17:01:44.7332698Z   - Downloading doctrine/migrations (3.9.6)
+2026-02-18T17:01:44.7334466Z   - Downloading doctrine/doctrine-migrations-bundle (3.7.0)
+2026-02-18T17:01:44.7337179Z   - Downloading paragonie/random_compat (v9.99.100)
+2026-02-18T17:01:44.7338740Z   - Downloading paragonie/constant_time_encoding (v3.1.3)
+2026-02-18T17:01:44.7341339Z   - Downloading phpseclib/phpseclib (3.0.49)
+2026-02-18T17:01:44.7343564Z   - Downloading monolog/monolog (3.10.0)
+2026-02-18T17:01:44.7346268Z   - Downloading ralouphie/getallheaders (3.0.3)
+2026-02-18T17:01:44.7347718Z   - Downloading psr/http-message (2.0)
+2026-02-18T17:01:44.7349390Z   - Downloading psr/http-factory (1.1.0)
+2026-02-18T17:01:44.7351898Z   - Downloading guzzlehttp/psr7 (2.8.0)
+2026-02-18T17:01:44.7353353Z   - Downloading psr/http-client (1.0.3)
+2026-02-18T17:01:44.7355209Z   - Downloading guzzlehttp/promises (2.3.0)
+2026-02-18T17:01:44.7356920Z   - Downloading guzzlehttp/guzzle (7.10.0)
+2026-02-18T17:01:44.7359376Z   - Downloading firebase/php-jwt (v7.0.2)
+2026-02-18T17:01:44.7361739Z   - Downloading google/auth (v1.50.0)
+2026-02-18T17:01:44.7363244Z   - Downloading google/apiclient-services (v0.431.0)
+2026-02-18T17:01:44.7364828Z   - Downloading google/apiclient (v2.19.0)
+2026-02-18T17:01:44.7367586Z   - Downloading knplabs/knp-components (v5.2.0)
+2026-02-18T17:01:44.7369102Z   - Downloading knplabs/knp-paginator-bundle (v6.10.0)
+2026-02-18T17:01:44.7371557Z   - Downloading php-cs-fixer/shim (v3.94.1)
+2026-02-18T17:01:44.7373879Z   - Downloading webmozart/assert (1.12.1)
+2026-02-18T17:01:44.7376643Z   - Downloading phpstan/phpdoc-parser (2.3.2)
+2026-02-18T17:01:44.7378818Z   - Downloading phpdocumentor/reflection-common (2.2.0)
+2026-02-18T17:01:44.7380317Z   - Downloading phpdocumentor/type-resolver (1.12.0)
+2026-02-18T17:01:44.7382059Z   - Downloading phpdocumentor/reflection-docblock (5.6.6)
+2026-02-18T17:01:44.7383744Z   - Downloading phpstan/phpstan (1.12.32)
+2026-02-18T17:01:44.7385737Z   - Downloading phpstan/phpstan-doctrine (1.5.7)
+2026-02-18T17:01:44.7387481Z   - Downloading phpstan/phpstan-strict-rules (1.6.2)
+2026-02-18T17:01:44.7389150Z   - Downloading phpstan/phpstan-symfony (1.4.16)
+2026-02-18T17:01:44.7391706Z   - Downloading sebastian/version (4.0.1)
+2026-02-18T17:01:44.7393325Z   - Downloading sebastian/type (4.0.0)
+2026-02-18T17:01:44.7395234Z   - Downloading sebastian/recursion-context (5.0.1)
+2026-02-18T17:01:44.7397102Z   - Downloading sebastian/object-reflector (3.0.0)
+2026-02-18T17:01:44.7429404Z   - Downloading sebastian/object-enumerator (5.0.0)
+2026-02-18T17:01:44.7430014Z   - Downloading sebastian/global-state (6.0.2)
+2026-02-18T17:01:44.7430543Z   - Downloading sebastian/exporter (5.1.4)
+2026-02-18T17:01:44.7431092Z   - Downloading sebastian/environment (6.1.0)
+2026-02-18T17:01:44.7431584Z   - Downloading sebastian/diff (5.1.1)
+2026-02-18T17:01:44.7432079Z   - Downloading sebastian/comparator (5.0.5)
+2026-02-18T17:01:44.7432585Z   - Downloading sebastian/code-unit (2.0.0)
+2026-02-18T17:01:44.7433116Z   - Downloading sebastian/cli-parser (2.0.1)
+2026-02-18T17:01:44.7433626Z   - Downloading phpunit/php-timer (6.0.0)
+2026-02-18T17:01:44.7434159Z   - Downloading phpunit/php-text-template (3.0.1)
+2026-02-18T17:01:44.7434747Z   - Downloading phpunit/php-invoker (4.0.0)
+2026-02-18T17:01:44.7435480Z   - Downloading phpunit/php-file-iterator (4.1.0)
+2026-02-18T17:01:44.7436019Z   - Downloading theseer/tokenizer (1.3.1)
+2026-02-18T17:01:44.7436510Z   - Downloading nikic/php-parser (v5.7.0)
+2026-02-18T17:01:44.7437048Z   - Downloading sebastian/lines-of-code (2.0.2)
+2026-02-18T17:01:44.7437573Z   - Downloading sebastian/complexity (3.2.0)
+2026-02-18T17:01:44.7438174Z   - Downloading sebastian/code-unit-reverse-lookup (3.0.0)
+2026-02-18T17:01:44.7439130Z   - Downloading phpunit/php-code-coverage (10.1.16)
+2026-02-18T17:01:44.7439701Z   - Downloading phar-io/version (3.2.1)
+2026-02-18T17:01:44.7440195Z   - Downloading phar-io/manifest (2.0.4)
+2026-02-18T17:01:44.7440704Z   - Downloading myclabs/deep-copy (1.13.4)
+2026-02-18T17:01:44.7441198Z   - Downloading phpunit/phpunit (10.5.63)
+2026-02-18T17:01:44.7441651Z   - Downloading psr/clock (1.0.0)
+2026-02-18T17:01:44.7442187Z   - Downloading symfony/translation-contracts (v3.6.1)
+2026-02-18T17:01:44.7442802Z   - Downloading gedmo/doctrine-extensions (v3.22.0)
+2026-02-18T17:01:44.7444548Z   - Downloading stof/doctrine-extensions-bundle (v1.15.3)
+2026-02-18T17:01:44.7446344Z   - Downloading symfony/asset (v6.4.32)
+2026-02-18T17:01:44.7448129Z   - Downloading symfony/http-client-contracts (v3.6.0)
+2026-02-18T17:01:44.7449947Z   - Downloading symfony/http-client (v6.4.33)
+2026-02-18T17:01:44.7451615Z   - Downloading composer/semver (3.4.4)
+2026-02-18T17:01:44.7453355Z   - Downloading symfony/asset-mapper (v6.4.32)
+2026-02-18T17:01:44.7456027Z   - Downloading masterminds/html5 (2.10.0)
+2026-02-18T17:01:44.7457610Z   - Downloading symfony/dom-crawler (v6.4.32)
+2026-02-18T17:01:44.7459316Z   - Downloading symfony/browser-kit (v6.4.32)
+2026-02-18T17:01:44.7461040Z   - Downloading symfony/css-selector (v6.4.24)
+2026-02-18T17:01:44.7463621Z   - Downloading twig/twig (v3.23.0)
+2026-02-18T17:01:44.7465453Z   - Downloading symfony/twig-bridge (v6.4.32)
+2026-02-18T17:01:44.7467158Z   - Downloading symfony/debug-bundle (v6.4.27)
+2026-02-18T17:01:44.7468799Z   - Downloading symfony/clock (v6.4.30)
+2026-02-18T17:01:44.7470501Z   - Downloading symfony/messenger (v6.4.32)
+2026-02-18T17:01:44.7472247Z   - Downloading symfony/doctrine-messenger (v6.4.33)
+2026-02-18T17:01:44.7473875Z   - Downloading symfony/dotenv (v6.4.30)
+2026-02-18T17:01:44.7476875Z   - Downloading symfony/expression-language (v6.4.32)
+2026-02-18T17:01:44.7478339Z   - Downloading symfony/property-info (v6.4.33)
+2026-02-18T17:01:44.7480035Z   - Downloading symfony/property-access (v6.4.32)
+2026-02-18T17:01:44.7481774Z   - Downloading symfony/polyfill-intl-icu (v1.33.0)
+2026-02-18T17:01:44.7483472Z   - Downloading symfony/options-resolver (v6.4.30)
+2026-02-18T17:01:44.7485300Z   - Downloading symfony/form (v6.4.32)
+2026-02-18T17:01:44.7487065Z   - Downloading symfony/intl (v6.4.32)
+2026-02-18T17:01:44.7489003Z   - Downloading symfony/polyfill-intl-idn (v1.33.0)
+2026-02-18T17:01:44.7490675Z   - Downloading symfony/mime (v6.4.32)
+2026-02-18T17:01:44.7493223Z   - Downloading egulias/email-validator (4.0.4)
+2026-02-18T17:01:44.7494732Z   - Downloading symfony/mailer (v6.4.31)
+2026-02-18T17:01:44.7496649Z   - Downloading symfony/process (v6.4.33)
+2026-02-18T17:01:44.7498385Z   - Downloading symfony/maker-bundle (v1.66.0)
+2026-02-18T17:01:44.7500099Z   - Downloading symfony/monolog-bridge (v6.4.32)
+2026-02-18T17:01:44.7501795Z   - Downloading symfony/monolog-bundle (v3.11.1)
+2026-02-18T17:01:44.7503534Z   - Downloading symfony/notifier (v6.4.32)
+2026-02-18T17:01:44.7505438Z   - Downloading symfony/phpunit-bridge (v6.4.26)
+2026-02-18T17:01:44.7507140Z   - Downloading symfony/password-hasher (v6.4.32)
+2026-02-18T17:01:44.7508801Z   - Downloading symfony/security-core (v6.4.31)
+2026-02-18T17:01:44.7510493Z   - Downloading symfony/security-http (v6.4.31)
+2026-02-18T17:01:44.7512204Z   - Downloading symfony/security-csrf (v6.4.31)
+2026-02-18T17:01:44.7513897Z   - Downloading symfony/security-bundle (v6.4.32)
+2026-02-18T17:01:44.7515837Z   - Downloading symfony/serializer (v6.4.33)
+2026-02-18T17:01:44.7517660Z   - Downloading symfony/translation (v6.4.32)
+2026-02-18T17:01:44.7519385Z   - Downloading symfony/stimulus-bundle (v2.32.0)
+2026-02-18T17:01:44.7521037Z   - Downloading symfony/ux-turbo (v2.32.0)
+2026-02-18T17:01:44.7522755Z   - Downloading symfony/validator (v6.4.33)
+2026-02-18T17:01:44.7524373Z   - Downloading psr/link (2.0.1)
+2026-02-18T17:01:44.7526513Z   - Downloading symfony/web-link (v6.4.32)
+2026-02-18T17:01:44.7528151Z   - Downloading symfony/twig-bundle (v6.4.32)
+2026-02-18T17:01:44.7530388Z   - Downloading symfony/web-profiler-bundle (v6.4.32)
+2026-02-18T17:01:44.7532059Z   - Downloading symfony/yaml (v6.4.30)
+2026-02-18T17:01:44.7533598Z   - Downloading twig/extra-bundle (v3.23.0)
+2026-02-18T17:01:44.7536436Z   - Downloading jms/metadata (2.9.0)
+2026-02-18T17:01:44.7539148Z   - Downloading vich/uploader-bundle (v2.9.1)
+2026-02-18T17:01:47.0871480Z   - Installing symfony/flex (v2.10.0): Extracting archive
+2026-02-18T17:01:47.1340337Z   - Installing symfony/runtime (v6.4.30): Extracting archive
+2026-02-18T17:01:47.1519529Z   - Installing symfony/polyfill-php83 (v1.33.0): Extracting archive
+2026-02-18T17:01:47.1550784Z   - Installing symfony/polyfill-mbstring (v1.33.0): Extracting archive
+2026-02-18T17:01:47.1588328Z   - Installing symfony/deprecation-contracts (v3.6.0): Extracting archive
+2026-02-18T17:01:47.1629300Z   - Installing symfony/http-foundation (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1670221Z   - Installing psr/event-dispatcher (1.0.0): Extracting archive
+2026-02-18T17:01:47.1711722Z   - Installing symfony/event-dispatcher-contracts (v3.6.0): Extracting archive
+2026-02-18T17:01:47.1755256Z   - Installing symfony/event-dispatcher (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1804650Z   - Installing symfony/var-dumper (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1838215Z   - Installing psr/log (3.0.2): Extracting archive
+2026-02-18T17:01:47.1880066Z   - Installing symfony/error-handler (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1923528Z   - Installing symfony/http-kernel (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1928973Z   - Installing psr/container (2.0.2): Extracting archive
+2026-02-18T17:01:47.1982933Z   - Installing symfony/service-contracts (v3.6.1): Extracting archive
+2026-02-18T17:01:47.1984232Z   - Installing psr/cache (3.0.0): Extracting archive
+2026-02-18T17:01:47.1986589Z   - Installing doctrine/event-manager (2.1.1): Extracting archive
+2026-02-18T17:01:47.1987742Z   - Installing doctrine/persistence (3.4.3): Extracting archive
+2026-02-18T17:01:47.1991152Z   - Installing symfony/doctrine-bridge (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1995989Z   - Installing symfony/var-exporter (v6.4.26): Extracting archive
+2026-02-18T17:01:47.1999845Z   - Installing symfony/dependency-injection (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2004707Z   - Installing symfony/polyfill-intl-normalizer (v1.33.0): Extracting archive
+2026-02-18T17:01:47.2008466Z   - Installing symfony/polyfill-intl-grapheme (v1.33.0): Extracting archive
+2026-02-18T17:01:47.2012703Z   - Installing symfony/string (v6.4.30): Extracting archive
+2026-02-18T17:01:47.2015551Z   - Installing symfony/console (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2018634Z   - Installing symfony/filesystem (v6.4.30): Extracting archive
+2026-02-18T17:01:47.2021414Z   - Installing symfony/config (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2024375Z   - Installing doctrine/lexer (3.0.1): Extracting archive
+2026-02-18T17:01:47.2027624Z   - Installing doctrine/instantiator (2.0.0): Extracting archive
+2026-02-18T17:01:47.2030477Z   - Installing doctrine/inflector (2.1.0): Extracting archive
+2026-02-18T17:01:47.2033633Z   - Installing doctrine/deprecations (1.1.6): Extracting archive
+2026-02-18T17:01:47.2036902Z   - Installing doctrine/dbal (3.10.4): Extracting archive
+2026-02-18T17:01:47.2039727Z   - Installing doctrine/common (3.5.0): Extracting archive
+2026-02-18T17:01:47.2042800Z   - Installing symfony/polyfill-php84 (v1.33.0): Extracting archive
+2026-02-18T17:01:47.2045415Z   - Installing doctrine/collections (2.6.0): Extracting archive
+2026-02-18T17:01:47.2048781Z   - Installing doctrine/cache (2.2.0): Extracting archive
+2026-02-18T17:01:47.2051657Z   - Installing doctrine/orm (2.20.9): Extracting archive
+2026-02-18T17:01:47.2054530Z   - Installing symfony/routing (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2057592Z   - Installing symfony/finder (v6.4.33): Extracting archive
+2026-02-18T17:01:47.2060630Z   - Installing symfony/cache-contracts (v3.6.0): Extracting archive
+2026-02-18T17:01:47.2063761Z   - Installing symfony/cache (v6.4.33): Extracting archive
+2026-02-18T17:01:47.2067487Z   - Installing symfony/framework-bundle (v6.4.33): Extracting archive
+2026-02-18T17:01:47.2070633Z   - Installing doctrine/sql-formatter (1.5.4): Extracting archive
+2026-02-18T17:01:47.2073671Z   - Installing doctrine/doctrine-bundle (2.18.2): Extracting archive
+2026-02-18T17:01:47.2076950Z   - Installing doctrine/data-fixtures (2.2.0): Extracting archive
+2026-02-18T17:01:47.2079734Z   - Installing doctrine/doctrine-fixtures-bundle (3.7.3): Extracting archive
+2026-02-18T17:01:47.2082488Z   - Installing symfony/stopwatch (v6.4.24): Extracting archive
+2026-02-18T17:01:47.2085238Z   - Installing doctrine/migrations (3.9.6): Extracting archive
+2026-02-18T17:01:47.2088229Z   - Installing doctrine/doctrine-migrations-bundle (3.7.0): Extracting archive
+2026-02-18T17:01:47.2091073Z   - Installing paragonie/random_compat (v9.99.100): Extracting archive
+2026-02-18T17:01:47.2093960Z   - Installing paragonie/constant_time_encoding (v3.1.3): Extracting archive
+2026-02-18T17:01:47.2097159Z   - Installing phpseclib/phpseclib (3.0.49): Extracting archive
+2026-02-18T17:01:47.2100354Z   - Installing monolog/monolog (3.10.0): Extracting archive
+2026-02-18T17:01:47.2103126Z   - Installing ralouphie/getallheaders (3.0.3): Extracting archive
+2026-02-18T17:01:47.2105932Z   - Installing psr/http-message (2.0): Extracting archive
+2026-02-18T17:01:47.2109282Z   - Installing psr/http-factory (1.1.0): Extracting archive
+2026-02-18T17:01:47.2112742Z   - Installing guzzlehttp/psr7 (2.8.0): Extracting archive
+2026-02-18T17:01:47.2115968Z   - Installing psr/http-client (1.0.3): Extracting archive
+2026-02-18T17:01:47.2119124Z   - Installing guzzlehttp/promises (2.3.0): Extracting archive
+2026-02-18T17:01:47.2121872Z   - Installing guzzlehttp/guzzle (7.10.0): Extracting archive
+2026-02-18T17:01:47.2124493Z   - Installing firebase/php-jwt (v7.0.2): Extracting archive
+2026-02-18T17:01:47.2127804Z   - Installing google/auth (v1.50.0): Extracting archive
+2026-02-18T17:01:47.2130724Z   - Installing google/apiclient-services (v0.431.0): Extracting archive
+2026-02-18T17:01:47.2133475Z   - Installing google/apiclient (v2.19.0): Extracting archive
+2026-02-18T17:01:47.2136259Z   - Installing knplabs/knp-components (v5.2.0): Extracting archive
+2026-02-18T17:01:47.2139707Z   - Installing knplabs/knp-paginator-bundle (v6.10.0): Extracting archive
+2026-02-18T17:01:47.2143524Z   - Installing php-cs-fixer/shim (v3.94.1): Extracting archive
+2026-02-18T17:01:47.2147384Z   - Installing webmozart/assert (1.12.1): Extracting archive
+2026-02-18T17:01:47.2150319Z   - Installing phpstan/phpdoc-parser (2.3.2): Extracting archive
+2026-02-18T17:01:47.2153108Z   - Installing phpdocumentor/reflection-common (2.2.0): Extracting archive
+2026-02-18T17:01:47.2156351Z   - Installing phpdocumentor/type-resolver (1.12.0): Extracting archive
+2026-02-18T17:01:47.2159119Z   - Installing phpdocumentor/reflection-docblock (5.6.6): Extracting archive
+2026-02-18T17:01:47.2162045Z   - Installing phpstan/phpstan (1.12.32): Extracting archive
+2026-02-18T17:01:47.2164878Z   - Installing phpstan/phpstan-doctrine (1.5.7): Extracting archive
+2026-02-18T17:01:47.2167891Z   - Installing phpstan/phpstan-strict-rules (1.6.2): Extracting archive
+2026-02-18T17:01:47.2170749Z   - Installing phpstan/phpstan-symfony (1.4.16): Extracting archive
+2026-02-18T17:01:47.2173656Z   - Installing sebastian/version (4.0.1): Extracting archive
+2026-02-18T17:01:47.2176375Z   - Installing sebastian/type (4.0.0): Extracting archive
+2026-02-18T17:01:47.2179083Z   - Installing sebastian/recursion-context (5.0.1): Extracting archive
+2026-02-18T17:01:47.2181655Z   - Installing sebastian/object-reflector (3.0.0): Extracting archive
+2026-02-18T17:01:47.2184611Z   - Installing sebastian/object-enumerator (5.0.0): Extracting archive
+2026-02-18T17:01:47.2187649Z   - Installing sebastian/global-state (6.0.2): Extracting archive
+2026-02-18T17:01:47.2190430Z   - Installing sebastian/exporter (5.1.4): Extracting archive
+2026-02-18T17:01:47.2193129Z   - Installing sebastian/environment (6.1.0): Extracting archive
+2026-02-18T17:01:47.2196175Z   - Installing sebastian/diff (5.1.1): Extracting archive
+2026-02-18T17:01:47.2199518Z   - Installing sebastian/comparator (5.0.5): Extracting archive
+2026-02-18T17:01:47.2202093Z   - Installing sebastian/code-unit (2.0.0): Extracting archive
+2026-02-18T17:01:47.2204494Z   - Installing sebastian/cli-parser (2.0.1): Extracting archive
+2026-02-18T17:01:47.2207573Z   - Installing phpunit/php-timer (6.0.0): Extracting archive
+2026-02-18T17:01:47.2210345Z   - Installing phpunit/php-text-template (3.0.1): Extracting archive
+2026-02-18T17:01:47.2213155Z   - Installing phpunit/php-invoker (4.0.0): Extracting archive
+2026-02-18T17:01:47.2215756Z   - Installing phpunit/php-file-iterator (4.1.0): Extracting archive
+2026-02-18T17:01:47.2218749Z   - Installing theseer/tokenizer (1.3.1): Extracting archive
+2026-02-18T17:01:47.2221719Z   - Installing nikic/php-parser (v5.7.0): Extracting archive
+2026-02-18T17:01:47.2224500Z   - Installing sebastian/lines-of-code (2.0.2): Extracting archive
+2026-02-18T17:01:47.2227336Z   - Installing sebastian/complexity (3.2.0): Extracting archive
+2026-02-18T17:01:47.2230594Z   - Installing sebastian/code-unit-reverse-lookup (3.0.0): Extracting archive
+2026-02-18T17:01:47.2233340Z   - Installing phpunit/php-code-coverage (10.1.16): Extracting archive
+2026-02-18T17:01:47.2236324Z   - Installing phar-io/version (3.2.1): Extracting archive
+2026-02-18T17:01:47.2239636Z   - Installing phar-io/manifest (2.0.4): Extracting archive
+2026-02-18T17:01:47.2242617Z   - Installing myclabs/deep-copy (1.13.4): Extracting archive
+2026-02-18T17:01:47.2246228Z   - Installing phpunit/phpunit (10.5.63): Extracting archive
+2026-02-18T17:01:47.2249929Z   - Installing psr/clock (1.0.0): Extracting archive
+2026-02-18T17:01:47.2253598Z   - Installing symfony/translation-contracts (v3.6.1): Extracting archive
+2026-02-18T17:01:47.2257270Z   - Installing gedmo/doctrine-extensions (v3.22.0): Extracting archive
+2026-02-18T17:01:47.2260720Z   - Installing stof/doctrine-extensions-bundle (v1.15.3): Extracting archive
+2026-02-18T17:01:47.2263609Z   - Installing symfony/asset (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2266941Z   - Installing symfony/http-client-contracts (v3.6.0): Extracting archive
+2026-02-18T17:01:47.2270625Z   - Installing symfony/http-client (v6.4.33): Extracting archive
+2026-02-18T17:01:47.2273606Z   - Installing composer/semver (3.4.4): Extracting archive
+2026-02-18T17:01:47.2276827Z   - Installing symfony/asset-mapper (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2280092Z   - Installing masterminds/html5 (2.10.0): Extracting archive
+2026-02-18T17:01:47.2283557Z   - Installing symfony/dom-crawler (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2286716Z   - Installing symfony/browser-kit (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2289814Z   - Installing symfony/css-selector (v6.4.24): Extracting archive
+2026-02-18T17:01:47.2292962Z   - Installing twig/twig (v3.23.0): Extracting archive
+2026-02-18T17:01:47.2296517Z   - Installing symfony/twig-bridge (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2299455Z   - Installing symfony/debug-bundle (v6.4.27): Extracting archive
+2026-02-18T17:01:47.2302788Z   - Installing symfony/clock (v6.4.30): Extracting archive
+2026-02-18T17:01:47.2306487Z   - Installing symfony/messenger (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2309552Z   - Installing symfony/doctrine-messenger (v6.4.33): Extracting archive
+2026-02-18T17:01:47.2312718Z   - Installing symfony/dotenv (v6.4.30): Extracting archive
+2026-02-18T17:01:47.2316204Z   - Installing symfony/expression-language (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2319482Z   - Installing symfony/property-info (v6.4.33): Extracting archive
+2026-02-18T17:01:47.2322332Z   - Installing symfony/property-access (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2325638Z   - Installing symfony/polyfill-intl-icu (v1.33.0): Extracting archive
+2026-02-18T17:01:47.2329187Z   - Installing symfony/options-resolver (v6.4.30): Extracting archive
+2026-02-18T17:01:47.2332424Z   - Installing symfony/form (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2335507Z   - Installing symfony/intl (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2339091Z   - Installing symfony/polyfill-intl-idn (v1.33.0): Extracting archive
+2026-02-18T17:01:47.2342043Z   - Installing symfony/mime (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2345206Z   - Installing egulias/email-validator (4.0.4): Extracting archive
+2026-02-18T17:01:47.2348373Z   - Installing symfony/mailer (v6.4.31): Extracting archive
+2026-02-18T17:01:47.2351916Z   - Installing symfony/process (v6.4.33): Extracting archive
+2026-02-18T17:01:47.2355272Z   - Installing symfony/maker-bundle (v1.66.0): Extracting archive
+2026-02-18T17:01:47.2358494Z   - Installing symfony/monolog-bridge (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2361812Z   - Installing symfony/monolog-bundle (v3.11.1): Extracting archive
+2026-02-18T17:01:47.2365200Z   - Installing symfony/notifier (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2368599Z   - Installing symfony/phpunit-bridge (v6.4.26): Extracting archive
+2026-02-18T17:01:47.2371587Z   - Installing symfony/password-hasher (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2374839Z   - Installing symfony/security-core (v6.4.31): Extracting archive
+2026-02-18T17:01:47.2378379Z   - Installing symfony/security-http (v6.4.31): Extracting archive
+2026-02-18T17:01:47.2381369Z   - Installing symfony/security-csrf (v6.4.31): Extracting archive
+2026-02-18T17:01:47.2384165Z   - Installing symfony/security-bundle (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2387154Z   - Installing symfony/serializer (v6.4.33): Extracting archive
+2026-02-18T17:01:47.2389962Z   - Installing symfony/translation (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2392649Z   - Installing symfony/stimulus-bundle (v2.32.0): Extracting archive
+2026-02-18T17:01:47.2395478Z   - Installing symfony/ux-turbo (v2.32.0): Extracting archive
+2026-02-18T17:01:47.2398610Z   - Installing symfony/validator (v6.4.33): Extracting archive
+2026-02-18T17:01:47.2401784Z   - Installing psr/link (2.0.1): Extracting archive
+2026-02-18T17:01:47.2404803Z   - Installing symfony/web-link (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2407349Z   - Installing symfony/twig-bundle (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2410140Z   - Installing symfony/web-profiler-bundle (v6.4.32): Extracting archive
+2026-02-18T17:01:47.2412943Z   - Installing symfony/yaml (v6.4.30): Extracting archive
+2026-02-18T17:01:47.2415442Z   - Installing twig/extra-bundle (v3.23.0): Extracting archive
+2026-02-18T17:01:47.2418245Z   - Installing jms/metadata (2.9.0): Extracting archive
+2026-02-18T17:01:47.2420935Z   - Installing vich/uploader-bundle (v2.9.1): Extracting archive
+2026-02-18T17:01:51.4035653Z Package doctrine/cache is abandoned, you should avoid using it. No replacement was suggested.
+2026-02-18T17:01:51.4036501Z Generating autoload files
+2026-02-18T17:01:51.7234774Z 121 packages you are using are looking for funding.
+2026-02-18T17:01:51.7235700Z Use the `composer fund` command to find out more!
+2026-02-18T17:01:51.7236775Z 
+2026-02-18T17:01:51.7237330Z Run composer recipes at any time to see the status of your Symfony recipes.
+2026-02-18T17:01:51.7237907Z 
+2026-02-18T17:01:58.9028402Z Executing script cache:clear [OK]
+2026-02-18T17:01:59.0048234Z Executing script assets:install public [OK]
+2026-02-18T17:01:59.2298123Z Executing script importmap:install [OK]
+2026-02-18T17:01:59.2298539Z 

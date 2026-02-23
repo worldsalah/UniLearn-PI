@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}404 Error - Page Not Found - Unilearn{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+404 Error START -->
+<section class="pt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto text-center">
+                <!-- Image -->
+                <img src="{{ asset('assets/images/about/03.jpg') }}" class="img-fluid mb-4" alt="404">
+                
+                <!-- Content -->
+                <h1 class="display-1 fw-bold mb-3">404</h1>
+                <h2 class="mb-3">Oops! Page Not Found</h2>
+                <p class="mb-4 lead">The page you're looking for doesn't exist or has been moved.</p>
+                
+                <!-- Buttons -->
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ path('app_home') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>Go Home
+                    </a>
+                    <a href="{{ path('app_contact') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-envelope me-2"></i>Contact Support
+                    </a>
+                </div>
+                
+                <!-- Search -->
+                <div class="mt-5">
+                    <h5 class="mb-3">Or try searching:</h5>
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search for courses, topics, or instructors...">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Popular links -->
+                <div class="mt-5">
+                    <h5 class="mb-3">Popular Pages:</h5>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        <a href="{{ path('app_courses') }}" class="btn btn-sm btn-outline-secondary">All Courses</a>
+                        <a href="{{ path('app_about') }}" class="btn btn-sm btn-outline-secondary">About Us</a>
+                        <a href="{{ path('app_contact') }}" class="btn btn-sm btn-outline-secondary">Contact</a>
+                        <a href="{{ path('app_register') }}" class="btn btn-sm btn-outline-secondary">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+404 Error END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

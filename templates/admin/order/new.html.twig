@@ -1,0 +1,68 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Add New Order - Admin{% endblock %}
+
+{% block admin_content %}
+<!-- Title -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">Add New Order</h1>
+            <a href="{{ path('app_admin_order_index') }}" class="btn btn-secondary mb-0">Back to List</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card bg-transparent">
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.buyer, {
+                                'label': 'Customer',
+                                'attr': {'class': 'form-select'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.product, {
+                                'label': 'Product/Service',
+                                'attr': {'class': 'form-select'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.totalPrice, {
+                                'label': 'Amount ($)',
+                                'attr': {'class': 'form-control', 'placeholder': '0.00'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.status, {
+                                'label': 'Order Status',
+                                'attr': {'class': 'form-select'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.rating, {
+                                'label': 'Rating (1-5)',
+                                'attr': {'class': 'form-control', 'min': '1', 'max': '5'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.review, {
+                                'label': 'Review',
+                                'attr': {'class': 'form-control', 'placeholder': 'Add customer review...'}
+                            }) }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a href="{{ path('app_admin_order_index') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Create Order</button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

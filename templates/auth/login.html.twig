@@ -1,0 +1,112 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Sign In - Unilearn{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Welcome <span class="text-primary">Back</span></h1>
+                    <p class="lead mb-0">Sign in to access your courses and continue learning</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Login START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="text-center mb-4">
+                            <h4 class="mb-2">Sign In</h4>
+                            <p class="mb-0 small text-muted">Enter your credentials to access your account</p>
+                        </div>
+                        
+                        <form method="post">
+                            {% if error %}
+                                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            {% endif %}
+                            
+                            {% if app.user %}
+                                <div class="mb-3">
+                                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <label class="form-label" for="email">Email address</label>
+                                <input type="email" value="{{ last_email }}" name="email" id="email" class="form-control" placeholder="john@example.com" autocomplete="email" required autofocus>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label" for="password">Password</label>
+                                <div class="input-group">
+                                    <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" autocomplete="current-password" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe" name="_remember_me">
+                                    <label class="form-check-label" for="rememberMe">
+                                        Remember me
+                                    </label>
+                                </div>
+                                <a href="{{ path('app_forgot_password') }}" class="text-primary text-decoration-none">Forgot password?</a>
+                            </div>
+                            
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            
+                            <button type="submit" class="btn btn-primary w-100 mb-3">Sign In</button>
+                            
+                            <div class="text-center">
+                                <p class="mb-0">Don't have an account? <a href="{{ path('app_register') }}" class="text-primary text-decoration-none">Sign up</a></p>
+                            </div>
+                        </form>
+                        
+                        <div class="divider my-4">
+                            <span class="px-3 bg-white text-muted small">OR</span>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('auth_google') }}" class="btn btn-outline-primary">
+                                <i class="fab fa-google me-2"></i>Continue with Google
+                            </a>
+                            <a href="{{ path('auth_facebook') }}" class="btn btn-outline-primary">
+                                <i class="fab fa-facebook-f me-2"></i>Continue with Facebook
+                            </a>
+                            <button class="btn btn-outline-primary" type="button">
+                                <i class="fab fa-linkedin-in me-2"></i>Continue with LinkedIn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Login END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

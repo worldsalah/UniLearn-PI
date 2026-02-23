@@ -1,0 +1,276 @@
+<!-- Header START -->
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-3 px-xl-5">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('app_home') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('assets/images/logo.svg') }}" alt="logo">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+                <!-- Nav category menu START -->
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <!-- Nav item 1 Demos -->
+                    <li class="nav-item dropdown dropdown-menu-shadow-stacked">
+                        <a class="nav-link bg-primary bg-opacity-10 rounded-3 text-primary px-3 py-3 py-xl-0" href="#" id="categoryMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-ui-radios-grid me-2"></i><span>Category</span></a>
+                        <ul class="dropdown-menu" aria-labelledby="categoryMenu">
+                            <!-- Dropdown submenu -->
+                            <li class="dropdown-submenu dropend">
+                                <a class="dropdown-item dropdown-toggle" href="#">Development</a>
+                                <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+                                    <!-- dropdown submenu open right -->
+                                    <li class="dropdown-submenu dropend">
+                                        <a class="dropdown-item dropdown-toggle" href="#">Web Development</a>
+                                        <ul class="dropdown-menu" data-bs-popper="none">
+                                            <li> <a class="dropdown-item" href="#">CSS</a> </li>
+                                            <li> <a class="dropdown-item" href="#">JavaScript</a> </li>
+                                            <li> <a class="dropdown-item" href="#">Angular</a> </li>
+                                            <li> <a class="dropdown-item" href="#">PHP</a> </li>
+                                            <li> <a class="dropdown-item" href="#">HTML</a> </li>
+                                            <li> <a class="dropdown-item" href="#">React</a> </li>
+                                        </ul>
+                                    </li>
+                                    <li> <a class="dropdown-item" href="#">Data Science</a> </li>
+                                    <li> <a class="dropdown-item" href="#">Mobile Development</a> </li>
+                                    <li> <a class="dropdown-item" href="#">Programing Language</a> </li>
+                                    <li> <a class="dropdown-item" href="#">Software Testing</a> </li>
+                                    <li> <a class="dropdown-item" href="#">Software Engineering</a> </li>
+                                    <li> <a class="dropdown-item" href="#">Software Development Tools</a> </li>
+                                </ul>
+                            </li>
+                            <li> <a class="dropdown-item" href="#">Design</a></li>
+                            <!-- Dropdown submenu -->
+                            <li class="dropdown-submenu dropend">
+                                <a class="dropdown-item dropdown-toggle" href="#">Marketing</a>
+                                <div class="dropdown-menu dropdown-menu-start dropdown-width-lg" data-bs-popper="none">
+                                    <div class="row p-4">
+                                        <!-- Dropdown column item -->
+                                        <div class="col-xl-6 col-xxl-4 mb-4 mb-xl-0">
+                                            <h6 class="mb-0">Get started</h6>
+                                            <hr> <!-- Divider -->
+                                            <ul class="list-unstyled">
+                                                <li> <a class="dropdown-item" href="#">Market Research</a> </li>
+                                                <li> <a class="dropdown-item" href="#">Advertising</a> </li>
+                                                <li> <a class="dropdown-item" href="#">Consumer Behavior</a> </li>
+                                                <li> <a class="dropdown-item" href="#">Digital Marketing</a> </li>
+                                                <li> <a class="dropdown-item" href="#">Marketing Ethics</a> </li>
+                                                <li> <a class="dropdown-item" href="#">Social Media Marketing</a> </li>
+                                                <li> <a class="dropdown-item" href="#">Public Relations</a> </li>
+                                                <li> <a class="dropdown-item" href="#">Advertising</a> </li>
+                                                <li> <a class="dropdown-item" href="#">Decision Science</a> </li>
+                                                <li> <a class="dropdown-item" href="#">SEO</a> </li>
+                                                <li> <a class="dropdown-item" href="#">Business Marketing</a> </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li> <a class="dropdown-item" href="#">IT & Software</a></li>
+                            <li> <a class="dropdown-item" href="#">Business</a></li>
+                            <li> <a class="dropdown-item" href="#">Personal Development</a></li>
+                            <li> <a class="dropdown-item" href="#">Photography & Video</a></li>
+                            <li> <a class="dropdown-item" href="#">Music</a></li>
+                            <li> <a class="dropdown-item" href="#">Health & Fitness</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Pages -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesDropdown">
+                            <li><a class="dropdown-item" href="#">About Us</a></li>
+                            <li><a class="dropdown-item" href="#">Contact</a></li>
+                            <li><a class="dropdown-item" href="#">Blog</a></li>
+                            <li><a class="dropdown-item" href="#">FAQ</a></li>
+                            <li><a class="dropdown-item" href="#">Error 404</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Courses -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle " href="#" id="courseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Courses
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="courseDropdown">
+                            <li><h6 class="dropdown-header">Learning</h6></li>
+                            <li><a class="dropdown-item" href="/courses">Browse Courses</a></li>
+                            <li><a class="dropdown-item" href="/categories">Course Categories</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-award me-2"></i>Browse Certifications</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Student</h6></li>
+                            <li><a class="dropdown-item" href="#">My Certificates</a></li>
+                            <li><a class="dropdown-item" href="#">My Bookmarks</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Instructors -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" id="instructorsMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Instructors</a>
+                        <ul class="dropdown-menu" aria-labelledby="instructorsMenu">
+                            <li> <a class="dropdown-item" href="#">Instructor Grid</a></li>
+                            <li> <a class="dropdown-item" href="#">Instructor List</a></li>
+                            <li> <a class="dropdown-item" href="#">Instructor Detail</a></li>
+                            <li> <a class="dropdown-item" href="#">Become Instructor</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Events -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" id="eventsMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
+                        <ul class="dropdown-menu" aria-labelledby="eventsMenu">
+                            <li> <a class="dropdown-item" href="#">Event Grid</a></li>
+                            <li> <a class="dropdown-item" href="#">Event Detail</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Session -->
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-success btn-sm text-white px-3 py-2 rounded-pill" href="{{ path('all_sessions') }}">
+                            <i class="bi bi-calendar-check me-2"></i>Session
+                        </a>
+                    </li>
+
+                    
+                    <!-- Nav item 6 Blog -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" id="blogMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog</a>
+                        <ul class="dropdown-menu" aria-labelledby="blogMenu">
+                            <li> <a class="dropdown-item" href="#">Blog Grid</a></li>
+                            <li> <a class="dropdown-item" href="#">Blog Masonry</a></li>
+                            <li> <a class="dropdown-item" href="#">Blog Detail</a></li>
+                        </ul>
+                    </li>
+
+                    </ul>
+
+                <!-- Nav Search START -->
+                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                    <div class="nav-item w-100">
+                        <form class="position-relative">
+                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search" style="width: 500px;">
+                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                                <i class="fas fa-search fs-6 "></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Nav Search END -->
+
+                <!-- Nav right side START -->
+                <ul class="nav align-items-center">
+                    <!-- Dark mode option START -->
+                    <li class="nav-item dropdown dropdown-toggle-icon-none">
+                        <button class="btn btn-link p-0 mb-0" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static">
+                            <svg class="bi bi-circle-half theme-icon-active" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                                <use href="#"></use>
+                            </svg>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme">
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light">
+                                    <svg class="bi bi-sun-fill me-2 opacity-50 theme-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                                        <use href="#"></use>
+                                    </svg>
+                                    Light
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark">
+                                    <svg class="bi bi-moon-stars-fill me-2 opacity-50 theme-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+                                        <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+                                        <use href="#"></use>
+                                    </svg>
+                                    Dark
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto">
+                                    <svg class="bi bi-circle-half me-2 opacity-50 theme-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                                        <use href="#"></use>
+                                    </svg>
+                                    Auto
+                                </button>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Dark mode option END -->
+
+                    <!-- Sign in button - Show when NOT logged in -->
+                    {% if not app.user %}
+                    <li class="nav-item ms-2">
+                        <a class="nav-link" href="{{ path('app_login') }}"><i class="bi bi-person-circle me-2"></i>Sign In</a>
+                    </li>
+
+                    <!-- Sign up button - Show when NOT logged in -->
+                    <li class="nav-item ms-2">
+                        <a class="nav-link" href="{{ path('app_sign_up') }}"><i class="bi bi-person-plus me-2"></i>Sign Up</a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Profile START - Show when logged in -->
+                    {% if app.user %}
+                    <div class="dropdown ms-4 ms-lg-0">
+                        <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </a>
+                        <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                            <!-- Profile info -->
+                            <li class="px-3 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <!-- Avatar -->
+                                    <div class="avatar me-3">
+                                        <img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                                    </div>
+                                    <div>
+                                        <a class="h6" href="#">{{ app.user.name ?? app.user.email }}</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li> <hr class="dropdown-divider"></li>
+                            <!-- Links -->
+                            {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                            {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
+                                <li><a class="dropdown-item" href="{{ path('app_my_courses') }}"><i class="bi bi-book fa-fw me-2"></i>My Courses</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_certificates') }}"><i class="bi bi-award fa-fw me-2"></i>My Certificates</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                    <!-- Profile END -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Nav END -->
+</header>
+<!-- Header END -->

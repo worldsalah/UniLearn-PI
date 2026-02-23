@@ -29,7 +29,7 @@ class Booking
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $phoneNumber = null;
 
-    #[ORM\ManyToOne(targetEntity: Session::class, inversedBy: 'bookings')]
+    #[ORM\ManyToOne(targetEntity: Session::class)]
     #[ORM\JoinColumn(name: 'session_id', referencedColumnName: 'id', nullable: true)]
     private ?Session $session = null;
 

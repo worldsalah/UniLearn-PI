@@ -7,7 +7,6 @@ use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,8 +29,8 @@ class CourseGridController extends AbstractController
         EntityManagerInterface $entityManager,
         PaginatorInterface $paginator,
     ): Response {
-        // Get filter parameters with safe defaults
-        $search = $request->query->get('search', '');
+        // Get filter parameters
+        $search = $request->query->get('search');
         $sort = $request->query->get('sort', 'newest');
         $categories = $request->query->all('categories', []);
         $levels = $request->query->all('levels', []);
@@ -67,13 +66,8 @@ class CourseGridController extends AbstractController
 
         // Apply category filter
         if (!empty($categories)) {
-            // Since Course has ManyToOne relationship with Category, we need to handle multiple categories differently
-            $orConditions = [];
-            foreach ($categories as $index => $categoryId) {
-                $orConditions[] = "c.category = :category_$index";
-                $queryBuilder->setParameter("category_$index", $categoryId);
-            }
-            $queryBuilder->andWhere('(' . implode(' OR ', $orConditions) . ')');
+            $queryBuilder->andWhere('c.category IN (:categories)')
+                ->setParameter('categories', $categories);
         }
 
         // Apply level filter

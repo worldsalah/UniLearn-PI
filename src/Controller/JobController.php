@@ -88,8 +88,14 @@ class JobController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_job_show', methods: ['GET'])]
-    public function show(Job $job): Response
+    public function show(?Job $job): Response
     {
+        // If job not found, redirect to shop page
+        if (!$job) {
+            $this->addFlash('warning', 'Job not found. Showing all available jobs.');
+            return $this->redirectToRoute('app_marketplace_shop');
+        }
+
         return $this->render('job/show.html.twig', [
             'job' => $job,
         ]);
@@ -98,11 +104,19 @@ class JobController extends AbstractController
     #[Route('/{id}/apply', name: 'app_job_apply', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function apply(
-        Job $job,
+        ?Job $job,
         Request $request,
         ApplicationRepository $applicationRepository,
         EntityManagerInterface $entityManager,
     ): JsonResponse {
+        // If job not found, return error
+        if (!$job) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Job not found.',
+            ], 404);
+        }
+
         $user = $this->getUser();
 
         if (!$user) {

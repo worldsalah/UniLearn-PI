@@ -1,0 +1,442 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Secure Payment - Unilearn{% endblock %}
+
+{% block content %}
+<!-- Title -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <h1 class="h3 mb-2">Secure Payment</h1>
+        <p class="text-muted mb-0">Complete your purchase securely</p>
+    </div>
+</div>
+
+<!-- Payment Content -->
+<div class="row">
+    <!-- Order Summary -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-white border-bottom p-4">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-shopping-bag me-2"></i>Order Summary
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cartItems %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if item.product.image %}
+                                                <img src="{{ asset('uploads/products/' ~ item.product.image) }}" 
+                                                     alt="{{ item.product.title }}" 
+                                                     class="rounded me-3" 
+                                                     style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="rounded me-3 bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" 
+                                                     style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-briefcase text-primary"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-1">{{ item.product.title }}</h6>
+                                                <small class="text-muted">{{ item.product.category.name|default('General') }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">${{ item.product.price|number_format(2) }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">{{ item.quantity }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-success">${{ item.subtotal|number_format(2) }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Information -->
+        <div class="card shadow">
+            <div class="card-header bg-white border-bottom p-4">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>Billing Information
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form id="paymentForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" class="form-control" name="first_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" class="form-control" name="last_name" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" class="form-control" name="email" value="{{ app.user.email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" name="phone" placeholder="+1 (555) 123-4567">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Billing Address</label>
+                        <textarea class="form-control" name="address" rows="3" placeholder="123 Main St, City, State 12345"></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-white border-bottom p-4">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-credit-card me-2"></i>Order Total
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span class="fw-bold">${{ subtotal|number_format(2) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax (10%):</span>
+                        <span class="fw-bold">${{ tax|number_format(2) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping:</span>
+                        <span class="fw-bold">${{ shipping|number_format(2) }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h4 class="mb-0">Total:</h4>
+                        <h4 class="mb-0 text-success">${{ total|number_format(2) }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Method Selection -->
+        <div class="card shadow">
+            <div class="card-header bg-success text-white p-4">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-lock me-2"></i>Payment Method
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div id="paymentMethods" class="mb-4">
+                    <!-- Payment methods will be loaded here -->
+                </div>
+
+                <!-- Credit Card Form (shown by default) -->
+                <div id="creditCardForm" class="payment-form">
+                    <h6 class="mb-3">Credit Card Information</h6>
+                    <div class="mb-3">
+                        <label class="form-label">Card Number *</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                            <span class="input-group-text">
+                                <i class="fas fa-credit-card"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Expiry Date *</label>
+                            <input type="text" class="form-control" name="expiry" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">CVV *</label>
+                            <input type="text" class="form-control" name="cvv" placeholder="123" maxlength="4" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cardholder Name *</label>
+                        <input type="text" class="form-control" name="cardholder_name" placeholder="John Doe" required>
+                    </div>
+                </div>
+
+                <!-- PayPal Form (hidden by default) -->
+                <div id="paypalForm" class="payment-form" style="display: none;">
+                    <h6 class="mb-3">PayPal Payment</h6>
+                    <div class="text-center p-4 bg-light rounded">
+                        <i class="fab fa-paypal fa-3x text-primary mb-3"></i>
+                        <p class="mb-3">You will be redirected to PayPal to complete your payment</p>
+                        <button type="button" class="btn btn-primary btn-lg w-100" onclick="processPayPalPayment()">
+                            <i class="fab fa-paypal me-2"></i>Pay with PayPal
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bank Transfer Form (hidden by default) -->
+                <div id="bankForm" class="payment-form" style="display: none;">
+                    <h6 class="mb-3">Bank Transfer Instructions</h6>
+                    <div class="alert alert-info">
+                        <h6>Bank Details:</h6>
+                        <p><strong>Bank:</strong> UniLearn Bank</p>
+                        <p><strong>Account Name:</strong> UniLearn Marketplace</p>
+                        <p><strong>Account Number:</strong> 1234567890</p>
+                        <p><strong>Routing Number:</strong> 021000021</p>
+                        <p><strong>Reference:</strong> <span id="bankReference">REF-{{ 'now'|date('YmdHis') }}</span></p>
+                    </div>
+                </div>
+
+                <!-- Process Payment Button -->
+                <button type="button" class="btn btn-success btn-lg w-100" onclick="processPayment()">
+                    <i class="fas fa-lock me-2"></i>
+                    <span id="paymentButtonText">Process Payment</span>
+                    <span id="paymentSpinner" style="display: none;">
+                        <i class="fas fa-spinner fa-spin me-2"></i>Processing...
+                    </span>
+                </button>
+
+                <!-- Security Info -->
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Your payment information is encrypted and secure
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-check-circle text-success me-2"></i>Payment Successful!
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
+                <h5>Thank You!</h5>
+                <p class="text-muted">Your payment has been processed successfully.</p>
+                <p>You will be redirected to your order confirmation shortly.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+let selectedPaymentMethod = 'credit_card';
+let paymentMethods = [];
+
+// Load payment methods
+document.addEventListener('DOMContentLoaded', function() {
+    loadPaymentMethods();
+});
+
+function loadPaymentMethods() {
+    fetch('/payment/methods')
+        .then(response => response.json())
+        .then(data => {
+            paymentMethods = data.methods;
+            renderPaymentMethods();
+        })
+        .catch(error => {
+            console.error('Error loading payment methods:', error);
+        });
+}
+
+function renderPaymentMethods() {
+    const container = document.getElementById('paymentMethods');
+    container.innerHTML = paymentMethods.map(method => `
+        <div class="payment-method ${method.id === selectedPaymentMethod ? 'selected' : ''}" 
+             onclick="selectPaymentMethod('${method.id}')">
+            <div class="d-flex align-items-center">
+                <i class="${method.icon} fa-2x me-3"></i>
+                <div class="flex-grow-1">
+                    <h6 class="mb-1">${method.name}</h6>
+                    <small class="text-muted">${method.description}</small>
+                    <small class="text-info">Fee: ${method.fee}%</small>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="payment_method" 
+                           value="${method.id}" ${method.id === selectedPaymentMethod ? 'checked' : ''}>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function selectPaymentMethod(methodId) {
+    selectedPaymentMethod = methodId;
+    
+    // Hide all payment forms
+    document.querySelectorAll('.payment-form').forEach(form => {
+        form.style.display = 'none';
+    });
+    
+    // Show selected payment form
+    const formMap = {
+        'stripe': 'creditCardForm',
+        'paypal': 'paypalForm',
+        'credit_card': 'creditCardForm',
+        'bank_transfer': 'bankForm'
+    };
+    
+    const selectedForm = document.getElementById(formMap[methodId] || 'creditCardForm');
+    if (selectedForm) {
+        selectedForm.style.display = 'block';
+    }
+    
+    // Update payment method selection
+    document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('selected');
+    });
+    event.currentTarget.classList.add('selected');
+    
+    // Update radio button
+    document.querySelector(`input[value="${methodId}"]`).checked = true;
+}
+
+function processPayment() {
+    const form = document.getElementById('paymentForm');
+    const formData = new FormData(form);
+    
+    // Add payment method
+    formData.append('payment_method', selectedPaymentMethod);
+    formData.append('amount', '{{ total }}');
+    formData.append('currency', 'USD');
+    
+    // Show loading state
+    document.getElementById('paymentButtonText').style.display = 'none';
+    document.getElementById('paymentSpinner').style.display = 'inline';
+    
+    fetch('/payment/process', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success modal
+            const modal = new bootstrap.Modal(document.getElementById('successModal'));
+            modal.show();
+            
+            // Redirect after delay
+            setTimeout(() => {
+                window.location.href = data.redirect_url;
+            }, 3000);
+        } else {
+            // Show error
+            alert('Payment failed: ' + data.message);
+            resetPaymentButton();
+        }
+    })
+    .catch(error => {
+        console.error('Payment error:', error);
+        alert('Payment processing error. Please try again.');
+        resetPaymentButton();
+    });
+}
+
+function processPayPalPayment() {
+    // Redirect to PayPal (in production, use PayPal SDK)
+    window.open('https://www.paypal.com/cgi-bin/webscr?business=your-business@example.com', '_blank');
+}
+
+function resetPaymentButton() {
+    document.getElementById('paymentButtonText').style.display = 'inline';
+    document.getElementById('paymentSpinner').style.display = 'none';
+}
+
+// Format card number input
+document.addEventListener('DOMContentLoaded', function() {
+    const cardInput = document.querySelector('input[name="card_number"]');
+    if (cardInput) {
+        cardInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+    }
+});
+</script>
+
+<style>
+.payment-method {
+    border: 2px solid #e9ecef;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-method:hover {
+    border-color: #007bff;
+    background-color: #f8f9fa;
+}
+
+.payment-method.selected {
+    border-color: #007bff;
+    background-color: #e3f2fd;
+}
+
+.payment-form {
+    margin-top: 1rem;
+}
+
+.form-check-input {
+    margin-top: 0.5rem;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    border-color: #b8d4f1;
+    color: #0c5460;
+}
+
+.fa-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}

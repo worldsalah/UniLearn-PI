@@ -15,13 +15,7 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                default_target_path: app_home
-                enable_csrf: true
-                username_parameter: email
-                password_parameter: password
+            custom_authenticator: App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
                 target: app_home
@@ -29,7 +23,17 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # No access control rules
+        # Public access to marketplace routes
+        - { path: ^/marketplace, roles: PUBLIC_ACCESS }
+        - { path: ^/product, roles: PUBLIC_ACCESS }
+        - { path: ^/job, roles: PUBLIC_ACCESS }
+        - { path: ^/order, roles: PUBLIC_ACCESS }
+        # Admin routes require authentication
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        # Profile and user-specific routes require authentication
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/student, roles: ROLE_USER }
+        - { path: ^/instructor, roles: ROLE_USER }
 
 when@test:
     security:

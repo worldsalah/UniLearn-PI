@@ -14,12 +14,7 @@
         "doctrine/doctrine-bundle": "^2.18",
         "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^2.19",
-        "dompdf/dompdf": "^3.1",
-        "friendsofsymfony/elastica-bundle": "^7.0",
-        "google/apiclient": "^2.19",
-        "google/apiclient-services": "^0.431.0",
         "knplabs/knp-paginator-bundle": "^6.10",
-        "knplabs/knp-snappy-bundle": "^1.10",
         "phpdocumentor/reflection-docblock": "^5.2",
         "phpstan/phpdoc-parser": "^2.3",
         "stof/doctrine-extensions-bundle": "^1.15",
@@ -53,7 +48,6 @@
         "symfony/web-link": "6.4.*",
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/string-extra": "^3.23",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^2.9"
     },
@@ -95,18 +89,7 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ],
-        "dev": [
-            "@check-elasticsearch-simple",
-            "@start:symfony"
-        ],
-        "check-elasticsearch-simple": "curl -s http://127.0.0.1:9200/_cluster/health && echo \"✅ Elasticsearch running\" || echo \"❌ Elasticsearch not running - please start it manually\"",
-        "start:symfony": "php bin/console fos:elastica:populate && php bin/console server:run",
-        "dev-simple": "php bin/console cache:clear && php bin/console fos:elastica:populate && php bin/console server:run",
-        "dev:windows": "start-dev.bat",
-        "dev:powershell": "powershell -ExecutionPolicy Bypass -File start-dev.ps1",
-        "dev:command": "php bin/console app:server",
-        "dev:no-docker": "start-dev-no-docker.bat"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"

@@ -2,10 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Entity\Course;
+use App\Entity\Enrollment;
 use App\Entity\Question;
 use App\Entity\Quiz;
 use App\Repository\QuestionRepository;
 use App\Repository\QuizRepository;
+use App\Service\GeminiAiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidator;
+use Psr\Log\LoggerInterface;
 
 class PageController extends AbstractController
 {
@@ -21,17 +26,20 @@ class PageController extends AbstractController
     private QuestionRepository $questionRepository;
     private EntityManagerInterface $entityManager;
     private SymfonyValidator $validator;
+    private LoggerInterface $logger;
 
     public function __construct(
         QuizRepository $quizRepository,
         QuestionRepository $questionRepository,
         EntityManagerInterface $entityManager,
         SymfonyValidator $validator,
+        LoggerInterface $logger
     ) {
         $this->quizRepository = $quizRepository;
         $this->questionRepository = $questionRepository;
         $this->entityManager = $entityManager;
         $this->validator = $validator;
+        $this->logger = $logger;
     }
 
     #[Route('/about', name: 'app_about')]
@@ -101,7 +109,7 @@ class PageController extends AbstractController
     }
 
     #[Route('/student-dashboard', name: 'app_student_dashboard')]
-    public function studentDashboard(): Response
+    public function studentDashboard(EntityManagerInterface $entityManager): Response
     {
         // Get the currently logged-in user
         $user = $this->getUser();
@@ -111,953 +119,1208 @@ class PageController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Allow all users to access student dashboard
-        return $this->render('student/dashboard.html.twig');
-    }
-
-    #[Route('/admin-dashboard', name: 'app_admin_dashboard')]
-    public function adminDashboard(EntityManagerInterface $entityManager): Response
-    {
         // Get real data from database
         $courseRepository = $entityManager->getRepository(\App\Entity\Course::class);
+        $enrollmentRepository = $entityManager->getRepository(\App\Entity\Enrollment::class);
         $quizRepository = $entityManager->getRepository(Quiz::class);
-        $userRepository = $entityManager->getRepository(\App\Entity\User::class);
-
-        $totalCourses = count($courseRepository->findAll());
-        $totalQuizzes = count($quizRepository->findAll());
-        $totalUsers = count($userRepository->findAll());
-
-        // Get recent activities (mock data for now)
-        $recentCourses = [];
+        
+        // Get student's enrollments
+        $enrollments = $enrollmentRepository->findBy(['user' => $user]);
+        
+        // Get enrolled courses
+        $enrolledCourses = [];
+        foreach ($enrollments as $enrollment) {
+            $enrolledCourses[] = $enrollment->getCourse();
+        }
+        
+        // Get available courses (not enrolled)
+        $allCourses = $courseRepository->findAll();
+        $availableCourses = array_filter($allCourses, function($course) use ($enrolledCourses) {
+            return !in_array($course, $enrolledCourses);
+        });
+        
+        // Get recent quiz results
         $recentQuizzes = [];
-        $recentUsers = [];
-
-        return $this->render('admin/dashboard.html.twig', [
-            'totalCourses' => $totalCourses,
-            'totalQuizzes' => $totalQuizzes,
-            'totalUsers' => $totalUsers,
-            'recentCourses' => $recentCourses,
-            'recentQuizzes' => $recentQuizzes,
-            'recentUsers' => $recentUsers,
+        // You can implement quiz results logic here
+        
+        // Calculate statistics
+        $totalEnrollments = count($enrollments);
+        $completedCourses = count(array_filter($enrollments, function($enrollment) {
+            return $enrollment->getProgress() >= 100;
+        }));
+        $inProgressCourses = $totalEnrollments - $completedCourses;
+        
+        return $this->render('student/dashboard.html.twig', [
+            'user' => $user,
+            'enrollments' => $enrollments,
+            'enrolledCourses' => $enrolledCourses,
+            'availableCourses' => $availableCourses,
+            'totalEnrollments' => $totalEnrollments,
+            'completedCourses' => $completedCourses,
+            'inProgressCourses' => $inProgressCourses,
+            'recentQuizzes' => $recentQuizzes
         ]);
     }
 
-    #[Route('/blog-grid', name: 'app_blog_grid')]
-    public function blogGrid(): Response
+    #[Route('/student-courses', name: 'app_student_courses')]
+    public function studentCourses(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('blog/grid.html.twig');
+        // Get the currently logged-in user
+        $user = $this->getUser();
+
+        if (!$user) {
+            // If no user is logged in, redirect to login
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Get real data from database
+        $courseRepository = $entityManager->getRepository(\App\Entity\Course::class);
+        $enrollmentRepository = $entityManager->getRepository(\App\Entity\Enrollment::class);
+        
+        // Get student's enrollments
+        $enrollments = $enrollmentRepository->findBy(['user' => $user]);
+        
+        // Separate courses by status
+        $completedCourses = [];
+        $inProgressCourses = [];
+        
+        foreach ($enrollments as $enrollment) {
+            if ($enrollment->getProgress() >= 100) {
+                $completedCourses[] = $enrollment;
+            } else {
+                $inProgressCourses[] = $enrollment;
+            }
+        }
+        
+        return $this->render('student/courses.html.twig', [
+            'user' => $user,
+            'completedCourses' => $completedCourses,
+            'inProgressCourses' => $inProgressCourses,
+            'totalEnrollments' => count($enrollments)
+        ]);
     }
 
-    #[Route('/shop', name: 'app_shop')]
-    public function shop(): Response
+    #[Route('/student-bookmarks', name: 'app_student_bookmarks')]
+    public function studentBookmarks(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('shop/index.html.twig');
+        // Get the currently logged-in user
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Get user's enrollments to create bookmarks from enrolled courses
+        $enrollmentRepository = $entityManager->getRepository(\App\Entity\Enrollment::class);
+        $enrollments = $enrollmentRepository->findBy(['user' => $user]);
+
+        // Create bookmarks from user's enrolled courses
+        $bookmarks = [];
+        foreach ($enrollments as $enrollment) {
+            $course = $enrollment->getCourse();
+            $bookmarks[] = (object)[
+                'id' => 'course_' . $enrollment->getId(),
+                'title' => $course->getTitle(),
+                'description' => $course->getShortDescription() ?? 'No description available',
+                'type' => 'course',
+                'course' => $course,
+                'bookmarkedAt' => $enrollment->getEnrolledAt(),
+                'progress' => $enrollment->getProgress(),
+                'status' => $enrollment->getStatus()
+            ];
+        }
+
+        // Add lesson bookmarks from course chapters/lessons if available
+        $courseRepository = $entityManager->getRepository(\App\Entity\Course::class);
+        foreach ($enrollments as $enrollment) {
+            $course = $enrollment->getCourse();
+            // Get chapters for this course
+            $chapters = $course->getChapters();
+            foreach ($chapters as $chapter) {
+                // Add sample lesson bookmarks
+                $bookmarks[] = (object)[
+                    'id' => 'lesson_' . $chapter->getId(),
+                    'title' => 'Chapter: ' . ($chapter->getTitle() ?? 'Untitled Chapter'),
+                    'description' => 'Lesson content from ' . $course->getTitle(),
+                    'type' => 'lesson',
+                    'course' => $course,
+                    'bookmarkedAt' => $enrollment->getEnrolledAt(),
+                    'chapter' => $chapter
+                ];
+            }
+        }
+
+        // Sort bookmarks by creation date (newest first)
+        usort($bookmarks, function($a, $b) {
+            return $b->bookmarkedAt <=> $a->bookmarkedAt;
+        });
+
+        return $this->render('student/bookmarks.html.twig', [
+            'user' => $user,
+            'bookmarks' => $bookmarks,
+            'totalEnrollments' => count($enrollments)
+        ]);
     }
 
-    #[Route('/pricing', name: 'app_pricing')]
-    public function pricing(): Response
+    #[Route('/student-certificates', name: 'app_student_certificates')]
+    public function studentCertificates(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('utility/pricing.html.twig');
+        // Get the currently logged-in user
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Get completed courses for certificates
+        $enrollmentRepository = $entityManager->getRepository(\App\Entity\Enrollment::class);
+        $enrollments = $enrollmentRepository->findBy(['user' => $user]);
+        
+        $completedCourses = array_filter($enrollments, function($enrollment) {
+            return $enrollment->getProgress() >= 100;
+        });
+
+        // Calculate statistics
+        $totalEnrollments = count($enrollments);
+        $completedCount = count($completedCourses);
+        $totalHours = 0;
+        $averageScore = 0;
+
+        foreach ($completedCourses as $enrollment) {
+            $course = $enrollment->getCourse();
+            $totalHours += $course->getDuration() ?? 0;
+        }
+
+        // Calculate average score based on progress
+        if ($totalEnrollments > 0) {
+            $totalProgress = array_sum(array_map(function($e) { return $e->getProgress(); }, $enrollments));
+            $averageScore = round($totalProgress / $totalEnrollments, 1);
+        }
+
+        return $this->render('student/certificates.html.twig', [
+            'user' => $user,
+            'completedCourses' => $completedCourses,
+            'totalEnrollments' => $totalEnrollments,
+            'completedCount' => $completedCount,
+            'totalHours' => $totalHours,
+            'averageScore' => $averageScore
+        ]);
     }
 
-    #[Route('/error-404', name: 'app_error_404')]
-    public function error404(): Response
+    #[Route('/student-settings', name: 'app_student_settings')]
+    public function studentSettings(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('utility/error-404.html.twig');
+        // Get currently logged-in user
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Get user statistics for settings page
+        $enrollmentRepository = $entityManager->getRepository(\App\Entity\Enrollment::class);
+        $enrollments = $enrollmentRepository->findBy(['user' => $user]);
+        
+        $completedCourses = array_filter($enrollments, function($enrollment) {
+            return $enrollment->getProgress() >= 100;
+        });
+
+        $totalEnrollments = count($enrollments);
+        $completedCount = count($completedCourses);
+        $inProgressCount = $totalEnrollments - $completedCount;
+
+        return $this->render('student/settings.html.twig', [
+            'user' => $user,
+            'totalEnrollments' => $totalEnrollments,
+            'completedCourses' => $completedCount,
+            'inProgressCourses' => $inProgressCount
+        ]);
     }
 
-    #[Route('/home-variant-4', name: 'app_home_variant_4')]
-    public function homeVariant4(): Response
+    #[Route('/student-quiz-analysis', name: 'app_student_quiz_analysis')]
+    public function studentQuizAnalysis(EntityManagerInterface $entityManager, \App\Service\GeminiAiService $geminiAiService): Response
     {
-        return $this->render('home/index-4.html.twig');
+        // Get the currently logged-in user
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Fetch actual quiz results from database
+        $quizResultRepository = $entityManager->getRepository(\App\Entity\QuizResult::class);
+        $quizResults = $quizResultRepository->findBy(['user' => $user], ['takenAt' => 'DESC']);
+
+        // Build structured data for AI analysis
+        $quizData = [];
+        foreach ($quizResults as $result) {
+            $quiz = $result->getQuiz();
+            $course = $quiz ? $quiz->getCourse() : null;
+            
+            $quizData[] = [
+                'quiz' => $quiz ? $quiz->getTitle() : 'Unknown Quiz',
+                'course' => $course ? $course->getTitle() : 'Unknown Course',
+                'score' => $result->getScore(),
+                'max_score' => $result->getMaxScore(),
+                'percentage' => $result->getMaxScore() > 0 ? round(($result->getScore() / $result->getMaxScore()) * 100, 1) : 0,
+                'taken_at' => $result->getTakenAt() ? $result->getTakenAt()->format('Y-m-d H:i:s') : null,
+                'created_at' => $result->getCreatedAt() ? $result->getCreatedAt()->format('Y-m-d H:i:s') : null
+            ];
+        }
+
+        // Generate AI insights
+        $aiInsights = null;
+        if (!empty($quizData)) {
+            try {
+                $aiInsights = $geminiAiService->generateQuizInsights($quizData);
+            } catch (\Exception $e) {
+                // Log error but continue with fallback
+                $aiInsights = 'AI analysis temporarily unavailable. Please try again later.';
+            }
+        }
+
+        // Calculate basic analytics for UI display
+        $analytics = $this->calculateBasicAnalytics($quizData);
+
+        return $this->render('student/quiz-analysis.html.twig', [
+            'user' => $user,
+            'quizResults' => $quizResults,
+            'quizData' => $quizData,
+            'analytics' => $analytics,
+            'aiInsights' => $aiInsights
+        ]);
     }
 
-    #[Route('/course-list', name: 'app_course_list')]
-    public function courseList(EntityManagerInterface $entityManager): Response
+    private function calculateBasicAnalytics(array $quizData): array
     {
-        // Get all courses from database
-        $courses = $entityManager->getRepository(\App\Entity\Course::class)->findAll();
+        $totalQuizzes = count($quizData);
+        
+        if ($totalQuizzes === 0) {
+            return [
+                'totalQuizzes' => 0,
+                'totalAttempts' => 0,
+                'averageScore' => 0,
+                'bestScore' => 0,
+                'improvementRate' => 0,
+                'strengthAreas' => [],
+                'weaknessAreas' => [],
+                'recommendations' => ['Take more quizzes to get personalized insights'],
+                'performanceTrend' => 'stable',
+                'studyTime' => 0,
+                'accuracyRate' => 0
+            ];
+        }
 
-        // Prepare course data for template
-        $courseData = [];
-        foreach ($courses as $course) {
-            $courseData[] = [
+        $scores = array_column($quizData, 'percentage');
+        $averageScore = array_sum($scores) / count($scores);
+        $bestScore = max($scores);
+
+        // Calculate improvement rate (comparing first half vs second half)
+        $improvementRate = 0;
+        if (count($scores) > 1) {
+            $midPoint = floor(count($scores) / 2);
+            $firstHalf = array_slice($scores, 0, $midPoint);
+            $secondHalf = array_slice($scores, $midPoint);
+            
+            if (count($firstHalf) > 0 && count($secondHalf) > 0) {
+                $firstHalfAvg = array_sum($firstHalf) / count($firstHalf);
+                $secondHalfAvg = array_sum($secondHalf) / count($secondHalf);
+                $improvementRate = round((($secondHalfAvg - $firstHalfAvg) / $firstHalfAvg) * 100, 1);
+            }
+        }
+
+        // Identify strength and weakness areas
+        $strengthAreas = [];
+        $weaknessAreas = [];
+        
+        foreach ($quizData as $quiz) {
+            if ($quiz['percentage'] >= 80) {
+                $strengthAreas[] = $quiz['quiz'];
+            } elseif ($quiz['percentage'] < 60) {
+                $weaknessAreas[] = $quiz['quiz'];
+            }
+        }
+
+        // Generate recommendations based on performance
+        $recommendations = [];
+        if ($averageScore < 60) {
+            $recommendations[] = 'Focus on fundamental concepts before advanced topics';
+            $recommendations[] = 'Practice with timed quizzes to improve speed';
+        } elseif ($averageScore < 80) {
+            $recommendations[] = 'Review incorrect answers to understand patterns';
+            $recommendations[] = 'Try advanced difficulty quizzes';
+        } else {
+            $recommendations[] = 'Excellent performance! Try expert-level challenges';
+            $recommendations[] = 'Consider mentoring other students';
+        }
+
+        // Performance trend
+        $performanceTrend = 'stable';
+        if (count($scores) >= 3) {
+            $recent = array_slice($scores, -3);
+            if ($recent[2] > $recent[1] && $recent[1] > $recent[0]) {
+                $performanceTrend = 'improving';
+            } elseif ($recent[2] < $recent[1] && $recent[1] < $recent[0]) {
+                $performanceTrend = 'declining';
+            }
+        }
+
+        return [
+            'totalQuizzes' => $totalQuizzes,
+            'totalAttempts' => $totalQuizzes, // Each result represents one attempt
+            'averageScore' => round($averageScore, 1),
+            'bestScore' => $bestScore,
+            'improvementRate' => $improvementRate,
+            'strengthAreas' => array_unique($strengthAreas),
+            'weaknessAreas' => array_unique($weaknessAreas),
+            'recommendations' => $recommendations,
+            'performanceTrend' => $performanceTrend,
+            'studyTime' => $totalQuizzes * 15, // Estimated 15 minutes per attempt
+            'accuracyRate' => round($averageScore, 0),
+            'recentPerformance' => $this->getRecentPerformance($quizData),
+            'scoreDistribution' => $this->getScoreDistribution($quizData),
+            'weeklyProgress' => $this->getWeeklyProgress($quizData)
+        ];
+    }
+
+    private function getRecentPerformance(array $quizData): array
+    {
+        $recent = array_slice($quizData, -7);
+        return array_map(function($quiz) {
+            return [
+                'date' => $quiz['taken_at'],
+                'score' => $quiz['percentage'],
+                'quiz' => $quiz['quiz']
+            ];
+        }, $recent);
+    }
+
+    private function getScoreDistribution(array $quizData): array
+    {
+        $distribution = [
+            '0-40' => 0,
+            '41-60' => 0,
+            '61-80' => 0,
+            '81-100' => 0
+        ];
+        
+        foreach ($quizData as $quiz) {
+            $score = $quiz['percentage'];
+            if ($score <= 40) $distribution['0-40']++;
+            elseif ($score <= 60) $distribution['41-60']++;
+            elseif ($score <= 80) $distribution['61-80']++;
+            else $distribution['81-100']++;
+        }
+        
+        return $distribution;
+    }
+
+    private function getWeeklyProgress(array $quizData): array
+    {
+        $weekly = [];
+        $now = new \DateTime();
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = (clone $now)->modify("-$i days");
+            $dateStr = $date->format('Y-m-d');
+            $weekly[$dateStr] = [
+                'date' => $dateStr,
+                'quizzes' => 0,
+                'avgScore' => 0,
+                'totalScore' => 0
+            ];
+        }
+        
+        foreach ($quizData as $quiz) {
+            $quizDate = (new \DateTime($quiz['taken_at']))->format('Y-m-d');
+            if (isset($weekly[$quizDate])) {
+                $weekly[$quizDate]['quizzes']++;
+                $weekly[$quizDate]['totalScore'] += $quiz['percentage'];
+            }
+        }
+        
+        // Calculate averages
+        foreach ($weekly as &$day) {
+            if ($day['quizzes'] > 0) {
+                $day['avgScore'] = round($day['totalScore'] / $day['quizzes'], 1);
+            }
+        }
+        
+        return array_values($weekly);
+    }
+
+    #[Route('/api/quiz-analytics', name: 'api_quiz_analytics')]
+    public function getQuizAnalytics(EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not authenticated'], 401);
+        }
+
+        $quizResultRepository = $entityManager->getRepository(\App\Entity\QuizResult::class);
+        $quizResults = $quizResultRepository->findBy(['user' => $user], ['takenAt' => 'DESC'], 10);
+
+        $quizData = [];
+        foreach ($quizResults as $result) {
+            $quiz = $result->getQuiz();
+            $course = $quiz ? $quiz->getCourse() : null;
+            
+            $quizData[] = [
+                'id' => $result->getId(),
+                'quiz' => $quiz ? $quiz->getTitle() : 'Unknown Quiz',
+                'course' => $course ? $course->getTitle() : 'Unknown Course',
+                'score' => $result->getScore(),
+                'maxScore' => $result->getMaxScore(),
+                'percentage' => $result->getMaxScore() > 0 ? round(($result->getScore() / $result->getMaxScore()) * 100, 1) : 0,
+                'takenAt' => $result->getTakenAt() ? $result->getTakenAt()->format('Y-m-d H:i:s') : null,
+                'createdAt' => $result->getCreatedAt() ? $result->getCreatedAt()->format('Y-m-d H:i:s') : null
+            ];
+        }
+
+        $analytics = $this->calculateBasicAnalytics($quizData);
+
+        return new JsonResponse([
+            'quizResults' => $quizData,
+            'analytics' => $analytics,
+            'lastUpdated' => (new \DateTime())->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    #[Route('/student-ai-roadmap', name: 'app_student_ai_roadmap')]
+    public function studentAiRoadmap(EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Fetch all courses from database for AI recommendations
+        $courseRepository = $entityManager->getRepository(Course::class);
+        $allCourses = $courseRepository->findAll();
+        
+        // Get user's enrolled courses for personalized recommendations
+        $enrollmentRepository = $entityManager->getRepository(Enrollment::class);
+        $userEnrollments = $enrollmentRepository->findBy(['user' => $user]);
+        
+        // Get course categories for better recommendations
+        $categoryRepository = $entityManager->getRepository(Category::class);
+        $categories = $categoryRepository->findAll();
+
+        return $this->render('student/ai-learning-roadmap.html.twig', [
+            'user' => $user,
+            'allCourses' => $allCourses,
+            'userEnrollments' => $userEnrollments,
+            'categories' => $categories
+        ]);
+    }
+    
+    #[Route('/api/test', name: 'api_test', methods: ['GET'])]
+    public function testRoute(EntityManagerInterface $entityManager): JsonResponse
+    {
+        try {
+            $courseRepository = $entityManager->getRepository(Course::class);
+            $allCourses = $courseRepository->findAll();
+            
+            return new JsonResponse([
+                'success' => true,
+                'total_courses' => count($allCourses),
+                'message' => 'Test route working'
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    #[Route('/api/courses/recommendations', name: 'api_course_recommendations', methods: ['GET'])]
+    public function getCourseRecommendations(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $learningGoal = $request->query->get('goal', '');
+        $skillLevel = $request->query->get('level', 'beginner');
+        
+        try {
+            // Get all courses from database
+            $courseRepository = $entityManager->getRepository(Course::class);
+            $allCourses = $courseRepository->findAll();
+            
+            // Filter courses based on learning goal and skill level using semantic analysis
+            $recommendedCourses = [];
+            $goalLower = strtolower($learningGoal);
+            
+            foreach ($allCourses as $course) {
+                $courseTitle = strtolower($course->getTitle());
+                $courseDescription = strtolower($course->getShortDescription());
+                $courseLevel = strtolower($course->getLevel());
+                $courseCategory = strtolower($course->getCategory()?->getName() ?? '');
+                
+                // Check if course matches the learning goal using semantic analysis
+                $matchesGoal = $this->courseMatchesGoal($courseTitle, $courseDescription, $courseCategory, $goalLower);
+                $matchesLevel = $skillLevel === 'all' || $courseLevel === $skillLevel;
+                
+                if ($matchesGoal && $matchesLevel) {
+                    $recommendedCourses[] = [
+                        'id' => $course->getId(),
+                        'title' => $course->getTitle(),
+                        'shortDescription' => $course->getShortDescription(),
+                        'level' => $course->getLevel(),
+                        'category' => $course->getCategory()?->getName(),
+                        'price' => $course->getPrice(),
+                        'thumbnailUrl' => $course->getThumbnailUrl()
+                    ];
+                }
+            }
+            
+            return new JsonResponse([
+                'success' => true,
+                'courses' => $recommendedCourses,
+                'total' => count($recommendedCourses),
+                'goal' => $learningGoal,
+                'level' => $skillLevel
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->logger->error('Error fetching course recommendations: ' . $e->getMessage());
+            
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Failed to fetch course recommendations',
+                'courses' => [],
+                'total' => 0
+            ], 500);
+        }
+    }
+
+    #[Route('/api/ai-roadmap/generate', name: 'api_ai_roadmap_generate', methods: ['POST'])]
+    public function generateAiRoadmap(Request $request, EntityManagerInterface $entityManager, GeminiAiService $geminiAiService): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not authenticated'], 401);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $learningGoal = $data['learning_goal'] ?? '';
+        $skillLevel = $data['skill_level'] ?? 'beginner';
+        $timeCommitment = $data['time_commitment'] ?? '3-5';
+        $learningStyles = $data['learning_styles'] ?? [];
+        
+        // Get user's learning history
+        $enrollmentRepository = $entityManager->getRepository(Enrollment::class);
+        $quizResultRepository = $entityManager->getRepository(\App\Entity\QuizResult::class);
+        
+        $userEnrollments = $enrollmentRepository->findBy(['user' => $user]);
+        $quizResults = $quizResultRepository->findBy(['user' => $user], ['takenAt' => 'DESC'], 20);
+        
+        // Build user history data
+        $userHistory = [
+            'enrollments' => array_map(function($enrollment) {
+                $course = $enrollment->getCourse();
+                return [
+                    'course_title' => $course->getTitle(),
+                    'category' => $course->getCategory()?->getName(),
+                    'level' => $course->getLevel(),
+                    'progress' => $enrollment->getProgress(),
+                    'status' => $enrollment->getStatus(),
+                    'enrolled_at' => $enrollment->getEnrolledAt()?->format('Y-m-d')
+                ];
+            }, $userEnrollments),
+            'quiz_results' => array_map(function($result) {
+                $quiz = $result->getQuiz();
+                return [
+                    'quiz_title' => $quiz->getTitle(),
+                    'course' => $quiz->getCourse()?->getTitle(),
+                    'score' => $result->getScore(),
+                    'max_score' => $result->getMaxScore(),
+                    'percentage' => $result->getMaxScore() > 0 ? round(($result->getScore() / $result->getMaxScore()) * 100, 1) : 0,
+                    'taken_at' => $result->getTakenAt()?->format('Y-m-d')
+                ];
+            }, $quizResults)
+        ];
+        
+        // Get available courses
+        $courseRepository = $entityManager->getRepository(Course::class);
+        $allCourses = $courseRepository->findAll();
+        
+        $availableCourses = array_map(function($course) {
+            return [
                 'id' => $course->getId(),
                 'title' => $course->getTitle(),
                 'shortDescription' => $course->getShortDescription(),
-                'category' => $course->getCategory(),
                 'level' => $course->getLevel(),
+                'category' => $course->getCategory()?->getName(),
                 'price' => $course->getPrice(),
-                'status' => $course->getStatus() ?? 'pending',
-                'createdAt' => $course->getCreatedAt() ? $course->getCreatedAt()->format('d M Y') : 'Unknown',
-                'thumbnailUrl' => $course->getThumbnailUrl(),
-                'instructor' => [
-                    'name' => $course->getUser() ? $course->getUser()->getFullName() : 'Unknown',
-                    'image' => null,
-                ],
-                'levelClass' => $this->getLevelBadgeClass($course->getLevel()),
-                'statusClass' => $this->getStatusBadgeClass($course->getStatus()),
+                'duration' => $course->getDuration()
             ];
-        }
-
-        return $this->render('admin/course-list.html.twig', [
-            'courses' => $courseData,
-        ]);
-    }
-
-    #[Route('/instructor-list', name: 'app_instructor_list')]
-    public function instructorList(): Response
-    {
-        return $this->render('instructor/list.html.twig');
-    }
-
-    #[Route('/admin-instructor-list', name: 'admin_instructor_list')]
-    public function adminInstructorList(EntityManagerInterface $entityManager): Response
-    {
-        $userRepository = $entityManager->getRepository(\App\Entity\User::class);
-        $instructors = $userRepository->findBy(['roles' => ['ROLE_INSTRUCTOR']]);
-
-        $instructorData = [];
-        foreach ($instructors as $instructor) {
-            // Calculate actual course count from course assignments
-            $coursesCount = count($instructor->getCourses());
-
-            $instructorData[] = [
-                'id' => $instructor->getId(),
-                'name' => $instructor->getFullName() ?? 'Unknown',
-                'email' => $instructor->getEmail(),
-                'coursesCount' => $coursesCount,
-                'rating' => 4.5, // Mock rating for now
-                'joinedAt' => $instructor->getCreatedAt() ? $instructor->getCreatedAt()->format('M Y') : 'Unknown',
-            ];
-        }
-
-        return $this->render('admin/instructor-list.html.twig', [
-            'instructors' => $instructorData,
-        ]);
-    }
-
-    #[Route('/admin-instructor-detail/{id}', name: 'admin_instructor_detail')]
-    public function adminInstructorDetail(int $id): Response
-    {
-        return $this->render('admin/instructor-detail.html.twig');
-    }
-
-    #[Route('/admin-instructor-requests', name: 'admin_instructor_requests')]
-    public function adminInstructorRequests(): Response
-    {
-        return $this->render('admin/instructor-requests.html.twig');
-    }
-
-    #[Route('/admin-review-list', name: 'admin_review_list')]
-    public function adminReviewList(): Response
-    {
-        return $this->render('admin/review-list.html.twig');
-    }
-
-    #[Route('/admin-student-list', name: 'admin_student_list')]
-    public function adminStudentList(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $userRepository = $entityManager->getRepository(\App\Entity\User::class);
-
-        // Get search and filter parameters
-        $search = $request->query->get('search', '');
-        $sortBy = $request->query->get('sort', 'createdAt');
-        $sortOrder = $request->query->get('order', 'desc');
-        $status = $request->query->get('status', '');
-        $role = $request->query->get('role', '');
-        $isAjax = $request->query->get('ajax', false);
-
-        // Build query
-        $qb = $userRepository->createQueryBuilder('u');
-
-        // Join role to get role name
-        $qb->leftJoin('u.role', 'r')
-           ->addSelect('r');
-
-        // Apply search filter
-        if (!empty($search)) {
-            $qb->andWhere('u.fullName LIKE :search OR u.email LIKE :search')
-               ->setParameter('search', '%'.$search.'%');
-        }
-
-        // Apply status filter
-        if (!empty($status)) {
-            $qb->andWhere('u.status = :status')
-               ->setParameter('status', $status);
-        }
-
-        // Apply role filter
-        if (!empty($role)) {
-            $qb->andWhere('r.name = :role')
-               ->setParameter('role', $role);
-        }
-
-        // Apply sorting
-        $validSortFields = ['fullName', 'email', 'createdAt', 'status', 'r.name'];
-        if (in_array($sortBy, $validSortFields, true)) {
-            $qb->orderBy('u.'.$sortBy, 'asc' === $sortOrder ? 'ASC' : 'DESC');
-        } else {
-            $qb->orderBy('u.createdAt', 'DESC');
-        }
-
-        $users = $qb->getQuery()->getResult();
-
-        $userData = [];
-        foreach ($users as $user) {
-            $userData[] = [
-                'id' => $user->getId(),
-                'name' => $user->getFullName() ?? 'Unknown',
+        }, $allCourses);
+        
+        // Prepare user data for AI
+        $userData = [
+            'learning_goal' => $learningGoal,
+            'skill_level' => $skillLevel,
+            'time_commitment' => $timeCommitment,
+            'learning_styles' => $learningStyles,
+            'user_profile' => [
+                'name' => $user->getName(),
                 'email' => $user->getEmail(),
-                'status' => $user->getStatus() ?? 'active',
-                'role' => $this->getUserRole($user),
-                'joinedAt' => $user->getCreatedAt() ? $user->getCreatedAt()->format('M d, Y') : 'Unknown',
-                'lastLogin' => 'Never', // User entity doesn't have lastLogin field
-            ];
-        }
-
-        // Handle AJAX request
-        if ($isAjax) {
+                'total_enrollments' => count($userEnrollments),
+                'completed_courses' => count(array_filter($userEnrollments, fn($e) => $e->getProgress() >= 100)),
+                'average_quiz_score' => count($quizResults) > 0 ? array_sum(array_map(fn($r) => $r->getMaxScore() > 0 ? ($r->getScore() / $r->getMaxScore()) * 100 : 0, $quizResults)) / count($quizResults) : 0
+            ]
+        ];
+        
+        try {
+            // Generate AI roadmap
+            $roadmap = $geminiAiService->generateLearningRoadmap($userData, $availableCourses, $userHistory);
+            
             return new JsonResponse([
                 'success' => true,
-                'users' => $userData,
+                'roadmap' => $roadmap,
+                'user_history' => $userHistory,
+                'generated_at' => (new \DateTime())->format('Y-m-d H:i:s')
             ]);
-        }
-
-        // Get filter options for dropdowns
-        $allUsers = $userRepository->findAll();
-        $availableRoles = [];
-        $availableStatuses = [];
-
-        foreach ($allUsers as $user) {
-            $userRole = $this->getUserRole($user);
-            if (!in_array($userRole, $availableRoles, true)) {
-                $availableRoles[] = $userRole;
-            }
-
-            $userStatus = $user->getStatus() ?? 'active';
-            if (!in_array($userStatus, $availableStatuses, true)) {
-                $availableStatuses[] = $userStatus;
-            }
-        }
-
-        sort($availableRoles);
-        sort($availableStatuses);
-
-        return $this->render('admin/student-list.html.twig', [
-            'users' => $userData,
-            'search' => $search,
-            'sortBy' => $sortBy,
-            'sortOrder' => $sortOrder,
-            'status' => $status,
-            'role' => $role,
-            'availableRoles' => $availableRoles,
-            'availableStatuses' => $availableStatuses,
-        ]);
-    }
-
-    private function getUserRole($user): string
-    {
-        // Get user role from the role relationship
-        $role = $user->getRole();
-
-        return $role ? $role->getName() : 'User';
-    }
-
-    #[Route('/admin/user/{id}/view', name: 'admin_user_view', methods: ['GET'])]
-    public function viewUser(int $id, EntityManagerInterface $entityManager): Response
-    {
-        $user = $entityManager->getRepository(\App\Entity\User::class)->find($id);
-        if (!$user) {
-            throw $this->createNotFoundException('User not found');
-        }
-
-        return $this->render('admin/user-view.html.twig', [
-            'user' => $user,
-        ]);
-    }
-
-    #[Route('/admin/user/{id}/edit', name: 'admin_user_edit', methods: ['GET', 'POST'])]
-    public function editUser(int $id, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $user = $entityManager->getRepository(\App\Entity\User::class)->find($id);
-        if (!$user) {
-            throw $this->createNotFoundException('User not found');
-        }
-
-        if ($request->isMethod('POST')) {
-            // Handle form submission
-            $user->setFullName($request->request->get('fullName'));
-            $user->setEmail($request->request->get('email'));
-            $user->setStatus($request->request->get('status'));
-
-            $entityManager->flush();
-
-            return $this->redirectToRoute('admin_student_list');
-        }
-
-        return $this->render('admin/user-edit.html.twig', [
-            'user' => $user,
-        ]);
-    }
-
-    #[Route('/admin/user/{id}/suspend', name: 'admin_user_suspend', methods: ['POST'])]
-    public function suspendUser(int $id, EntityManagerInterface $entityManager): Response
-    {
-        $user = $entityManager->getRepository(\App\Entity\User::class)->find($id);
-        if (!$user) {
-            throw $this->createNotFoundException('User not found');
-        }
-
-        $user->setStatus('suspended');
-        $entityManager->flush();
-
-        return $this->redirectToRoute('admin_student_list');
-    }
-
-    #[Route('/admin/user/{id}/activate', name: 'admin_user_activate', methods: ['POST'])]
-    public function activateUser(int $id, EntityManagerInterface $entityManager): Response
-    {
-        $user = $entityManager->getRepository(\App\Entity\User::class)->find($id);
-        if (!$user) {
-            throw $this->createNotFoundException('User not found');
-        }
-
-        $user->setStatus('active');
-        $entityManager->flush();
-
-        return $this->redirectToRoute('admin_student_list');
-    }
-
-    #[Route('/admin/user/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]
-    public function deleteUser(int $id, EntityManagerInterface $entityManager): Response
-    {
-        $user = $entityManager->getRepository(\App\Entity\User::class)->find($id);
-        if (!$user) {
-            throw $this->createNotFoundException('User not found');
-        }
-
-        try {
-            // Check for related data before deletion
-            $relatedData = [];
-
-            // Check for courses
-            $courseCount = count($user->getCourses());
-            if ($courseCount > 0) {
-                $relatedData['courses'] = $courseCount;
-            }
-
-            // Check for quiz results
-            $quizResultCount = count($user->getQuizResults());
-            if ($quizResultCount > 0) {
-                $relatedData['quiz_results'] = $quizResultCount;
-            }
-
-            // Check for products
-            $productCount = count($user->getProducts());
-            if ($productCount > 0) {
-                $relatedData['products'] = $productCount;
-            }
-
-            // Check for jobs
-            $jobCount = count($user->getJobs());
-            if ($jobCount > 0) {
-                $relatedData['jobs'] = $jobCount;
-            }
-
-            // Check for orders
-            $orderCount = count($user->getOrders());
-            if ($orderCount > 0) {
-                $relatedData['orders'] = $orderCount;
-            }
-
-            // Check for applications
-            $applicationCount = count($user->getApplications());
-            if ($applicationCount > 0) {
-                $relatedData['applications'] = $applicationCount;
-            }
-
-            // Check for favorites
-            $favoriteCount = count($user->getFavorites());
-            if ($favoriteCount > 0) {
-                $relatedData['favorites'] = $favoriteCount;
-            }
-
-            // If there's related data, handle it properly
-            if (!empty($relatedData)) {
-                // Option 1: Remove related data first (uncomment if you want this behavior)
-                /*
-                foreach ($user->getCourses() as $course) {
-                    $entityManager->remove($course);
-                }
-                foreach ($user->getQuizResults() as $quizResult) {
-                    $entityManager->remove($quizResult);
-                }
-                foreach ($user->getProducts() as $product) {
-                    $entityManager->remove($product);
-                }
-                foreach ($user->getJobs() as $job) {
-                    $entityManager->remove($job);
-                }
-                foreach ($user->getOrders() as $order) {
-                    $entityManager->remove($order);
-                }
-                foreach ($user->getApplications() as $application) {
-                    $entityManager->remove($application);
-                }
-                foreach ($user->getFavorites() as $favorite) {
-                    $entityManager->remove($favorite);
-                }
-                */
-
-                // Option 2: Show error message (current behavior)
-                $errorMessage = 'Cannot delete user "'.$user->getFullName().'" because they have related data: ';
-                $errorDetails = [];
-
-                foreach ($relatedData as $entityType => $count) {
-                    $errorDetails[] = $count.' '.str_replace('_', ' ', $entityType);
-                }
-
-                $errorMessage .= implode(', ', $errorDetails).'. Please remove or reassign this data first.';
-
-                // Add flash message and redirect back
-                $this->addFlash('error', $errorMessage);
-
-                return $this->redirectToRoute('admin_user_view', ['id' => $id]);
-            }
-
-            // If no related data, proceed with deletion
-            $entityManager->remove($user);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'User "'.$user->getFullName().'" has been successfully deleted.');
-        } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
-            $this->addFlash('error', 'Cannot delete this user because they have related data in the system. Please remove or reassign the related data first.');
-
-            return $this->redirectToRoute('admin_user_view', ['id' => $id]);
+            
         } catch (\Exception $e) {
-            $this->addFlash('error', 'An error occurred while trying to delete the user: '.$e->getMessage());
-
-            return $this->redirectToRoute('admin_user_view', ['id' => $id]);
-        }
-
-        return $this->redirectToRoute('admin_student_list');
-    }
-
-    #[Route('/student-course-list', name: 'app_student_course_list')]
-    public function studentCourseList(): Response
-    {
-        return $this->render('student/course-list.html.twig');
-    }
-
-    #[Route('/coming-soon', name: 'app_coming_soon')]
-    public function comingSoon(): Response
-    {
-        return $this->render('utility/coming-soon.html.twig');
-    }
-
-    #[Route('/home-variant-5', name: 'app_home_variant_5')]
-    public function homeVariant5(): Response
-    {
-        return $this->render('home/index-5.html.twig');
-    }
-
-    #[Route('/faq', name: 'app_faq')]
-    public function faq(): Response
-    {
-        return $this->render('utility/faq.html.twig');
-    }
-
-    #[Route('/blog-detail', name: 'app_blog_detail')]
-    public function blogDetail(): Response
-    {
-        return $this->render('blog/detail.html.twig');
-    }
-
-    #[Route('/cart', name: 'app_cart')]
-    public function cart(): Response
-    {
-        return $this->render('shop/cart.html.twig');
-    }
-
-    #[Route('/checkout', name: 'app_checkout')]
-    public function checkout(): Response
-    {
-        return $this->render('shop/checkout.html.twig');
-    }
-
-    #[Route('/course-detail-adv', name: 'app_course_detail_adv')]
-    public function courseDetailAdv(): Response
-    {
-        return $this->render('course/detail-adv.html.twig');
-    }
-
-    #[Route('/course-detail-min', name: 'app_course_detail_min')]
-    public function courseDetailMin(): Response
-    {
-        return $this->render('course/detail-min.html.twig');
-    }
-
-    #[Route('/course-detail-module', name: 'app_course_detail_module')]
-    public function courseDetailModule(): Response
-    {
-        return $this->render('course/detail-module.html.twig');
-    }
-
-    #[Route('/blog-masonry', name: 'app_blog_masonry')]
-    public function blogMasonry(): Response
-    {
-        return $this->render('blog/masonry.html.twig');
-    }
-
-    #[Route('/notification-example', name: 'app_notification_example')]
-    public function notificationExample(): Response
-    {
-        return $this->render('examples/notification-example.html.twig');
-    }
-
-    #[Route('/admin-quizzes', name: 'app_admin_quizzes')]
-    public function adminQuizzes(Request $request): Response
-    {
-        // Get search and filter parameters
-        $search = $request->query->get('search', '');
-        $sortBy = $request->query->get('sort', 'createdAt');
-        $sortOrder = $request->query->get('order', 'desc');
-        $status = $request->query->get('status', '');
-        $isAjax = $request->query->get('ajax', false);
-
-        // Build query
-        $qb = $this->quizRepository->createQueryBuilder('q');
-
-        // Join course to get course title
-        $qb->leftJoin('q.course', 'c')
-           ->addSelect('c');
-
-        // Apply search filter
-        if (!empty($search)) {
-            $qb->andWhere('q.title LIKE :search')
-               ->setParameter('search', '%'.$search.'%');
-        }
-
-        // Apply status filter (all quizzes are currently "active")
-        if (!empty($status) && 'active' === $status) {
-            // All quizzes are active by default, so no filtering needed
-        } elseif (!empty($status) && 'inactive' === $status) {
-            // No inactive quizzes currently
-            $qb->andWhere('1 = 0'); // Return no results
-        }
-
-        // Apply sorting
-        $validSortFields = ['title', 'createdAt'];
-        if (in_array($sortBy, $validSortFields, true)) {
-            $qb->orderBy('q.'.$sortBy, 'asc' === $sortOrder ? 'ASC' : 'DESC');
-        } else {
-            $qb->orderBy('q.createdAt', 'DESC');
-        }
-
-        $quizzes = $qb->getQuery()->getResult();
-
-        $quizData = [];
-        foreach ($quizzes as $quiz) {
-            $questions = $this->questionRepository->findBy(['quiz' => $quiz]);
-            $quizData[] = [
-                'id' => $quiz->getId(),
-                'title' => $quiz->getTitle(),
-                'course' => $quiz->getCourse(),
-                'questions' => $questions,
-                'createdAt' => $quiz->getCreatedAt(),
-            ];
-        }
-
-        // Handle AJAX request
-        if ($isAjax) {
+            $this->logger->error('AI Roadmap generation error: ' . $e->getMessage());
+            
+            // Fallback to enhanced rule-based roadmap
+            $fallbackRoadmap = $this->generateEnhancedRoadmap($userData, $availableCourses, $userHistory);
+            
             return new JsonResponse([
                 'success' => true,
-                'quizzes' => $quizData,
+                'roadmap' => $fallbackRoadmap,
+                'user_history' => $userHistory,
+                'generated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'fallback_used' => true
             ]);
         }
-
-        // Get all questions for statistics
-        $allQuestions = [];
-        foreach ($quizzes as $quiz) {
-            $questions = $this->questionRepository->findBy(['quiz' => $quiz]);
-            $allQuestions[] = [
-                'quiz_id' => $quiz->getId(),
-                'quiz_title' => $quiz->getTitle(),
-                'questions' => $questions,
-            ];
-        }
-
-        return $this->render('admin/simple.html.twig', [
-            'quizzes' => $quizzes,
-            'allQuestions' => $allQuestions,
-            'search' => $search,
-            'status' => $status,
-            'sortBy' => $sortBy,
-            'sortOrder' => $sortOrder,
-        ]);
     }
-
-    #[Route('/admin/quizzes/export', name: 'app_admin_quizzes_export')]
-    public function adminQuizzesExport(): Response
+    
+    private function generateEnhancedRoadmap(array $userData, array $availableCourses, array $userHistory): array
     {
-        try {
-            $quizzes = $this->quizRepository->findAll();
-
-            // Simple HTML content
-            $html = '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Quiz Export Report</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
-        th { background-color: #f2f2f2; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <h1>Quiz Export Report</h1>
-    <p>Generated on: '.date('Y-m-d H:i:s').'</p>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Questions Count</th>
-                <th>Created At</th>
-            </tr>
-        </thead>
-        <tbody>';
-
-            foreach ($quizzes as $quiz) {
-                $questionCount = count($this->questionRepository->findBy(['quiz' => $quiz]));
-                $html .= '
-            <tr>
-                <td>'.$quiz->getId().'</td>
-                <td>'.htmlspecialchars($quiz->getTitle()).'</td>
-                <td>'.$questionCount.'</td>
-                <td>'.$quiz->getCreatedAt()->format('Y-m-d H:i:s').'</td>
-            </tr>';
+        $goal = $userData['learning_goal'];
+        $level = $userData['skill_level'];
+        $timeCommitment = $userData['time_commitment'];
+        
+        // Enhanced course filtering with semantic analysis
+        $relevantCourses = [];
+        foreach ($availableCourses as $course) {
+            if ($this->courseMatchesGoal($course['title'], $course['shortDescription'], $course['category'], $goal)) {
+                $relevantCourses[] = $course;
             }
-
-            $html .= '
-        </tbody>
-    </table>
-</body>
-</html>';
-
-            return new Response($html, 200, [
-                'Content-Type' => 'text/html',
-                'Content-Disposition' => 'attachment; filename="quizzes_export_'.date('Y-m-d_H-i-s').'.html"',
-            ]);
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Error exporting quizzes: '.$e->getMessage(),
-            ], 500);
         }
-    }
-
-    #[Route('/admin/quiz/add', name: 'app_admin_quiz_add')]
-    public function adminQuizAdd(): Response
-    {
-        return $this->render('admin/quiz-add.html.twig');
-    }
-
-    #[Route('/admin/quiz/create', name: 'app_admin_quiz_create', methods: ['POST'])]
-    public function adminQuizCreate(Request $request): JsonResponse
-    {
-        try {
-            $data = json_decode($request->getContent(), true);
-
-            // Create new quiz
-            $quiz = new Quiz();
-            $quiz->setTitle($data['title']);
-            $quiz->setCreatedAt(new \DateTimeImmutable());
-
-            // Validate the quiz
-            $errors = $this->validator->validate($quiz);
-            if (count($errors) > 0) {
-                $errorMessages = [];
-                foreach ($errors as $error) {
-                    $errorMessages[] = $error->getMessage();
-                }
-
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => implode(', ', $errorMessages),
-                ], 400);
+        
+        // Sort by relevance and logical progression
+        usort($relevantCourses, function($a, $b) use ($level) {
+            // Level appropriateness scoring
+            $levelOrder = ['beginner' => 0, 'intermediate' => 1, 'advanced' => 2];
+            $aLevelScore = abs(($levelOrder[$a['level']] ?? 1) - ($levelOrder[$level] ?? 0));
+            $bLevelScore = abs(($levelOrder[$b['level']] ?? 1) - ($levelOrder[$level] ?? 0));
+            
+            if ($aLevelScore !== $bLevelScore) {
+                return $aLevelScore - $bLevelScore;
             }
-
-            // Save the quiz to database
-            $this->entityManager->persist($quiz);
-            $this->entityManager->flush();
-
-            // Add questions if provided
-            if (isset($data['questions']) && is_array($data['questions'])) {
-                foreach ($data['questions'] as $questionData) {
-                    $question = new Question();
-                    $question->setQuiz($quiz);
-                    $question->setQuestion($questionData['question']);
-                    $question->setOptionA($questionData['optionA'] ?? '');
-                    $question->setOptionB($questionData['optionB'] ?? '');
-                    $question->setOptionC($questionData['optionC'] ?? '');
-                    $question->setOptionD($questionData['optionD'] ?? '');
-                    $question->setCorrectOption($questionData['correctOption'] ?? 'A');
-                    $question->setCreatedAt(new \DateTimeImmutable());
-
-                    $this->entityManager->persist($question);
-                }
-                $this->entityManager->flush();
-            }
-
-            return new JsonResponse([
-                'success' => true,
-                'message' => 'Quiz created successfully!',
-                'quizId' => $quiz->getId(),
-            ]);
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Error creating quiz: '.$e->getMessage(),
-            ], 500);
+            
+            // Progression scoring
+            $aProgression = $this->analyzeCourseProgression($a['title'], $a['shortDescription'], $goal);
+            $bProgression = $this->analyzeCourseProgression($b['title'], $b['shortDescription'], $goal);
+            
+            return $aProgression - $bProgression;
+        });
+        
+        // Generate intelligent learning path
+        $weeks = max(4, min(16, (int)explode('-', $timeCommitment)[0] * 2));
+        $roadmap = $this->createIntelligentRoadmapStructure($goal, $level, $weeks, $relevantCourses, $userHistory);
+        
+        return $roadmap;
+    }
+    
+    private function createIntelligentRoadmapStructure(string $goal, string $level, int $weeks, array $courses, array $history): array
+    {
+        $roadmap = [
+            'roadmap' => [
+                'title' => "Intelligent Learning Roadmap for {$goal}",
+                'description' => "Personalized learning path based on your goals, skill level, and learning history",
+                'estimated_duration' => "{$weeks} weeks",
+                'difficulty_progression' => "{$level} → intermediate → advanced",
+                'personalization_factors' => [
+                    'learning_goal_analysis' => true,
+                    'skill_level_assessment' => true,
+                    'learning_history_integration' => true,
+                    'semantic_course_matching' => true,
+                    'prerequisite_analysis' => true
+                ]
+            ],
+            'weeks' => [],
+            'milestones' => [],
+            'adaptation_notes' => 'This roadmap adapts based on your quiz performance, course completion rates, and learning pace. The AI will recommend adjustments as you progress.',
+            'success_criteria' => 'Complete each week\'s objectives with >80% quiz scores and finish all project assignments',
+            'next_steps' => 'After completion, you\'ll be ready for advanced specialization or real-world projects in your chosen field'
+        ];
+        
+        // Generate weekly content with intelligence
+        for ($week = 1; $week <= $weeks; $week++) {
+            $weekData = $this->generateIntelligentWeek($week, $goal, $level, $courses, $history);
+            $roadmap['weeks'][] = $weekData;
         }
+        
+        // Add milestones
+        $roadmap['milestones'] = $this->generateMilestones($weeks, $goal, $level);
+        
+        return $roadmap;
     }
-
-    #[Route('/admin/quizzes/search', name: 'app_admin_quizzes_search', methods: ['GET'])]
-    public function adminQuizzesSearch(Request $request): JsonResponse
+    
+    private function generateIntelligentWeek(int $week, string $goal, string $level, array $courses, array $history): array
     {
-        try {
-            $searchTerm = $request->query->get('q', '');
-
-            if (empty($searchTerm)) {
-                // Return all quizzes if search term is empty
-                $quizzes = $this->quizRepository->findAll();
+        // Analyze user's learning patterns
+        $learningPatterns = $this->analyzeLearningPatterns($history);
+        
+        // Select appropriate courses for this week
+        $weekCourses = $this->selectWeekCourses($week, $courses, $level, count($history['enrollments'] ?? []));
+        
+        // Generate week-specific objectives
+        $objectives = $this->generateWeekObjectives($week, $goal, $level, $weekCourses, $learningPatterns);
+        
+        // Determine focus area based on progression
+        $focus = $this->determineWeekFocus($week, $goal, $level, $weekCourses);
+        
+        // Recommend activities based on learning styles
+        $activities = $this->recommendActivities($week, $focus, $learningPatterns);
+        
+        return [
+            'week' => $week,
+            'title' => "Week {$week}: " . $focus,
+            'focus' => $focus,
+            'objectives' => $objectives,
+            'course_recommendations' => $weekCourses,
+            'activities' => $activities,
+            'estimated_hours' => $this->calculateEstimatedHours($week, $level, $activities),
+            'difficulty' => $this->adjustDifficulty($week, $level, $learningPatterns),
+            'assessment_type' => $this->determineAssessmentType($week, $focus),
+            'personalization_notes' => $this->generatePersonalizationNotes($week, $learningPatterns, $history)
+        ];
+    }
+    
+    private function analyzeLearningPatterns(array $history): array
+    {
+        $patterns = [
+            'preferred_difficulty' => 'intermediate',
+            'learning_pace' => 'moderate',
+            'strength_areas' => [],
+            'improvement_areas' => [],
+            'preferred_content_types' => ['practical', 'visual'],
+            'quiz_performance_trend' => 'stable'
+        ];
+        
+        // Analyze quiz performance
+        if (!empty($history['quiz_results'])) {
+            $scores = array_column($history['quiz_results'], 'percentage');
+            $averageScore = array_sum($scores) / count($scores);
+            
+            if ($averageScore >= 85) {
+                $patterns['preferred_difficulty'] = 'advanced';
+                $patterns['learning_pace'] = 'fast';
+            } elseif ($averageScore >= 70) {
+                $patterns['preferred_difficulty'] = 'intermediate';
+                $patterns['learning_pace'] = 'moderate';
             } else {
-                // Search quizzes by title
-                $quizzes = $this->quizRepository->findByTitleContaining($searchTerm);
+                $patterns['preferred_difficulty'] = 'beginner';
+                $patterns['learning_pace'] = 'steady';
             }
-
-            // Get all questions for each quiz
-            $allQuestions = [];
-            foreach ($quizzes as $quiz) {
-                $questions = $this->questionRepository->findBy(['quiz' => $quiz]);
-                $allQuestions[] = [
-                    'quiz_id' => $quiz->getId(),
-                    'quiz_title' => $quiz->getTitle(),
-                    'questions' => $questions,
-                ];
-            }
-
-            // Format quizzes for JSON response
-            $formattedQuizzes = [];
-            foreach ($quizzes as $quiz) {
-                $formattedQuizzes[] = [
-                    'id' => $quiz->getId(),
-                    'title' => $quiz->getTitle(),
-                    'createdAt' => $quiz->getCreatedAt()->format('Y-m-d H:i:s'),
-                    'updatedAt' => $quiz->getUpdatedAt() ? $quiz->getUpdatedAt()->format('Y-m-d H:i:s') : null,
-                ];
-            }
-
-            return new JsonResponse([
-                'success' => true,
-                'quizzes' => $formattedQuizzes,
-                'allQuestions' => $allQuestions,
-            ]);
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Error searching quizzes: '.$e->getMessage(),
-            ], 500);
-        }
-    }
-
-    #[Route('/admin/quiz/{id}/delete', name: 'app_admin_quiz_delete', methods: ['DELETE'])]
-    public function adminQuizDelete(int $id): JsonResponse
-    {
-        try {
-            $quiz = $this->quizRepository->find($id);
-            if (!$quiz) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => 'Quiz not found',
-                ], 404);
-            }
-
-            // Delete all questions for this quiz
-            $questions = $this->questionRepository->findBy(['quiz' => $quiz]);
-            foreach ($questions as $question) {
-                $this->entityManager->remove($question);
-            }
-
-            // Delete quiz
-            $this->entityManager->remove($quiz);
-            $this->entityManager->flush();
-
-            return new JsonResponse([
-                'success' => true,
-                'message' => 'Quiz deleted successfully!',
-            ]);
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Error deleting quiz: '.$e->getMessage(),
-            ], 500);
-        }
-    }
-
-    #[Route('/admin/quiz/{id}/view', name: 'app_admin_quiz_view')]
-    public function adminQuizView(int $id): Response
-    {
-        $quiz = $this->quizRepository->find($id);
-        if (!$quiz) {
-            throw $this->createNotFoundException('Quiz not found');
-        }
-
-        $questions = $this->questionRepository->findBy(['quiz' => $quiz]);
-
-        return $this->render('admin/quiz-detail.html.twig', [
-            'quiz' => $quiz,
-            'questions' => $questions,
-        ]);
-    }
-
-    #[Route('/admin/quiz/{id}/edit', name: 'app_admin_quiz_edit')]
-    public function adminQuizEdit(int $id): Response
-    {
-        $quiz = $this->quizRepository->find($id);
-        if (!$quiz) {
-            throw $this->createNotFoundException('Quiz not found');
-        }
-
-        $questions = $this->questionRepository->findBy(['quiz' => $quiz]);
-
-        return $this->render('admin/quiz-edit.html.twig', [
-            'quiz' => $quiz,
-            'questions' => $questions,
-        ]);
-    }
-
-    #[Route('/admin/quiz/{id}/update', name: 'app_admin_quiz_update', methods: ['PUT'])]
-    public function adminQuizUpdate(int $id, Request $request): JsonResponse
-    {
-        try {
-            $quiz = $this->quizRepository->find($id);
-            if (!$quiz) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => 'Quiz not found',
-                ], 404);
-            }
-
-            $data = json_decode($request->getContent(), true);
-
-            // Update quiz fields
-            $quiz->setTitle($data['title']);
-            $quiz->setUpdatedAt(new \DateTimeImmutable());
-
-            // Validate the quiz
-            $errors = $this->validator->validate($quiz);
-            if (count($errors) > 0) {
-                $errorMessages = [];
-                foreach ($errors as $error) {
-                    $errorMessages[] = $error->getMessage();
+            
+            // Identify strengths and weaknesses
+            foreach ($history['quiz_results'] as $result) {
+                if ($result['percentage'] >= 80) {
+                    $patterns['strength_areas'][] = $result['quiz_title'];
+                } elseif ($result['percentage'] < 60) {
+                    $patterns['improvement_areas'][] = $result['quiz_title'];
                 }
-
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => implode(', ', $errorMessages),
-                ], 400);
             }
-
-            // Save the quiz
-            $this->entityManager->flush();
-
-            return new JsonResponse([
-                'success' => true,
-                'message' => 'Quiz updated successfully!',
-            ]);
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Error updating quiz: '.$e->getMessage(),
-            ], 500);
+        }
+        
+        return $patterns;
+    }
+    
+    private function selectWeekCourses(int $week, array $courses, string $level, int $previousEnrollments): array
+    {
+        $recommendations = [];
+        $coursesPerWeek = min(2, max(1, ceil(count($courses) / 4)));
+        
+        // Select courses based on logical progression
+        $startIndex = ($week - 1) * $coursesPerWeek;
+        $endIndex = min($startIndex + $coursesPerWeek, count($courses));
+        
+        for ($i = $startIndex; $i < $endIndex; $i++) {
+            if (isset($courses[$i])) {
+                $course = $courses[$i];
+                $recommendations[] = [
+                    'course_id' => $course['id'],
+                    'title' => $course['title'],
+                    'relevance_score' => $this->calculateCourseRelevance($course, $week, $level),
+                    'reason' => $this->generateCourseReason($course, $week, $level),
+                    'level' => $course['level'],
+                    'category' => $course['category'],
+                    'estimated_weeks' => $this->estimateCourseWeeks($course, $level)
+                ];
+            }
+        }
+        
+        return $recommendations;
+    }
+    
+    private function calculateCourseRelevance(array $course, int $week, string $level): float
+    {
+        $baseScore = 0.8;
+        
+        // Level matching
+        if ($course['level'] === $level) {
+            $baseScore += 0.2;
+        }
+        
+        // Week progression bonus
+        if ($week <= 2 && in_array($course['level'], ['beginner', 'intro'])) {
+            $baseScore += 0.1;
+        } elseif ($week > 2 && in_array($course['level'], ['intermediate', 'advanced'])) {
+            $baseScore += 0.1;
+        }
+        
+        return min(1.0, $baseScore);
+    }
+    
+    private function generateCourseReason(array $course, int $week, string $level): string
+    {
+        $reasons = [
+            'Builds foundational knowledge for your learning journey',
+            'Introduces key concepts and terminology',
+            'Provides practical hands-on experience',
+            'Expands on previous week\'s learning',
+            'Prepares you for advanced topics',
+            'Aligns with your learning objectives'
+        ];
+        
+        return $reasons[($week - 1) % count($reasons)];
+    }
+    
+    private function estimateCourseWeeks(array $course, string $level): int
+    {
+        $baseWeeks = 2;
+        
+        if ($course['level'] === 'beginner') {
+            return $baseWeeks;
+        } elseif ($course['level'] === 'intermediate') {
+            return $baseWeeks + 1;
+        } else {
+            return $baseWeeks + 2;
         }
     }
-
-    #[Route('/admin/quiz/{id}/duplicate', name: 'app_admin_quiz_duplicate', methods: ['POST'])]
-    public function adminQuizDuplicate(int $id): JsonResponse
+    
+    private function generateWeekObjectives(int $week, string $goal, string $level, array $courses, array $patterns): array
     {
+        $baseObjectives = [
+            'Complete core learning modules',
+            'Practice with hands-on exercises',
+            'Pass weekly assessment with >80% score'
+        ];
+        
+        // Add personalized objectives based on patterns
+        if (!empty($patterns['improvement_areas'])) {
+            $baseObjectives[] = 'Focus extra time on weak areas: ' . implode(', ', array_slice($patterns['improvement_areas'], 0, 2));
+        }
+        
+        if (!empty($courses)) {
+            $baseObjectives[] = 'Progress through recommended course materials';
+        }
+        
+        return $baseObjectives;
+    }
+    
+    private function determineWeekFocus(int $week, string $goal, string $level, array $courses): string
+    {
+        $focusAreas = $this->getProgressionFocusAreas($goal, $level);
+        $index = ($week - 1) % count($focusAreas);
+        
+        return $focusAreas[$index];
+    }
+    
+    private function getProgressionFocusAreas(string $goal, string $level): array
+    {
+        $goalLower = strtolower($goal);
+        
+        if (strpos($goalLower, 'web development') !== false) {
+            return ['HTML & CSS Foundations', 'JavaScript Essentials', 'DOM Manipulation', 'Responsive Design', 'Modern Frameworks', 'Backend Integration'];
+        } elseif (strpos($goalLower, 'data science') !== false) {
+            return ['Python Fundamentals', 'Data Analysis Basics', 'Statistical Concepts', 'Machine Learning Intro', 'Data Visualization', 'Advanced ML Techniques'];
+        } elseif (strpos($goalLower, 'mobile') !== false) {
+            return ['Mobile Basics', 'UI/UX Principles', 'Platform Fundamentals', 'App Development', 'Testing & Debugging', 'Deployment Strategies'];
+        } else {
+            return ['Foundation Concepts', 'Core Skills Development', 'Practical Application', 'Advanced Topics', 'Specialization', 'Mastery & Innovation'];
+        }
+    }
+    
+    private function recommendActivities(int $week, string $focus, array $patterns): array
+    {
+        $activities = ['Reading & Study', 'Practice Exercises', 'Video Tutorials'];
+        
+        // Add activities based on learning patterns
+        if (in_array('practical', $patterns['preferred_content_types'])) {
+            $activities[] = 'Hands-on Projects';
+        }
+        
+        if (in_array('visual', $patterns['preferred_content_types'])) {
+            $activities[] = 'Video Demonstrations';
+        }
+        
+        if ($week % 2 === 0) {
+            $activities[] = 'Peer Discussion';
+        }
+        
+        return $activities;
+    }
+    
+    private function calculateEstimatedHours(int $week, string $level, array $activities): int
+    {
+        $baseHours = 8;
+        
+        if ($level === 'advanced') {
+            $baseHours += 2;
+        } elseif ($level === 'beginner') {
+            $baseHours -= 2;
+        }
+        
+        // Add time for activities
+        $activityHours = count($activities) * 1.5;
+        
+        return max(5, min(15, $baseHours + $activityHours));
+    }
+    
+    private function adjustDifficulty(int $week, string $level, array $patterns): string
+    {
+        // Adjust based on learning patterns
+        if ($patterns['preferred_difficulty'] === 'advanced' && $week > 2) {
+            return 'advanced';
+        } elseif ($patterns['preferred_difficulty'] === 'beginner' && $week <= 4) {
+            return 'beginner';
+        }
+        
+        return $level;
+    }
+    
+    private function determineAssessmentType(int $week, string $focus): string
+    {
+        if ($week % 2 === 0) {
+            return 'project';
+        } elseif ($week % 3 === 0) {
+            return 'assignment';
+        } else {
+            return 'quiz';
+        }
+    }
+    
+    private function generatePersonalizationNotes(int $week, array $patterns, array $history): string
+    {
+        $notes = [];
+        
+        if (!empty($patterns['strength_areas'])) {
+            $notes[] = 'Leverage your strength in ' . $patterns['strength_areas'][0];
+        }
+        
+        if (!empty($patterns['improvement_areas'])) {
+            $notes[] = 'Extra practice recommended for ' . $patterns['improvement_areas'][0];
+        }
+        
+        if ($patterns['learning_pace'] === 'fast') {
+            $notes[] = 'You can progress quickly through familiar topics';
+        } elseif ($patterns['learning_pace'] === 'steady') {
+            $notes[] = 'Take your time to build strong foundations';
+        }
+        
+        return implode('. ', $notes);
+    }
+    
+    private function generateMilestones(int $weeks, string $goal, string $level): array
+    {
+        $milestones = [];
+        
+        // Mid-point milestone
+        $midWeek = floor($weeks / 2);
+        $milestones[] = [
+            'week' => $midWeek,
+            'title' => 'Mid-point Competency Check',
+            'description' => 'You should have a solid understanding of core concepts and be ready for intermediate topics',
+            'skills_gained' => ['Fundamental knowledge', 'Practical skills', 'Problem-solving abilities']
+        ];
+        
+        // Final milestone
+        $milestones[] = [
+            'week' => $weeks,
+            'title' => 'Learning Goal Achievement',
+            'description' => 'You\'ve completed your learning journey and are ready for advanced challenges or real-world application',
+            'skills_gained' => ['Complete understanding', 'Practical application', 'Confidence in subject matter']
+        ];
+        
+        return $milestones;
+    }
+    
+    #[Route('/api/roadmap/save', name: 'api_roadmap_save', methods: ['POST'])]
+    public function saveRoadmap(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not authenticated'], 401);
+        }
+
         try {
-            $quiz = $this->quizRepository->find($id);
-            if (!$quiz) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => 'Quiz not found',
-                ], 404);
+            $data = json_decode($request->getContent(), true);
+            
+            // Validate required fields
+            if (empty($data['learning_goal']) || empty($data['skill_level'])) {
+                return new JsonResponse(['error' => 'Missing required fields'], 400);
             }
-
-            // Create new quiz as a duplicate
-            $newQuiz = new Quiz();
-            $newQuiz->setTitle($quiz->getTitle().' (Copy)');
-            $newQuiz->setCourse($quiz->getCourse());
-            $newQuiz->setCreatedAt(new \DateTimeImmutable());
-            $newQuiz->setUpdatedAt(new \DateTimeImmutable());
-
-            // Duplicate questions
-            foreach ($quiz->getQuestions() as $originalQuestion) {
-                $newQuestion = new Question();
-                $newQuestion->setQuiz($newQuiz);
-                $newQuestion->setQuestion($originalQuestion->getQuestion());
-                $newQuestion->setOptionA($originalQuestion->getOptionA());
-                $newQuestion->setOptionB($originalQuestion->getOptionB());
-                $newQuestion->setOptionC($originalQuestion->getOptionC());
-                $newQuestion->setOptionD($originalQuestion->getOptionD());
-                $newQuestion->setCorrectOption($originalQuestion->getCorrectOption());
-                $newQuestion->setCreatedAt(new \DateTimeImmutable());
-
-                $this->entityManager->persist($newQuestion);
-            }
-
-            // Save the new quiz and questions
-            $this->entityManager->persist($newQuiz);
-            $this->entityManager->flush();
-
+            
+            // Create or update roadmap entity (you'll need to create this entity)
+            $roadmap = new \App\Entity\LearningRoadmap();
+            $roadmap->setUser($user);
+            $roadmap->setLearningGoal($data['learning_goal']);
+            $roadmap->setSkillLevel($data['skill_level']);
+            $roadmap->setTimeCommitment($data['time_commitment'] ?? '3-5');
+            $roadmap->setLearningStyles($data['learning_styles'] ?? []);
+            $roadmap->setRoadmapContent($data['roadmap_content'] ?? []);
+            $roadmap->setGeneratedAt(new \DateTime($data['generated_at'] ?? 'now'));
+            $roadmap->setIsActive(true);
+            
+            $entityManager->persist($roadmap);
+            $entityManager->flush();
+            
             return new JsonResponse([
                 'success' => true,
-                'message' => 'Quiz duplicated successfully!',
-                'quiz_id' => $newQuiz->getId(),
+                'message' => 'Roadmap saved successfully',
+                'roadmap_id' => $roadmap->getId()
             ]);
+            
         } catch (\Exception $e) {
+            $this->logger->error('Error saving roadmap: ' . $e->getMessage());
+            
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Error duplicating quiz: '.$e->getMessage(),
+                'error' => 'Failed to save roadmap. Please try again.'
             ], 500);
         }
     }
-
-    private function getLevelBadgeClass(?string $level): string
+    
+    private function courseMatchesGoal(string $title, string $description, string $category, string $goal): bool
     {
-        return match (strtolower($level)) {
-            'beginner' => 'text-bg-primary',
-            'intermediate' => 'text-bg-purple',
-            'advanced' => 'text-bg-danger',
-            'all levels', 'all level' => 'text-bg-orange',
-            default => 'text-bg-secondary',
-        };
+        // Simple keyword matching for now - can be enhanced later
+        $goalLower = strtolower(trim($goal));
+        $titleLower = strtolower(trim($title));
+        $descriptionLower = strtolower(trim($description));
+        $categoryLower = strtolower(trim($category));
+        
+        // Check for direct keyword matches
+        $goalKeywords = explode(' ', $goalLower);
+        $titleWords = explode(' ', $titleLower);
+        $descriptionWords = explode(' ', $descriptionLower);
+        
+        // Count matching keywords
+        $matches = 0;
+        $totalKeywords = count($goalKeywords);
+        
+        foreach ($goalKeywords as $keyword) {
+            if (in_array($keyword, $titleWords) || in_array($keyword, $descriptionWords)) {
+                $matches++;
+            }
+        }
+        
+        // If at least 30% of keywords match, consider it a match
+        $matchPercentage = $totalKeywords > 0 ? ($matches / $totalKeywords) : 0;
+        
+        return $matchPercentage >= 0.3;
     }
-
-    private function getStatusBadgeClass(?string $status): string
+    
+    private function calculateSemanticSimilarity(string $goal, string $title, string $description, string $category): float
     {
-        return match (strtolower($status)) {
-            'live', 'active', 'published' => 'bg-success bg-opacity-15 text-success',
-            'pending', 'review' => 'bg-warning bg-opacity-15 text-warning',
-            'unaccept', 'rejected', 'inactive' => 'bg-danger bg-opacity-15 text-danger',
-            'draft' => 'bg-secondary bg-opacity-15 text-secondary',
-            default => 'bg-secondary bg-opacity-15 text-secondary',
-        };
+        // Simple similarity calculation
+        $goalWords = array_unique(explode(' ', strtolower($goal)));
+        $titleWords = array_unique(explode(' ', strtolower($title)));
+        $descriptionWords = array_unique(explode(' ', strtolower($description)));
+        
+        $allWords = array_unique(array_merge($titleWords, $descriptionWords));
+        
+        if (empty($allWords)) return 0.0;
+        
+        $matches = 0;
+        foreach ($goalWords as $word) {
+            if (in_array($word, $allWords)) {
+                $matches++;
+            }
+        }
+        
+        return count($goalWords) > 0 ? ($matches / count($goalWords)) : 0.0;
+    }
+    
+    private function analyzeLearningObjectiveAlignment(string $goal, string $title, string $description): float
+    {
+        // Simple objective alignment
+        return 0.7; // Placeholder
+    }
+    
+    private function analyzeSkillProgression(string $goal, string $title, string $description): float
+    {
+        // Simple progression analysis
+        return 0.6; // Placeholder
+    }
+    
+    private function analyzePrerequisiteDependencies(string $goal, string $title, string $description): float
+    {
+        // Simple prerequisite analysis
+        return 0.5; // Placeholder
+    }
+    
+    private function analyzeCareerRelevance(string $goal, string $title, string $description, string $category): float
+    {
+        // Simple career relevance
+        return 0.6; // Placeholder
+    }
+    
+    private function createConceptVector(string $text): array
+    {
+        // Simple concept vector creation
+        $words = array_unique(explode(' ', strtolower($text)));
+        return array_fill_keys($words, 1);
+    }
+    
+    private function calculateCosineSimilarity(array $vector1, array $vector2): float
+    {
+        // Simple cosine similarity
+        $commonWords = array_intersect_key($vector1, $vector2);
+        
+        if (empty($commonWords)) return 0.0;
+        
+        $dotProduct = 0;
+        $magnitude1 = 0;
+        $magnitude2 = 0;
+        
+        foreach ($vector1 as $word => $value) {
+            $magnitude1 += $value * $value;
+        }
+        
+        foreach ($vector2 as $word => $value) {
+            $magnitude2 += $value * $value;
+        }
+        
+        foreach ($commonWords as $word => $value) {
+            $dotProduct += $value * $vector2[$word];
+        }
+        
+        $magnitude1 = sqrt($magnitude1);
+        $magnitude2 = sqrt($magnitude2);
+        
+        return ($magnitude1 * $magnitude2) > 0 ? ($dotProduct / ($magnitude1 * $magnitude2)) : 0.0;
+    }
+    
+    private function analyzeCourseProgression(string $title, string $description, string $goal): int
+    {
+        // Simple progression analysis
+        return 1; // Placeholder
     }
 }

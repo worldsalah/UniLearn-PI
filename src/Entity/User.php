@@ -47,6 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')]
     private ?Role $role = null;
 
+    #[ORM\OneToMany(targetEntity: LearningRoadmap::class, mappedBy: 'user')]
+    private Collection $learningRoadmaps;
+
     #[ORM\Column(name: 'created_at', type: 'datetime')]
     private ?\DateTimeInterface $createdAt = null;
 
@@ -102,6 +105,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->applications = new ArrayCollection();
         $this->favorites = new ArrayCollection();
         $this->sessions = new ArrayCollection();
+        $this->learningRoadmaps = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -544,6 +548,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfileImage(?string $profileImage): self
     {
         $this->profileImage = $profileImage;
+
+        return $this;
+    }
+
+    public function getLearningRoadmaps(): Collection
+    {
+        return $this->learningRoadmaps;
+    }
+
+    public function addLearningRoadmap(LearningRoadmap $learningRoadmap): self
+    {
+        if (!$this->learningRoadmaps->contains($learningRoadmap)) {
+            $this->learningRoadmaps->add($learningRoadmap);
+            $learningRoadmap->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLearningRoadmap(LearningRoadmap $learningRoadmap): self
+    {
+        if ($this->learningRoadmaps->removeElement($learningRoadmap)) {
+            // set the owning side to null (unless already changed)
+            if ($learningRoadmap->getUser() === $this) {
+                $learningRoadmap->setUser(null);
+            }
+        }
 
         return $this;
     }

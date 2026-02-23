@@ -1,0 +1,461 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Settings - Student Dashboard{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Student Settings START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">{{ user.name|default(user.email) }}</h5>
+                        <p class="mb-2">{{ user.email }}</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="{{ path('app_student_courses') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="{{ path('app_student_certificates') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="{{ path('app_student_settings') }}" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                            <a href="{{ path('app_student_quiz_analysis') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-brain me-2"></i>AI Quiz Analysis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="mb-1">Settings</h3>
+                        <p class="mb-0 text-muted">Manage your account settings and preferences</p>
+                    </div>
+                </div>
+                <!-- Header END -->
+
+                <!-- Settings Sections START -->
+                <div class="row">
+                    <!-- Profile Settings -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow h-100">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="fas fa-user me-2"></i>Profile Settings
+                                </h5>
+                                <form id="profileForm">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="name" value="{{ user.name|default('') }}" placeholder="Enter your full name">
+                                        <div class="form-text">This is how your name will appear across the platform.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="email" value="{{ user.email }}" readonly>
+                                        <div class="form-text">Contact support to change your email address.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" id="phone" value="{{ user.phone|default('') }}" placeholder="Enter your phone number">
+                                        <div class="form-text">Optional - for account recovery notifications.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bio" class="form-label">Bio</label>
+                                        <textarea class="form-control" id="bio" rows="3" placeholder="Tell us about yourself...">{{ user.bio|default('') }}</textarea>
+                                        <div class="form-text">Brief description for your profile.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="location" class="form-label">Location</label>
+                                        <input type="text" class="form-control" id="location" value="{{ user.location|default('') }}" placeholder="City, Country">
+                                        <div class="form-text">Optional - helps us provide relevant content.</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Save Changes
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow h-100">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="fas fa-bell me-2"></i>Notification Settings
+                                </h5>
+                                <form id="notificationForm">
+                                    <div class="mb-3">
+                                        <h6 class="mb-3">Email Notifications</h6>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="courseUpdates" checked>
+                                            <label class="form-check-label" for="courseUpdates">
+                                                <strong>Course Updates</strong>
+                                                <div class="form-text">Get notified about new lessons and updates</div>
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="newCourses" checked>
+                                            <label class="form-check-label" for="newCourses">
+                                                <strong>New Course Recommendations</strong>
+                                                <div class="form-text">Personalized course suggestions based on your interests</div>
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="promotional">
+                                            <label class="form-check-label" for="promotional">
+                                                <strong>Promotional Emails</strong>
+                                                <div class="form-text">Special offers and platform announcements</div>
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="newsletter" checked>
+                                            <label class="form-check-label" for="newsletter">
+                                                <strong>Weekly Newsletter</strong>
+                                                <div class="form-text">Latest courses and learning tips</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <h6 class="mb-3">Push Notifications</h6>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="pushLessons" checked>
+                                            <label class="form-check-label" for="pushLessons">
+                                                <strong>Lesson Reminders</strong>
+                                                <div class="form-text">Daily reminders to continue learning</div>
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="pushAchievements" checked>
+                                            <label class="form-check-label" for="pushAchievements">
+                                                <strong>Achievement Updates</strong>
+                                                <div class="form-text">Milestones and certificate notifications</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Update Preferences
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Settings -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow h-100">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="fas fa-lock me-2"></i>Privacy Settings
+                                </h5>
+                                <form id="privacyForm">
+                                    <div class="mb-3">
+                                        <h6 class="mb-3">Profile Visibility</h6>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="profilePublic">
+                                            <label class="form-check-label" for="profilePublic">
+                                                <strong>Make Profile Public</strong>
+                                                <div class="form-text">Allow other users to see your profile</div>
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="showProgress" checked>
+                                            <label class="form-check-label" for="showProgress">
+                                                <strong>Show Progress to Others</strong>
+                                                <div class="form-text">Display your learning progress publicly</div>
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="showCertificates" checked>
+                                            <label class="form-check-label" for="showCertificates">
+                                                <strong>Show Certificates</strong>
+                                                <div class="form-text">Display earned certificates publicly</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <h6 class="mb-3">Data Sharing</h6>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="analyticsData" checked>
+                                            <label class="form-check-label" for="analyticsData">
+                                                <strong>Analytics Data</strong>
+                                                <div class="form-text">Help improve the platform with anonymous usage data</div>
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="recommendations" checked>
+                                            <label class="form-check-label" for="recommendations">
+                                                <strong>Personalized Recommendations</strong>
+                                                <div class="form-text">Get better course suggestions based on your activity</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Save Privacy Settings
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Actions -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow h-100">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="fas fa-user-cog me-2"></i>Account Actions
+                                </h5>
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                        <i class="fas fa-key me-2"></i>Change Password
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#downloadDataModal">
+                                        <i class="fas fa-download me-2"></i>Download My Data
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#deactivateModal">
+                                        <i class="fas fa-pause me-2"></i>Deactivate Account
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash me-2"></i>Delete Account
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <strong>Total Enrollments:</strong> {{ totalEnrollments }}<br>
+                                        <strong>Completed Courses:</strong> {{ completedCourses }}<br>
+                                        <strong>In Progress:</strong> {{ inProgressCourses }}<br>
+                                        <strong>Account created:</strong> {{ user.createdAt|date('M d, Y')|default('Unknown') }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Settings Sections END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Student Settings END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                        <div class="form-text">Minimum 8 characters, include uppercase, lowercase, and numbers</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Download Data Modal -->
+<div class="modal fade" id="downloadDataModal" tabindex="-1" aria-labelledby="downloadDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="downloadDataModalLabel">Download My Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Choose what data you'd like to download:</p>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="profileData" checked>
+                    <label class="form-check-label" for="profileData">
+                        Profile information and settings
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="courseData" checked>
+                    <label class="form-check-label" for="courseData">
+                        Course enrollment and progress data
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="certificateData" checked>
+                    <label class="form-check-label" for="certificateData">
+                        Certificates and achievements
+                    </label>
+                </div>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i>Download Data
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Deactivate Account Modal -->
+<div class="modal fade" id="deactivateModal" tabindex="-1" aria-labelledby="deactivateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deactivateModalLabel">Deactivate Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Deactivating your account will temporarily suspend access to your courses and progress.
+                </div>
+                <p>You can reactivate your account at any time by logging back in.</p>
+                <div class="mb-3">
+                    <label for="deactivateReason" class="form-label">Reason for deactivation (optional)</label>
+                    <textarea class="form-control" id="deactivateReason" rows="3" placeholder="Tell us why you're deactivating..."></textarea>
+                </div>
+                <button type="button" class="btn btn-warning">
+                    <i class="fas fa-pause me-2"></i>Deactivate Account
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone. Deleting your account will permanently remove:
+                </div>
+                <ul class="text-danger">
+                    <li>All your course progress and certificates</li>
+                    <li>Profile information and settings</li>
+                    <li>Payment history and subscriptions</li>
+                </ul>
+                <div class="mb-3">
+                    <label for="deleteConfirmation" class="form-label">Type "DELETE" to confirm:</label>
+                    <input type="text" class="form-control" id="deleteConfirmation" placeholder="DELETE">
+                </div>
+                <button type="button" class="btn btn-danger" disabled id="confirmDeleteBtn">
+                    <i class="fas fa-trash me-2"></i>Delete Account Permanently
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form submissions
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Show success message
+    showSuccessMessage('Profile settings saved successfully!');
+});
+
+document.getElementById('notificationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    showSuccessMessage('Notification preferences updated!');
+});
+
+document.getElementById('privacyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    showSuccessMessage('Privacy settings saved!');
+});
+
+// Delete confirmation
+document.getElementById('deleteConfirmation').addEventListener('input', function(e) {
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    confirmBtn.disabled = e.target.value !== 'DELETE';
+});
+
+function showSuccessMessage(message) {
+    // Create and show a success toast
+    const toast = document.createElement('div');
+    toast.className = 'toast align-items-center text-white bg-success border-0 position-fixed top-0 end-0 m-3';
+    toast.style.zIndex = '1050';
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
+</script>
+
+<style>
+.form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.modal-header .btn-close {
+    padding: 0.5rem;
+}
+
+.toast {
+    min-width: 300px;
+}
+</style>
+{% endblock %}

@@ -26,6 +26,11 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    # Chatbot Controller Configuration
+    App\Controller\Api\ChatbotController:
+        arguments:
+            $geminiApiKey: '%gemini_api_key%'
+
     # YouTube Service Configuration
     App\Service\YouTubeService:
         arguments:

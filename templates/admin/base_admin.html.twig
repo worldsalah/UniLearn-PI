@@ -1,291 +1,117 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block styles %}
 <style>
-/* Admin Dashboard Styles */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 280px;
-    background: #212529;
-    z-index: 1000;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-}
-.sidebar .navbar-brand {
-    padding: 1rem;
-    color: white;
-    font-weight: bold;
-}
-.sidebar-content {
-    height: calc(100vh - 80px);
-    overflow-y: auto;
-}
-.page-content {
-    margin-left: 280px;
-    min-height: 100vh;
-    background: #f8f9fa;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.top-bar {
-    background: white;
-    border-bottom: 1px solid #dee2e6;
-    padding: 1rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 999;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    backdrop-filter: blur(10px);
-}
-.page-content-wrapper {
-    padding: 2rem;
-}
-.custom-scrollbar {
-    overflow-y: auto;
-}
-
-/* Admin specific styles */
-.counter-card {
-    border-radius: 10px;
-    border: none;
-    transition: all 0.3s ease;
-}
-.counter-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-.icon-lg {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: 1.25rem;
-}
-.bg-purple {
-    background-color: #6f42c1 !important;
-}
-.text-purple {
-    color: #6f42c1 !important;
-}
-.bg-orange {
-    background-color: #fd7e14 !important;
-}
-.text-orange {
-    color: #fd7e14 !important;
-}
-.h-300px {
-    height: 300px;
-}
-.rounded-2 {
-    border-radius: 0.5rem;
-}
-.stretched-link {
-    position: relative;
-}
-.stretched-link::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-}
-
-/* Notification badge animation */
-.notif-badge {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #dc3545;
-}
-.animation-blink {
-    animation: blink 2s infinite;
-}
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
-    .sidebar {
-        transform: translateX(-100%);
+    .admin-stats-card {
+        transition: transform 0.2s;
     }
-    .sidebar.show {
-        transform: translateX(0);
+    .admin-stats-card:hover {
+        transform: translateY(-2px);
     }
-    .page-content {
-        margin-left: 0;
-    }
-}
-
-/* Additional admin page specific styles will be inserted here by child templates */
-{% block admin_styles %}
-
-/* Admin Currency Styles */
-.admin-currency-option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.admin-currency-option:hover {
-    background-color: #f8f9fa;
-}
-
-#adminCurrencyDropdown {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.alert {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    min-width: 250px;
-}
-
-.position-fixed {
-    position: fixed;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .admin-currency-option {
-        font-size: 0.8rem;
-    }
-}
 </style>
 {% endblock %}
 
-{% block body %}
-<!-- **************** MAIN CONTENT START **************** -->
-<main>
-    
-    {% include 'admin/components/navbar.html.twig' %}
+{% block content %}
+<div class="container-fluid">
+    {% block admin_content %}
+    {% endblock %}
+</div>
+{% endblock %}
 
-    <!-- Page content START -->
-    <div class="page-content">
-        
-        {% include 'admin/components/topbar.html.twig' %}
-
-        <!-- Page main content START -->
-        <div class="page-content-wrapper border">
-            
-            {% block admin_content %}{% endblock %}
-
-        </div>
-        <!-- Page main content END -->
-    </div>
-    <!-- Page content END -->
-
-</main>
-<!-- **************** MAIN CONTENT END **************** -->
-
-{% block admin_scripts %}
+{% block javascripts %}
 <script>
-// Admin Currency Converter Functions
-let adminCurrentCurrency = localStorage.getItem('selectedCurrency') || 'USD';
-const adminExchangeRates = {
-    'USD': 1,
-    'EUR': 0.85,
-    'GBP': 0.73,
-    'JPY': 110.0,
-    'CAD': 1.25,
-    'AUD': 1.35,
-    'CHF': 0.92,
-    'CNY': 6.45,
-    'INR': 74.0
-};
-
-const adminCurrencySymbols = {
-    'USD': '$',
-    'EUR': '€',
-    'GBP': '£',
-    'JPY': '¥',
-    'CAD': 'C$',
-    'AUD': 'A$',
-    'CHF': 'CHF',
-    'CNY': '¥',
-    'INR': '₹'
-};
-
+// Admin currency converter functionality
 function initAdminCurrencyConverter() {
-    // Set current currency display
-    const adminCurrencyElement = document.getElementById('adminCurrentCurrency');
-    if (adminCurrencyElement) {
-        adminCurrencyElement.textContent = adminCurrentCurrency;
-    }
+    // Get currency selector
+    const currencySelector = document.getElementById('adminCurrencySelector');
+    if (!currencySelector) return;
+
+    // Load saved currency
+    const savedCurrency = localStorage.getItem('adminCurrency') || 'USD';
+    currencySelector.value = savedCurrency;
+
+    // Add change event listener
+    currencySelector.addEventListener('change', function() {
+        const newCurrency = this.value;
+        localStorage.setItem('adminCurrency', newCurrency);
+        updateAdminCurrencyDisplays(newCurrency);
+    });
+
+    // Initial update
+    updateAdminCurrencyDisplays(savedCurrency);
+}
+
+function updateAdminCurrencyDisplays(targetCurrency) {
+    // Update all price displays in admin interface
+    const priceElements = document.querySelectorAll('[data-usd-price]');
     
-    // Add event listeners to currency options
-    document.querySelectorAll('.admin-currency-option').forEach(option => {
-        option.addEventListener('click', function(e) {
-            e.preventDefault();
-            const newCurrency = this.dataset.currency;
-            changeAdminCurrency(newCurrency);
-        });
+    priceElements.forEach(element => {
+        const usdPrice = parseFloat(element.dataset.usdPrice);
+        if (!isNaN(usdPrice)) {
+            const convertedPrice = convertAdminPrice(usdPrice, targetCurrency);
+            element.textContent = formatAdminPrice(convertedPrice.amount, convertedPrice.currency);
+            element.title = `${usdPrice} USD = ${convertedPrice.formatted}`;
+        }
     });
 }
 
-function changeAdminCurrency(currency) {
-    adminCurrentCurrency = currency;
-    localStorage.setItem('selectedCurrency', currency);
-    const adminCurrencyElement = document.getElementById('adminCurrentCurrency');
-    if (adminCurrencyElement) {
-        adminCurrencyElement.textContent = currency;
+function convertAdminPrice(amount, fromCurrency = 'USD', toCurrency = 'EUR') {
+    // Exchange rates (would be fetched from API in production)
+    const exchangeRates = {
+        'EUR': 0.85,
+        'GBP': 0.73,
+        'JPY': 110.0,
+        'CAD': 1.25,
+        'AUD': 1.35,
+        'CHF': 0.92,
+        'CNY': 6.45,
+        'INR': 74.0
+    };
+
+    if (fromCurrency === toCurrency) {
+        return {
+            amount: amount,
+            currency: toCurrency,
+            formatted: formatAdminPrice(amount, toCurrency)
+        };
     }
-    showNotification(`Currency changed to ${currency}`, 'success');
+
+    const rate = exchangeRates[toCurrency] || 1;
+    const convertedAmount = amount * rate;
+
+    return {
+        amount: convertedAmount,
+        currency: toCurrency,
+        formatted: formatAdminPrice(convertedAmount, toCurrency)
+    };
 }
 
-function convertAdminPrice(usdPrice, toCurrency) {
-    if (toCurrency === 'USD') return usdPrice;
-    return usdPrice * (adminExchangeRates[toCurrency] || 1);
-}
+function formatAdminPrice(amount, currency) {
+    const symbols = {
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£',
+        'JPY': '¥',
+        'CAD': 'C$',
+        'AUD': 'A$',
+        'CHF': 'CHF',
+        'CNY': '¥',
+        'INR': '₹'
+    };
 
-function formatAdminPrice(price, currency) {
-    const symbol = adminCurrencySymbols[currency] || currency;
+    const symbol = symbols[currency] || currency;
     
     switch (currency) {
         case 'EUR':
-            return symbol + price.toFixed(2).replace('.', ',');
+            return symbol + amount.toFixed(2).replace('.', ',');
         case 'JPY':
         case 'CNY':
-            return symbol + Math.round(price);
-        case 'INR':
-            return symbol + price.toFixed(2).replace('.', ',');
+            return symbol + Math.round(amount).toString();
         default:
-            return symbol + price.toFixed(2);
+            return symbol + amount.toFixed(2);
     }
-}
-
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
-    notification.style.zIndex = '9999';
-    notification.innerHTML = `
-        <div class="d-flex align-items-center">
-            <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
-            ${message}
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
 }
 
 // Fetch real exchange rates for admin
@@ -295,20 +121,15 @@ async function fetchAdminExchangeRates() {
         const data = await response.json();
         
         if (data.rates) {
-            Object.assign(adminExchangeRates, data.rates);
-            adminExchangeRates.USD = 1; // Ensure USD is 1
+            console.log('Admin exchange rates loaded successfully');
+            // Update displays with real rates
+            updateAdminCurrencyDisplays(localStorage.getItem('adminCurrency') || 'USD');
         }
+        
     } catch (error) {
         console.log('Using fallback exchange rates for admin');
         console.log('API Error:', error);
     }
 }
-
-// Initialize admin currency converter on page load
-document.addEventListener('DOMContentLoaded', function() {
-    initAdminCurrencyConverter();
-    fetchAdminExchangeRates();
-});
 </script>
-{% endblock %}
 {% endblock %}

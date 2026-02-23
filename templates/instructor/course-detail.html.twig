@@ -1,0 +1,939 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ course.title }} - Course Details{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Enhanced Course Detail Styles */
+.course-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+    color: white;
+    border-radius: 20px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(13, 110, 253, 0.3);
+}
+
+.course-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.course-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -5%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    animation: float 8s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.course-thumbnail {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.course-thumbnail:hover {
+    transform: scale(1.02);
+}
+
+/* Course Hero Section Styles */
+.course-hero-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.course-hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.5" fill="%23ffffff20" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.03;
+}
+
+.course-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.course-category-badge {
+    display: inline-block;
+}
+
+.badge-category {
+    background: rgba(255, 255, 255, 0.2);
+    color: #495057;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.course-title-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.course-description {
+    font-size: 1.1rem;
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.course-meta-info {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.meta-item i {
+    color: #6c757d;
+}
+
+/* Course Thumbnail Styles */
+.course-thumbnail-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background: #fff;
+}
+
+.course-thumbnail-modern {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    transition: all 0.3s ease;
+    border: 3px solid #e9ecef;
+}
+
+.course-thumbnail-modern:hover {
+    transform: scale(1.03);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.thumbnail-action {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.thumbnail-action:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
+/* Course Video Section Styles */
+.course-video-section {
+    background: #f8f9fa;
+    padding: 4rem 0;
+}
+
+.video-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.video-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.video-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #495057;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.video-player-container {
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.video-player-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.8) 100%);
+    pointer-events: none;
+}
+
+.video-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.chapter-card {
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.chapter-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.chapter-card .card-body {
+    padding: 2rem;
+}
+
+.lesson-item {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f3f5;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.lesson-item:hover {
+    background: linear-gradient(145deg, #f8f9ff 0%, #e8f0ff 100%);
+    transform: translateX(8px);
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.1);
+}
+
+.lesson-item:last-child {
+    border-bottom: none;
+}
+
+.lesson-type-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.lesson-item:hover .lesson-type-icon {
+    transform: rotate(10deg) scale(1.1);
+}
+
+.lesson-type-video {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    color: #0d6efd;
+}
+
+.lesson-type-text {
+    background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+    color: #6f42c1;
+}
+
+.lesson-type-quiz {
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+    color: #198754;
+}
+
+.preview-badge {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.info-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(13, 110, 253, 0.1);
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+}
+
+.info-card h6 {
+    color: #495057;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.info-card p {
+    color: #6c757d;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+.status-badge {
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.status-active {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-inactive {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status-pending {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.btn-action {
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-action::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-action:hover::before {
+    left: 100%;
+}
+
+.btn-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0b5ed7 0%, #0baccc 100%);
+}
+
+.btn-outline-danger {
+    background: transparent;
+    color: #dc3545;
+    border: 2px solid #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+}
+
+.badge {
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.bg-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%) !important;
+}
+
+.bg-info {
+    background: linear-gradient(135deg, #0dcaf0 0%, #0d6efd 100%) !important;
+}
+
+.bg-success {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%) !important;
+}
+
+.bg-light {
+    background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%) !important;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+}
+
+.card-header {
+    background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 2px solid rgba(13, 110, 253, 0.1);
+    border-radius: 20px 20px 0 0 !important;
+    padding: 1.5rem 2rem;
+}
+
+.card-header h5 {
+    font-weight: 700;
+    color: #495057;
+    margin: 0;
+}
+
+.text-decoration-none {
+    color: #495057;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.text-decoration-none:hover {
+    color: #0d6efd;
+}
+
+/* Enhanced Modal Styles */
+#deleteModal {
+    backdrop-filter: blur(8px);
+}
+
+#deleteModal > div {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(13, 110, 253, 0.1);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .course-header {
+        padding: 2rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .chapter-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .info-card {
+        padding: 1.5rem;
+    }
+    
+    .lesson-item {
+        padding: 0.8rem;
+    }
+    
+    .lesson-type-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+}
+
+/* Loading animation */
+.loading-shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Lesson link hover effect */
+.hover-primary:hover {
+    color: #0d6efd !important;
+    text-decoration: underline !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+    
+<!-- =======================
+Page Banner START -->
+<section class="pt-0">
+    <!-- Main banner background image -->
+    <div class="container-fluid px-0">
+        <div class="bg-blue h-100px h-md-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
+        </div>
+    </div>
+    <div class="container mt-n4">
+        <div class="row">
+            <!-- Profile banner START -->
+            <div class="col-12">
+                <div class="card bg-transparent card-body p-0">
+                    <div class="row d-flex justify-content-between">
+                        <!-- Avatar -->
+                        <div class="col-auto mt-4 mt-md-0">
+                            <div class="avatar avatar-xxl mt-n3">
+                                <img class="avatar-img rounded-circle border border-white border-3 shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+                            </div>
+                        </div>
+                        <!-- Profile info -->
+                        <div class="col d-md-flex justify-content-between align-items-center mt-4">
+                            <div>
+                                <h1 class="my-1 fs-4">{{ course.title }} <i class="bi bi-eye-fill text-info small"></i></h1>
+                                <ul class="list-inline mb-0">
+                                    <li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-envelope text-warning me-2"></i>{{ teacher.email }}</li>
+                                    <li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-book text-purple me-2"></i>{{ teacher.role.name|capitalize }}</li>
+                                </ul>
+                            </div>
+                            <!-- Button -->
+                            <div class="d-flex align-items-center mt-2 mt-md-0">
+                                <a href="{{ path('app_instructor_edit_course', {'id': course.id}) }}" class="btn btn-primary btn-action me-2">
+                                    <i class="fas fa-edit me-1"></i>Edit Course
+                                </a>
+                                <a href="{{ path('app_instructor_manage_courses') }}" class="btn btn-secondary btn-action">
+                                    <i class="fas fa-arrow-left me-1"></i>Back to Courses
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Profile banner END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Page content START -->
+<section class="pt-4">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main content START -->
+            <div class="col-12">
+                <!-- Course Hero Section -->
+                <div class="course-hero-section mb-5">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <!-- Course Title and Meta -->
+                            <div class="col-lg-7">
+                                <div class="course-hero-content">
+                                    <div class="course-category-badge mb-3">
+                                        {% if course.category %}
+                                            <span class="badge-category">
+                                                <i class="fas fa-tag"></i>
+                                                {{ course.category }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <h1 class="course-title-display mb-3">{{ course.title }}</h1>
+                                    <p class="course-description">{{ course.shortDescription|nl2br }}</p>
+                                    
+                                    <div class="course-meta-info">
+                                        <div class="meta-item">
+                                            <i class="fas fa-signal"></i>
+                                            <span>{{ course.level|default('All Levels') }}</span>
+                                        </div>
+                                        {% if course.language %}
+                                        <div class="meta-item">
+                                            <i class="fas fa-globe"></i>
+                                            <span>{{ course.language }}</span>
+                                        </div>
+                                        {% endif %}
+                                        <div class="meta-item">
+                                            <i class="far fa-clock"></i>
+                                            <span>{{ course.duration ? course.duration ~ ' hours' : 'Self-paced' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course Thumbnail -->
+                            <div class="col-lg-5">
+                                {% if course.thumbnailUrl %}
+                                    <div class="course-thumbnail-wrapper">
+                                        <img src="{{ asset(course.thumbnailUrl) }}" 
+                                             class="course-thumbnail-modern" 
+                                             alt="{{ course.title }}">
+                                        <div class="thumbnail-action">
+                                            <i class="fas fa-search-plus"></i>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course Video Section -->
+                    {% if course.videoUrl %}
+                        <div class="course-video-section mt-5">
+                            <div class="container">
+                                <div class="video-wrapper">
+                                    <div class="video-header">
+                                        <h3 class="video-title">
+                                            <i class="fas fa-play-circle me-2"></i>
+                                            Course Introduction Video
+                                        </h3>
+                                    </div>
+                                    <div class="video-player-container shadow-lg rounded">
+                                        <div class="ratio ratio-21x9">
+                                            <iframe src="{{ course.videoUrl|replace({'youtube.com': 'youtube-nocookie.com'}) }}" 
+                                                    frameborder="0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                    allowfullscreen
+                                                    sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
+                                                    referrerpolicy="no-referrer-when-downgrade"
+                                                    class="video-frame">
+                                            </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <!-- Course Content -->
+                    <div class="col-lg-8">
+                        <!-- Chapters and Lessons -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-list-ul me-2"></i>Course Content
+                                    <span class="badge bg-primary ms-2">{{ course.chapters|length }} Chapters</span>
+                                    {% set totalLessons = 0 %}
+                                    {% for chapter in course.chapters %}
+                                        {% set totalLessons = totalLessons + chapter.lessons|length %}
+                                    {% endfor %}
+                                    <span class="badge bg-success ms-2">{{ totalLessons }} Lessons</span>
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                {% if course.chapters is empty %}
+                                    <div class="text-center py-5">
+                                        <div class="mb-4">
+                                            <i class="fas fa-folder-open fa-4x text-muted opacity-50"></i>
+                                        </div>
+                                        <h5 class="text-muted mb-3">No chapters yet</h5>
+                                        <p class="text-muted mb-4">Start by adding chapters and lessons to your course.</p>
+                                        <a href="{{ path('app_instructor_edit_course', {'id': course.id}) }}" class="btn btn-primary btn-action">
+                                            <i class="fas fa-plus me-2"></i>Add Content
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    {% for chapter in course.chapters %}
+                                        <div class="chapter-card">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                                    <h6 class="mb-0 fw-bold">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="lesson-type-icon lesson-type-video me-3">
+                                                                <i class="fas fa-folder"></i>
+                                                            </div>
+                                                            <span>Chapter {{ loop.index }}: {{ chapter.title }}</span>
+                                                        </div>
+                                                    </h6>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="badge bg-primary text-white">
+                                                            <i class="fas fa-list me-1"></i>{{ chapter.lessons|length }} lessons
+                                                        </span>
+                                                        {% if chapter.lessons|length > 0 %}
+                                                            <span class="badge bg-success text-white">
+                                                                <i class="fas fa-clock me-1"></i>
+                                                                {% set totalDuration = 0 %}
+                                                                {% for lesson in chapter.lessons %}
+                                                                    {% if lesson.duration %}
+                                                                        {% set durationParts = lesson.duration|split(':') %}
+                                                                        {% if durationParts|length >= 2 and durationParts[0] matches '/^\\d+$/' and durationParts[1] matches '/^\\d+$/' %}
+                                                                            {% set totalDuration = totalDuration + (durationParts[0] * 60 + durationParts[1]) %}
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                {% set hours = (totalDuration // 60) %}
+                                                                {% set minutes = (totalDuration % 60) %}
+                                                                {{ hours }}h {{ minutes }}m
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                
+                                                {% if chapter.lessons is not empty %}
+                                                    <div class="lessons-list">
+                                                        {% for lesson in chapter.lessons %}
+                                                            <div class="lesson-item d-flex justify-content-between align-items-center">
+                                                                <div class="d-flex align-items-center flex-grow-1">
+                                                                    <div class="lesson-type-icon lesson-type-{{ lesson.type }} me-3">
+                                                                        {% if lesson.type == 'video' %}
+                                                                            <i class="fas fa-play"></i>
+                                                                        {% elseif lesson.type == 'text' %}
+                                                                            <i class="fas fa-file-alt"></i>
+                                                                        {% else %}
+                                                                            <i class="fas fa-question"></i>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <div class="fw-medium mb-1">
+                                                                            <a href="{{ path('app_lesson_show', {'id': lesson.id}) }}" 
+                                                                               data-turbo="false"
+                                                                               class="text-decoration-none text-dark hover-primary">
+                                                                                {{ lesson.title }}
+                                                                            </a>
+                                                                        </div>
+                                                                        {% if lesson.description %}
+                                                                            <small class="text-muted d-block">{{ lesson.description }}</small>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    {% if lesson.isPreview %}
+                                                                        <span class="preview-badge">
+                                                                            <i class="fas fa-eye me-1"></i>Preview
+                                                                        </span>
+                                                                    {% endif %}
+                                                                    <span class="text-muted fw-medium">
+                                                                        <i class="fas fa-clock me-1"></i>{{ lesson.duration }}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    <div class="text-center py-4 text-muted">
+                                                        <div class="mb-3">
+                                                            <i class="fas fa-file-alt fa-2x opacity-50"></i>
+                                                        </div>
+                                                        <div class="fw-medium">No lessons in this chapter yet</div>
+                                                        <small class="text-muted">Add lessons to make your chapter complete</small>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Information Sidebar -->
+                    <div class="col-lg-4">
+                        <!-- Course Info -->
+                        <div class="info-card">
+                            <h6><i class="fas fa-info-circle me-2 text-primary"></i>Course Information</h6>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted"><i class="fas fa-tag me-1"></i>Category</span>
+                                    <span class="fw-bold">{{ course.category }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted"><i class="fas fa-signal me-1"></i>Level</span>
+                                    <span class="fw-bold">{{ course.level }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted"><i class="fas fa-language me-1"></i>Language</span>
+                                    <span class="fw-bold">{{ course.language }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted"><i class="fas fa-clock me-1"></i>Duration</span>
+                                    <span class="fw-bold">{{ course.duration }} hours</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted"><i class="fas fa-book me-1"></i>Total Lessons</span>
+                                    <span class="fw-bold">{{ course.totalLessons }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted"><i class="fas fa-flag me-1"></i>Status</span>
+                                    <span class="status-badge status-{{ course.status }}">{{ course.status|capitalize }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Requirements -->
+                        {% if course.requirements %}
+                        <div class="info-card">
+                            <h6><i class="fas fa-list-check me-2 text-warning"></i>Requirements</h6>
+                            <p class="small mb-0">{{ course.requirements|nl2br }}</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Learning Outcomes -->
+                        {% if course.learningOutcomes %}
+                        <div class="info-card">
+                            <h6><i class="fas fa-trophy me-2 text-success"></i>What You'll Learn</h6>
+                            <p class="small mb-0">{{ course.learningOutcomes|nl2br }}</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Target Audience -->
+                        {% if course.targetAudience %}
+                        <div class="info-card">
+                            <h6><i class="fas fa-users me-2 text-info"></i>Target Audience</h6>
+                            <p class="small mb-0">{{ course.targetAudience|nl2br }}</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Actions -->
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_instructor_edit_course', {'id': course.id}) }}" class="btn btn-primary btn-action">
+                                <i class="fas fa-edit me-2"></i>Edit Course
+                            </a>
+                            <button class="btn btn-outline-danger btn-action" onclick="confirmDelete({{ course.id }}, '{{ course.title|escape('js') }}')">
+                                <i class="fas fa-trash me-2"></i>Delete Course
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page content END -->
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 999999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); min-width: 400px; max-width: 500px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h5 style="margin: 0; color: #333;">
+                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                Confirm Delete
+            </h5>
+            <button onclick="closeDeleteModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">&times;</button>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 0 0 10px 0; color: #666;">Are you sure you want to delete the course:</p>
+            <h6 id="courseTitleToDelete" style="margin: 0 0 15px 0; color: #dc3545; font-weight: bold;"></h6>
+            <p style="margin: 0; color: #999; font-size: 14px;">This action cannot be undone. All course data, chapters, and lessons will be permanently removed.</p>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button onclick="closeDeleteModal()" style="padding: 8px 16px; border: 1px solid #6c757d; background-color: #6c757d; color: white; border-radius: 4px; cursor: pointer;">
+                <i class="fas fa-times me-1"></i>Cancel
+            </button>
+            <button id="confirmDeleteBtn" style="padding: 8px 16px; border: 1px solid #dc3545; background-color: #dc3545; color: white; border-radius: 4px; cursor: pointer;">
+                <i class="fas fa-trash me-1"></i>Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Footer -->
+{% include 'components/footer.html.twig' %}
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// Delete confirmation function
+function confirmDelete(courseId, courseTitle) {
+    console.log('Opening delete modal for:', courseTitle);
+    
+    // Set the course title in the modal
+    document.getElementById('courseTitleToDelete').textContent = courseTitle;
+    
+    // Store the course ID for later use
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    confirmBtn.setAttribute('data-course-id', courseId);
+    
+    // Add event listener to the delete button
+    confirmBtn.onclick = function() {
+        console.log('Delete confirmed for course ID:', courseId);
+        window.location.href = '/instructor/course/delete/' + courseId;
+    };
+    
+    // Show the modal
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'block';
+    console.log('Modal should be visible now');
+}
+
+// Close modal function
+function closeDeleteModal() {
+    console.log('Closing modal');
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'none';
+}
+</script>
+{% endblock %}

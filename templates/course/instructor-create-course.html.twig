@@ -1,0 +1,1596 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Create Course - Eduport{% endblock %}
+
+{% block stylesheets %}
+<!-- Disable global Choices initialization for this page -->
+<script>
+// Prevent the global functions.js from initializing Choices on this page
+window.choiceSkipInit = true;
+</script>
+
+<style>
+/* Dashboard Styles */
+.instructor-gradient {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    position: relative;
+    overflow: hidden;
+}
+.instructor-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center;
+    background-size: cover;
+    opacity: 0.1;
+}
+.profile-banner {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+.profile-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(13, 110, 253, 0.05) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+.avatar-enhanced {
+    border: 4px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+.avatar-enhanced:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+.sidebar-modern {
+    background: #212529;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.sidebar-modern .list-group-item {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    margin: 5px;
+}
+.sidebar-modern .list-group-item:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(5px);
+}
+.sidebar-modern .list-group-item.active {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+.sidebar-modern .list-group-item.text-danger:hover {
+    background: rgba(220, 53, 69, 0.2);
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+.verified-badge {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* Stepper content visibility control */
+.bs-stepper-pane {
+    display: none !important;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.bs-stepper-pane.active {
+    display: block !important;
+    opacity: 1;
+}
+
+.bs-stepper-pane.fade:not(.active) {
+    display: none !important;
+    opacity: 0;
+}
+
+.bs-stepper-pane.fade.active {
+    display: block !important;
+    opacity: 1;
+}
+
+/* Stepper Header Horizontal Layout */
+.bs-stepper-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.step .d-grid {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e9ecef;
+    border: 2px solid #dee2e6;
+    color: #6c757d;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    margin: 0 auto 0.5rem;
+}
+
+.step.active .step-trigger {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+.step.completed .step-trigger {
+    background: #198754;
+    border-color: #198754;
+    color: white;
+}
+
+.step-trigger:hover {
+    transform: scale(1.05);
+}
+
+.bs-stepper-circle {
+    font-size: 1.1rem;
+}
+
+.bs-stepper-label {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.step.active .bs-stepper-label {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.step.completed .bs-stepper-label {
+    color: #198754;
+    font-weight: 600;
+}
+
+.line {
+    flex: 0 0 60px;
+    height: 2px;
+    background: #dee2e6;
+    position: relative;
+    margin: 0 1rem;
+}
+
+.step.completed ~ .line {
+    background: #198754;
+}
+
+/* Disabled button styling */
+.btn:disabled,
+.btn.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    filter: grayscale(0.5);
+    pointer-events: none;
+}
+
+.btn:disabled:hover,
+.btn.disabled:hover {
+    transform: none;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* Form validation styles */
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+/* Error message styling */
+.error-msg {
+    color: #dc3545;
+    font-size: 0.825rem;
+    margin-top: 0.25rem;
+    min-height: 1.25rem;
+    transition: all 0.2s ease;
+    display: block;
+}
+
+/* Invalid field border */
+.is-invalid {
+    border-color: #dc3545 !important;
+    background-image: none !important;
+}
+
+/* Enhanced error message styling */
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    padding: 0.75rem;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+}
+
+.invalid-feedback .d-flex {
+    align-items: flex-start;
+}
+
+.invalid-feedback i {
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+}
+
+/* Choices.js invalid state */
+.is-invalid + .choices__inner,
+.is-invalid .choices__inner {
+    border-color: #dc3545 !important;
+}
+
+/* Enhanced alert styling */
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.alert-success {
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+    color: #0f5132;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #cff4fc;
+    border-color: #b8daff;
+    color: #055160;
+}
+
+/* Alert heading styling */
+.alert-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: inherit;
+}
+
+/* Error icon animation */
+.invalid-feedback i.fa-exclamation-circle {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Disabled button styling */
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    filter: grayscale(0.5);
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- =======================
+Header START -->
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Logo Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('app_home') }}">
+                <img class="navbar-brand-item" src="{{ asset('assets/images/logo.svg') }}" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto icon-md btn btn-outline-secondary p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <!-- Nav item Home -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" href="{{ path('app_home') }}">
+                            Home
+                        </a>
+                    </li>
+
+                    <!-- Nav item Courses -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_course_grid' %}active{% endif %}" href="#" id="courseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Courses
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="courseDropdown">
+                            <li><h6 class="dropdown-header">Learning</h6></li>
+                            <li><a class="dropdown-item" href="{{ path('app_course_grid') }}">Browse Courses</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_categories') }}">Course Categories</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Student</h6></li>
+                            <li><a class="dropdown-item" href="#">My Certificates</a></li>
+                            <li><a class="dropdown-item" href="#">My Bookmarks</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Sessions -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'session' %}active{% endif %}" href="#" id="sessionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Sessions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="sessionDropdown">
+                            <li><h6 class="dropdown-header">Schedule</h6></li>
+                            <li><a class="dropdown-item" href="{{ path('session_data_display') }}">All Sessions</a></li>
+                            <li><a class="dropdown-item" href="{{ path('booking_create') }}">Book a Session</a></li>
+                            <li><a class="dropdown-item" href="{{ path('all_bookings') }}">My Bookings</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Marketplace -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_marketplace' or app.request.attributes.get('_route') starts with 'app_product' or app.request.attributes.get('_route') starts with 'app_job' %}active{% endif %}" href="#" id="marketplaceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Marketplace
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="marketplaceDropdown">
+                            <li><h6 class="dropdown-header">Services</h6></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_marketplace_shop' %}active{% endif %}" href="{{ path('app_marketplace_shop') }}">Browse Marketplace</a></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_product_new_public' %}active{% endif %}" href="{{ path('app_product_new_public') }}">Offer Service</a></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') starts with 'app_job' %}active{% endif %}" href="#">Job Requests</a></li>
+                        </ul>
+                    </li>
+
+
+                    <!-- Nav item Support -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Support
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="supportDropdown">
+                            <li><h6 class="dropdown-header">Help</h6></li>
+                            <li><a class="dropdown-item" href="#">Help Center</a></li>
+                            <li><a class="dropdown-item" href="#">Contact Support</a></li>
+                            <li><a class="dropdown-item" href="#">FAQ</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">About</h6></li>
+                            <li><a class="dropdown-item" href="#">About Us</a></li>
+                            <li><a class="dropdown-item" href="#">Contact</a></li>
+                            <li><a class="dropdown-item" href="#">Privacy Policy</a></li>
+                            <li><a class="dropdown-item" href="#">Terms of Service</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Search bar START -->
+                <div class="nav-item mx-3">
+                    <form class="position-relative" method="get" action="{{ path('app_course_grid') }}">
+                        <input class="form-control pe-5" type="search" name="search" placeholder="Search courses, topics..." aria-label="Search">
+                        <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                            <i class="fas fa-search fs-6"></i>
+                        </button>
+                    </form>
+                </div>
+                <!-- Search bar END -->
+
+                <!-- Nav right side START -->
+                <ul class="nav flex-row align-items-center list-unstyled ms-xl-auto">
+                    <!-- Authentication START -->
+                    {% if app.user %}
+                        <!-- Profile dropdown START -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                            </a>
+                            <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                                <!-- Profile info -->
+                                <li class="px-3 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar me-3">
+                                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                                        </div>
+                                        <div>
+                                            <a class="h6 mt-2 mt-sm-0" href="#">{{ app.user.name|default(app.user.email) }}</a>
+                                            <p class="small m-0">{{ app.user.email }}</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <!-- Links -->
+                                {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="fas fa-chalkboard-teacher fa-fw me-2"></i>Dashboard</a></li>
+                                {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_student_dashboard') }}"><i class="fas fa-graduation-cap fa-fw me-2"></i>Dashboard</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="fas fa-tachometer-alt fa-fw me-2"></i>Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <!-- Sign in button -->
+                        <li class="nav-item">
+                            <a class="btn btn-sm btn-primary me-2" href="{{ path('app_login') }}">Sign In</a>
+                        </li>
+                        <!-- Sign up button -->
+                        <li class="nav-item">
+                            <a class="btn btn-sm btn-outline-primary" href="{{ path('app_register') }}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                    <!-- Authentication END -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Logo Nav END -->
+</header>
+<!-- =======================
+Header END -->
+
+<div class="course-creation-page">
+    <!-- =======================
+Page Banner START -->
+    <section class="pt-0">
+        <!-- Main banner background image -->
+        <div class="container-fluid px-0">
+            <div class="instructor-gradient h-100px h-md-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
+            </div>
+        </div>
+        <div class="container mt-n4">
+            <div class="row">
+                <!-- Profile banner START -->
+                <div class="col-12">
+                    <div class="profile-banner card-body p-4">
+                        <div class="row d-flex justify-content-between">
+                            <!-- Avatar -->
+                            <div class="col-auto mt-4 mt-md-0">
+                                <div class="avatar avatar-xxl mt-n3 position-relative">
+                                    <img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+                                    <div class="position-absolute bottom-0 end-0">
+                                        <span class="verified-badge">
+                                            <i class="bi bi-patch-check-fill"></i> Verified
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Profile info -->
+                            <div class="col d-md-flex justify-content-between align-items-center mt-4">
+                                <div>
+                                    <h1 class="my-1 fs-3 fw-bold">{% if app.user.name %}{{ app.user.name }}{% else %}Instructor{% endif %}</h1>
+                                    <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+                                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                                            <i class="fas fa-tv me-1"></i>Create Course
+                                        </span>
+                                        <span class="badge bg-success bg-opacity-10 text-success">
+                                            <i class="fas fa-plus-circle me-1"></i>New Content
+                                        </span>
+                                    </div>
+                                    <p class="text-muted mb-0">Professional Instructor | Content Creator | Educator</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Profile banner END -->
+
+                    <!-- Advanced filter responsive toggler START -->
+                    <!-- Divider -->
+                    <hr class="d-xl-none">
+                    <div class="col-12 col-xl-3 d-flex justify-content-between align-items-center">
+                        <a class="h6 mb-0 fw-bold d-xl-none" href="#">Menu</a>
+                        <button class="btn btn-primary d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                            <i class="fas fa-sliders-h"></i>
+                        </button>
+                    </div>
+                    <!-- Advanced filter responsive toggler END -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- =======================
+Page Banner END -->
+
+    <!-- =======================
+Page content START -->
+    <section class="pt-0">
+        <div class="container">
+            <div class="row">
+                <!-- Left sidebar START -->
+                <div class="col-xl-3">
+                    <!-- Responsive offcanvas body START -->
+                    <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
+                        <!-- Offcanvas header -->
+                        <div class="offcanvas-header bg-light">
+                            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+                            <button  type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+                        </div>
+                        <!-- Offcanvas body -->
+                        <div class="offcanvas-body p-3 p-xl-0">
+                            {% include 'instructor/_sidebar.html.twig' %}
+                        </div>
+                    </div>
+                    <!-- Responsive offcanvas body END -->
+                </div>
+                <!-- Left sidebar END -->
+
+                <!-- Main content START -->
+                <div class="col-xl-9">
+                    <div class="card shadow-sm">
+                        <!-- Card header START -->
+                        <div class="card-header border-bottom">
+                            <h5 class="mb-0">Create New Course</h5>
+                        </div>
+                        <!-- Card header END -->
+
+                        <!-- Card body START -->
+                        <div class="card-body">
+                            <!-- Flash messages -->
+                            {% for type, messages in app.session.flashbag.all() %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show d-flex align-items-center" role="alert">
+                                        {% if type == 'error' or type == 'danger' %}
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                        {% elseif type == 'success' %}
+                                            <i class="fas fa-check-circle me-2"></i>
+                                        {% elseif type == 'warning' %}
+                                            <i class="fas fa-exclamation-circle me-2"></i>
+                                        {% else %}
+                                            <i class="fas fa-info-circle me-2"></i>
+                                        {% endif %}
+                                        <div class="flex-grow-1">
+                                            {{ message }}
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+
+                            <!-- Form validation errors summary -->
+                            {% if courseForm.vars.errors|length > 0 %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-exclamation-triangle me-2 mt-1"></i>
+                                        <div class="flex-grow-1">
+                                            <h6 class="alert-heading mb-2">
+                                                <i class="fas fa-times-circle me-1"></i>
+                                                Please correct the following errors:
+                                            </h6>
+                                            <ul class="mb-0">
+                                                {% for error in courseForm.vars.errors %}
+                                                    <li>{{ error.message }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Multi-step form START -->
+                            {{ form_start(courseForm, {'attr': {'novalidate': 'novalidate', 'id': 'courseForm'}}) }}
+                            <div class="bs-stepper" id="stepper">
+                                    <!-- Steps header START -->
+                                    <div class="bs-stepper-header" role="tablist">
+                                        <!-- Step 1 -->
+                                        <div class="step active" data-target="#step-1">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger1" aria-controls="step-1">
+                                                    <span class="bs-stepper-circle">1</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Basic Information</h6>
+                                            </div>
+                                        </div>
+                                        <div class="line"></div>
+
+                                        <!-- Step 2 -->
+                                        <div class="step" data-target="#step-2">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger2" aria-controls="step-2">
+                                                    <span class="bs-stepper-circle">2</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Course Media</h6>
+                                            </div>
+                                        </div>
+                                        <div class="line"></div>
+
+                                        <!-- Step 3 -->
+                                        <div class="step" data-target="#step-3">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger3" aria-controls="step-3">
+                                                    <span class="bs-stepper-circle">3</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Curriculum</h6>
+                                            </div>
+                                        </div>
+                                        <div class="line"></div>
+
+                                        <!-- Step 4 -->
+                                        <div class="step" data-target="#step-4">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger4" aria-controls="step-4">
+                                                    <span class="bs-stepper-circle">4</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Additional Information</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Step Buttons END -->
+
+                                    <!-- Card body START -->
+                                    <div class="card-body">
+                                        <!-- Step content START -->
+                                        <div class="bs-stepper-content">
+                                            <!-- Step 1 content START -->
+                                            <div id="step-1" role="tabpanel" class="bs-stepper-pane content active fade" aria-labelledby="steppertrigger1">
+                                                <!-- Title -->
+                                                <h4>Course details</h4>
+
+                                                <hr> <!-- Divider -->
+
+                                                <!-- Basic information START -->
+                                                <div class="row g-4">
+                                                    <!-- Course title -->
+                                                    <div class="col-12">
+                                                        {{ form_label(courseForm.title, 'Course title', {'label_attr': {'class': 'form-label'}}) }}
+                                                        {{ form_widget(courseForm.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter course title'}}) }}
+                                                        {% if courseForm.title.vars.errors|length > 0 %}
+                                                            <div class="invalid-feedback d-block">
+                                                                {% for error in courseForm.title.vars.errors %}
+                                                                    <div class="d-flex align-items-center mb-1">
+                                                                        <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                        <span>{{ error.message }}</span>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% else %}
+                                                            {{ form_errors(courseForm.title) }}
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Short description -->
+                                                    <div class="col-12">
+                                                        {{ form_label(courseForm.shortDescription, 'Short description', {'label_attr': {'class': 'form-label'}}) }}
+                                                        {{ form_widget(courseForm.shortDescription, {'attr': {'class': 'form-control', 'rows': 2, 'placeholder': 'Enter keywords'}}) }}
+                                                        {% if courseForm.shortDescription.vars.errors|length > 0 %}
+                                                            <div class="invalid-feedback d-block">
+                                                                {% for error in courseForm.shortDescription.vars.errors %}
+                                                                    <div class="d-flex align-items-center mb-1">
+                                                                        <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                        <span>{{ error.message }}</span>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% else %}
+                                                            {{ form_errors(courseForm.shortDescription) }}
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Course category -->
+                                                    <div class="col-md-6">
+                                                        {{ form_label(courseForm.category, 'Course category', {'label_attr': {'class': 'form-label'}}) }}
+                                                        {{ form_widget(courseForm.category, {'attr': {'class': 'form-select'}}) }}
+                                                        {% if courseForm.category.vars.errors|length > 0 %}
+                                                            <div class="invalid-feedback d-block">
+                                                                {% for error in courseForm.category.vars.errors %}
+                                                                    <div class="d-flex align-items-center mb-1">
+                                                                        <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                        <span>{{ error.message }}</span>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% else %}
+                                                            {{ form_errors(courseForm.category) }}
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Course level -->
+                                                    <div class="col-md-6">
+                                                        {{ form_label(courseForm.level, 'Course level', {'label_attr': {'class': 'form-label'}}) }}
+                                                        <select id="course_level" name="course[level]" class="form-select" required>
+                                                            <option value="">Select level...</option>
+                                                            <option value="Beginner" {% if courseForm.level.vars.value == 'Beginner' %}selected{% endif %}>Beginner</option>
+                                                            <option value="Intermediate" {% if courseForm.level.vars.value == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                                                            <option value="Advanced" {% if courseForm.level.vars.value == 'Advanced' %}selected{% endif %}>Advanced</option>
+                                                        </select>
+                                                        {% if courseForm.level.vars.errors|length > 0 %}
+                                                            <div class="invalid-feedback d-block">
+                                                                {% for error in courseForm.level.vars.errors %}
+                                                                    <div class="d-flex align-items-center mb-1">
+                                                                        <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                        <span>{{ error.message }}</span>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% else %}
+                                                            {{ form_errors(courseForm.level) }}
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Course price -->
+                                                    <div class="col-md-6">
+                                                        {{ form_label(courseForm.price, 'Course price', {'label_attr': {'class': 'form-label'}}) }}
+                                                        {{ form_widget(courseForm.price, {'attr': {'class': 'form-control', 'placeholder': 'Enter course price'}}) }}
+                                                        {% if courseForm.price.vars.errors|length > 0 %}
+                                                            <div class="invalid-feedback d-block">
+                                                                {% for error in courseForm.price.vars.errors %}
+                                                                    <div class="d-flex align-items-center mb-1">
+                                                                        <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                        <span>{{ error.message }}</span>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% else %}
+                                                            {{ form_errors(courseForm.price) }}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+
+                                                <!-- Navigation buttons START -->
+                                                <div class="d-flex justify-content-between mt-4">
+                                                    <button type="button" class="btn btn-secondary previous-btn" disabled>Previous</button>
+                                                    <button type="button" id="next-btn-1" class="btn btn-primary next-btn">Next</button>
+                                                </div>
+                                        </div>
+                                        <!-- Step 1 content END -->
+
+                                        <div id="step-2" role="tabpanel" class="bs-stepper-pane content fade" aria-labelledby="steppertrigger2">
+                                            <!-- Title -->
+                                            <h4>Course media</h4>
+
+                                            <hr> <!-- Divider -->
+
+                                            <!-- Course image upload -->
+                                            <div class="row g-4">
+                                                <div class="col-12">
+                                                    {{ form_label(courseForm.thumbnailFile, 'Course thumbnail image', {'label_attr': {'class': 'form-label'}}) }}
+                                                    {{ form_widget(courseForm.thumbnailFile, {'attr': {'class': 'form-control'}}) }}
+                                                    {% if courseForm.thumbnailFile.vars.errors|length > 0 %}
+                                                        <div class="invalid-feedback d-block">
+                                                            {% for error in courseForm.thumbnailFile.vars.errors %}
+                                                                <div class="d-flex align-items-center mb-1">
+                                                                    <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                    <span>{{ error.message }}</span>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form_errors(courseForm.thumbnailFile) }}
+                                                    {% endif %}
+                                                    <small class="form-text">PNG or JPG no bigger than 800px width and 200px height.</small>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    {{ form_label(courseForm.videoFile, 'Course introduction video', {'label_attr': {'class': 'form-label'}}) }}
+                                                    {{ form_widget(courseForm.videoFile, {'attr': {'class': 'form-control'}}) }}
+                                                    {% if courseForm.videoFile.vars.errors|length > 0 %}
+                                                        <div class="invalid-feedback d-block">
+                                                            {% for error in courseForm.videoFile.vars.errors %}
+                                                                <div class="d-flex align-items-center mb-1">
+                                                                    <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                    <span>{{ error.message }}</span>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form_errors(courseForm.videoFile) }}
+                                                    {% endif %}
+                                                    <small class="form-text">MP4, WebM or OGG (Max. 500MB)</small>
+                                                </div>
+                                            </div>
+
+                                            <!-- Navigation buttons START -->
+                                            <div class="d-flex justify-content-between mt-4">
+                                                <button type="button" class="btn btn-secondary previous-btn" disabled>Previous</button>
+                                                <button type="button" id="next-btn-1" class="btn btn-primary next-btn">Next</button>
+                                            </div>
+                                        </div>
+                                        <!-- Step 2 content END -->
+
+                                        <!-- Step 3 content START -->
+                                        <div id="step-3" role="tabpanel" class="bs-stepper-pane content fade" aria-labelledby="steppertrigger3">
+                                            <!-- Title -->
+                                            <h4>Curriculum</h4>
+
+                                            <hr> <!-- Divider -->
+
+                                            <!-- Chapters container -->
+                                            <div class="mb-4">
+                                                <button type="button" class="btn btn-primary-soft mb-3" onclick="addChapter()">
+                                                    <i class="fas fa-plus me-2"></i>Add Chapter
+                                                </button>
+                                                <div id="chaptersContainer">
+                                                    <!-- Chapters will be added here dynamically -->
+                                                </div>
+                                            </div>
+
+                                            <!-- Navigation buttons START -->
+                                            <div class="d-flex justify-content-between mt-4">
+                                                <button type="button" class="btn btn-secondary previous-btn">Previous</button>
+                                                <button type="button" id="next-btn-3" class="btn btn-primary next-btn">Next</button>
+                                            </div>
+                                        </div>
+                                        <!-- Step 3 content END -->
+
+                                        <!-- Step 4 content START -->
+                                        <div id="step-4" role="tabpanel" class="bs-stepper-pane content fade" aria-labelledby="steppertrigger4">
+                                            <!-- Title -->
+                                            <h4>Additional information</h4>
+
+                                            <hr> <!-- Divider -->
+
+                                            <!-- Additional information START -->
+                                            <div class="row g-4">
+                                                <!-- Requirements -->
+                                                <div class="col-12">
+                                                    {{ form_label(courseForm.requirements, 'Requirements', {'label_attr': {'class': 'form-label'}}) }}
+                                                    {{ form_widget(courseForm.requirements, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'What are the prerequisites for this course?'}}) }}
+                                                    {% if courseForm.requirements.vars.errors|length > 0 %}
+                                                        <div class="invalid-feedback d-block">
+                                                            {% for error in courseForm.requirements.vars.errors %}
+                                                                <div class="d-flex align-items-center mb-1">
+                                                                    <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                    <span>{{ error.message }}</span>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form_errors(courseForm.requirements) }}
+                                                    {% endif %}
+                                                </div>
+
+                                                <!-- Learning outcomes -->
+                                                <div class="col-12">
+                                                    {{ form_label(courseForm.learningOutcomes, 'Learning outcomes', {'label_attr': {'class': 'form-label'}}) }}
+                                                    {{ form_widget(courseForm.learningOutcomes, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'What will students learn after completing this course?'}}) }}
+                                                    {% if courseForm.learningOutcomes.vars.errors|length > 0 %}
+                                                        <div class="invalid-feedback d-block">
+                                                            {% for error in courseForm.learningOutcomes.vars.errors %}
+                                                                <div class="d-flex align-items-center mb-1">
+                                                                    <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                    <span>{{ error.message }}</span>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form_errors(courseForm.learningOutcomes) }}
+                                                    {% endif %}
+                                                </div>
+
+                                                <!-- Target audience -->
+                                                <div class="col-12">
+                                                    {{ form_label(courseForm.targetAudience, 'Target audience', {'label_attr': {'class': 'form-label'}}) }}
+                                                    {{ form_widget(courseForm.targetAudience, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'Who is this course for?'}}) }}
+                                                    {% if courseForm.targetAudience.vars.errors|length > 0 %}
+                                                        <div class="invalid-feedback d-block">
+                                                            {% for error in courseForm.targetAudience.vars.errors %}
+                                                                <div class="d-flex align-items-center mb-1">
+                                                                    <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                    <span>{{ error.message }}</span>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form_errors(courseForm.targetAudience) }}
+                                                    {% endif %}
+                                                </div>
+
+                                                <!-- Language -->
+                                                <div class="col-md-6">
+                                                    {{ form_label(courseForm.language, 'Course language', {'label_attr': {'class': 'form-label'}}) }}
+                                                    {{ form_widget(courseForm.language, {'attr': {'class': 'form-select'}}) }}
+                                                    {% if courseForm.language.vars.errors|length > 0 %}
+                                                        <div class="invalid-feedback d-block">
+                                                            {% for error in courseForm.language.vars.errors %}
+                                                                <div class="d-flex align-items-center mb-1">
+                                                                    <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                    <span>{{ error.message }}</span>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form_errors(courseForm.language) }}
+                                                    {% endif %}
+                                                </div>
+
+                                                <!-- Duration -->
+                                                <div class="col-md-6">
+                                                    {{ form_label(courseForm.duration, 'Estimated duration (hours)', {'label_attr': {'class': 'form-label'}}) }}
+                                                    {{ form_widget(courseForm.duration, {'attr': {'class': 'form-control', 'placeholder': 'e.g., 10'}}) }}
+                                                    {% if courseForm.duration.vars.errors|length > 0 %}
+                                                        <div class="invalid-feedback d-block">
+                                                            {% for error in courseForm.duration.vars.errors %}
+                                                                <div class="d-flex align-items-center mb-1">
+                                                                    <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                                                                    <span>{{ error.message }}</span>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form_errors(courseForm.duration) }}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <!-- Navigation buttons START -->
+                                            <div class="d-flex justify-content-between mt-4">
+                                                <button type="button" class="btn btn-secondary previous-btn">Previous</button>
+                                                <button type="button" class="btn btn-success" onclick="submitCourse()">
+                                                    <i class="fas fa-check"></i> Create Course
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- Step 4 content END -->
+                                    </div>
+                                    <!-- Step content END -->
+                                </div>
+                                <!-- Card body END -->
+                            </div>
+                            <!-- Steps END -->
+                        </div>
+                        {{ form_end(courseForm) }}
+                    </div>
+                </div>
+                <!-- Main content END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page content END -->
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<!-- Init scripts for course creation page -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Initialize Choices.js with custom configuration (only on this page)
+    const elements = document.querySelectorAll('.js-choice');
+    
+    elements.forEach(function(element) {
+        // Only initialize if not already initialized by Choices
+        if (!element.classList.contains('choices__input')) {
+            new Choices(element, {
+                searchEnabled: element.dataset.searchEnabled === 'true',
+                searchPlaceholderValue: 'Search...',
+                itemSelectText: 'Press to select',
+                allowHTML: false,
+                removeItemButton: element.dataset.removeItemButton === 'true'
+            });
+        }
+    });
+
+    // Form validation for each step
+    function validateStep(stepIndex) {
+        let isValid = true;
+        let errorMessage = '';
+        
+        // Reset previous errors
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        
+        switch(stepIndex) {
+            case 0: // Step 1: Basic Information
+                const title = document.getElementById('course_title');
+                const shortDescription = document.getElementById('course_shortDescription');
+                const category = document.getElementById('course_category');
+                const level = document.getElementById('course_level');
+                const price = document.getElementById('course_price');
+                
+                // Validate title
+                if (!title || !title.value.trim()) {
+                    if (title) title.classList.add('is-invalid');
+                    errorMessage += 'Course title is required. ';
+                    isValid = false;
+                }
+                
+                // Validate short description
+                if (!shortDescription || !shortDescription.value.trim() || shortDescription.value.trim().length < 10) {
+                    if (shortDescription) shortDescription.classList.add('is-invalid');
+                    errorMessage += 'Short description must be at least 10 characters. ';
+                    isValid = false;
+                }
+                
+                // Validate category
+                if (!category || !category.value) {
+                    if (category) category.classList.add('is-invalid');
+                    errorMessage += 'Please select a category. ';
+                    isValid = false;
+                }
+                
+                // Validate level
+                if (!level || !level.value) {
+                    if (level) level.classList.add('is-invalid');
+                    errorMessage += 'Please select a course level. ';
+                    isValid = false;
+                }
+                
+                // Validate price
+                if (!price || !price.value || price.value <= 0) {
+                    if (price) price.classList.add('is-invalid');
+                    errorMessage += 'Please enter a valid price greater than 0. ';
+                    isValid = false;
+                }
+                break;
+                
+            case 1: // Step 2: Course Media
+                const thumbnailFile = document.getElementById('course_thumbnailFile');
+                const videoFile = document.getElementById('course_videoFile');
+                
+                // Require at least one media file
+                if ((!thumbnailFile || !thumbnailFile.files || thumbnailFile.files.length === 0) && 
+                    (!videoFile || !videoFile.files || videoFile.files.length === 0)) {
+                    if (thumbnailFile) thumbnailFile.classList.add('is-invalid');
+                    if (videoFile) videoFile.classList.add('is-invalid');
+                    errorMessage += 'Please upload at least a thumbnail image or introduction video. ';
+                    isValid = false;
+                }
+                break;
+                
+            case 2: // Step 3: Curriculum
+                const chapters = document.querySelectorAll('.chapter-item');
+                
+                // Require at least one chapter
+                if (chapters.length === 0) {
+                    errorMessage += 'Please add at least one chapter to your course. ';
+                    isValid = false;
+                } else {
+                    chapters.forEach((chapter, index) => {
+                        const titleInput = chapter.querySelector('.chapter-title');
+                        if (!titleInput || !titleInput.value.trim()) {
+                            if (titleInput) titleInput.classList.add('is-invalid');
+                            errorMessage += `Chapter ${index + 1} title is required. `;
+                            isValid = false;
+                        }
+                        
+                        // Check if chapter has at least one lesson
+                        const lessons = chapter.querySelectorAll('.lesson-item');
+                        if (lessons.length === 0) {
+                            errorMessage += `Chapter ${index + 1} should have at least one lesson. `;
+                            isValid = false;
+                        } else {
+                            lessons.forEach((lesson, lessonIndex) => {
+                                const lessonTitle = lesson.querySelector('.lesson-title');
+                                if (!lessonTitle || !lessonTitle.value.trim()) {
+                                    if (lessonTitle) lessonTitle.classList.add('is-invalid');
+                                    errorMessage += `Lesson ${lessonIndex + 1} in Chapter ${index + 1} title is required. `;
+                                    isValid = false;
+                                }
+                            });
+                        }
+                    });
+                }
+                break;
+                
+            case 3: // Step 4: Additional Information
+                const requirements = document.getElementById('course_requirements');
+                const learningOutcomes = document.getElementById('course_learningOutcomes');
+                const targetAudience = document.getElementById('course_targetAudience');
+                const language = document.getElementById('course_language');
+                const duration = document.getElementById('course_duration');
+                
+                // Validate language (required)
+                if (!language || !language.value) {
+                    if (language) language.classList.add('is-invalid');
+                    errorMessage += 'Please select a course language. ';
+                    isValid = false;
+                }
+                
+                // Validate duration (required)
+                if (!duration || !duration.value || duration.value <= 0) {
+                    if (duration) duration.classList.add('is-invalid');
+                    errorMessage += 'Please enter a valid course duration. ';
+                    isValid = false;
+                }
+                
+                // Validate requirements (optional but if filled, should be meaningful)
+                if (requirements && requirements.value && requirements.value.trim().length < 20) {
+                    requirements.classList.add('is-invalid');
+                    errorMessage += 'Requirements should be at least 20 characters if provided. ';
+                    isValid = false;
+                }
+                
+                // Validate learning outcomes (optional but if filled, should be meaningful)
+                if (learningOutcomes && learningOutcomes.value && learningOutcomes.value.trim().length < 20) {
+                    learningOutcomes.classList.add('is-invalid');
+                    errorMessage += 'Learning outcomes should be at least 20 characters if provided. ';
+                    isValid = false;
+                }
+                
+                // Validate target audience (optional but if filled, should be meaningful)
+                if (targetAudience && targetAudience.value && targetAudience.value.trim().length < 20) {
+                    targetAudience.classList.add('is-invalid');
+                    errorMessage += 'Target audience should be at least 20 characters if provided. ';
+                    isValid = false;
+                }
+                break;
+        }
+        
+        return { isValid, errorMessage };
+    }
+    
+    // Update next button state based on current step validation
+    function updateNextButtonState() {
+        const currentStep = stepper.currentIndex;
+        const validation = validateStep(currentStep);
+        const nextButton = document.querySelector(`#next-btn-${currentStep + 1}`);
+        
+        if (nextButton) {
+            if (validation.isValid) {
+                nextButton.disabled = false;
+                nextButton.classList.remove('disabled');
+            } else {
+                nextButton.disabled = true;
+                nextButton.classList.add('disabled');
+            }
+        }
+        
+        return validation;
+    }
+    
+    // Add real-time validation listeners
+    function addValidationListeners() {
+        // Step 1 fields
+        ['course_title', 'course_shortDescription', 'course_category', 'course_level', 'course_price'].forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('input', updateNextButtonState);
+                field.addEventListener('change', updateNextButtonState);
+                field.addEventListener('blur', updateNextButtonState);
+            }
+        });
+        
+        // Step 2 fields (file inputs)
+        ['course_thumbnailFile', 'course_videoFile'].forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('change', updateNextButtonState);
+            }
+        });
+        
+        // Step 3 chapters and lessons
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('chapter-title') || e.target.classList.contains('lesson-title')) {
+                updateNextButtonState();
+            }
+        });
+        
+        // Step 4 fields
+        ['course_requirements', 'course_learningOutcomes', 'course_targetAudience', 'course_language', 'course_duration'].forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('input', updateNextButtonState);
+                field.addEventListener('change', updateNextButtonState);
+                field.addEventListener('blur', updateNextButtonState);
+            }
+        });
+        
+        // Listen for chapter/lesson additions/removals
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' && 
+                    (mutation.target.classList.contains('chapters-container') || 
+                     mutation.target.classList.contains('lessons-container'))) {
+                    updateNextButtonState();
+                }
+            });
+        });
+        
+        // Observe chapters container for changes
+        const chaptersContainer = document.getElementById('chaptersContainer');
+        if (chaptersContainer) {
+            observer.observe(chaptersContainer, {
+                childList: true,
+                subtree: true
+            });
+        }
+    }
+
+    // Client-side validation
+    function validateForm() {
+        const title = document.getElementById('course_title');
+        const shortDescription = document.getElementById('course_shortDescription');
+        const category = document.getElementById('course_category');
+        const level = document.getElementById('course_level');
+        const price = document.getElementById('course_price');
+        
+        let isValid = true;
+        let errorMessage = '';
+        
+        // Reset previous errors
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+        
+        // Validate title
+        if (!title.value.trim()) {
+            title.classList.add('is-invalid');
+            errorMessage += 'Course title is required.\\n';
+            isValid = false;
+        }
+        
+        // Validate category
+        if (!category.value) {
+            category.classList.add('is-invalid');
+            errorMessage += 'Please select a category.\\n';
+            isValid = false;
+        }
+        
+        // Validate level
+        if (!level.value) {
+            level.classList.add('is-invalid');
+            errorMessage += 'Please select a course level.\\n';
+            isValid = false;
+        }
+        
+        // Validate price
+        if (!price.value || parseFloat(price.value) < 0) {
+            price.classList.add('is-invalid');
+            errorMessage += 'Please enter a valid price.\\n';
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            showGlobalNotification('Validation Error', errorMessage, 'error');
+        }
+        
+        return isValid;
+    }
+    
+    // Add event listeners for real-time validation
+    document.getElementById('course_title')?.addEventListener('blur', validateForm);
+    document.getElementById('course_category')?.addEventListener('change', validateForm);
+    document.getElementById('course_level')?.addEventListener('change', validateForm);
+    document.getElementById('course_price')?.addEventListener('blur', validateForm);
+    
+    // Override form submission to validate first
+    document.getElementById('courseForm').addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // Simple stepper functionality without validation
+    const stepper = {
+        currentIndex: 0,
+        steps: null,
+        
+        init: function() {
+            // Wait a bit for DOM to be ready
+            setTimeout(() => {
+                this.steps = document.querySelectorAll('.bs-stepper-pane');
+                console.log('Stepper init - found steps:', this.steps.length);
+                console.log('Steps:', this.steps);
+                
+                // Ensure first step is active
+                if (this.steps.length > 0) {
+                    this.steps.forEach((step, index) => {
+                        step.classList.remove('active', 'show');
+                        step.style.display = 'none';
+                        step.style.opacity = '0';
+                        console.log(`Step ${index + 1} classes:`, step.className);
+                    });
+                    
+                    // Force first step to be visible
+                    this.steps[0].classList.add('active', 'show');
+                    this.steps[0].style.display = 'block';
+                    this.steps[0].style.opacity = '1';
+                    this.currentIndex = 0;
+                    
+                    console.log('First step forced active:', this.steps[0].className);
+                    console.log('First step display:', window.getComputedStyle(this.steps[0]).display);
+                }
+                
+                this.updateStepIndicators();
+                
+                // Initialize validation listeners
+                addValidationListeners();
+                
+                // Set initial next button state
+                updateNextButtonState();
+            }, 200);
+        },
+        
+        next: function() {
+            console.log('Next button clicked, current index:', this.currentIndex, 'total steps:', this.steps.length);
+            if (!this.steps || this.steps.length === 0) {
+                console.log('Steps not initialized');
+                return;
+            }
+            
+            // Validate current step before proceeding
+            const validation = validateStep(this.currentIndex);
+            if (!validation.isValid) {
+                console.log('Validation failed:', validation.errorMessage);
+                // Show error message
+                if (typeof showGlobalNotification === 'function') {
+                    showGlobalNotification('Validation Error', validation.errorMessage, 'error');
+                } else {
+                    alert('Please correct the following errors: ' + validation.errorMessage);
+                }
+                return;
+            }
+            
+            if (this.currentIndex < this.steps.length - 1) {
+                // Hide current step
+                this.steps[this.currentIndex].classList.remove('active', 'show');
+                this.steps[this.currentIndex].style.display = 'none';
+                this.steps[this.currentIndex].style.opacity = '0';
+                
+                this.currentIndex++;
+                
+                // Show next step
+                this.steps[this.currentIndex].classList.add('active', 'show');
+                this.steps[this.currentIndex].style.display = 'block';
+                this.steps[this.currentIndex].style.opacity = '1';
+                
+                this.updateStepIndicators();
+                updateNextButtonState(); // Update next button for new step
+                console.log('Moved to step:', this.currentIndex);
+            } else {
+                console.log('Already at last step');
+            }
+        },
+        
+        previous: function() {
+            if (!this.steps || this.steps.length === 0) {
+                console.log('Steps not initialized');
+                return;
+            }
+            if (this.currentIndex > 0) {
+                // Hide current step
+                this.steps[this.currentIndex].classList.remove('active', 'show');
+                this.steps[this.currentIndex].style.display = 'none';
+                this.steps[this.currentIndex].style.opacity = '0';
+                
+                this.currentIndex--;
+                
+                // Show previous step
+                this.steps[this.currentIndex].classList.add('active', 'show');
+                this.steps[this.currentIndex].style.display = 'block';
+                this.steps[this.currentIndex].style.opacity = '1';
+                
+                this.updateStepIndicators();
+                updateNextButtonState(); // Update next button for new step
+            }
+        },
+        
+        updateStepIndicators: function() {
+            const indicators = document.querySelectorAll('.step');
+            indicators.forEach((indicator, index) => {
+                indicator.classList.remove('active', 'completed');
+                if (index < this.currentIndex) {
+                    indicator.classList.add('completed');
+                } else if (index === this.currentIndex) {
+                    indicator.classList.add('active');
+                }
+            });
+        },
+        
+        goToStep: function(stepIndex) {
+            if (stepIndex >= 0 && stepIndex < this.steps.length) {
+                this.steps[this.currentIndex].classList.remove('active');
+                this.currentIndex = stepIndex;
+                this.steps[this.currentIndex].classList.add('active');
+                this.updateStepIndicators();
+            }
+        }
+    };
+    
+    // Add event listeners for next/previous buttons
+    document.querySelectorAll('.next-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            stepper.next();
+        });
+    });
+    
+    document.querySelectorAll('.previous-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            stepper.previous();
+        });
+    });
+    
+    // Add click listeners to step indicators
+    document.querySelectorAll('.step-trigger').forEach((trigger, index) => {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            stepper.goToStep(index);
+        });
+    });
+    
+    // Initialize stepper
+    stepper.init();
+});
+
+// Simple chapter management
+function addChapter() {
+    const chaptersContainer = document.getElementById('chaptersContainer');
+    const chapterId = 'chapter-' + Date.now();
+    
+    const chapterHtml = `
+        <div class="chapter-item border rounded p-3 mb-3" id="` + chapterId + `">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <input type="text" class="form-control chapter-title" placeholder="Chapter title" style="flex: 1;">
+                <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeChapter('` + chapterId + `')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="lessons-container">
+                <button type="button" class="btn btn-sm btn-primary-soft mb-2" onclick="addLesson('` + chapterId + `')">
+                    <i class="fas fa-plus me-1"></i>Add Lesson
+                </button>
+            </div>
+        </div>
+    `;
+    
+    chaptersContainer.insertAdjacentHTML('beforeend', chapterHtml);
+}
+
+function removeChapter(chapterId) {
+    const chapter = document.getElementById(chapterId);
+    if (chapter) {
+        chapter.remove();
+    }
+}
+
+function addLesson(chapterId) {
+    const lessonsContainer = document.querySelector(`#${chapterId} .lessons-container`);
+    const lessonId = 'lesson-' + Date.now();
+    
+    const lessonHtml = `
+        <div class="lesson-item border rounded p-2 mb-2" id="${lessonId}">
+            <div class="d-flex align-items-center">
+                <input type="text" class="form-control form-control-sm lesson-title" placeholder="Lesson title" style="flex: 1;">
+                <div class="me-2" style="width: 100px;">
+                    <input type="text" class="form-control form-control-sm lesson-duration" placeholder="HH:MM">
+                </div>
+                <button type="button" class="btn btn-sm btn-light me-2" data-bs-toggle="collapse" data-bs-target="#lesson-details-${lessonId}">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeLesson('${lessonId}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="collapse mt-2" id="lesson-details-${lessonId}">
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm">
+                        <option>video</option>
+                        <option>text</option>
+                        <option>quiz</option>
+                    </select>
+                    <input type="text" class="form-control form-control-sm" placeholder="Content URL or text">
+                </div>
+            </div>
+        </div>
+    `;
+    
+    lessonsContainer.insertAdjacentHTML('beforeend', lessonHtml);
+}
+
+function removeLesson(lessonId) {
+    const lesson = document.getElementById(lessonId);
+    if (lesson) {
+        lesson.remove();
+    }
+}
+
+// Submit course function
+function submitCourse() {
+    console.log('=== SUBMIT COURSE FUNCTION CALLED ===');
+    
+    // Collect chapter data and add it to the main form
+    const chapters = [];
+    document.querySelectorAll('.chapter-item').forEach(chapterEl => {
+        const chapter = {
+            title: chapterEl.querySelector('.chapter-title').value,
+            lessons: []
+        };
+        
+        console.log('Found chapter:', chapter.title);
+        
+        chapterEl.querySelectorAll('.lesson-item').forEach(lessonEl => {
+            const lesson = {
+                title: lessonEl.querySelector('.lesson-title').value,
+                duration: lessonEl.querySelector('.lesson-duration').value,
+                type: lessonEl.querySelector('select').value,
+                description: lessonEl.querySelector('input[placeholder*="Content"]').value
+            };
+            
+            console.log('Found lesson:', lesson.title);
+            chapter.lessons.push(lesson);
+        });
+        
+        chapters.push(chapter);
+    });
+    
+    console.log('Total chapters found:', chapters.length);
+    
+    // Create a hidden input to store chapters data
+    const mainForm = document.getElementById('courseForm');
+    let chaptersInput = mainForm.querySelector('input[name="chapters"]');
+    
+    if (!chaptersInput) {
+        chaptersInput = document.createElement('input');
+        chaptersInput.type = 'hidden';
+        chaptersInput.name = 'chapters';
+        mainForm.appendChild(chaptersInput);
+    }
+    
+    chaptersInput.value = JSON.stringify(chapters);
+    console.log('Chapters JSON:', chaptersInput.value);
+    
+    // Submit the main form
+    console.log('Submitting form...');
+    mainForm.submit();
+}
+</script>
+{% endblock javascripts %}

@@ -1,0 +1,49 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - '*/var/*'
+        - '*/vendor/*'
+        - '*/public/*'
+        - '*/bin/*'
+    
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingVarTagTypehint: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkUninitializedProperties: true
+    
+    ignoreErrors:
+        # Allow some common Symfony patterns
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder#'
+        - '#Method .* should return .* but returns mixed#'
+        - '#Access to an undefined property#'
+        - '#Call to an undefined method#'
+    
+    bootstrapFiles:
+        - vendor/autoload.php
+    
+    scanFiles:
+        - config/services.yaml
+    
+    strictRules:
+        allRules: false
+        booleansInConditions: true
+        uselessCast: true
+        requireParentConstructorCall: true
+        disallowedLooseComparison: true
+        noVariableVariables: false
+        closureUsesThis: true
+        matchingInheritedMethodNames: true
+        numericOperandsInArithmeticOperators: true
+        strictCalls: true
+        switchConditionsMatchingType: true
+    
+    typeAliases:
+        UserId: 'int'
+        Email: 'string'
+
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon

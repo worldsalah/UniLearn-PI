@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Global Notification Example{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Global Notification System Examples</h1>
+    <p>This page demonstrates the global notification system that works across all pages.</p>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Trigger Notifications</h3>
+            <div class="d-grid gap-2">
+                <button onclick="showGlobalNotification('Success!', 'This is a success message.', 'success', 'fas fa-check-circle')" class="btn btn-success">
+                    Show Success Notification
+                </button>
+                <button onclick="showGlobalNotification('Error!', 'This is an error message.', 'error', 'fas fa-exclamation-circle')" class="btn btn-danger">
+                    Show Error Notification
+                </button>
+                <button onclick="showGlobalNotification('Warning!', 'This is a warning message.', 'warning', 'fas fa-exclamation-triangle')" class="btn btn-warning">
+                    Show Warning Notification
+                </button>
+                <button onclick="showGlobalNotification('Info!', 'This is an info message.', 'info', 'fas fa-info-circle')" class="btn btn-info">
+                    Show Info Notification
+                </button>
+                <button onclick="showGlobalNotification('Sticky!', 'This notification will not auto-hide.', 'success', 'fas fa-thumbtack', false)" class="btn btn-secondary">
+                    Show Sticky Notification
+                </button>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <h3>Flash Message Examples</h3>
+            <p>These flash messages will be automatically converted to global notifications:</p>
+            
+            <!-- Hidden flash messages that will be converted -->
+            <div data-flash-type="success" 
+                 data-flash-title="Welcome!" 
+                 data-flash-message="This page demonstrates the global notification system."
+                 style="display: none;">
+                Welcome message
+            </div>
+            
+            <div data-flash-type="info" 
+                 data-flash-title="Did you know?" 
+                 data-flash-message="You can call showGlobalNotification() from anywhere in your JavaScript code."
+                 style="display: none;">
+                Info message
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3>Usage Instructions</h3>
+            <div class="card">
+                <div class="card-body">
+                    <h5>From JavaScript:</h5>
+                    <pre><code>showGlobalNotification(title, message, type, icon, autoHide)</code></pre>
+                    <ul>
+                        <li><strong>title:</strong> Notification title (string)</li>
+                        <li><strong>message:</strong> Notification message (string)</li>
+                        <li><strong>type:</strong> 'success', 'error', 'warning', or 'info' (optional, defaults to 'success')</li>
+                        <li><strong>icon:</strong> FontAwesome icon class (optional, defaults to 'fas fa-check-circle')</li>
+                        <li><strong>autoHide:</strong> Whether to auto-hide after 5 seconds (optional, defaults to true)</li>
+                    </ul>
+                    
+                    <h5 class="mt-3">From Twig Templates:</h5>
+                    <pre><code>&lt;div data-flash-type="success" 
+     data-flash-title="Success!" 
+     data-flash-message="Your action was completed."
+     style="display: none;"&gt;
+    Success message
+&lt;/div&gt;</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

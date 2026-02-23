@@ -102,18 +102,12 @@
 
                     <!-- Nav item Courses -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle " href="#" id="courseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Courses
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="courseDropdown">
-                            <li><h6 class="dropdown-header">Learning</h6></li>
-                            <li><a class="dropdown-item" href="/courses">Browse Courses</a></li>
-                            <li><a class="dropdown-item" href="/categories">Course Categories</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-award me-2"></i>Browse Certifications</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">Student</h6></li>
-                            <li><a class="dropdown-item" href="#">My Certificates</a></li>
-                            <li><a class="dropdown-item" href="#">My Bookmarks</a></li>
+                        <a class="nav-link" href="#" id="coursesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Courses</a>
+                        <ul class="dropdown-menu" aria-labelledby="coursesMenu">
+                            <li> <a class="dropdown-item" href="#">Course Grid</a></li>
+                            <li> <a class="dropdown-item" href="#">Course List</a></li>
+                            <li> <a class="dropdown-item" href="#">Course Detail</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('app_course_categories') }}">Course Categories</a></li>
                         </ul>
                     </li>
 
@@ -161,7 +155,7 @@
                 <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
                     <div class="nav-item w-100">
                         <form class="position-relative">
-                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search" style="width: 500px;">
+                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
                             <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
                                 <i class="fas fa-search fs-6 "></i>
                             </button>
@@ -251,10 +245,8 @@
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
                             {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
-                                <li><a class="dropdown-item" href="{{ path('app_my_courses') }}"><i class="bi bi-book fa-fw me-2"></i>My Courses</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
-                                <li><a class="dropdown-item" href="{{ path('app_certificates') }}"><i class="bi bi-award fa-fw me-2"></i>My Certificates</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
                             {% else %}
                                 <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>

@@ -98,10 +98,10 @@ Tab Content START -->
 							</div>
 							<div class="col-md-8">
 								<div class="row g-2">
-									<div class="col-md-4">
+									<div class="col-md-3">
 										<input type="text" class="form-control" id="services-search" placeholder="Search services by title, description, category, or price...">
 									</div>
-									<div class="col-md-4">
+									<div class="col-md-3">
 										<select class="form-select" id="services-sort">
 											<option value="default">Sort by</option>
 											<option value="price-low">Price: Low to High</option>
@@ -110,11 +110,31 @@ Tab Content START -->
 											<option value="name-desc">Name: Z to A</option>
 										</select>
 									</div>
-									<div class="col-md-4 text-md-end">
-                                        <a href="{{ path('app_product_new_public') }}" class="btn btn-success">
-                                            <i class="bi bi-plus-circle me-1"></i>Create New
-                                        </a>
-                                    </div>
+									<div class="col-md-3">
+										<!-- Currency Selector -->
+										<div class="dropdown">
+											<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="shopCurrencyDropdown" data-bs-toggle="dropdown">
+												<i class="fas fa-coins me-1"></i>
+												<span id="shopCurrentCurrency">USD</span>
+											</button>
+											<ul class="dropdown-menu" id="shopCurrencyMenu">
+												<li><a class="dropdown-item shop-currency-option" href="#" data-currency="USD">🇺🇸 USD - US Dollar</a></li>
+												<li><a class="dropdown-item shop-currency-option" href="#" data-currency="EUR">🇪🇺 EUR - Euro</a></li>
+												<li><a class="dropdown-item shop-currency-option" href="#" data-currency="GBP">🇬🇧 GBP - British Pound</a></li>
+												<li><a class="dropdown-item shop-currency-option" href="#" data-currency="JPY">🇯🇵 JPY - Japanese Yen</a></li>
+												<li><a class="dropdown-item shop-currency-option" href="#" data-currency="CAD">🇨🇦 CAD - Canadian Dollar</a></li>
+												<li><a class="dropdown-item shop-currency-option" href="#" data-currency="AUD">🇦🇺 AUD - Australian Dollar</a></li>
+												<li><a class="dropdown-item shop-currency-option" href="#" data-currency="CHF">🇨🇭 CHF - Swiss Franc</a></li>
+												<li><a class="dropdown-item shop-currency-option" href="#" data-currency="CNY">🇨🇳 CNY - Chinese Yuan</a></li>
+												<li><a class="dropdown-item shop-currency-option" href="#" data-currency="INR">🇮🇳 INR - Indian Rupee</a></li>
+											</ul>
+										</div>
+									</div>
+									<div class="col-md-3 text-md-end">
+										<a href="{{ path('app_product_new_public') }}" class="btn btn-success">
+											<i class="bi bi-plus-circle me-1"></i>Create New
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -150,7 +170,13 @@ Tab Content START -->
 									<div class="card-footer pt-0 px-3">
 										<div class="d-flex justify-content-between align-items-center mb-2">
 											<span class="h6 fw-light mb-0">By {{ product.freelancer.email|default('Unknown') }}</span>
-											<h5 class="text-success mb-0">${{ product.price }}</h5>
+											<div class="text-end">
+												<h5 class="text-success mb-0 shop-product-price" data-usd-price="{{ product.price }}">${{ product.price }}</h5>
+												<div class="currency-prices small text-muted" id="shop-price-{{ product.id }}">
+													<span class="eur-price">€{{ (product.price * 0.85)|number_format(2) }}</span>
+													<span class="gbp-price">£{{ (product.price * 0.73)|number_format(2) }}</span>
+												</div>
+											</div>
 										</div>
 										<div class="d-flex gap-1">
 											<a href="{{ path('app_product_show', {slug: product.slug }) }}" class="btn btn-sm btn-primary">
@@ -165,9 +191,9 @@ Tab Content START -->
 													<i class="bi bi-trash"></i> Delete
 												</button>
 											</form>
-											<a href="{{ path('app_order_new_from_product', {slug: product.slug}) }}" class="btn btn-sm btn-success">
+											<button class="btn btn-sm btn-success" onclick="addToCart({{ product.id }})">
 												<i class="bi bi-cart-plus"></i> Order
-											</a>
+											</button>
 										</div>
 									</div>
 								</div>
@@ -431,6 +457,215 @@ document.addEventListener('DOMContentLoaded', function() {
     jobsSearch.addEventListener('input', filterAndSortJobs);
     jobsSort.addEventListener('change', filterAndSortJobs);
 });
+
+// Cart Management Functions
+function addToCart(productId) {
+    fetch(`/cart/add/${productId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success notification
+                showNotification('Product added to cart!', 'success');
+                updateCartCount();
+                
+                // Update button state
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="bi bi-check"></i> Added!';
+                button.classList.remove('btn-success');
+                button.classList.add('btn-primary');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-success');
+                }, 2000);
+                
+                // Optional: Redirect to cart after a short delay
+                setTimeout(() => {
+                    if (confirm('Product added to cart! Would you like to view your cart?')) {
+                        window.location.href = '/cart';
+                    }
+                }, 2500);
+            }
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            showNotification('Failed to add product to cart', 'error');
+        });
+}
+
+function updateCartCount() {
+    fetch('/cart/count')
+        .then(response => response.json())
+        .then(data => {
+            // Update cart count in navigation if cart badge exists
+            const cartBadges = document.querySelectorAll('.cart-count');
+            cartBadges.forEach(badge => {
+                badge.textContent = data.count;
+                badge.style.display = data.count > 0 ? 'inline' : 'none';
+            });
+        });
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+            ${message}
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Update cart count on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCartCount();
+    initShopCurrencyConverter();
+});
+
+// Shop Currency Converter Functions
+let shopCurrentCurrency = localStorage.getItem('selectedCurrency') || 'USD';
+const shopExchangeRates = {
+    'USD': 1,
+    'EUR': 0.85,
+    'GBP': 0.73,
+    'JPY': 110.0,
+    'CAD': 1.25,
+    'AUD': 1.35,
+    'CHF': 0.92,
+    'CNY': 6.45,
+    'INR': 74.0
+};
+
+const shopCurrencySymbols = {
+    'USD': '$',
+    'EUR': '€',
+    'GBP': '£',
+    'JPY': '¥',
+    'CAD': 'C$',
+    'AUD': 'A$',
+    'CHF': 'CHF',
+    'CNY': '¥',
+    'INR': '₹'
+};
+
+function initShopCurrencyConverter() {
+    // Set current currency display
+    const shopCurrencyElement = document.getElementById('shopCurrentCurrency');
+    if (shopCurrencyElement) {
+        shopCurrencyElement.textContent = shopCurrentCurrency;
+    }
+    
+    // Add event listeners to currency options
+    document.querySelectorAll('.shop-currency-option').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const newCurrency = this.dataset.currency;
+            changeShopCurrency(newCurrency);
+        });
+    });
+    
+    // Update all prices on page load
+    updateShopAllPrices();
+}
+
+function changeShopCurrency(currency) {
+    shopCurrentCurrency = currency;
+    localStorage.setItem('selectedCurrency', currency);
+    const shopCurrencyElement = document.getElementById('shopCurrentCurrency');
+    if (shopCurrencyElement) {
+        shopCurrencyElement.textContent = currency;
+    }
+    updateShopAllPrices();
+    showNotification(`Currency changed to ${currency}`, 'success');
+}
+
+function convertShopPrice(usdPrice, toCurrency) {
+    if (toCurrency === 'USD') return usdPrice;
+    return usdPrice * (shopExchangeRates[toCurrency] || 1);
+}
+
+function formatShopPrice(price, currency) {
+    const symbol = shopCurrencySymbols[currency] || currency;
+    
+    switch (currency) {
+        case 'EUR':
+            return symbol + price.toFixed(2).replace('.', ',');
+        case 'JPY':
+        case 'CNY':
+            return symbol + Math.round(price);
+        case 'INR':
+            return symbol + price.toFixed(2).replace('.', ',');
+        default:
+            return symbol + price.toFixed(2);
+    }
+}
+
+function updateShopAllPrices() {
+    // Update shop product prices
+    document.querySelectorAll('.shop-product-price').forEach(priceElement => {
+        const usdPrice = parseFloat(priceElement.dataset.usdPrice);
+        if (!usdPrice) return;
+        
+        const convertedPrice = convertShopPrice(usdPrice, shopCurrentCurrency);
+        const formattedPrice = formatShopPrice(convertedPrice, shopCurrentCurrency);
+        
+        // Update main price
+        priceElement.textContent = formattedPrice;
+    });
+    
+    // Update currency prices display
+    document.querySelectorAll('.currency-prices').forEach(currencyPrices => {
+        const productId = currencyPrices.id.replace('shop-price-', '');
+        const priceElement = document.querySelector(`#shop-price-${productId}`);
+        if (priceElement) {
+            const usdPrice = parseFloat(priceElement.dataset.usdPrice);
+            if (!usdPrice) return;
+            
+            if (shopCurrentCurrency === 'USD') {
+                currencyPrices.innerHTML = `
+                    <span class="eur-price">${formatShopPrice(convertShopPrice(usdPrice, 'EUR'), 'EUR')}</span>
+                    <span class="gbp-price">${formatShopPrice(convertShopPrice(usdPrice, 'GBP'), 'GBP')}</span>
+                `;
+            } else {
+                currencyPrices.innerHTML = `
+                    <span class="usd-price">${formatShopPrice(usdPrice, 'USD')}</span>
+                `;
+            }
+        }
+    });
+}
+
+// Fetch real exchange rates for shop
+async function fetchShopExchangeRates() {
+    try {
+        const response = await fetch('https://api.exchangerate.host/latest?access_key=ce959b41ed1e15ff5f57064926e5d1d1');
+        const data = await response.json();
+        
+        if (data.rates) {
+            Object.assign(shopExchangeRates, data.rates);
+            shopExchangeRates.USD = 1; // Ensure USD is 1
+            updateShopAllPrices();
+        }
+    } catch (error) {
+        console.log('Using fallback exchange rates for shop');
+        console.log('API Error:', error);
+    }
+}
+
+// Fetch exchange rates on page load
+fetchShopExchangeRates();
 </script>
 
 <style>
@@ -449,8 +684,55 @@ document.addEventListener('DOMContentLoaded', function() {
     transition: all 0.3s ease;
 }
 
-.nav-pills .nav-link.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Shop Currency Styles */
+.currency-prices {
+    display: flex;
+    gap: 8px;
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.currency-prices span {
+    padding: 2px 4px;
+    border-radius: 3px;
+    background-color: rgba(0,0,0,0.05);
+}
+
+.shop-product-price {
+    transition: all 0.3s ease;
+}
+
+.shop-product-price:hover {
+    transform: scale(1.05);
+}
+
+.shop-currency-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.shop-currency-option:hover {
+    background-color: #f8f9fa;
+}
+
+#shopCurrencyDropdown {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cart-count {
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    margin-left: 5px;
+}
+
+.position-fixed {
+    position: fixed;
 }
 
 .service-item, .job-item, .order-item {
@@ -461,13 +743,20 @@ document.addEventListener('DOMContentLoaded', function() {
     transform: translateY(-3px);
 }
 
-.btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-}
-
 .d-flex.gap-1 {
     gap: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .currency-prices {
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .currency-prices span {
+        font-size: 0.65rem;
+    }
 }
 </style>
 {% endblock %}

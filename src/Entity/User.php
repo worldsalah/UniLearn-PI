@@ -204,7 +204,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        if ($this->role !== null) {
+        if ($this->role) {
             return ['ROLE_'.strtoupper($this->role->getName())];
         }
 

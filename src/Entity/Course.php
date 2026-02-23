@@ -435,22 +435,4 @@ class Course
     {
         return $this->title ?? '';
     }
-
-    /**
-     * Get description for Elasticsearch (alias for shortDescription)
-     */
-    public function getDescription(): ?string
-    {
-        return $this->shortDescription;
-    }
-
-    /**
-     * Set description for Elasticsearch (alias for shortDescription)
-     */
-    public function setDescription(?string $description): static
-    {
-        $this->shortDescription = $description;
-
-        return $this;
-    }
 }

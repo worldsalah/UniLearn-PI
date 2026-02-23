@@ -44,7 +44,7 @@ class YouTubeController extends AbstractController
         // Get the currently logged-in user
         $user = $this->security->getUser();
 
-        if ($user === null) {
+        if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -160,7 +160,7 @@ class YouTubeController extends AbstractController
             // Get the currently logged-in user
             $user = $this->security->getUser();
 
-            if ($user === null) {
+            if (!$user) {
                 return new JsonResponse([
                     'success' => false,
                     'error' => 'User not authenticated',
@@ -227,7 +227,7 @@ class YouTubeController extends AbstractController
             // Get the currently logged-in user
             $user = $this->security->getUser();
 
-            if ($user === null) {
+            if (!$user) {
                 return new JsonResponse([
                     'success' => false,
                     'error' => 'User not authenticated',

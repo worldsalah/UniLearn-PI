@@ -60,9 +60,9 @@ class ProductController extends AbstractController
             $entityManager->persist($product);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Le produit a été créé avec succès.');
+            $this->addFlash('success', 'Service created successfully!');
 
-            return $this->redirectToRoute('app_product_show', ['slug' => $product->getSlug()]);
+            return $this->redirectToRoute('app_marketplace_shop');
         }
 
         // Si le formulaire est soumis mais invalide, afficher les erreurs

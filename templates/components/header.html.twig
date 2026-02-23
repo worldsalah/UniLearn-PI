@@ -251,6 +251,7 @@
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
                             {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
+                                <li><a class="dropdown-item" href="{{ path('app_my_courses') }}"><i class="bi bi-book fa-fw me-2"></i>My Courses</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_certificates') }}"><i class="bi bi-award fa-fw me-2"></i>My Certificates</a></li>

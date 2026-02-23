@@ -1,0 +1,194 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Edit Course - Admin{% endblock %}
+
+{% block admin_styles %}
+<style>
+.form-label {
+    font-weight: 600;
+    color: #374151;
+}
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.card-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0;
+}
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<!-- Title -->
+<div class="row mb-4">
+    <div class="col-12 d-sm-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-2 mb-sm-0">Edit Course</h1>
+        <div>
+            <a href="{{ path('admin_course_show', {'id': course.id}) }}" class="btn btn-sm btn-secondary mb-0 me-2">
+                <i class="bi bi-x-lg me-1"></i>Cancel
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Edit form START -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Course Information</h5>
+            </div>
+            <div class="card-body">
+                <form id="editCourseForm">
+                    <div class="row g-3">
+                        <!-- Course Title -->
+                        <div class="col-12">
+                            <label for="courseTitle" class="form-label">Course Title *</label>
+                            <input type="text" class="form-control" id="courseTitle" name="title" value="{{ course.title }}" required>
+                        </div>
+
+                        <!-- Course Description -->
+                        <div class="col-12">
+                            <label for="courseDescription" class="form-label">Course Description *</label>
+                            <textarea class="form-control" id="courseDescription" name="description" rows="4" required>{{ course.shortDescription|default('') }}</textarea>
+                        </div>
+
+                        <!-- Category and Level -->
+                        <div class="col-md-6">
+                            <label for="courseCategory" class="form-label">Category *</label>
+                            <select class="form-select" id="courseCategory" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Web Development" {{ course.category == 'Web Development' ? 'selected' : '' }}>Web Development</option>
+                                <option value="Mobile Development" {{ course.category == 'Mobile Development' ? 'selected' : '' }}>Mobile Development</option>
+                                <option value="Data Science" {{ course.category == 'Data Science' ? 'selected' : '' }}>Data Science</option>
+                                <option value="Design" {{ course.category == 'Design' ? 'selected' : '' }}>Design</option>
+                                <option value="Business" {{ course.category == 'Business' ? 'selected' : '' }}>Business</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="courseLevel" class="form-label">Level *</label>
+                            <select class="form-select" id="courseLevel" name="level" required>
+                                <option value="">Select Level</option>
+                                <option value="Beginner" {{ course.level == 'Beginner' ? 'selected' : '' }}>Beginner</option>
+                                <option value="Intermediate" {{ course.level == 'Intermediate' ? 'selected' : '' }}>Intermediate</option>
+                                <option value="Advanced" {{ course.level == 'Advanced' ? 'selected' : '' }}>Advanced</option>
+                                <option value="All Levels" {{ course.level == 'All Levels' ? 'selected' : '' }}>All Levels</option>
+                            </select>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="col-md-6">
+                            <label for="coursePrice" class="form-label">Price ($) *</label>
+                            <input type="number" class="form-control" id="coursePrice" name="price" value="{{ course.price }}" min="0" step="0.01" required>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6">
+                            <label for="courseStatus" class="form-label">Status *</label>
+                            <select class="form-select" id="courseStatus" name="status" required>
+                                <option value="pending" {{ course.status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="live" {{ course.status == 'live' ? 'selected' : '' }}>Live</option>
+                                <option value="inactive" {{ course.status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            </select>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="col-12">
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ path('admin_course_show', {'id': course.id}) }}'">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Edit form END -->
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('editCourseForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const data = {
+                title: document.getElementById('courseTitle').value,
+                description: document.getElementById('courseDescription').value,
+                category: document.getElementById('courseCategory').value,
+                level: document.getElementById('courseLevel').value,
+                price: document.getElementById('coursePrice').value,
+                status: document.getElementById('courseStatus').value,
+                thumbnailUrl: ''
+            };
+            
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-arrow-repeat me-2 fa-spin"></i>Saving...';
+            submitBtn.disabled = true;
+            
+            // Send AJAX request
+            fetch('/api/course/{{ course.id }}/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                return response.json();
+            })
+            .then(result => {
+                if (result.status === 'success') {
+                    alert('Course updated successfully!');
+                    window.location.href = '{{ path("admin_course_show", {"id": course.id}) }}';
+                } else {
+                    alert('Error: ' + (result.message || 'Failed to update course'));
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                alert('Network error: ' + error.message);
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

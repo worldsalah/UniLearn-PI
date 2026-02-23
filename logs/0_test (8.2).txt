@@ -1,0 +1,1108 @@
+﻿2026-02-18T17:01:09.7955917Z Current runner version: '2.331.0'
+2026-02-18T17:01:09.7979883Z ##[group]Runner Image Provisioner
+2026-02-18T17:01:09.7980741Z Hosted Compute Agent
+2026-02-18T17:01:09.7981301Z Version: 20260123.484
+2026-02-18T17:01:09.7981915Z Commit: 6bd6555ca37d84114959e1c76d2c01448ff61c5d
+2026-02-18T17:01:09.7982631Z Build Date: 2026-01-23T19:41:17Z
+2026-02-18T17:01:09.7983247Z Worker ID: {e01e6c90-511e-47e8-9b23-f0b3ac13166d}
+2026-02-18T17:01:09.7983965Z Azure Region: eastus
+2026-02-18T17:01:09.7984522Z ##[endgroup]
+2026-02-18T17:01:09.7985926Z ##[group]Operating System
+2026-02-18T17:01:09.7986581Z Ubuntu
+2026-02-18T17:01:09.7987036Z 24.04.3
+2026-02-18T17:01:09.7987502Z LTS
+2026-02-18T17:01:09.7987896Z ##[endgroup]
+2026-02-18T17:01:09.7988504Z ##[group]Runner Image
+2026-02-18T17:01:09.7989077Z Image: ubuntu-24.04
+2026-02-18T17:01:09.7989629Z Version: 20260209.23.1
+2026-02-18T17:01:09.7991104Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260209.23/images/ubuntu/Ubuntu2404-Readme.md
+2026-02-18T17:01:09.7993067Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260209.23
+2026-02-18T17:01:09.7993935Z ##[endgroup]
+2026-02-18T17:01:09.7994966Z ##[group]GITHUB_TOKEN Permissions
+2026-02-18T17:01:09.7997065Z Contents: read
+2026-02-18T17:01:09.7997577Z Metadata: read
+2026-02-18T17:01:09.7998075Z Packages: read
+2026-02-18T17:01:09.7998707Z ##[endgroup]
+2026-02-18T17:01:09.8000981Z Secret source: Actions
+2026-02-18T17:01:09.8001900Z Prepare workflow directory
+2026-02-18T17:01:09.8408825Z Prepare all required actions
+2026-02-18T17:01:09.8445871Z Getting action download info
+2026-02-18T17:01:10.2071392Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-02-18T17:01:10.3576401Z Download action repository 'shivammathur/setup-php@v2' (SHA:44454db4f0199b8b9685a5d763dc37cbf79108e1)
+2026-02-18T17:01:10.5446872Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-02-18T17:01:10.6433625Z Download action repository 'codecov/codecov-action@v4' (SHA:b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238)
+2026-02-18T17:01:10.9682372Z Complete job name: test (8.2)
+2026-02-18T17:01:11.0200416Z ##[group]Checking docker version
+2026-02-18T17:01:11.0213228Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+2026-02-18T17:01:11.1003397Z '1.52'
+2026-02-18T17:01:11.1016470Z Docker daemon API version: '1.52'
+2026-02-18T17:01:11.1017280Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+2026-02-18T17:01:11.1185430Z '1.52'
+2026-02-18T17:01:11.1207707Z Docker client API version: '1.52'
+2026-02-18T17:01:11.1213592Z ##[endgroup]
+2026-02-18T17:01:11.1216442Z ##[group]Clean up resources from previous jobs
+2026-02-18T17:01:11.1222148Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=73cc35"
+2026-02-18T17:01:11.1367476Z ##[command]/usr/bin/docker network prune --force --filter "label=73cc35"
+2026-02-18T17:01:11.1497206Z ##[endgroup]
+2026-02-18T17:01:11.1497734Z ##[group]Create local container network
+2026-02-18T17:01:11.1508411Z ##[command]/usr/bin/docker network create --label 73cc35 github_network_0fd071026f324958b027a72af0f52683
+2026-02-18T17:01:11.2042404Z 633d61c38664d22386aec7ea76ea2a536b3a44a0a10d04f8d4a2fedea78fd204
+2026-02-18T17:01:11.2063259Z ##[endgroup]
+2026-02-18T17:01:11.2086403Z ##[group]Starting mysql service container
+2026-02-18T17:01:11.2106521Z ##[command]/usr/bin/docker pull mysql:8.0
+2026-02-18T17:01:11.4881303Z 8.0: Pulling from library/mysql
+2026-02-18T17:01:11.6751239Z e05db5310ebc: Pulling fs layer
+2026-02-18T17:01:11.6752629Z 23fbf4028535: Pulling fs layer
+2026-02-18T17:01:11.6753726Z f508d7fab5b3: Pulling fs layer
+2026-02-18T17:01:11.6754608Z bae900376130: Pulling fs layer
+2026-02-18T17:01:11.6755518Z 2e2c1f6f8d57: Pulling fs layer
+2026-02-18T17:01:11.6756425Z e7a04c019bde: Pulling fs layer
+2026-02-18T17:01:11.6757362Z d442b2c1726e: Pulling fs layer
+2026-02-18T17:01:11.6758247Z bde62e757594: Pulling fs layer
+2026-02-18T17:01:11.6759215Z a9a9deeee02a: Pulling fs layer
+2026-02-18T17:01:11.6760695Z 4f37333d1be6: Pulling fs layer
+2026-02-18T17:01:11.6761812Z ce98f3559366: Pulling fs layer
+2026-02-18T17:01:11.7275815Z e6e53730409b: Download complete
+2026-02-18T17:01:11.8274528Z e05db5310ebc: Download complete
+2026-02-18T17:01:11.8287377Z bde62e757594: Download complete
+2026-02-18T17:01:11.8306775Z 23fbf4028535: Download complete
+2026-02-18T17:01:11.8316566Z e7a04c019bde: Download complete
+2026-02-18T17:01:11.8335278Z a9a9deeee02a: Download complete
+2026-02-18T17:01:11.8345195Z ce98f3559366: Download complete
+2026-02-18T17:01:11.8357559Z f508d7fab5b3: Download complete
+2026-02-18T17:01:11.9265040Z d442b2c1726e: Download complete
+2026-02-18T17:01:12.0266338Z 8393005deaac: Download complete
+2026-02-18T17:01:12.2263876Z 2e2c1f6f8d57: Download complete
+2026-02-18T17:01:12.8262098Z 4f37333d1be6: Download complete
+2026-02-18T17:01:13.0258492Z bae900376130: Download complete
+2026-02-18T17:01:13.8275501Z bde62e757594: Pull complete
+2026-02-18T17:01:13.8302956Z f508d7fab5b3: Pull complete
+2026-02-18T17:01:13.8327679Z 4f37333d1be6: Pull complete
+2026-02-18T17:01:14.0270593Z 23fbf4028535: Pull complete
+2026-02-18T17:01:14.0288340Z a9a9deeee02a: Pull complete
+2026-02-18T17:01:14.0307592Z d442b2c1726e: Pull complete
+2026-02-18T17:01:14.6285889Z ce98f3559366: Pull complete
+2026-02-18T17:01:14.6296072Z 2e2c1f6f8d57: Pull complete
+2026-02-18T17:01:18.9676778Z e05db5310ebc: Pull complete
+2026-02-18T17:01:18.9681412Z e7a04c019bde: Pull complete
+2026-02-18T17:01:18.9687710Z bae900376130: Pull complete
+2026-02-18T17:01:18.9695421Z Digest: sha256:99d774bf02a48a1bb1c599920d2571946d31e5940b854b02737d5e95c184358f
+2026-02-18T17:01:18.9696722Z Status: Downloaded newer image for mysql:8.0
+2026-02-18T17:01:18.9697346Z docker.io/library/mysql:8.0
+2026-02-18T17:01:18.9757286Z ##[command]/usr/bin/docker create --name e2f9e3730a7a4c489a2665f1f89474f7_mysql80_984653 --label 73cc35 --network github_network_0fd071026f324958b027a72af0f52683 --network-alias mysql -p 3306:3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 -e "MYSQL_ROOT_PASSWORD=root" -e "MYSQL_DATABASE=unilearn_test" -e GITHUB_ACTIONS=true -e CI=true mysql:8.0
+2026-02-18T17:01:22.1718510Z 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:01:22.1743562Z ##[command]/usr/bin/docker start 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:01:22.3667009Z 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:01:22.3686583Z ##[command]/usr/bin/docker ps --all --filter id=9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6 --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+2026-02-18T17:01:22.3915434Z 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6 Up Less than a second (health: starting)
+2026-02-18T17:01:22.3939506Z ##[command]/usr/bin/docker port 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:01:22.4078182Z 3306/tcp -> 0.0.0.0:3306
+2026-02-18T17:01:22.4078805Z 3306/tcp -> [::]:3306
+2026-02-18T17:01:22.4132441Z ##[endgroup]
+2026-02-18T17:01:22.4144081Z ##[group]Waiting for all services to be ready
+2026-02-18T17:01:22.4158866Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:01:22.4309964Z starting
+2026-02-18T17:01:22.4335430Z mysql service is starting, waiting 2 seconds before checking again.
+2026-02-18T17:01:24.4330898Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:01:24.4456912Z starting
+2026-02-18T17:01:24.4475152Z mysql service is starting, waiting 4 seconds before checking again.
+2026-02-18T17:01:28.7545868Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:01:28.7670494Z starting
+2026-02-18T17:01:28.7686072Z mysql service is starting, waiting 9 seconds before checking again.
+2026-02-18T17:01:37.8311826Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:01:37.8439078Z healthy
+2026-02-18T17:01:37.8455878Z mysql service is healthy.
+2026-02-18T17:01:37.8456660Z ##[endgroup]
+2026-02-18T17:01:37.8792243Z ##[group]Run actions/checkout@v4
+2026-02-18T17:01:37.8792784Z with:
+2026-02-18T17:01:37.8792980Z   repository: worldsalah/UniLearn-PI
+2026-02-18T17:01:37.8793441Z   token: ***
+2026-02-18T17:01:37.8793618Z   ssh-strict: true
+2026-02-18T17:01:37.8793801Z   ssh-user: git
+2026-02-18T17:01:37.8793981Z   persist-credentials: true
+2026-02-18T17:01:37.8794197Z   clean: true
+2026-02-18T17:01:37.8794383Z   sparse-checkout-cone-mode: true
+2026-02-18T17:01:37.8794605Z   fetch-depth: 1
+2026-02-18T17:01:37.8794797Z   fetch-tags: false
+2026-02-18T17:01:37.8794983Z   show-progress: true
+2026-02-18T17:01:37.8795170Z   lfs: false
+2026-02-18T17:01:37.8795328Z   submodules: false
+2026-02-18T17:01:37.8795517Z   set-safe-directory: true
+2026-02-18T17:01:37.8795902Z ##[endgroup]
+2026-02-18T17:01:37.9943927Z Syncing repository: worldsalah/UniLearn-PI
+2026-02-18T17:01:37.9945939Z ##[group]Getting Git version info
+2026-02-18T17:01:37.9946726Z Working directory is '/home/runner/work/UniLearn-PI/UniLearn-PI'
+2026-02-18T17:01:37.9947786Z [command]/usr/bin/git version
+2026-02-18T17:01:37.9948262Z git version 2.52.0
+2026-02-18T17:01:37.9975376Z ##[endgroup]
+2026-02-18T17:01:37.9989441Z Temporarily overriding HOME='/home/runner/work/_temp/0aa5029b-be62-4d75-894c-4cfce99ffaf5' before making global git config changes
+2026-02-18T17:01:37.9990624Z Adding repository directory to the temporary git global config as a safe directory
+2026-02-18T17:01:38.0002822Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/UniLearn-PI/UniLearn-PI
+2026-02-18T17:01:38.0043524Z Deleting the contents of '/home/runner/work/UniLearn-PI/UniLearn-PI'
+2026-02-18T17:01:38.0047101Z ##[group]Initializing the repository
+2026-02-18T17:01:38.0051484Z [command]/usr/bin/git init /home/runner/work/UniLearn-PI/UniLearn-PI
+2026-02-18T17:01:38.0147538Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-02-18T17:01:38.0148691Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-02-18T17:01:38.0150211Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-02-18T17:01:38.0151054Z hint: call:
+2026-02-18T17:01:38.0151398Z hint:
+2026-02-18T17:01:38.0151933Z hint: 	git config --global init.defaultBranch <name>
+2026-02-18T17:01:38.0152603Z hint:
+2026-02-18T17:01:38.0153236Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-02-18T17:01:38.0154352Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-02-18T17:01:38.0154924Z hint:
+2026-02-18T17:01:38.0155189Z hint: 	git branch -m <name>
+2026-02-18T17:01:38.0155447Z hint:
+2026-02-18T17:01:38.0155837Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-02-18T17:01:38.0156563Z Initialized empty Git repository in /home/runner/work/UniLearn-PI/UniLearn-PI/.git/
+2026-02-18T17:01:38.0164417Z [command]/usr/bin/git remote add origin https://github.com/worldsalah/UniLearn-PI
+2026-02-18T17:01:38.0199009Z ##[endgroup]
+2026-02-18T17:01:38.0199977Z ##[group]Disabling automatic garbage collection
+2026-02-18T17:01:38.0203821Z [command]/usr/bin/git config --local gc.auto 0
+2026-02-18T17:01:38.0233212Z ##[endgroup]
+2026-02-18T17:01:38.0233674Z ##[group]Setting up auth
+2026-02-18T17:01:38.0240203Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-02-18T17:01:38.0271003Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-02-18T17:01:38.0615770Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-02-18T17:01:38.0650472Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-02-18T17:01:38.0889427Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-02-18T17:01:38.0923238Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-02-18T17:01:38.1178624Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-02-18T17:01:38.1215341Z ##[endgroup]
+2026-02-18T17:01:38.1216027Z ##[group]Fetching the repository
+2026-02-18T17:01:38.1224993Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0144d14c7a74c7d041ee67bff7d9edd73ad93141:refs/remotes/origin/main
+2026-02-18T17:01:38.9333335Z From https://github.com/worldsalah/UniLearn-PI
+2026-02-18T17:01:38.9334107Z  * [new ref]         0144d14c7a74c7d041ee67bff7d9edd73ad93141 -> origin/main
+2026-02-18T17:01:38.9366141Z ##[endgroup]
+2026-02-18T17:01:38.9366722Z ##[group]Determining the checkout info
+2026-02-18T17:01:38.9368687Z ##[endgroup]
+2026-02-18T17:01:38.9373802Z [command]/usr/bin/git sparse-checkout disable
+2026-02-18T17:01:38.9415080Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-02-18T17:01:38.9440771Z ##[group]Checking out the ref
+2026-02-18T17:01:38.9444755Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-02-18T17:01:39.2943430Z Switched to a new branch 'main'
+2026-02-18T17:01:39.2944477Z branch 'main' set up to track 'origin/main'.
+2026-02-18T17:01:39.2967581Z ##[endgroup]
+2026-02-18T17:01:39.3010751Z [command]/usr/bin/git log -1 --format=%H
+2026-02-18T17:01:39.3034189Z 0144d14c7a74c7d041ee67bff7d9edd73ad93141
+2026-02-18T17:01:39.3216261Z ##[group]Run shivammathur/setup-php@v2
+2026-02-18T17:01:39.3216549Z with:
+2026-02-18T17:01:39.3216726Z   php-version: 8.2
+2026-02-18T17:01:39.3217204Z   extensions: ctype, iconv, intl, pdo_mysql, dom, filter, gd, hash, json, mbstring, pcre, session, simplexml, spl, tokenizer, xml
+2026-02-18T17:01:39.3217714Z   coverage: xdebug
+2026-02-18T17:01:39.3217905Z   ini-file: production
+2026-02-18T17:01:39.3218237Z   github-token: ***
+2026-02-18T17:01:39.3218425Z ##[endgroup]
+2026-02-18T17:01:39.3956604Z [command]/usr/bin/bash /home/runner/work/_actions/shivammathur/setup-php/v2/src/scripts/run.sh
+2026-02-18T17:01:39.4396260Z 
+2026-02-18T17:01:39.4397068Z [90;1m==> [0m[37;1mSetup PHP[0m
+2026-02-18T17:01:42.7131547Z [32;1m✓ [0m[34;1mPHP [0m[90;1mInstalled PHP 8.2.30[0m
+2026-02-18T17:01:42.7132597Z 
+2026-02-18T17:01:42.7133136Z [90;1m==> [0m[37;1mSetup Extensions[0m
+2026-02-18T17:01:42.7615100Z [32;1m✓ [0m[34;1mctype [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7648115Z [32;1m✓ [0m[34;1miconv [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7677513Z [32;1m✓ [0m[34;1mintl [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7699263Z [32;1m✓ [0m[34;1mpdo_mysql [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7730232Z [32;1m✓ [0m[34;1mdom [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7761546Z [32;1m✓ [0m[34;1mfilter [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7792339Z [32;1m✓ [0m[34;1mgd [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7824099Z [32;1m✓ [0m[34;1mhash [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7855490Z [32;1m✓ [0m[34;1mjson [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7887856Z [32;1m✓ [0m[34;1mmbstring [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7918866Z [32;1m✓ [0m[34;1mpcre [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7949563Z [32;1m✓ [0m[34;1msession [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.7983170Z [32;1m✓ [0m[34;1msimplexml [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.8014393Z [32;1m✓ [0m[34;1mspl [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.8046233Z [32;1m✓ [0m[34;1mtokenizer [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.8077229Z [32;1m✓ [0m[34;1mxml [0m[90;1mEnabled[0m
+2026-02-18T17:01:42.8077709Z 
+2026-02-18T17:01:42.8077973Z [90;1m==> [0m[37;1mSetup Tools[0m
+2026-02-18T17:01:43.1919452Z [32;1m✓ [0m[34;1mcomposer [0m[90;1mAdded composer 2.9.3[0m
+2026-02-18T17:01:43.1920391Z 
+2026-02-18T17:01:43.1920731Z [90;1m==> [0m[37;1mSetup Coverage[0m
+2026-02-18T17:01:43.2900260Z [32;1m✓ [0m[34;1mxdebug [0m[90;1mXdebug 3.5.0 enabled as coverage driver[0m
+2026-02-18T17:01:43.2901098Z 
+2026-02-18T17:01:43.2901402Z [90;1m==> [0m[37;1mSponsor setup-php[0m
+2026-02-18T17:01:43.2902196Z [32;1m✓ [0m[34;1msetup-php [0m[90;1mhttps://setup-php.com/sponsor[0m
+2026-02-18T17:01:43.3098120Z ##[group]Run composer validate --strict
+2026-02-18T17:01:43.3098470Z [36;1mcomposer validate --strict[0m
+2026-02-18T17:01:43.3156308Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:01:43.3156565Z env:
+2026-02-18T17:01:43.3156784Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:01:43.3157045Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:01:43.3157290Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:01:43.3157498Z ##[endgroup]
+2026-02-18T17:01:43.5674653Z ./composer.json is valid
+2026-02-18T17:01:43.7228198Z ##[group]Run actions/cache@v4
+2026-02-18T17:01:43.7228456Z with:
+2026-02-18T17:01:43.7228625Z   path: vendor
+2026-02-18T17:01:43.7228976Z   key: Linux-php-8.2-fc7806854fbc106906424965e3f8cfe7e38d232813055ef0f83c42c8af782e88
+2026-02-18T17:01:43.7229398Z   restore-keys: Linux-php-8.2-
+
+2026-02-18T17:01:43.7229642Z   enableCrossOsArchive: false
+2026-02-18T17:01:43.7230300Z   fail-on-cache-miss: false
+2026-02-18T17:01:43.7230521Z   lookup-only: false
+2026-02-18T17:01:43.7230712Z   save-always: false
+2026-02-18T17:01:43.7230882Z env:
+2026-02-18T17:01:43.7231052Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:01:43.7231270Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:01:43.7231484Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:01:43.7231683Z ##[endgroup]
+2026-02-18T17:01:43.9846482Z Cache not found for input keys: Linux-php-8.2-fc7806854fbc106906424965e3f8cfe7e38d232813055ef0f83c42c8af782e88, Linux-php-8.2-
+2026-02-18T17:01:43.9926931Z ##[group]Run cp .env.test .env.local
+2026-02-18T17:01:43.9927258Z [36;1mcp .env.test .env.local[0m
+2026-02-18T17:01:43.9927522Z [36;1mecho "APP_ENV=test" >> .env.local[0m
+2026-02-18T17:01:43.9927867Z [36;1mecho "APP_SECRET=test-secret-for-ci" >> .env.local[0m
+2026-02-18T17:01:43.9976932Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:01:43.9977185Z env:
+2026-02-18T17:01:43.9977408Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:01:43.9977774Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:01:43.9978015Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:01:43.9978218Z ##[endgroup]
+2026-02-18T17:01:44.0084600Z ##[group]Run composer install --prefer-dist --no-progress --no-suggest --no-interaction
+2026-02-18T17:01:44.0085229Z [36;1mcomposer install --prefer-dist --no-progress --no-suggest --no-interaction[0m
+2026-02-18T17:01:44.0128985Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:01:44.0129224Z env:
+2026-02-18T17:01:44.0129397Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:01:44.0129644Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:01:44.0130083Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:01:44.0130279Z ##[endgroup]
+2026-02-18T17:01:44.2150826Z You are using the deprecated option "--no-suggest". It has no effect and will break in Composer 3.
+2026-02-18T17:01:44.2202393Z Installing dependencies from lock file (including require-dev)
+2026-02-18T17:01:44.2277179Z Verifying lock file contents can be installed on current platform.
+2026-02-18T17:01:44.2545022Z Package operations: 157 installs, 0 updates, 0 removals
+2026-02-18T17:01:44.2562635Z   - Downloading symfony/flex (v2.10.0)
+2026-02-18T17:01:44.2572156Z   - Downloading symfony/runtime (v6.4.30)
+2026-02-18T17:01:44.2575150Z   - Downloading symfony/polyfill-php83 (v1.33.0)
+2026-02-18T17:01:44.2578209Z   - Downloading symfony/polyfill-mbstring (v1.33.0)
+2026-02-18T17:01:44.2581423Z   - Downloading symfony/deprecation-contracts (v3.6.0)
+2026-02-18T17:01:44.2584353Z   - Downloading symfony/http-foundation (v6.4.33)
+2026-02-18T17:01:44.2587681Z   - Downloading psr/event-dispatcher (1.0.0)
+2026-02-18T17:01:44.2591071Z   - Downloading symfony/event-dispatcher-contracts (v3.6.0)
+2026-02-18T17:01:44.2593896Z   - Downloading symfony/event-dispatcher (v6.4.32)
+2026-02-18T17:01:44.2596793Z   - Downloading symfony/var-dumper (v6.4.32)
+2026-02-18T17:01:44.2599523Z   - Downloading psr/log (3.0.2)
+2026-02-18T17:01:44.2602696Z   - Downloading symfony/error-handler (v6.4.32)
+2026-02-18T17:01:44.2605568Z   - Downloading symfony/http-kernel (v6.4.33)
+2026-02-18T17:01:44.2607023Z   - Downloading psr/container (2.0.2)
+2026-02-18T17:01:44.2608792Z   - Downloading symfony/service-contracts (v3.6.1)
+2026-02-18T17:01:44.2610649Z   - Downloading psr/cache (3.0.0)
+2026-02-18T17:01:44.2613211Z   - Downloading doctrine/event-manager (2.1.1)
+2026-02-18T17:01:44.2614681Z   - Downloading doctrine/persistence (3.4.3)
+2026-02-18T17:01:44.2616422Z   - Downloading symfony/doctrine-bridge (v6.4.32)
+2026-02-18T17:01:44.2618084Z   - Downloading symfony/var-exporter (v6.4.26)
+2026-02-18T17:01:44.2619985Z   - Downloading symfony/dependency-injection (v6.4.32)
+2026-02-18T17:01:44.2621758Z   - Downloading symfony/polyfill-intl-normalizer (v1.33.0)
+2026-02-18T17:01:44.2623419Z   - Downloading symfony/polyfill-intl-grapheme (v1.33.0)
+2026-02-18T17:01:44.2625027Z   - Downloading symfony/string (v6.4.30)
+2026-02-18T17:01:44.2626809Z   - Downloading symfony/console (v6.4.32)
+2026-02-18T17:01:44.2628530Z   - Downloading symfony/filesystem (v6.4.30)
+2026-02-18T17:01:44.2630425Z   - Downloading symfony/config (v6.4.32)
+2026-02-18T17:01:44.2632069Z   - Downloading doctrine/lexer (3.0.1)
+2026-02-18T17:01:44.2633734Z   - Downloading doctrine/instantiator (2.0.0)
+2026-02-18T17:01:44.2635360Z   - Downloading doctrine/inflector (2.1.0)
+2026-02-18T17:01:44.2637070Z   - Downloading doctrine/deprecations (1.1.6)
+2026-02-18T17:01:44.2638649Z   - Downloading doctrine/dbal (3.10.4)
+2026-02-18T17:01:44.2640896Z   - Downloading doctrine/common (3.5.0)
+2026-02-18T17:01:44.2642456Z   - Downloading symfony/polyfill-php84 (v1.33.0)
+2026-02-18T17:01:44.2644109Z   - Downloading doctrine/collections (2.6.0)
+2026-02-18T17:01:44.2645748Z   - Downloading doctrine/cache (2.2.0)
+2026-02-18T17:01:44.2647387Z   - Downloading doctrine/orm (2.20.9)
+2026-02-18T17:01:44.2649057Z   - Downloading symfony/routing (v6.4.32)
+2026-02-18T17:01:44.2650942Z   - Downloading symfony/finder (v6.4.33)
+2026-02-18T17:01:44.2652613Z   - Downloading symfony/cache-contracts (v3.6.0)
+2026-02-18T17:01:44.2654245Z   - Downloading symfony/cache (v6.4.33)
+2026-02-18T17:01:44.2656005Z   - Downloading symfony/framework-bundle (v6.4.33)
+2026-02-18T17:01:44.2657975Z   - Downloading doctrine/sql-formatter (1.5.4)
+2026-02-18T17:01:44.2659417Z   - Downloading doctrine/doctrine-bundle (2.18.2)
+2026-02-18T17:01:44.2661289Z   - Downloading doctrine/data-fixtures (2.2.0)
+2026-02-18T17:01:44.2663048Z   - Downloading doctrine/doctrine-fixtures-bundle (3.7.3)
+2026-02-18T17:01:44.2664674Z   - Downloading symfony/stopwatch (v6.4.24)
+2026-02-18T17:01:44.2666318Z   - Downloading doctrine/migrations (3.9.6)
+2026-02-18T17:01:44.2668085Z   - Downloading doctrine/doctrine-migrations-bundle (3.7.0)
+2026-02-18T17:01:44.2670823Z   - Downloading paragonie/random_compat (v9.99.100)
+2026-02-18T17:01:44.2672264Z   - Downloading paragonie/constant_time_encoding (v3.1.3)
+2026-02-18T17:01:44.2675843Z   - Downloading phpseclib/phpseclib (3.0.49)
+2026-02-18T17:01:44.2678172Z   - Downloading monolog/monolog (3.10.0)
+2026-02-18T17:01:44.2680735Z   - Downloading ralouphie/getallheaders (3.0.3)
+2026-02-18T17:01:44.2682213Z   - Downloading psr/http-message (2.0)
+2026-02-18T17:01:44.2683846Z   - Downloading psr/http-factory (1.1.0)
+2026-02-18T17:01:44.2686291Z   - Downloading guzzlehttp/psr7 (2.8.0)
+2026-02-18T17:01:44.2687750Z   - Downloading psr/http-client (1.0.3)
+2026-02-18T17:01:44.2689410Z   - Downloading guzzlehttp/promises (2.3.0)
+2026-02-18T17:01:44.2691429Z   - Downloading guzzlehttp/guzzle (7.10.0)
+2026-02-18T17:01:44.2693912Z   - Downloading firebase/php-jwt (v7.0.2)
+2026-02-18T17:01:44.2696125Z   - Downloading google/auth (v1.50.0)
+2026-02-18T17:01:44.2697701Z   - Downloading google/apiclient-services (v0.431.0)
+2026-02-18T17:01:44.2699425Z   - Downloading google/apiclient (v2.19.0)
+2026-02-18T17:01:44.2702177Z   - Downloading knplabs/knp-components (v5.2.0)
+2026-02-18T17:01:44.2703681Z   - Downloading knplabs/knp-paginator-bundle (v6.10.0)
+2026-02-18T17:01:44.2706111Z   - Downloading php-cs-fixer/shim (v3.94.1)
+2026-02-18T17:01:44.2708322Z   - Downloading webmozart/assert (1.12.1)
+2026-02-18T17:01:44.2710918Z   - Downloading phpstan/phpdoc-parser (2.3.2)
+2026-02-18T17:01:44.2713464Z   - Downloading phpdocumentor/reflection-common (2.2.0)
+2026-02-18T17:01:44.2714666Z   - Downloading phpdocumentor/type-resolver (1.12.0)
+2026-02-18T17:01:44.2716476Z   - Downloading phpdocumentor/reflection-docblock (5.6.6)
+2026-02-18T17:01:44.2718046Z   - Downloading phpstan/phpstan (1.12.32)
+2026-02-18T17:01:44.2719906Z   - Downloading phpstan/phpstan-doctrine (1.5.7)
+2026-02-18T17:01:44.2721641Z   - Downloading phpstan/phpstan-strict-rules (1.6.2)
+2026-02-18T17:01:44.2723238Z   - Downloading phpstan/phpstan-symfony (1.4.16)
+2026-02-18T17:01:44.2725722Z   - Downloading sebastian/version (4.0.1)
+2026-02-18T17:01:44.2727154Z   - Downloading sebastian/type (4.0.0)
+2026-02-18T17:01:44.2728858Z   - Downloading sebastian/recursion-context (5.0.1)
+2026-02-18T17:01:44.2730703Z   - Downloading sebastian/object-reflector (3.0.0)
+2026-02-18T17:01:44.2732366Z   - Downloading sebastian/object-enumerator (5.0.0)
+2026-02-18T17:01:44.2733995Z   - Downloading sebastian/global-state (6.0.2)
+2026-02-18T17:01:44.2735620Z   - Downloading sebastian/exporter (5.1.4)
+2026-02-18T17:01:44.2737294Z   - Downloading sebastian/environment (6.1.0)
+2026-02-18T17:01:44.2738893Z   - Downloading sebastian/diff (5.1.1)
+2026-02-18T17:01:44.2740739Z   - Downloading sebastian/comparator (5.0.5)
+2026-02-18T17:01:44.2742518Z   - Downloading sebastian/code-unit (2.0.0)
+2026-02-18T17:01:44.2772805Z   - Downloading sebastian/cli-parser (2.0.1)
+2026-02-18T17:01:44.2773343Z   - Downloading phpunit/php-timer (6.0.0)
+2026-02-18T17:01:44.2773904Z   - Downloading phpunit/php-text-template (3.0.1)
+2026-02-18T17:01:44.2774479Z   - Downloading phpunit/php-invoker (4.0.0)
+2026-02-18T17:01:44.2775027Z   - Downloading phpunit/php-file-iterator (4.1.0)
+2026-02-18T17:01:44.2775562Z   - Downloading theseer/tokenizer (1.3.1)
+2026-02-18T17:01:44.2776060Z   - Downloading nikic/php-parser (v5.7.0)
+2026-02-18T17:01:44.2776614Z   - Downloading sebastian/lines-of-code (2.0.2)
+2026-02-18T17:01:44.2777155Z   - Downloading sebastian/complexity (3.2.0)
+2026-02-18T17:01:44.2778003Z   - Downloading sebastian/code-unit-reverse-lookup (3.0.0)
+2026-02-18T17:01:44.2778681Z   - Downloading phpunit/php-code-coverage (10.1.16)
+2026-02-18T17:01:44.2779228Z   - Downloading phar-io/version (3.2.1)
+2026-02-18T17:01:44.2779954Z   - Downloading phar-io/manifest (2.0.4)
+2026-02-18T17:01:44.2780458Z   - Downloading myclabs/deep-copy (1.13.4)
+2026-02-18T17:01:44.2780967Z   - Downloading phpunit/phpunit (10.5.63)
+2026-02-18T17:01:44.2781449Z   - Downloading psr/clock (1.0.0)
+2026-02-18T17:01:44.2781973Z   - Downloading symfony/translation-contracts (v3.6.1)
+2026-02-18T17:01:44.2782602Z   - Downloading gedmo/doctrine-extensions (v3.22.0)
+2026-02-18T17:01:44.2783246Z   - Downloading stof/doctrine-extensions-bundle (v1.15.3)
+2026-02-18T17:01:44.2783838Z   - Downloading symfony/asset (v6.4.32)
+2026-02-18T17:01:44.2784375Z   - Downloading symfony/http-client-contracts (v3.6.0)
+2026-02-18T17:01:44.2784965Z   - Downloading symfony/http-client (v6.4.33)
+2026-02-18T17:01:44.2785463Z   - Downloading composer/semver (3.4.4)
+2026-02-18T17:01:44.2785976Z   - Downloading symfony/asset-mapper (v6.4.32)
+2026-02-18T17:01:44.2787114Z   - Downloading masterminds/html5 (2.10.0)
+2026-02-18T17:01:44.2788839Z   - Downloading symfony/dom-crawler (v6.4.32)
+2026-02-18T17:01:44.2790763Z   - Downloading symfony/browser-kit (v6.4.32)
+2026-02-18T17:01:44.2792483Z   - Downloading symfony/css-selector (v6.4.24)
+2026-02-18T17:01:44.2795075Z   - Downloading twig/twig (v3.23.0)
+2026-02-18T17:01:44.2797513Z   - Downloading symfony/twig-bridge (v6.4.32)
+2026-02-18T17:01:44.2799048Z   - Downloading symfony/debug-bundle (v6.4.27)
+2026-02-18T17:01:44.2801415Z   - Downloading symfony/clock (v6.4.30)
+2026-02-18T17:01:44.2802818Z   - Downloading symfony/messenger (v6.4.32)
+2026-02-18T17:01:44.2804616Z   - Downloading symfony/doctrine-messenger (v6.4.33)
+2026-02-18T17:01:44.2806240Z   - Downloading symfony/dotenv (v6.4.30)
+2026-02-18T17:01:44.2808016Z   - Downloading symfony/expression-language (v6.4.32)
+2026-02-18T17:01:44.2809889Z   - Downloading symfony/property-info (v6.4.33)
+2026-02-18T17:01:44.2811625Z   - Downloading symfony/property-access (v6.4.32)
+2026-02-18T17:01:44.2813353Z   - Downloading symfony/polyfill-intl-icu (v1.33.0)
+2026-02-18T17:01:44.2815078Z   - Downloading symfony/options-resolver (v6.4.30)
+2026-02-18T17:01:44.2816751Z   - Downloading symfony/form (v6.4.32)
+2026-02-18T17:01:44.2818638Z   - Downloading symfony/intl (v6.4.32)
+2026-02-18T17:01:44.2820500Z   - Downloading symfony/polyfill-intl-idn (v1.33.0)
+2026-02-18T17:01:44.2822223Z   - Downloading symfony/mime (v6.4.32)
+2026-02-18T17:01:44.2824786Z   - Downloading egulias/email-validator (4.0.4)
+2026-02-18T17:01:44.2826252Z   - Downloading symfony/mailer (v6.4.31)
+2026-02-18T17:01:44.2827950Z   - Downloading symfony/process (v6.4.33)
+2026-02-18T17:01:44.2829859Z   - Downloading symfony/maker-bundle (v1.66.0)
+2026-02-18T17:01:44.2833159Z   - Downloading symfony/monolog-bridge (v6.4.32)
+2026-02-18T17:01:44.2834632Z   - Downloading symfony/monolog-bundle (v3.11.1)
+2026-02-18T17:01:44.2836333Z   - Downloading symfony/notifier (v6.4.32)
+2026-02-18T17:01:44.2838078Z   - Downloading symfony/phpunit-bridge (v6.4.26)
+2026-02-18T17:01:44.2840020Z   - Downloading symfony/password-hasher (v6.4.32)
+2026-02-18T17:01:44.2841761Z   - Downloading symfony/security-core (v6.4.31)
+2026-02-18T17:01:44.2843501Z   - Downloading symfony/security-http (v6.4.31)
+2026-02-18T17:01:44.2845190Z   - Downloading symfony/security-csrf (v6.4.31)
+2026-02-18T17:01:44.2846932Z   - Downloading symfony/security-bundle (v6.4.32)
+2026-02-18T17:01:44.2848599Z   - Downloading symfony/serializer (v6.4.33)
+2026-02-18T17:01:44.2850839Z   - Downloading symfony/translation (v6.4.32)
+2026-02-18T17:01:44.2852514Z   - Downloading symfony/stimulus-bundle (v2.32.0)
+2026-02-18T17:01:44.2854248Z   - Downloading symfony/ux-turbo (v2.32.0)
+2026-02-18T17:01:44.2855957Z   - Downloading symfony/validator (v6.4.33)
+2026-02-18T17:01:44.2857586Z   - Downloading psr/link (2.0.1)
+2026-02-18T17:01:44.2859317Z   - Downloading symfony/web-link (v6.4.32)
+2026-02-18T17:01:44.2861856Z   - Downloading symfony/twig-bundle (v6.4.32)
+2026-02-18T17:01:44.2863128Z   - Downloading symfony/web-profiler-bundle (v6.4.32)
+2026-02-18T17:01:44.2864797Z   - Downloading symfony/yaml (v6.4.30)
+2026-02-18T17:01:44.2866492Z   - Downloading twig/extra-bundle (v3.23.0)
+2026-02-18T17:01:44.2868964Z   - Downloading jms/metadata (2.9.0)
+2026-02-18T17:01:44.2871512Z   - Downloading vich/uploader-bundle (v2.9.1)
+2026-02-18T17:01:47.0183509Z   - Installing symfony/flex (v2.10.0): Extracting archive
+2026-02-18T17:01:47.0597537Z   - Installing symfony/runtime (v6.4.30): Extracting archive
+2026-02-18T17:01:47.0771234Z   - Installing symfony/polyfill-php83 (v1.33.0): Extracting archive
+2026-02-18T17:01:47.0803230Z   - Installing symfony/polyfill-mbstring (v1.33.0): Extracting archive
+2026-02-18T17:01:47.0840420Z   - Installing symfony/deprecation-contracts (v3.6.0): Extracting archive
+2026-02-18T17:01:47.0881849Z   - Installing symfony/http-foundation (v6.4.33): Extracting archive
+2026-02-18T17:01:47.0922985Z   - Installing psr/event-dispatcher (1.0.0): Extracting archive
+2026-02-18T17:01:47.0964811Z   - Installing symfony/event-dispatcher-contracts (v3.6.0): Extracting archive
+2026-02-18T17:01:47.1008506Z   - Installing symfony/event-dispatcher (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1057825Z   - Installing symfony/var-dumper (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1092646Z   - Installing psr/log (3.0.2): Extracting archive
+2026-02-18T17:01:47.1134316Z   - Installing symfony/error-handler (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1177094Z   - Installing symfony/http-kernel (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1191362Z   - Installing psr/container (2.0.2): Extracting archive
+2026-02-18T17:01:47.1192503Z   - Installing symfony/service-contracts (v3.6.1): Extracting archive
+2026-02-18T17:01:47.1194982Z   - Installing psr/cache (3.0.0): Extracting archive
+2026-02-18T17:01:47.1197083Z   - Installing doctrine/event-manager (2.1.1): Extracting archive
+2026-02-18T17:01:47.1203283Z   - Installing doctrine/persistence (3.4.3): Extracting archive
+2026-02-18T17:01:47.1204484Z   - Installing symfony/doctrine-bridge (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1208193Z   - Installing symfony/var-exporter (v6.4.26): Extracting archive
+2026-02-18T17:01:47.1212888Z   - Installing symfony/dependency-injection (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1217033Z   - Installing symfony/polyfill-intl-normalizer (v1.33.0): Extracting archive
+2026-02-18T17:01:47.1221356Z   - Installing symfony/polyfill-intl-grapheme (v1.33.0): Extracting archive
+2026-02-18T17:01:47.1224929Z   - Installing symfony/string (v6.4.30): Extracting archive
+2026-02-18T17:01:47.1228602Z   - Installing symfony/console (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1232375Z   - Installing symfony/filesystem (v6.4.30): Extracting archive
+2026-02-18T17:01:47.1236514Z   - Installing symfony/config (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1240628Z   - Installing doctrine/lexer (3.0.1): Extracting archive
+2026-02-18T17:01:47.1243912Z   - Installing doctrine/instantiator (2.0.0): Extracting archive
+2026-02-18T17:01:47.1247388Z   - Installing doctrine/inflector (2.1.0): Extracting archive
+2026-02-18T17:01:47.1251188Z   - Installing doctrine/deprecations (1.1.6): Extracting archive
+2026-02-18T17:01:47.1254828Z   - Installing doctrine/dbal (3.10.4): Extracting archive
+2026-02-18T17:01:47.1259017Z   - Installing doctrine/common (3.5.0): Extracting archive
+2026-02-18T17:01:47.1262554Z   - Installing symfony/polyfill-php84 (v1.33.0): Extracting archive
+2026-02-18T17:01:47.1265904Z   - Installing doctrine/collections (2.6.0): Extracting archive
+2026-02-18T17:01:47.1269414Z   - Installing doctrine/cache (2.2.0): Extracting archive
+2026-02-18T17:01:47.1273926Z   - Installing doctrine/orm (2.20.9): Extracting archive
+2026-02-18T17:01:47.1277042Z   - Installing symfony/routing (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1280999Z   - Installing symfony/finder (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1284900Z   - Installing symfony/cache-contracts (v3.6.0): Extracting archive
+2026-02-18T17:01:47.1288067Z   - Installing symfony/cache (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1292353Z   - Installing symfony/framework-bundle (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1295579Z   - Installing doctrine/sql-formatter (1.5.4): Extracting archive
+2026-02-18T17:01:47.1298959Z   - Installing doctrine/doctrine-bundle (2.18.2): Extracting archive
+2026-02-18T17:01:47.1303478Z   - Installing doctrine/data-fixtures (2.2.0): Extracting archive
+2026-02-18T17:01:47.1307073Z   - Installing doctrine/doctrine-fixtures-bundle (3.7.3): Extracting archive
+2026-02-18T17:01:47.1310855Z   - Installing symfony/stopwatch (v6.4.24): Extracting archive
+2026-02-18T17:01:47.1314280Z   - Installing doctrine/migrations (3.9.6): Extracting archive
+2026-02-18T17:01:47.1317650Z   - Installing doctrine/doctrine-migrations-bundle (3.7.0): Extracting archive
+2026-02-18T17:01:47.1321597Z   - Installing paragonie/random_compat (v9.99.100): Extracting archive
+2026-02-18T17:01:47.1324898Z   - Installing paragonie/constant_time_encoding (v3.1.3): Extracting archive
+2026-02-18T17:01:47.1328282Z   - Installing phpseclib/phpseclib (3.0.49): Extracting archive
+2026-02-18T17:01:47.1332187Z   - Installing monolog/monolog (3.10.0): Extracting archive
+2026-02-18T17:01:47.1335549Z   - Installing ralouphie/getallheaders (3.0.3): Extracting archive
+2026-02-18T17:01:47.1338879Z   - Installing psr/http-message (2.0): Extracting archive
+2026-02-18T17:01:47.1342329Z   - Installing psr/http-factory (1.1.0): Extracting archive
+2026-02-18T17:01:47.1345952Z   - Installing guzzlehttp/psr7 (2.8.0): Extracting archive
+2026-02-18T17:01:47.1349388Z   - Installing psr/http-client (1.0.3): Extracting archive
+2026-02-18T17:01:47.1353017Z   - Installing guzzlehttp/promises (2.3.0): Extracting archive
+2026-02-18T17:01:47.1356297Z   - Installing guzzlehttp/guzzle (7.10.0): Extracting archive
+2026-02-18T17:01:47.1359954Z   - Installing firebase/php-jwt (v7.0.2): Extracting archive
+2026-02-18T17:01:47.1363592Z   - Installing google/auth (v1.50.0): Extracting archive
+2026-02-18T17:01:47.1367011Z   - Installing google/apiclient-services (v0.431.0): Extracting archive
+2026-02-18T17:01:47.1370321Z   - Installing google/apiclient (v2.19.0): Extracting archive
+2026-02-18T17:01:47.1373621Z   - Installing knplabs/knp-components (v5.2.0): Extracting archive
+2026-02-18T17:01:47.1377173Z   - Installing knplabs/knp-paginator-bundle (v6.10.0): Extracting archive
+2026-02-18T17:01:47.1381428Z   - Installing php-cs-fixer/shim (v3.94.1): Extracting archive
+2026-02-18T17:01:47.1384787Z   - Installing webmozart/assert (1.12.1): Extracting archive
+2026-02-18T17:01:47.1388140Z   - Installing phpstan/phpdoc-parser (2.3.2): Extracting archive
+2026-02-18T17:01:47.1391709Z   - Installing phpdocumentor/reflection-common (2.2.0): Extracting archive
+2026-02-18T17:01:47.1395110Z   - Installing phpdocumentor/type-resolver (1.12.0): Extracting archive
+2026-02-18T17:01:47.1398714Z   - Installing phpdocumentor/reflection-docblock (5.6.6): Extracting archive
+2026-02-18T17:01:47.1401853Z   - Installing phpstan/phpstan (1.12.32): Extracting archive
+2026-02-18T17:01:47.1405101Z   - Installing phpstan/phpstan-doctrine (1.5.7): Extracting archive
+2026-02-18T17:01:47.1408446Z   - Installing phpstan/phpstan-strict-rules (1.6.2): Extracting archive
+2026-02-18T17:01:47.1412034Z   - Installing phpstan/phpstan-symfony (1.4.16): Extracting archive
+2026-02-18T17:01:47.1415364Z   - Installing sebastian/version (4.0.1): Extracting archive
+2026-02-18T17:01:47.1418397Z   - Installing sebastian/type (4.0.0): Extracting archive
+2026-02-18T17:01:47.1422157Z   - Installing sebastian/recursion-context (5.0.1): Extracting archive
+2026-02-18T17:01:47.1425330Z   - Installing sebastian/object-reflector (3.0.0): Extracting archive
+2026-02-18T17:01:47.1428646Z   - Installing sebastian/object-enumerator (5.0.0): Extracting archive
+2026-02-18T17:01:47.1432527Z   - Installing sebastian/global-state (6.0.2): Extracting archive
+2026-02-18T17:01:47.1435794Z   - Installing sebastian/exporter (5.1.4): Extracting archive
+2026-02-18T17:01:47.1438448Z   - Installing sebastian/environment (6.1.0): Extracting archive
+2026-02-18T17:01:47.1441296Z   - Installing sebastian/diff (5.1.1): Extracting archive
+2026-02-18T17:01:47.1444216Z   - Installing sebastian/comparator (5.0.5): Extracting archive
+2026-02-18T17:01:47.1447053Z   - Installing sebastian/code-unit (2.0.0): Extracting archive
+2026-02-18T17:01:47.1450121Z   - Installing sebastian/cli-parser (2.0.1): Extracting archive
+2026-02-18T17:01:47.1452950Z   - Installing phpunit/php-timer (6.0.0): Extracting archive
+2026-02-18T17:01:47.1455544Z   - Installing phpunit/php-text-template (3.0.1): Extracting archive
+2026-02-18T17:01:47.1458629Z   - Installing phpunit/php-invoker (4.0.0): Extracting archive
+2026-02-18T17:01:47.1461807Z   - Installing phpunit/php-file-iterator (4.1.0): Extracting archive
+2026-02-18T17:01:47.1464668Z   - Installing theseer/tokenizer (1.3.1): Extracting archive
+2026-02-18T17:01:47.1467492Z   - Installing nikic/php-parser (v5.7.0): Extracting archive
+2026-02-18T17:01:47.1470360Z   - Installing sebastian/lines-of-code (2.0.2): Extracting archive
+2026-02-18T17:01:47.1472973Z   - Installing sebastian/complexity (3.2.0): Extracting archive
+2026-02-18T17:01:47.1476030Z   - Installing sebastian/code-unit-reverse-lookup (3.0.0): Extracting archive
+2026-02-18T17:01:47.1478840Z   - Installing phpunit/php-code-coverage (10.1.16): Extracting archive
+2026-02-18T17:01:47.1481895Z   - Installing phar-io/version (3.2.1): Extracting archive
+2026-02-18T17:01:47.1484933Z   - Installing phar-io/manifest (2.0.4): Extracting archive
+2026-02-18T17:01:47.1488253Z   - Installing myclabs/deep-copy (1.13.4): Extracting archive
+2026-02-18T17:01:47.1491654Z   - Installing phpunit/phpunit (10.5.63): Extracting archive
+2026-02-18T17:01:47.1494627Z   - Installing psr/clock (1.0.0): Extracting archive
+2026-02-18T17:01:47.1498091Z   - Installing symfony/translation-contracts (v3.6.1): Extracting archive
+2026-02-18T17:01:47.1501738Z   - Installing gedmo/doctrine-extensions (v3.22.0): Extracting archive
+2026-02-18T17:01:47.1505380Z   - Installing stof/doctrine-extensions-bundle (v1.15.3): Extracting archive
+2026-02-18T17:01:47.1508167Z   - Installing symfony/asset (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1511573Z   - Installing symfony/http-client-contracts (v3.6.0): Extracting archive
+2026-02-18T17:01:47.1514822Z   - Installing symfony/http-client (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1517912Z   - Installing composer/semver (3.4.4): Extracting archive
+2026-02-18T17:01:47.1521296Z   - Installing symfony/asset-mapper (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1524680Z   - Installing masterminds/html5 (2.10.0): Extracting archive
+2026-02-18T17:01:47.1528409Z   - Installing symfony/dom-crawler (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1532032Z   - Installing symfony/browser-kit (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1534943Z   - Installing symfony/css-selector (v6.4.24): Extracting archive
+2026-02-18T17:01:47.1538202Z   - Installing twig/twig (v3.23.0): Extracting archive
+2026-02-18T17:01:47.1541626Z   - Installing symfony/twig-bridge (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1545167Z   - Installing symfony/debug-bundle (v6.4.27): Extracting archive
+2026-02-18T17:01:47.1548050Z   - Installing symfony/clock (v6.4.30): Extracting archive
+2026-02-18T17:01:47.1551289Z   - Installing symfony/messenger (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1554293Z   - Installing symfony/doctrine-messenger (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1557408Z   - Installing symfony/dotenv (v6.4.30): Extracting archive
+2026-02-18T17:01:47.1560624Z   - Installing symfony/expression-language (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1563476Z   - Installing symfony/property-info (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1566388Z   - Installing symfony/property-access (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1569873Z   - Installing symfony/polyfill-intl-icu (v1.33.0): Extracting archive
+2026-02-18T17:01:47.1572023Z   - Installing symfony/options-resolver (v6.4.30): Extracting archive
+2026-02-18T17:01:47.1575122Z   - Installing symfony/form (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1578327Z   - Installing symfony/intl (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1582226Z   - Installing symfony/polyfill-intl-idn (v1.33.0): Extracting archive
+2026-02-18T17:01:47.1585566Z   - Installing symfony/mime (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1588820Z   - Installing egulias/email-validator (4.0.4): Extracting archive
+2026-02-18T17:01:47.1592117Z   - Installing symfony/mailer (v6.4.31): Extracting archive
+2026-02-18T17:01:47.1595135Z   - Installing symfony/process (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1598607Z   - Installing symfony/maker-bundle (v1.66.0): Extracting archive
+2026-02-18T17:01:47.1602145Z   - Installing symfony/monolog-bridge (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1605074Z   - Installing symfony/monolog-bundle (v3.11.1): Extracting archive
+2026-02-18T17:01:47.1608012Z   - Installing symfony/notifier (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1611084Z   - Installing symfony/phpunit-bridge (v6.4.26): Extracting archive
+2026-02-18T17:01:47.1613745Z   - Installing symfony/password-hasher (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1616514Z   - Installing symfony/security-core (v6.4.31): Extracting archive
+2026-02-18T17:01:47.1619379Z   - Installing symfony/security-http (v6.4.31): Extracting archive
+2026-02-18T17:01:47.1623601Z   - Installing symfony/security-csrf (v6.4.31): Extracting archive
+2026-02-18T17:01:47.1626901Z   - Installing symfony/security-bundle (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1630032Z   - Installing symfony/serializer (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1633006Z   - Installing symfony/translation (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1635558Z   - Installing symfony/stimulus-bundle (v2.32.0): Extracting archive
+2026-02-18T17:01:47.1638161Z   - Installing symfony/ux-turbo (v2.32.0): Extracting archive
+2026-02-18T17:01:47.1640889Z   - Installing symfony/validator (v6.4.33): Extracting archive
+2026-02-18T17:01:47.1643406Z   - Installing psr/link (2.0.1): Extracting archive
+2026-02-18T17:01:47.1646058Z   - Installing symfony/web-link (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1648614Z   - Installing symfony/twig-bundle (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1651439Z   - Installing symfony/web-profiler-bundle (v6.4.32): Extracting archive
+2026-02-18T17:01:47.1654235Z   - Installing symfony/yaml (v6.4.30): Extracting archive
+2026-02-18T17:01:47.1656885Z   - Installing twig/extra-bundle (v3.23.0): Extracting archive
+2026-02-18T17:01:47.1659389Z   - Installing jms/metadata (2.9.0): Extracting archive
+2026-02-18T17:01:47.1662261Z   - Installing vich/uploader-bundle (v2.9.1): Extracting archive
+2026-02-18T17:01:51.3644669Z Package doctrine/cache is abandoned, you should avoid using it. No replacement was suggested.
+2026-02-18T17:01:51.3645384Z Generating autoload files
+2026-02-18T17:01:51.6912439Z 121 packages you are using are looking for funding.
+2026-02-18T17:01:51.6913125Z Use the `composer fund` command to find out more!
+2026-02-18T17:01:51.6913554Z 
+2026-02-18T17:01:51.6913896Z Run composer recipes at any time to see the status of your Symfony recipes.
+2026-02-18T17:01:51.6914498Z 
+2026-02-18T17:01:58.9615416Z Executing script cache:clear [OK]
+2026-02-18T17:01:59.0647938Z Executing script assets:install public [OK]
+2026-02-18T17:01:59.2778415Z Executing script importmap:install [OK]
+2026-02-18T17:01:59.2778824Z 
+2026-02-18T17:01:59.3239644Z ##[group]Run timeout 60 bash -c 'until mysql -h 127.0.0.1 -P 3306 -u root -proot -e "SELECT 1"; do sleep 2; done'
+2026-02-18T17:01:59.3240748Z [36;1mtimeout 60 bash -c 'until mysql -h 127.0.0.1 -P 3306 -u root -proot -e "SELECT 1"; do sleep 2; done'[0m
+2026-02-18T17:01:59.3290258Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:01:59.3290502Z env:
+2026-02-18T17:01:59.3290687Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:01:59.3290944Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:01:59.3291183Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:01:59.3291389Z ##[endgroup]
+2026-02-18T17:01:59.4197159Z mysql: [Warning] Using a password on the command line interface can be insecure.
+2026-02-18T17:01:59.4541211Z 1
+2026-02-18T17:01:59.4541646Z 1
+2026-02-18T17:01:59.4580005Z ##[group]Run php bin/console doctrine:database:create --if-not-exists --env=test
+2026-02-18T17:01:59.4580662Z [36;1mphp bin/console doctrine:database:create --if-not-exists --env=test[0m
+2026-02-18T17:01:59.4581219Z [36;1mphp bin/console doctrine:migrations:migrate --no-interaction --env=test[0m
+2026-02-18T17:01:59.4630310Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:01:59.4630575Z env:
+2026-02-18T17:01:59.4630774Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:01:59.4631046Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:01:59.4631299Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:01:59.4631525Z ##[endgroup]
+2026-02-18T17:01:59.5774800Z Created database `unilearn_test_test` for connection named default
+2026-02-18T17:01:59.7289239Z [notice] Migrating up to DoctrineMigrations\Version20260218133724
+2026-02-18T17:01:59.8681276Z [warning] Migration DoctrineMigrations\Version20260205180537 was executed but did not result in any SQL statements.
+2026-02-18T17:02:01.4177211Z [warning] Migration DoctrineMigrations\Version20260208170601 was executed but did not result in any SQL statements.
+2026-02-18T17:02:01.4744633Z [warning] Migration DoctrineMigrations\Version20260208170701 was executed but did not result in any SQL statements.
+2026-02-18T17:02:02.6507873Z [notice] finished in 2920ms, used 28M memory, 33 migrations executed, 139 sql queries
+2026-02-18T17:02:02.6508527Z 
+2026-02-18T17:02:02.6535802Z  [OK] Successfully migrated to version: DoctrineMigrations\Version20260218133724
+2026-02-18T17:02:02.6536470Z 
+2026-02-18T17:02:02.6536476Z 
+2026-02-18T17:02:02.6715216Z ##[group]Run php bin/console cache:clear --env=test
+2026-02-18T17:02:02.6715596Z [36;1mphp bin/console cache:clear --env=test[0m
+2026-02-18T17:02:02.6764384Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:02:02.6764631Z env:
+2026-02-18T17:02:02.6764818Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:02:02.6765080Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:02:02.6765313Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:02:02.6765537Z ##[endgroup]
+2026-02-18T17:02:02.7688957Z 
+2026-02-18T17:02:02.7716866Z  // Clearing the cache for the test environment with debug false                
+2026-02-18T17:02:02.7718204Z 
+2026-02-18T17:02:10.3708210Z  [OK] Cache for the "test" environment (debug=false) was successfully cleared.  
+2026-02-18T17:02:10.3708782Z 
+2026-02-18T17:02:10.3896270Z ##[group]Run vendor/bin/phpstan analyse --error-format=github
+2026-02-18T17:02:10.3896720Z [36;1mvendor/bin/phpstan analyse --error-format=github[0m
+2026-02-18T17:02:10.3946939Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:02:10.3947181Z env:
+2026-02-18T17:02:10.3947360Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:02:10.3947605Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:02:10.3947820Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:02:10.3948019Z ##[endgroup]
+2026-02-18T17:02:10.9400087Z Note: Using configuration file /home/runner/work/UniLearn-PI/UniLearn-PI/phpstan.neon.
+2026-02-18T17:02:11.3275443Z ⚠️  You're using a deprecated config option checkMissingIterableValueType ⚠️️
+2026-02-18T17:02:11.3276099Z 
+2026-02-18T17:02:11.3276385Z It's strongly recommended to remove it from your configuration file
+2026-02-18T17:02:11.3277038Z and add the missing array typehints.
+2026-02-18T17:02:11.3277352Z 
+2026-02-18T17:02:11.3277627Z If you want to continue ignoring missing typehints from arrays,
+2026-02-18T17:02:11.3278483Z add missingType.iterableValue error identifier to your ignoreErrors:
+2026-02-18T17:02:11.3279006Z 
+2026-02-18T17:02:11.3279130Z parameters:
+2026-02-18T17:02:11.3279430Z 	ignoreErrors:
+2026-02-18T17:02:11.3279953Z 		-
+2026-02-18T17:02:11.3280312Z 			identifier: missingType.iterableValue
+2026-02-18T17:02:11.3280655Z 
+2026-02-18T17:02:11.3281289Z ⚠️  You're using a deprecated config option checkGenericClassInNonGenericObjectType ⚠️️
+2026-02-18T17:02:11.3281938Z 
+2026-02-18T17:02:11.3282247Z It's strongly recommended to remove it from your configuration file
+2026-02-18T17:02:11.3282892Z and add the missing generic typehints.
+2026-02-18T17:02:11.3283239Z 
+2026-02-18T17:02:11.3283521Z If you want to continue ignoring missing typehints from generics,
+2026-02-18T17:02:11.3284273Z add missingType.generics error identifier to your ignoreErrors:
+2026-02-18T17:02:11.3284738Z 
+2026-02-18T17:02:11.3284863Z parameters:
+2026-02-18T17:02:11.3285160Z 	ignoreErrors:
+2026-02-18T17:02:11.3285447Z 		-
+2026-02-18T17:02:11.3285785Z 			identifier: missingType.generics
+2026-02-18T17:02:11.3286085Z 
+2026-02-18T17:02:17.2252611Z    0/134 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+2026-02-18T17:02:17.2611909Z  134/134 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+2026-02-18T17:02:17.2612205Z 
+2026-02-18T17:02:17.3634620Z ##[error]Only booleans are allowed in an if condition, App\Entity\User|null given.
+2026-02-18T17:02:17.3645424Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Category|null given.
+2026-02-18T17:02:17.3647161Z ##[error]Parameter #1 $category of method App\Entity\Course::setCategory() expects App\Entity\Category|null, string given.
+2026-02-18T17:02:17.3649065Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3651346Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3653080Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Order|null given.
+2026-02-18T17:02:17.3654466Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Order|null given.
+2026-02-18T17:02:17.3655774Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Order|null given.
+2026-02-18T17:02:17.3657723Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3659594Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3661493Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Product|null given.
+2026-02-18T17:02:17.3662892Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Product|null given.
+2026-02-18T17:02:17.3665146Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3666850Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Product|null given.
+2026-02-18T17:02:17.3668814Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3670717Z ##[error]Only booleans are allowed in a negated boolean, string|false given.
+2026-02-18T17:02:17.3672603Z ##[error]Parameter #1 $query of method App\Service\DiscoveryRecommendationService::getAutocompleteSuggestions() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3674757Z ##[error]Parameter #2 $type of method App\Service\DiscoveryRecommendationService::getAutocompleteSuggestions() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3676663Z ##[error]Only booleans are allowed in a ternary operator condition, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3678151Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3679912Z ##[error]Parameter #1 $string of function strtolower expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3681493Z ##[error]Parameter #1 $string of function strlen expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3683541Z ##[error]Parameter #1 $query of method App\Service\DiscoveryRecommendationService::getAutocompleteSuggestions() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3685692Z ##[error]Parameter #2 $type of method App\Service\DiscoveryRecommendationService::getAutocompleteSuggestions() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3687708Z ##[error]Parameter #2 $sort of method App\Controller\Api\DiscoveryApiController::applySorting() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3689477Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3691609Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3693505Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3694941Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3696523Z ##[error]Parameter #1 $string of function strtolower expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3698183Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3699494Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3701084Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3702379Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3703661Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3705185Z ##[error]Only booleans are allowed in &&, Symfony\Component\Security\Core\User\UserInterface|null given on the left side.
+2026-02-18T17:02:17.3706562Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.3708056Z ##[error]Only booleans are allowed in &&, Symfony\Component\Security\Core\User\UserInterface|null given on the left side.
+2026-02-18T17:02:17.3722268Z ##[error]Only booleans are allowed in a negated boolean, string|false given.
+2026-02-18T17:02:17.3724193Z ##[error]Parameter #2 $datetime of static method DateTime::createFromFormat() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3725763Z ##[error]Only booleans are allowed in a negated boolean, DateTime|false given.
+2026-02-18T17:02:17.3727538Z ##[error]Only booleans are allowed in an if condition, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3729047Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3730990Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3732567Z ##[error]Only booleans are allowed in &&, bool|float|int|string|null given on the left side.
+2026-02-18T17:02:17.3734052Z ##[error]Only booleans are allowed in a negated boolean, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3735630Z ##[error]Parameter #2 $string of function explode expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3737330Z ##[error]Parameter #1 $firstName of method App\Entity\Booking::setFirstName() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3739196Z ##[error]Parameter #1 $lastName of method App\Entity\Booking::setLastName() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3740983Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3742288Z ##[error]Only booleans are allowed in an if condition, object|null given.
+2026-02-18T17:02:17.3743831Z ##[error]Parameter #1 $session of method App\Entity\Booking::setSession() expects App\Entity\Session|null, object given.
+2026-02-18T17:02:17.3745289Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3746950Z ##[error]Parameter #1 $phoneNumber of method App\Entity\Booking::setPhoneNumber() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3748453Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3749985Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3751362Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3753314Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3754936Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3756242Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3757525Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3758808Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3760551Z ##[error]Only booleans are allowed in a negated boolean, string|false given.
+2026-02-18T17:02:17.3762286Z ##[error]Parameter #2 $datetime of static method DateTime::createFromFormat() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3763786Z ##[error]Only booleans are allowed in a negated boolean, DateTime|false given.
+2026-02-18T17:02:17.3765095Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3766708Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3768202Z ##[error]Only booleans are allowed in &&, bool|float|int|string|null given on the left side.
+2026-02-18T17:02:17.3769814Z ##[error]Only booleans are allowed in a negated boolean, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3771527Z ##[error]Parameter #2 $string of function explode expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3773345Z ##[error]Parameter #1 $lastName of method App\Entity\Booking::setLastName() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3775047Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3776361Z ##[error]Only booleans are allowed in an if condition, object|null given.
+2026-02-18T17:02:17.3777872Z ##[error]Parameter #1 $session of method App\Entity\Booking::setSession() expects App\Entity\Session|null, object given.
+2026-02-18T17:02:17.3779915Z ##[error]Parameter #2 $value of class Symfony\Component\Security\Csrf\CsrfToken constructor expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3781507Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Category|null given.
+2026-02-18T17:02:17.3783055Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3785004Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/uploads…' results in an error.
+2026-02-18T17:02:17.3786815Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/uploads…' results in an error.
+2026-02-18T17:02:17.3788482Z ##[error]Parameter #1 $json of function json_decode expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3790240Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3791694Z ##[error]Strict comparison using !== between mixed and null will always evaluate to true.
+2026-02-18T17:02:17.3793257Z ##[error]Only booleans are allowed in an if condition, App\Entity\Category|null given.
+2026-02-18T17:02:17.3795257Z ##[error]Parameter #1 $user of method App\Repository\FavoriteRepository::findByUserAndJob() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3796930Z ##[error]Only booleans are allowed in an if condition, App\Entity\Favorite|null given.
+2026-02-18T17:02:17.3798860Z ##[error]Parameter #1 $user of method App\Repository\FavoriteRepository::findByUser() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3800943Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3802597Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3804016Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3805546Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3806965Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3808694Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3810446Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3812053Z ##[error]Parameter #1 $title of method App\Entity\Course::setTitle() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3813867Z ##[error]Parameter #1 $shortDescription of method App\Entity\Course::setShortDescription() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3815403Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3816734Z ##[error]Only booleans are allowed in an if condition, App\Entity\Category|null given.
+2026-02-18T17:02:17.3818268Z ##[error]Parameter #1 $level of method App\Entity\Course::setLevel() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3820335Z ##[error]Parameter #1 $language of method App\Entity\Course::setLanguage() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3822323Z ##[error]Parameter #1 $requirements of method App\Entity\Course::setRequirements() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3824493Z ##[error]Parameter #1 $learningOutcomes of method App\Entity\Course::setLearningOutcomes() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3826440Z ##[error]Parameter #1 $targetAudience of method App\Entity\Course::setTargetAudience() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3828213Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3829636Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3831646Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3833108Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3834650Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3836142Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3837710Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3839343Z ##[error]Call to function method_exists() with App\Entity\QuizResult and 'getScore' will always evaluate to true.
+2026-02-18T17:02:17.3841339Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3843217Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/uploads…' results in an error.
+2026-02-18T17:02:17.3844455Z ##[error]If condition is always true.
+2026-02-18T17:02:17.3845716Z ##[error]Only booleans are allowed in an if condition, Symfony\Component\Form\FormInterface given.
+2026-02-18T17:02:17.3848401Z ##[error]Parameter #1 $user of method Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::isPasswordValid() expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.3851961Z ##[error]Parameter #1 $user of method Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::hashPassword() expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.3854699Z ##[error]Parameter #2 $plainPassword of method Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::hashPassword() expects string, Symfony\Component\Form\FormInterface given.
+2026-02-18T17:02:17.3856612Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3859568Z ##[error]Parameter #1 $user of method Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::isPasswordValid() expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.3861915Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3863551Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3865053Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3866575Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3868720Z ##[error]Parameter #2 $freelancer of method App\Repository\ApplicationRepository::findByJobAndFreelancer() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.3870743Z ##[error]Only booleans are allowed in an if condition, App\Entity\Application|null given.
+2026-02-18T17:02:17.3872653Z ##[error]Parameter #1 $coverLetter of method App\Entity\Application::setCoverLetter() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3874484Z ##[error]Parameter #1 $proposedBudget of method App\Entity\Application::setProposedBudget() expects string|null, float given.
+2026-02-18T17:02:17.3876266Z ##[error]Parameter #1 $timeline of method App\Entity\Application::setTimeline() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3877846Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Chapter|null given.
+2026-02-18T17:02:17.3879214Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Course|null given.
+2026-02-18T17:02:17.3881163Z ##[error]Method App\Controller\LessonController::getAdjacentLesson() has parameter $course with no type specified.
+2026-02-18T17:02:17.3882502Z ##[error]Cannot call method getId() on App\Entity\Chapter|null.
+2026-02-18T17:02:17.3883775Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Lesson|null given.
+2026-02-18T17:02:17.3885324Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3886966Z ##[error]Only booleans are allowed in an if condition, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3888384Z ##[error]Only booleans are allowed in an if condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3890092Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3891538Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3893077Z ##[error]Parameter #1 $totalPrice of method App\Entity\Order::setTotalPrice() expects float, float|null given.
+2026-02-18T17:02:17.3894958Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3896337Z ##[error]Anonymous function should return float but returns float|null.
+2026-02-18T17:02:17.3897608Z ##[error]Only booleans are allowed in an if condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3899032Z ##[error]Parameter #1 $title of method App\Entity\Product::setTitle() expects string, string|null given.
+2026-02-18T17:02:17.3900768Z ##[error]Parameter #1 $description of method App\Entity\Product::setDescription() expects string, string|null given.
+2026-02-18T17:02:17.3902305Z ##[error]Parameter #1 $price of method App\Entity\Product::setPrice() expects float, float|null given.
+2026-02-18T17:02:17.3903904Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3905520Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3906982Z ##[error]Parameter #1 $totalPrice of method App\Entity\Order::setTotalPrice() expects float, float|null given.
+2026-02-18T17:02:17.3908629Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3910520Z ##[error]Parameter #1 $totalPrice of method App\Entity\Order::setTotalPrice() expects float, float|null given.
+2026-02-18T17:02:17.3912191Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3913867Z ##[error]Parameter #1 $review of method App\Entity\Order::setReview() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3915517Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3917022Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3918433Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\User|null given.
+2026-02-18T17:02:17.3920157Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeInterface|null given.
+2026-02-18T17:02:17.3921576Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3923050Z ##[error]Method App\Controller\PageController::getUserRole() has parameter $user with no type specified.
+2026-02-18T17:02:17.3924434Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3925731Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3927270Z ##[error]Parameter #1 $fullName of method App\Entity\User::setFullName() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3928893Z ##[error]Parameter #1 $email of method App\Entity\User::setEmail() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3930628Z ##[error]Parameter #1 $status of method App\Entity\User::setStatus() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3932051Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3933371Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3934668Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3935975Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3937342Z ##[error]Parameter #1 $string of function htmlspecialchars expects string, string|null given.
+2026-02-18T17:02:17.3938604Z ##[error]Cannot call method format() on DateTimeImmutable|null.
+2026-02-18T17:02:17.3939958Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3941275Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3942629Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3943924Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3945220Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3946689Z ##[error]Parameter #1 $question of method App\Entity\Question::setQuestion() expects string, string|null given.
+2026-02-18T17:02:17.3948254Z ##[error]Parameter #1 $optionA of method App\Entity\Question::setOptionA() expects string, string|null given.
+2026-02-18T17:02:17.3950030Z ##[error]Parameter #1 $optionB of method App\Entity\Question::setOptionB() expects string, string|null given.
+2026-02-18T17:02:17.3951690Z ##[error]Parameter #1 $optionC of method App\Entity\Question::setOptionC() expects string, string|null given.
+2026-02-18T17:02:17.3953429Z ##[error]Parameter #1 $optionD of method App\Entity\Question::setOptionD() expects string, string|null given.
+2026-02-18T17:02:17.3955069Z ##[error]Parameter #1 $correctOption of method App\Entity\Question::setCorrectOption() expects string, string|null given.
+2026-02-18T17:02:17.3956544Z ##[error]Parameter #1 $string of function strtolower expects string, string|null given.
+2026-02-18T17:02:17.3957890Z ##[error]Parameter #1 $string of function strtolower expects string, string|null given.
+2026-02-18T17:02:17.3960832Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3963563Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3965116Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3966456Z ##[error]Only booleans are allowed in an if condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3967780Z ##[error]Only booleans are allowed in an if condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3969314Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3971220Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3972563Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3973882Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Course|null given.
+2026-02-18T17:02:17.3975269Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3976626Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3977954Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Question|null given.
+2026-02-18T17:02:17.3979150Z ##[error]Cannot call method getId() on App\Entity\Quiz|null.
+2026-02-18T17:02:17.3980493Z ##[error]Cannot call method getTitle() on App\Entity\Quiz|null.
+2026-02-18T17:02:17.3981781Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Question|null given.
+2026-02-18T17:02:17.3983113Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Question|null given.
+2026-02-18T17:02:17.3984425Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3985706Z ##[error]Only booleans are allowed in an if condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3986891Z ##[error]Cannot call method format() on DateTimeImmutable|null.
+2026-02-18T17:02:17.3988124Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3989452Z ##[error]Strict comparison using !== between mixed and null will always evaluate to true.
+2026-02-18T17:02:17.3991015Z ##[error]Only booleans are allowed in an if condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3992405Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3993754Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3995389Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3996627Z ##[error]Cannot call method format() on DateTimeImmutable|null.
+2026-02-18T17:02:17.3997969Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3999393Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4001008Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4002402Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4004011Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4005430Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4006843Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4008241Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4009479Z ##[error]Cannot call method format() on DateTimeImmutable|null.
+2026-02-18T17:02:17.4011220Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/exports/' results in an error.
+2026-02-18T17:02:17.4012911Z ##[error]Method App\Controller\QuizController::generatePDFContent() has parameter $quizzes with no type specified.
+2026-02-18T17:02:17.4014408Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\QuizSettings|null given.
+2026-02-18T17:02:17.4015766Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Role|null given.
+2026-02-18T17:02:17.4017297Z ##[error]Parameter #1 $name of method App\Entity\Session::setName() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4018894Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4020868Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4022603Z ##[error]Parameter #1 $duration of method App\Entity\Session::setDuration() expects int, bool|float|int|string|null given.
+2026-02-18T17:02:17.4024538Z ##[error]Parameter #1 $sessionDescription of method App\Entity\Session::setSessionDescription() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.4026316Z ##[error]Parameter #1 $level of method App\Entity\Session::setLevel() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4027791Z ##[error]Parameter #1 $string of function trim expects string, bool|float|int|string given.
+2026-02-18T17:02:17.4029162Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4031073Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4032810Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4034453Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4036036Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4037486Z ##[error]Parameter #1 $string of function trim expects string, bool|float|int|string given.
+2026-02-18T17:02:17.4038894Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4040674Z ##[error]Parameter #1 $level of method App\Entity\Session::setLevel() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4042300Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4043881Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4045239Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4046558Z ##[error]Parameter #1 $string of function trim expects string, bool|float|int|string given.
+2026-02-18T17:02:17.4047924Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4049531Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4051637Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4053455Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4055032Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4056466Z ##[error]Parameter #1 $string of function trim expects string, bool|float|int|string given.
+2026-02-18T17:02:17.4057834Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4059341Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4061298Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4062965Z ##[error]Parameter #1 $session of method App\Repository\SessionRepository::save() expects App\Entity\Session, object given.
+2026-02-18T17:02:17.4064398Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4065638Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4067300Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4068723Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4070182Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4071526Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4073210Z ##[error]Parameter #1 $datetime of class DateTimeImmutable constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4074994Z ##[error]Parameter #1 $session of method App\Repository\SessionRepository::save() expects App\Entity\Session, object given.
+2026-02-18T17:02:17.4076400Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4077636Z ##[error]Only booleans are allowed in an if condition, DateTime|null given.
+2026-02-18T17:02:17.4078868Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4081005Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.4082615Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4083991Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Role|null given.
+2026-02-18T17:02:17.4085813Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Role|null given.
+2026-02-18T17:02:17.4087783Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4089843Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.4091734Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4093575Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4095509Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4122426Z ##[error]Parameter #1 $userId of method App\Repository\UserRepository::countCoursesByUser() expects int, int|null given.
+2026-02-18T17:02:17.4124248Z ##[error]Parameter #1 $userId of method App\Repository\UserRepository::countQuizResultsByUser() expects int, int|null given.
+2026-02-18T17:02:17.4125947Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4127880Z ##[error]Parameter #1 $query of method App\Service\YouTubeService::searchEducationalVideos() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4130125Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4131837Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4133253Z ##[error]Parameter #1 $string of function trim expects string, string|null given.
+2026-02-18T17:02:17.4134592Z ##[error]Property App\Entity\QuizResult::$scoreValidation is never read, only written.
+2026-02-18T17:02:17.4136031Z ##[error]Only numeric types are allowed in /, int<min, -1>|int<1, max>|null given on the right side.
+2026-02-18T17:02:17.4137372Z ##[error]Only numeric types are allowed in /, int|null given on the left side.
+2026-02-18T17:02:17.4138719Z ##[error]Unknown parameter $message in call to App\Validator\UniqueEmail constructor.
+2026-02-18T17:02:17.4140282Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.4141669Z ##[error]Parameter #1 $string of function strtoupper expects string, string|null given.
+2026-02-18T17:02:17.4143091Z ##[error]Method App\Entity\User::setAgreeTerms() has parameter $agreeTerms with no type specified.
+2026-02-18T17:02:17.4144767Z ##[error]Method App\Repository\CourseRepository::findByUser() has parameter $user with no type specified.
+2026-02-18T17:02:17.4146578Z ##[error]Method App\Security\LoginAuthenticator::onAuthenticationSuccess() never returns null so it can be removed from the return type.
+2026-02-18T17:02:17.4148027Z ##[error]Only booleans are allowed in an if condition, string|null given.
+2026-02-18T17:02:17.4149437Z ##[error]Property App\Security\LoginFormAuthenticator::$csrfTokenManager is never read, only written.
+2026-02-18T17:02:17.4151299Z ##[error]Property App\Security\LoginFormAuthenticator::$passwordHasher is never read, only written.
+2026-02-18T17:02:17.4153341Z ##[error]Parameter #1 $userIdentifier of class Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4154983Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.4157034Z ##[error]Parameter #1 $password of class Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4159819Z ##[error]Parameter #2 $csrfToken of class Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge constructor expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.4161474Z ##[error]Only booleans are allowed in an if condition, string|null given.
+2026-02-18T17:02:17.4162877Z ##[error]Property App\Service\AI\ContentValidationService::$httpClient is never read, only written.
+2026-02-18T17:02:17.4164375Z ##[error]Property App\Service\AI\ContentValidationService::$openaiApiKey is never read, only written.
+2026-02-18T17:02:17.4165897Z ##[error]Property App\Service\AI\ContentValidationService::$googleVisionKey is never read, only written.
+2026-02-18T17:02:17.4167231Z ##[error]Only booleans are allowed in an if condition, string|null given.
+2026-02-18T17:02:17.4168975Z ##[error]Only booleans are allowed in an if condition, int|false given.
+2026-02-18T17:02:17.4170459Z ##[error]Only booleans are allowed in a negated boolean, string|null given.
+2026-02-18T17:02:17.4171754Z ##[error]Only numeric types are allowed in -, float|null given on the left side.
+2026-02-18T17:02:17.4172942Z ##[error]Cannot call method getRating() on App\Entity\User|null.
+2026-02-18T17:02:17.4174405Z ##[error]Binary operation "/" between bool|float|int|string|null and float|int<1, max>|string|true results in an error.
+2026-02-18T17:02:17.4175975Z ##[error]Binary operation "*" between bool|float|int<min, -1>|int<1, max>|string|null and 2 results in an error.
+2026-02-18T17:02:17.4177298Z ##[error]Only booleans are allowed in an if condition, string|null given.
+2026-02-18T17:02:17.4178907Z ##[error]Property App\Service\AI\SellerBehaviorAnalyzer::$entityManager is never read, only written.
+2026-02-18T17:02:17.4180589Z ##[error]Property App\Service\AI\SellerBehaviorAnalyzer::$productRepository is never read, only written.
+2026-02-18T17:02:17.4182062Z ##[error]Binary operation "/" between float|int<1, max>|string|true and 4 results in an error.
+2026-02-18T17:02:17.4183617Z ##[error]Binary operation "/" between bool|float|int|string|null and float|int<1, max>|string|true results in an error.
+2026-02-18T17:02:17.4185022Z ##[error]Only numeric types are allowed in -, float|null given on the left side.
+2026-02-18T17:02:17.4186307Z ##[error]Only booleans are allowed in an if condition, App\Entity\User|null given.
+2026-02-18T17:02:17.4187676Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\User|null given.
+2026-02-18T17:02:17.4188976Z ##[error]Only booleans are allowed in a negated boolean, string|null given.
+2026-02-18T17:02:17.4190679Z ##[error]Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects string, string|null given.
+2026-02-18T17:02:17.4192323Z ##[error]Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects string, string|null given.
+2026-02-18T17:02:17.4193764Z ##[error]Cannot call method getEmail() on App\Entity\User|null.
+2026-02-18T17:02:17.4195255Z ##[error]Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects string, string|null given.
+2026-02-18T17:02:17.4196879Z ##[error]Cannot call method getEmail() on App\Entity\User|null.
+2026-02-18T17:02:17.4198342Z ##[error]Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects string, string|null given.
+2026-02-18T17:02:17.4199634Z ##[error]Cannot call method getTitle() on App\Entity\Job|null.
+2026-02-18T17:02:17.4201257Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4203403Z ##[error]Parameter #1 $user of method App\Service\DiscoveryRecommendationService::getUserInterests() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4205461Z ##[error]Parameter #1 $title of method App\Service\DiscoveryRecommendationService::extractJobCategory() expects string, string|null given.
+2026-02-18T17:02:17.4206954Z ##[error]Only numeric types are allowed in -, float|null given on the left side.
+2026-02-18T17:02:17.4208252Z ##[error]Only numeric types are allowed in -, float|null given on the right side.
+2026-02-18T17:02:17.4209604Z ##[error]Parameter #1 $string of function strtolower expects string, string|null given.
+2026-02-18T17:02:17.4211074Z ##[error]Parameter #1 $string of function strtolower expects string, string|null given.
+2026-02-18T17:02:17.4212928Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/uploads…' results in an error.
+2026-02-18T17:02:17.4214830Z ##[error]Parameter #1 $category of method App\Service\PriceIntelligenceService::getMarketData() expects string, App\Entity\Category|null given.
+2026-02-18T17:02:17.4216746Z ##[error]Parameter #1 $price of method App\Service\PriceIntelligenceService::calculatePricePosition() expects float, float|null given.
+2026-02-18T17:02:17.4218676Z ##[error]Parameter #1 $currentPrice of method App\Service\PriceIntelligenceService::getPriceRecommendations() expects float, float|null given.
+2026-02-18T17:02:17.4220613Z ##[error]Parameter #1 $price of method App\Service\PriceIntelligenceService::getPriceLabel() expects float, float|null given.
+2026-02-18T17:02:17.4222563Z ##[error]Parameter #1 $currentPrice of method App\Service\PriceIntelligenceService::calculateOptimizationPotential() expects float, float|null given.
+2026-02-18T17:02:17.4224032Z ##[error]Comparison operation "<=" between 5|6 and 6 is always true.
+2026-02-18T17:02:17.4225265Z ##[error]Only numeric types are allowed in *, float|null given on the left side.
+2026-02-18T17:02:17.4227434Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::calculateAccountScore() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4230017Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::calculateAverageResponseTime() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4232356Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getReviewStats() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4234090Z ##[error]Binary operation "/" between bool|float|int|string|null and int<1, max> results in an error.
+2026-02-18T17:02:17.4236119Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getCompletionTrend() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4238396Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getResponseTrend() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4240993Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getRatingTrend() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4243283Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getDisputeTrend() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4245594Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getRecentAchievements() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4247167Z ##[error]Variable $reviewStats on left side of ?? is never defined.
+2026-02-18T17:02:17.4248518Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeInterface|null given.
+2026-02-18T17:02:17.4250015Z ##[error]Else branch is unreachable because ternary operator condition is always true.
+2026-02-18T17:02:17.4251387Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4252633Z ##[error]Casting to string something that's already string.
+2026-02-18T17:02:17.4253782Z ##[error]Call to function in_array() requires parameter #3 to be set.
+2026-02-18T17:02:17.4255124Z ##[error]Instantiating DateTime with @1970-01-01 produces an error: Double timezone specification
+2026-02-18T17:02:17.4256656Z ##[error]Method App\Validator\UniqueEmailValidator::validate() has parameter $value with no type specified.
+2026-02-18T17:02:17.4257916Z ##[error]Class App\Validator\User not found.
+2026-02-18T17:02:17.4259105Z ##[error]Dynamic call to static method PHPUnit\Framework\Assert::assertInstanceOf().
+2026-02-18T17:02:17.4260555Z ##[error]Dynamic call to static method PHPUnit\Framework\Assert::assertContains().
+2026-02-18T17:02:17.4261867Z ##[error]Dynamic call to static method PHPUnit\Framework\Assert::assertInstanceOf().
+2026-02-18T17:02:17.4263445Z ##[error]Call to function method_exists() with 'Symfony\\Component\\Dotenv\\Dotenv' and 'bootEnv' will always evaluate to true.
+2026-02-18T17:02:17.4265849Z ##[error]Ignored error pattern #Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder# was not matched in reported errors.
+2026-02-18T17:02:17.4267592Z ##[error]Ignored error pattern #Method .* should return .* but returns mixed# was not matched in reported errors.
+2026-02-18T17:02:17.4271026Z ##[error]Process completed with exit code 1.
+2026-02-18T17:02:17.4366929Z Post job cleanup.
+2026-02-18T17:02:17.5311867Z [command]/usr/bin/git version
+2026-02-18T17:02:17.5353862Z git version 2.52.0
+2026-02-18T17:02:17.5397519Z Temporarily overriding HOME='/home/runner/work/_temp/0fe75c8e-551a-476c-9cf1-14bd60dffd5e' before making global git config changes
+2026-02-18T17:02:17.5398862Z Adding repository directory to the temporary git global config as a safe directory
+2026-02-18T17:02:17.5404147Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/UniLearn-PI/UniLearn-PI
+2026-02-18T17:02:17.5440208Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-02-18T17:02:17.5473362Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-02-18T17:02:17.5715104Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-02-18T17:02:17.5736805Z http.https://github.com/.extraheader
+2026-02-18T17:02:17.5749361Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-02-18T17:02:17.5780670Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-02-18T17:02:17.6012723Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-02-18T17:02:17.6046926Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-02-18T17:02:17.6368556Z Print service container logs: e2f9e3730a7a4c489a2665f1f89474f7_mysql80_984653
+2026-02-18T17:02:17.6373905Z ##[command]/usr/bin/docker logs --details 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:02:17.6499010Z  2026-02-18T17:01:22.648109Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-02-18T17:02:17.6500799Z  2026-02-18 17:01:22+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.45-1.el9 started.
+2026-02-18T17:02:17.6501733Z  2026-02-18 17:01:22+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2026-02-18T17:02:17.6502673Z  2026-02-18 17:01:22+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.45-1.el9 started.
+2026-02-18T17:02:17.6503552Z  2026-02-18 17:01:22+00:00 [Note] [Entrypoint]: Initializing database files
+2026-02-18T17:02:17.6504324Z  2026-02-18 17:01:25+00:00 [Note] [Entrypoint]: Database files initialized
+2026-02-18T17:02:17.6505026Z  2026-02-18 17:01:25+00:00 [Note] [Entrypoint]: Starting temporary server
+2026-02-18T17:02:17.6506152Z  2026-02-18T17:01:22.648193Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.45) initializing of server in progress as process 80
+2026-02-18T17:02:17.6507378Z  2026-02-18T17:01:22.653298Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-02-18T17:02:17.6508206Z  2026-02-18T17:01:22.812253Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-02-18T17:02:17.6509150Z  2026-02-18T17:01:23.554855Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+2026-02-18T17:02:17.6511052Z  2026-02-18T17:01:25.792070Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-02-18T17:02:17.6512713Z  2026-02-18T17:01:25.792805Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.45) starting as process 124
+2026-02-18T17:02:17.6513748Z  2026-02-18T17:01:25.802001Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-02-18T17:02:17.6514652Z  2026-02-18T17:01:25.885751Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-02-18T17:02:17.6515577Z  2026-02-18T17:01:26.067368Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-02-18T17:02:17.6516894Z  2026-02-18T17:01:26.067401Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-02-18T17:02:17.6518892Z  2026-02-18T17:01:26.069065Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2026-02-18T17:02:17.6521139Z  2026-02-18T17:01:26.081940Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Socket: /var/run/mysqld/mysqlx.sock
+2026-02-18T17:02:17.6522888Z  2026-02-18T17:01:26.082058Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.45'  socket: '/var/run/mysqld/mysqld.sock'  port: 0  MySQL Community Server - GPL.
+2026-02-18T17:02:17.6524409Z  Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
+2026-02-18T17:02:17.6525351Z  Warning: Unable to load '/usr/share/zoneinfo/leap-seconds.list' as time zone. Skipping it.
+2026-02-18T17:02:17.6526530Z  Warning: Unable to load '/usr/share/zoneinfo/leapseconds' as time zone. Skipping it.
+2026-02-18T17:02:17.6527417Z  Warning: Unable to load '/usr/share/zoneinfo/tzdata.zi' as time zone. Skipping it.
+2026-02-18T17:02:17.6528141Z  Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+2026-02-18T17:02:17.6528631Z  Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skipping it.
+2026-02-18T17:02:17.6529489Z  2026-02-18T17:01:27.803352Z 11 [System] [MY-013172] [Server] Received SHUTDOWN from user root. Shutting down mysqld (Version: 8.0.45).
+2026-02-18T17:02:17.6530585Z  2026-02-18T17:01:28.520821Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.45)  MySQL Community Server - GPL.
+2026-02-18T17:02:17.6531635Z  2026-02-18T17:01:28.990507Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-02-18T17:02:17.6532561Z  2026-02-18T17:01:28.991262Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.45) starting as process 1
+2026-02-18T17:02:17.6533161Z  2026-02-18T17:01:28.996455Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-02-18T17:02:17.6533692Z  2026-02-18T17:01:29.079472Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-02-18T17:02:17.6534242Z  2026-02-18T17:01:29.184790Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-02-18T17:02:17.6535044Z  2026-02-18T17:01:29.184826Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-02-18T17:02:17.6536240Z  2026-02-18T17:01:29.186358Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2026-02-18T17:02:17.6537392Z  2026-02-18T17:01:29.199206Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+2026-02-18T17:02:17.6538483Z  2026-02-18T17:01:29.199281Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.45'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
+2026-02-18T17:02:17.6539300Z  2026-02-18 17:01:26+00:00 [Note] [Entrypoint]: Temporary server started.
+2026-02-18T17:02:17.6539877Z  '/var/lib/mysql/mysql.sock' -> '/var/run/mysqld/mysqld.sock'
+2026-02-18T17:02:17.6540328Z  2026-02-18 17:01:27+00:00 [Note] [Entrypoint]: Creating database unilearn_test
+2026-02-18T17:02:17.6540669Z  
+2026-02-18T17:02:17.6540914Z  2026-02-18 17:01:27+00:00 [Note] [Entrypoint]: Stopping temporary server
+2026-02-18T17:02:17.6541315Z  2026-02-18 17:01:28+00:00 [Note] [Entrypoint]: Temporary server stopped
+2026-02-18T17:02:17.6541617Z  
+2026-02-18T17:02:17.6541900Z  2026-02-18 17:01:28+00:00 [Note] [Entrypoint]: MySQL init process done. Ready for start up.
+2026-02-18T17:02:17.6542264Z  
+2026-02-18T17:02:17.6547106Z Stop and remove container: e2f9e3730a7a4c489a2665f1f89474f7_mysql80_984653
+2026-02-18T17:02:17.6552398Z ##[command]/usr/bin/docker rm --force 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:02:17.9099091Z 9f4029aa0856f6d3cf92e8c69d9ca218b9e5f58340368543601f5d1a3e35d9b6
+2026-02-18T17:02:17.9129442Z Remove container network: github_network_0fd071026f324958b027a72af0f52683
+2026-02-18T17:02:17.9133991Z ##[command]/usr/bin/docker network rm github_network_0fd071026f324958b027a72af0f52683
+2026-02-18T17:02:18.0031429Z github_network_0fd071026f324958b027a72af0f52683
+2026-02-18T17:02:18.0096585Z Cleaning up orphan processes

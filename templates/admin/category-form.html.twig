@@ -1,0 +1,177 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}{{ category ? 'Edit' : 'New' }} Category - Admin{% endblock %}
+
+{% block admin_styles %}
+<style>
+/* Notification Styles */
+.notification-toast {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: none;
+    animation: slideInLeft 0.3s ease-out;
+}
+
+.notification-toast .alert-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.notification-toast .alert-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.notification-toast .alert-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.notification-toast .alert-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<!-- Flash Messages - Top Left Notification -->
+{% for type, messages in app.session.flashbag.all() %}
+    {% for message in messages %}
+        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show notification-toast" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-{{ type == 'error' ? 'exclamation-triangle' : (type == 'success' ? 'check-circle' : 'info-circle') }} me-2"></i>
+                <div>{{ message }}</div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<!-- Title -->
+<div class="row mb-4">
+    <div class="col-12 d-sm-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-2 mb-sm-0">{{ category ? 'Edit' : 'New' }} Category</h1>
+        <div>
+            <a href="{{ path('admin_category_list') }}" class="btn btn-sm btn-secondary mb-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to Categories
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Category form -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-tag me-2"></i>{{ category ? 'Edit' : 'Create New' }} Category
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ category ? path('admin_category_edit', {'id': category.id}) : path('admin_category_new') }}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Category Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       value="{{ category.name|default('') }}" required>
+                                <div class="form-text">The name of the category as it will appear to users.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="icon" class="form-label">Icon</label>
+                                <input type="text" class="form-control" id="icon" name="icon" 
+                                       value="{{ category.icon|default('') }}" placeholder="bi-tag">
+                                <div class="form-text">Bootstrap Icons class (e.g., bi-tag, bi-code-slash)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="color" class="form-label">Color</label>
+                                <div class="input-group">
+                                    <input type="color" class="form-control form-control-color" id="color" name="color" 
+                                           value="{{ category.color|default('#007bff') }}" style="max-width: 60px;">
+                                    <input type="text" class="form-control" id="colorText" name="colorText" 
+                                           value="{{ category.color|default('#007bff') }}" placeholder="#007bff">
+                                </div>
+                                <div class="form-text">Hex color code for the category badge.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="is_active" class="form-label">Status</label>
+                                <div class="form-check form-switch mt-2">
+                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                           value="1" {{ category and category.isActive ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="is_active">
+                                        Active Category
+                                    </label>
+                                </div>
+                                <div class="form-text">Only active categories can be assigned to courses.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3">{{ category.description|default('') }}</textarea>
+                        <div class="form-text">Optional description of what this category contains.</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ path('admin_category_list') }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>{{ category ? 'Update' : 'Create' }} Category
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const colorInput = document.getElementById('color');
+    const colorTextInput = document.getElementById('colorText');
+    
+    // Sync color picker with text input
+    colorInput.addEventListener('change', function() {
+        colorTextInput.value = this.value;
+    });
+    
+    colorTextInput.addEventListener('change', function() {
+        if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+            colorInput.value = this.value;
+        }
+    });
+});
+</script>
+{% endblock %}

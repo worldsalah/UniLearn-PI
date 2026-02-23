@@ -1,0 +1,163 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<main>
+
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Add<span class="text-primary"> new session</span></h1>
+                    <p class="lead mb-0">We're here to help and answer any questions you might have</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Contact START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Add new session</h4>
+                  
+                        <form method="post" action="{{ path('session_create') }}">
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Session name</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="add new session"
+                                        name="name"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Date</label>
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        placeholder="Date of the session"
+                                        name="date"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Duration</label>
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        placeholder="Duration in minutes"
+                                        name="duration"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Session level</label>
+                                    <select class="form-select" name="level" required>
+                                        <option value="beginner">beginner</option>
+                                        <option value="mid level">mid level</option>
+                                        <option value="advanced">advanced</option>
+                                    </select>
+                            
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Description</label>
+                                    <textarea
+                                        class="form-control"
+                                        rows="5"
+                                        name="sessionDescription"
+                                        placeholder="Describe the content of the session"
+                                        required
+                                    ></textarea>
+                                </div>
+
+
+
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">
+                                        Add session
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Contact Information</h5>
+                        
+                        <div class="d-flex mb-3">
+                            <div class="icon-md bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Address</h6>
+                                <p class="mb-0 small text-muted">123 Education Street<br>Learning City, LC 12345<br>United States</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex mb-3">
+                            <div class="icon-md bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Phone</h6>
+                                <p class="mb-0 small text-muted">+1 (555) 123-4567<br>Mon-Fri: 9AM-6PM EST</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex mb-3">
+                            <div class="icon-md bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Email</h6>
+                                <p class="mb-0 small text-muted">support@unilearn.com<br>info@unilearn.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="mb-4">Follow Us</h5>
+                        <p class="mb-3 small text-muted">Stay connected with us on social media</p>
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-primary btn-sm"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="btn btn-info btn-sm"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="btn btn-danger btn-sm"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="btn btn-primary btn-sm"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="btn btn-danger btn-sm"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+<!-- Footer START -->
+{{ include('components/footer.html.twig') }}
+<!-- Footer END -->
+{% endblock %}

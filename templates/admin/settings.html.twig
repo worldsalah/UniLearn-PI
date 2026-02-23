@@ -1,0 +1,390 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Settings{% endblock %}
+
+{% block body %}
+{% include 'components/header.html.twig' %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+<!-- =======================
+Admin Settings START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- Admin profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <!-- Avatar -->
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h6 class="mb-0">Admin User</h6>
+                        <hr>
+                        <!-- Admin detail -->
+                        <div class="text-start">
+                            <p class="mb-2"><i class="bi bi-shield-check fa-fw me-2"></i>Administrator</p>
+                            <p class="mb-0"><i class="bi bi-calendar fa-fw me-2"></i>Joined: January 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <ul class="nav nav-pills nav-pills-vertical">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_dashboard') }}">
+                                    <i class="bi bi-grid fa-fw me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_course_list') }}">
+                                    <i class="bi bi-book fa-fw me-2"></i>Courses
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_student_list') }}">
+                                    <i class="bi bi-people fa-fw me-2"></i>Students
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_instructor_list') }}">
+                                    <i class="bi bi-person-badge fa-fw me-2"></i>Instructors
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_review') }}">
+                                    <i class="bi bi-star fa-fw me-2"></i>Reviews
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_admin_earning') }}">
+                                    <i class="bi bi-currency-dollar fa-fw me-2"></i>Earnings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ path('app_admin_setting') }}">
+                                    <i class="bi bi-gear fa-fw me-2"></i>Settings
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Left sidebar END -->
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Page title START -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Admin Settings</h2>
+                    <div>
+                        <button class="btn btn-success">
+                            <i class="bi bi-check-circle me-2"></i>Save Changes
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Settings tabs START -->
+                <div class="card shadow">
+                    <div class="card-body">
+                        <!-- Tabs navigation -->
+                        <ul class="nav nav-tabs nav-tabs-bottom mb-4" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#general">General</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#payment">Payment</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#email">Email</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#security">Security</a>
+                            </li>
+                        </ul>
+
+                        <!-- Tab content -->
+                        <div class="tab-content">
+                            <!-- General Settings START -->
+                            <div class="tab-pane fade show active" id="general">
+                                <h5 class="mb-4">General Settings</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Site Name</label>
+                                        <input type="text" class="form-control" value="Unilearn">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Site URL</label>
+                                        <input type="text" class="form-control" value="https://unilearn.com">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Admin Email</label>
+                                        <input type="text" class="form-control" value="admin@unilearn.com">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Support Email</label>
+                                        <input type="text" class="form-control" value="support@unilearn.com">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Site Description</label>
+                                        <textarea class="form-control" rows="3">Unilearn is a comprehensive online learning platform offering courses in various fields.</textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Timezone</label>
+                                        <select class="form-select">
+                                            <option selected>UTC-05:00 Eastern Time</option>
+                                            <option>UTC-06:00 Central Time</option>
+                                            <option>UTC-07:00 Mountain Time</option>
+                                            <option>UTC-08:00 Pacific Time</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Date Format</label>
+                                        <select class="form-select">
+                                            <option selected>MM/DD/YYYY</option>
+                                            <option>DD/MM/YYYY</option>
+                                            <option>YYYY-MM-DD</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="maintenance" checked>
+                                            <label class="form-check-label" for="maintenance">
+                                                Enable Maintenance Mode
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="registration" checked>
+                                            <label class="form-check-label" for="registration">
+                                                Allow User Registration
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- General Settings END -->
+
+                            <!-- Payment Settings START -->
+                            <div class="tab-pane fade" id="payment">
+                                <h5 class="mb-4">Payment Settings</h5>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <h6 class="mb-3">Payment Gateways</h6>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="stripe" checked>
+                                            <label class="form-check-label" for="stripe">
+                                                <strong>Stripe</strong> - Credit Card Processing
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Stripe Public Key</label>
+                                        <input type="text" class="form-control" placeholder="pk_test_...">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Stripe Secret Key</label>
+                                        <input type="password" class="form-control" placeholder="sk_test_...">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="paypal">
+                                            <label class="form-check-label" for="paypal">
+                                                <strong>PayPal</strong> - PayPal Payments
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">PayPal Client ID</label>
+                                        <input type="text" class="form-control" placeholder="">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">PayPal Secret</label>
+                                        <input type="password" class="form-control" placeholder="">
+                                    </div>
+                                    <div class="col-12">
+                                        <h6 class="mb-3 mt-4">Currency Settings</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Default Currency</label>
+                                        <select class="form-select">
+                                            <option selected>USD - US Dollar</option>
+                                            <option>EUR - Euro</option>
+                                            <option>GBP - British Pound</option>
+                                            <option>JPY - Japanese Yen</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Currency Symbol</label>
+                                        <input type="text" class="form-control" value="$" maxlength="3">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Payment Settings END -->
+
+                            <!-- Email Settings START -->
+                            <div class="tab-pane fade" id="email">
+                                <h5 class="mb-4">Email Settings</h5>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <h6 class="mb-3">SMTP Configuration</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">SMTP Host</label>
+                                        <input type="text" class="form-control" placeholder="smtp.gmail.com">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">SMTP Port</label>
+                                        <input type="text" class="form-control" value="587">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">SMTP Username</label>
+                                        <input type="text" class="form-control" placeholder="your-email@gmail.com">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">SMTP Password</label>
+                                        <input type="password" class="form-control" placeholder="">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Encryption</label>
+                                        <select class="form-select">
+                                            <option selected>TLS</option>
+                                            <option>SSL</option>
+                                            <option>None</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">From Email</label>
+                                        <input type="text" class="form-control" value="noreply@unilearn.com">
+                                    </div>
+                                    <div class="col-12">
+                                        <h6 class="mb-3 mt-4">Email Templates</h6>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="welcome" checked>
+                                            <label class="form-check-label" for="welcome">
+                                                Send Welcome Email to New Users
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="enrollment" checked>
+                                            <label class="form-check-label" for="enrollment">
+                                                Send Course Enrollment Confirmation
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="newsletter">
+                                            <label class="form-check-label" for="newsletter">
+                                                Enable Newsletter Subscriptions
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Email Settings END -->
+
+                            <!-- Security Settings START -->
+                            <div class="tab-pane fade" id="security">
+                                <h5 class="mb-4">Security Settings</h5>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <h6 class="mb-3">Password Policy</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Minimum Password Length</label>
+                                        <input type="text" class="form-control" value="8">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Password Expiry (days)</label>
+                                        <input type="text" class="form-control" value="90">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="uppercase" checked>
+                                            <label class="form-check-label" for="uppercase">
+                                                Require Uppercase Letters
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="numbers" checked>
+                                            <label class="form-check-label" for="numbers">
+                                                Require Numbers
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="special" checked>
+                                            <label class="form-check-label" for="special">
+                                                Require Special Characters
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <h6 class="mb-3 mt-4">Session Security</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Session Timeout (minutes)</label>
+                                        <input type="number" class="form-control" value="30" min="5">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Max Login Attempts</label>
+                                        <input type="number" class="form-control" value="5" min="3">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="2fa">
+                                            <label class="form-check-label" for="2fa">
+                                                Enable Two-Factor Authentication
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="captcha" checked>
+                                            <label class="form-check-label" for="captcha">
+                                                Enable CAPTCHA on Login
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Security Settings END -->
+                        </div>
+
+                        <!-- Save button -->
+                        <div class="d-flex justify-content-end mt-4">
+                            <button class="btn btn-secondary me-2">Cancel</button>
+                            <button class="btn btn-success">
+                                <i class="bi bi-check-circle me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Settings tabs END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Admin Settings END -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

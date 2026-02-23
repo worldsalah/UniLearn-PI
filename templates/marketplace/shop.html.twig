@@ -194,6 +194,9 @@ Tab Content START -->
 											<button class="btn btn-sm btn-success" onclick="addToCart({{ product.id }})">
 												<i class="bi bi-cart-plus"></i> Order
 											</button>
+											<a href="{{ path('app_cart') }}" class="btn btn-sm btn-outline-primary">
+												<i class="bi bi-cart"></i> View Cart
+											</a>
 										</div>
 									</div>
 								</div>
@@ -275,8 +278,11 @@ Tab Content START -->
 											<a href="{{ path('app_job_show', {id: job.id}) }}" class="btn btn-sm btn-info">
 												<i class="bi bi-eye"></i> Read
 											</a>
-											<a href="{{ path('app_order_new_from_job', {id: job.id}) }}" class="btn btn-sm btn-success">
+											<button class="btn btn-sm btn-success" onclick="addToCart({{ job.id }})">
 												<i class="bi bi-cart-plus"></i> Order
+											</button>
+											<a href="{{ path('app_cart') }}" class="btn btn-sm btn-outline-primary">
+												<i class="bi bi-cart"></i> View Cart
 											</a>
 										</div>
 									</div>
@@ -300,7 +306,7 @@ Tab Content START -->
 									<i class="bi bi-cart3 fa-3x text-muted mb-3"></i>
 									<h4>Shopping Cart</h4>
 									<p class="text-muted">View and manage your orders in the shopping cart.</p>
-									<a href="#" class="btn btn-success btn-lg">
+									<a href="{{ path('app_cart') }}" class="btn btn-success btn-lg">
 										<i class="bi bi-cart3 me-2"></i>Go to Cart
 									</a>
 								</div>

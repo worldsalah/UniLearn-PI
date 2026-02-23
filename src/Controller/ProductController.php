@@ -76,10 +76,17 @@ class ProductController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'app_product_show', methods: ['GET'])]
-    public function show(Product $product): Response
+    public function show(?Product $product, string $slug): Response
     {
+        // If product not found, redirect to shop page
+        if (!$product) {
+            $this->addFlash('warning', 'Service not found. Showing all available services.');
+            return $this->redirectToRoute('app_marketplace_shop');
+        }
+
         if ($product->getDeletedAt()) {
-            throw $this->createNotFoundException('Product not found');
+            $this->addFlash('warning', 'Service not found. Showing all available services.');
+            return $this->redirectToRoute('app_marketplace_shop');
         }
 
         return $this->render('product/show.html.twig', [
@@ -88,57 +95,50 @@ class ProductController extends AbstractController
     }
 
     #[Route('/{slug}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, ?Product $product, EntityManagerInterface $entityManager): Response
     {
+        // If product not found, redirect to shop page
+        if (!$product) {
+            $this->addFlash('warning', 'Service not found. Showing all available services.');
+            return $this->redirectToRoute('app_marketplace_shop');
+        }
+
         if ($product->getDeletedAt()) {
-            throw $this->createNotFoundException('Product not found');
+            $this->addFlash('warning', 'Service not found. Showing all available services.');
+            return $this->redirectToRoute('app_marketplace_shop');
         }
 
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle user assignment - if no user is logged in, use a default user
-            $user = $this->getUser();
-            if (!$user) {
-                // Find or create a default user for demo purposes
-                $user = $entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => 'demo@unilearn.com']);
-                if (!$user) {
-                    // Create a demo user if none exists
-                    $user = new \App\Entity\User();
-                    $user->setEmail('demo@unilearn.com');
-                    $user->setName('Demo User');
-                    $user->setPassword('demo');
-                    // Set role as entity
-                    $userRole = $entityManager->getRepository(\App\Entity\Role::class)->findOneBy(['name' => 'user']);
-                    $user->setRole($userRole);
-                    $entityManager->persist($user);
-                    $entityManager->flush();
-                }
-            }
-
-            // Ensure the product has a freelancer
-            if (!$product->getFreelancer()) {
-                $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
-            }
-
-            $product->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
-            $this->addFlash('success', 'Product updated successfully.');
+            $this->addFlash('success', 'Service updated successfully!');
 
-            return $this->redirectToRoute('app_product_show', ['slug' => $product->getSlug()]);
+            return $this->redirectToRoute('app_marketplace_shop');
+        }
+
+        // Si le formulaire est soumis mais invalide, afficher les erreurs
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Veuillez corriger les erreurs dans le formulaire.');
         }
 
         return $this->render('product/edit.html.twig', [
-            'product' => $product,
             'form' => $form,
+            'product' => $product,
         ]);
     }
 
     #[Route('/{slug}/delete', name: 'app_product_delete', methods: ['POST'])]
-    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, ?Product $product, EntityManagerInterface $entityManager): Response
     {
+        // If product not found, redirect to shop page
+        if (!$product) {
+            $this->addFlash('warning', 'Service not found. Showing all available services.');
+            return $this->redirectToRoute('app_marketplace_shop');
+        }
+
         // Skip ownership check for demo purposes
         // if ($product->getFreelancer() !== $this->getUser()) {
         //     throw $this->createAccessDeniedException('You cannot delete this product');

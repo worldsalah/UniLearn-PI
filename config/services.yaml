@@ -1,0 +1,67 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    google_youtube_api_key: '%env(GOOGLE_YOUTUBE_API_KEY)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Form/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    # YouTube Service Configuration
+    App\Service\YouTubeService:
+        arguments:
+            $googleYoutubeApiKey: '%google_youtube_api_key%'
+
+    # Currency Service Configuration
+    App\Service\CurrencyService:
+        autowire: true
+
+    # Twig Extension Configuration
+    App\Twig\CurrencyExtension:
+        tags:
+            - { name: twig.extension }
+
+    # AI Analyst Service Configuration
+    App\Service\AIAnalystService:
+        autowire: true
+
+    # AI Analyst Twig Extension Configuration
+    App\Twig\AIAnalystExtension:
+        tags:
+            - { name: twig.extension }
+
+    # Pagination API Controller Configuration
+    App\Controller\Api\PaginationApiController:
+        autowire: true
+
+    # Pagination Twig Extension Configuration
+    App\Twig\PaginationExtension:
+        tags:
+            - { name: twig.extension }
+
+    # Recommendation API Controller Configuration
+    App\Controller\Api\RecommendationApiController:
+        autowire: true
+
+    # Recommendation Twig Extension Configuration
+    App\Twig\RecommendationExtension:
+        tags:
+            - { name: twig.extension }

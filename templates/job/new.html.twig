@@ -1,0 +1,105 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}New Job - Unilearn{% endblock %}
+
+{% block content %}
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-briefcase me-2"></i>Create New Job
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.title, 'Job Title', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter job title...'}}) }}
+                                {{ form_errors(form.title) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '6', 'placeholder': 'Describe the job in detail...'}}) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.budget, 'Budget (€)', {'label_attr': {'class': 'form-label'}}) }}
+                                    <div class="input-group">
+                                        <span class="input-group-text">€</span>
+                                        {{ form_widget(form.budget, {'attr': {'class': 'form-control', 'placeholder': '0.00', 'step': '0.01'}}) }}
+                                    </div>
+                                    {{ form_errors(form.budget) }}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.status, 'Status', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+                                    {{ form_errors(form.status) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.location, 'Location', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.location, {'attr': {'class': 'form-control', 'placeholder': 'e.g. Remote, Paris, France'}}) }}
+                                    {{ form_errors(form.location) }}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.type, 'Job Type', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.type, {'attr': {'class': 'form-select'}}) }}
+                                    {{ form_errors(form.type) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.experienceLevel, 'Experience Level', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.experienceLevel, {'attr': {'class': 'form-select'}}) }}
+                                    {{ form_errors(form.experienceLevel) }}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.duration, 'Duration', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.duration, {'attr': {'class': 'form-control', 'placeholder': 'e.g. 3 months, 6 weeks'}}) }}
+                                    {{ form_errors(form.duration) }}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.requirements, 'Requirements', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.requirements, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'List specific skills and qualifications...'}}) }}
+                                {{ form_errors(form.requirements) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.skills, 'Required Skills', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.skills, {'attr': {'class': 'form-control', 'placeholder': 'e.g. PHP, JavaScript, Project Management'}}) }}
+                                {{ form_errors(form.skills) }}
+                                <small class="form-text text-muted">Enter comma-separated skills</small>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save me-2"></i>Create Job
+                                </button>
+                                <a href="{{ path('app_marketplace_shop') }}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Marketplace
+                                </a>
+                            </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

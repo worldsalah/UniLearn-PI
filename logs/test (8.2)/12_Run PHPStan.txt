@@ -1,0 +1,398 @@
+﻿2026-02-18T17:02:10.3896260Z ##[group]Run vendor/bin/phpstan analyse --error-format=github
+2026-02-18T17:02:10.3896717Z [36;1mvendor/bin/phpstan analyse --error-format=github[0m
+2026-02-18T17:02:10.3946933Z shell: /usr/bin/bash -e {0}
+2026-02-18T17:02:10.3947179Z env:
+2026-02-18T17:02:10.3947357Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-02-18T17:02:10.3947603Z   COMPOSER_NO_INTERACTION: 1
+2026-02-18T17:02:10.3947818Z   COMPOSER_NO_AUDIT: 1
+2026-02-18T17:02:10.3948017Z ##[endgroup]
+2026-02-18T17:02:10.9400041Z Note: Using configuration file /home/runner/work/UniLearn-PI/UniLearn-PI/phpstan.neon.
+2026-02-18T17:02:11.3275407Z ⚠️  You're using a deprecated config option checkMissingIterableValueType ⚠️️
+2026-02-18T17:02:11.3276091Z 
+2026-02-18T17:02:11.3276380Z It's strongly recommended to remove it from your configuration file
+2026-02-18T17:02:11.3277031Z and add the missing array typehints.
+2026-02-18T17:02:11.3277347Z 
+2026-02-18T17:02:11.3277621Z If you want to continue ignoring missing typehints from arrays,
+2026-02-18T17:02:11.3278418Z add missingType.iterableValue error identifier to your ignoreErrors:
+2026-02-18T17:02:11.3279001Z 
+2026-02-18T17:02:11.3279126Z parameters:
+2026-02-18T17:02:11.3279426Z 	ignoreErrors:
+2026-02-18T17:02:11.3279947Z 		-
+2026-02-18T17:02:11.3280307Z 			identifier: missingType.iterableValue
+2026-02-18T17:02:11.3280650Z 
+2026-02-18T17:02:11.3281281Z ⚠️  You're using a deprecated config option checkGenericClassInNonGenericObjectType ⚠️️
+2026-02-18T17:02:11.3281931Z 
+2026-02-18T17:02:11.3282241Z It's strongly recommended to remove it from your configuration file
+2026-02-18T17:02:11.3282887Z and add the missing generic typehints.
+2026-02-18T17:02:11.3283235Z 
+2026-02-18T17:02:11.3283517Z If you want to continue ignoring missing typehints from generics,
+2026-02-18T17:02:11.3284268Z add missingType.generics error identifier to your ignoreErrors:
+2026-02-18T17:02:11.3284735Z 
+2026-02-18T17:02:11.3284859Z parameters:
+2026-02-18T17:02:11.3285155Z 	ignoreErrors:
+2026-02-18T17:02:11.3285443Z 		-
+2026-02-18T17:02:11.3285763Z 			identifier: missingType.generics
+2026-02-18T17:02:11.3286080Z 
+2026-02-18T17:02:17.2252567Z    0/134 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+2026-02-18T17:02:17.2611874Z  134/134 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+2026-02-18T17:02:17.2612200Z 
+2026-02-18T17:02:17.3634579Z ##[error]Only booleans are allowed in an if condition, App\Entity\User|null given.
+2026-02-18T17:02:17.3645414Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Category|null given.
+2026-02-18T17:02:17.3647157Z ##[error]Parameter #1 $category of method App\Entity\Course::setCategory() expects App\Entity\Category|null, string given.
+2026-02-18T17:02:17.3649061Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3651340Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3653059Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Order|null given.
+2026-02-18T17:02:17.3654463Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Order|null given.
+2026-02-18T17:02:17.3655771Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Order|null given.
+2026-02-18T17:02:17.3657714Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3659591Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3661488Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Product|null given.
+2026-02-18T17:02:17.3662889Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Product|null given.
+2026-02-18T17:02:17.3664891Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3666847Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Product|null given.
+2026-02-18T17:02:17.3668811Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3670712Z ##[error]Only booleans are allowed in a negated boolean, string|false given.
+2026-02-18T17:02:17.3672599Z ##[error]Parameter #1 $query of method App\Service\DiscoveryRecommendationService::getAutocompleteSuggestions() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3674755Z ##[error]Parameter #2 $type of method App\Service\DiscoveryRecommendationService::getAutocompleteSuggestions() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3676647Z ##[error]Only booleans are allowed in a ternary operator condition, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3678148Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3679907Z ##[error]Parameter #1 $string of function strtolower expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3681490Z ##[error]Parameter #1 $string of function strlen expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3683538Z ##[error]Parameter #1 $query of method App\Service\DiscoveryRecommendationService::getAutocompleteSuggestions() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3685683Z ##[error]Parameter #2 $type of method App\Service\DiscoveryRecommendationService::getAutocompleteSuggestions() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3687706Z ##[error]Parameter #2 $sort of method App\Controller\Api\DiscoveryApiController::applySorting() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3689470Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3691601Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3693501Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3694938Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3696520Z ##[error]Parameter #1 $string of function strtolower expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3698180Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3699491Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3701079Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3702360Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3703659Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3705182Z ##[error]Only booleans are allowed in &&, Symfony\Component\Security\Core\User\UserInterface|null given on the left side.
+2026-02-18T17:02:17.3706559Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.3708048Z ##[error]Only booleans are allowed in &&, Symfony\Component\Security\Core\User\UserInterface|null given on the left side.
+2026-02-18T17:02:17.3722259Z ##[error]Only booleans are allowed in a negated boolean, string|false given.
+2026-02-18T17:02:17.3724189Z ##[error]Parameter #2 $datetime of static method DateTime::createFromFormat() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3725760Z ##[error]Only booleans are allowed in a negated boolean, DateTime|false given.
+2026-02-18T17:02:17.3727323Z ##[error]Only booleans are allowed in an if condition, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3729044Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3730986Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3732564Z ##[error]Only booleans are allowed in &&, bool|float|int|string|null given on the left side.
+2026-02-18T17:02:17.3734049Z ##[error]Only booleans are allowed in a negated boolean, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3735627Z ##[error]Parameter #2 $string of function explode expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3737327Z ##[error]Parameter #1 $firstName of method App\Entity\Booking::setFirstName() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3739187Z ##[error]Parameter #1 $lastName of method App\Entity\Booking::setLastName() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3740979Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3742285Z ##[error]Only booleans are allowed in an if condition, object|null given.
+2026-02-18T17:02:17.3743828Z ##[error]Parameter #1 $session of method App\Entity\Booking::setSession() expects App\Entity\Session|null, object given.
+2026-02-18T17:02:17.3745287Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3746947Z ##[error]Parameter #1 $phoneNumber of method App\Entity\Booking::setPhoneNumber() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3748450Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3749981Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3751354Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3753310Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3754934Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3756240Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Booking|null given.
+2026-02-18T17:02:17.3757522Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3758805Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3760546Z ##[error]Only booleans are allowed in a negated boolean, string|false given.
+2026-02-18T17:02:17.3762283Z ##[error]Parameter #2 $datetime of static method DateTime::createFromFormat() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3763776Z ##[error]Only booleans are allowed in a negated boolean, DateTime|false given.
+2026-02-18T17:02:17.3765093Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3766705Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3768199Z ##[error]Only booleans are allowed in &&, bool|float|int|string|null given on the left side.
+2026-02-18T17:02:17.3769808Z ##[error]Only booleans are allowed in a negated boolean, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3771524Z ##[error]Parameter #2 $string of function explode expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3773342Z ##[error]Parameter #1 $lastName of method App\Entity\Booking::setLastName() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3774892Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3776357Z ##[error]Only booleans are allowed in an if condition, object|null given.
+2026-02-18T17:02:17.3777869Z ##[error]Parameter #1 $session of method App\Entity\Booking::setSession() expects App\Entity\Session|null, object given.
+2026-02-18T17:02:17.3779911Z ##[error]Parameter #2 $value of class Symfony\Component\Security\Csrf\CsrfToken constructor expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3781504Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Category|null given.
+2026-02-18T17:02:17.3783053Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3785000Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/uploads…' results in an error.
+2026-02-18T17:02:17.3786803Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/uploads…' results in an error.
+2026-02-18T17:02:17.3788479Z ##[error]Parameter #1 $json of function json_decode expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.3790235Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3791691Z ##[error]Strict comparison using !== between mixed and null will always evaluate to true.
+2026-02-18T17:02:17.3793245Z ##[error]Only booleans are allowed in an if condition, App\Entity\Category|null given.
+2026-02-18T17:02:17.3795253Z ##[error]Parameter #1 $user of method App\Repository\FavoriteRepository::findByUserAndJob() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3796928Z ##[error]Only booleans are allowed in an if condition, App\Entity\Favorite|null given.
+2026-02-18T17:02:17.3798850Z ##[error]Parameter #1 $user of method App\Repository\FavoriteRepository::findByUser() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3800939Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3802589Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3804014Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3805543Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3806962Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3808691Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3810440Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3812043Z ##[error]Parameter #1 $title of method App\Entity\Course::setTitle() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3813864Z ##[error]Parameter #1 $shortDescription of method App\Entity\Course::setShortDescription() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3815401Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3816732Z ##[error]Only booleans are allowed in an if condition, App\Entity\Category|null given.
+2026-02-18T17:02:17.3818265Z ##[error]Parameter #1 $level of method App\Entity\Course::setLevel() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3820324Z ##[error]Parameter #1 $language of method App\Entity\Course::setLanguage() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3822321Z ##[error]Parameter #1 $requirements of method App\Entity\Course::setRequirements() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3824237Z ##[error]Parameter #1 $learningOutcomes of method App\Entity\Course::setLearningOutcomes() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3826437Z ##[error]Parameter #1 $targetAudience of method App\Entity\Course::setTargetAudience() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3828210Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3829633Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3831637Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3833105Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3834648Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3836125Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.3837706Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3839340Z ##[error]Call to function method_exists() with App\Entity\QuizResult and 'getScore' will always evaluate to true.
+2026-02-18T17:02:17.3841335Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3843213Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/uploads…' results in an error.
+2026-02-18T17:02:17.3844453Z ##[error]If condition is always true.
+2026-02-18T17:02:17.3845713Z ##[error]Only booleans are allowed in an if condition, Symfony\Component\Form\FormInterface given.
+2026-02-18T17:02:17.3848390Z ##[error]Parameter #1 $user of method Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::isPasswordValid() expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.3851956Z ##[error]Parameter #1 $user of method Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::hashPassword() expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.3854696Z ##[error]Parameter #2 $plainPassword of method Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::hashPassword() expects string, Symfony\Component\Form\FormInterface given.
+2026-02-18T17:02:17.3856610Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3859559Z ##[error]Parameter #1 $user of method Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::isPasswordValid() expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.3861908Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3863548Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3865050Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3866572Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3868718Z ##[error]Parameter #2 $freelancer of method App\Repository\ApplicationRepository::findByJobAndFreelancer() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.3870739Z ##[error]Only booleans are allowed in an if condition, App\Entity\Application|null given.
+2026-02-18T17:02:17.3872497Z ##[error]Parameter #1 $coverLetter of method App\Entity\Application::setCoverLetter() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3874481Z ##[error]Parameter #1 $proposedBudget of method App\Entity\Application::setProposedBudget() expects string|null, float given.
+2026-02-18T17:02:17.3876263Z ##[error]Parameter #1 $timeline of method App\Entity\Application::setTimeline() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3877843Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Chapter|null given.
+2026-02-18T17:02:17.3879211Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Course|null given.
+2026-02-18T17:02:17.3881158Z ##[error]Method App\Controller\LessonController::getAdjacentLesson() has parameter $course with no type specified.
+2026-02-18T17:02:17.3882500Z ##[error]Cannot call method getId() on App\Entity\Chapter|null.
+2026-02-18T17:02:17.3883772Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Lesson|null given.
+2026-02-18T17:02:17.3885315Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3886964Z ##[error]Only booleans are allowed in an if condition, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3888382Z ##[error]Only booleans are allowed in an if condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3890089Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3891531Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3893070Z ##[error]Parameter #1 $totalPrice of method App\Entity\Order::setTotalPrice() expects float, float|null given.
+2026-02-18T17:02:17.3894954Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3896327Z ##[error]Anonymous function should return float but returns float|null.
+2026-02-18T17:02:17.3897606Z ##[error]Only booleans are allowed in an if condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3899029Z ##[error]Parameter #1 $title of method App\Entity\Product::setTitle() expects string, string|null given.
+2026-02-18T17:02:17.3900765Z ##[error]Parameter #1 $description of method App\Entity\Product::setDescription() expects string, string|null given.
+2026-02-18T17:02:17.3902302Z ##[error]Parameter #1 $price of method App\Entity\Product::setPrice() expects float, float|null given.
+2026-02-18T17:02:17.3903902Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3905516Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3906979Z ##[error]Parameter #1 $totalPrice of method App\Entity\Order::setTotalPrice() expects float, float|null given.
+2026-02-18T17:02:17.3908621Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3910508Z ##[error]Parameter #1 $totalPrice of method App\Entity\Order::setTotalPrice() expects float, float|null given.
+2026-02-18T17:02:17.3912189Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3913865Z ##[error]Parameter #1 $review of method App\Entity\Order::setReview() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.3915514Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3917019Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3918430Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\User|null given.
+2026-02-18T17:02:17.3919974Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeInterface|null given.
+2026-02-18T17:02:17.3921574Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3923047Z ##[error]Method App\Controller\PageController::getUserRole() has parameter $user with no type specified.
+2026-02-18T17:02:17.3924432Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3925729Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3927267Z ##[error]Parameter #1 $fullName of method App\Entity\User::setFullName() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3928890Z ##[error]Parameter #1 $email of method App\Entity\User::setEmail() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3930618Z ##[error]Parameter #1 $status of method App\Entity\User::setStatus() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.3932044Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3933368Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3934666Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3935968Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.3937340Z ##[error]Parameter #1 $string of function htmlspecialchars expects string, string|null given.
+2026-02-18T17:02:17.3938601Z ##[error]Cannot call method format() on DateTimeImmutable|null.
+2026-02-18T17:02:17.3939955Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3941272Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3942627Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3943915Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3945218Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3946687Z ##[error]Parameter #1 $question of method App\Entity\Question::setQuestion() expects string, string|null given.
+2026-02-18T17:02:17.3948252Z ##[error]Parameter #1 $optionA of method App\Entity\Question::setOptionA() expects string, string|null given.
+2026-02-18T17:02:17.3950020Z ##[error]Parameter #1 $optionB of method App\Entity\Question::setOptionB() expects string, string|null given.
+2026-02-18T17:02:17.3951687Z ##[error]Parameter #1 $optionC of method App\Entity\Question::setOptionC() expects string, string|null given.
+2026-02-18T17:02:17.3953426Z ##[error]Parameter #1 $optionD of method App\Entity\Question::setOptionD() expects string, string|null given.
+2026-02-18T17:02:17.3955066Z ##[error]Parameter #1 $correctOption of method App\Entity\Question::setCorrectOption() expects string, string|null given.
+2026-02-18T17:02:17.3956536Z ##[error]Parameter #1 $string of function strtolower expects string, string|null given.
+2026-02-18T17:02:17.3957885Z ##[error]Parameter #1 $string of function strtolower expects string, string|null given.
+2026-02-18T17:02:17.3960816Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3963556Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3965113Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3966454Z ##[error]Only booleans are allowed in an if condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3967778Z ##[error]Only booleans are allowed in an if condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3969311Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.3971026Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3972561Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.3973880Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Course|null given.
+2026-02-18T17:02:17.3975266Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3976623Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3977952Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Question|null given.
+2026-02-18T17:02:17.3979147Z ##[error]Cannot call method getId() on App\Entity\Quiz|null.
+2026-02-18T17:02:17.3980490Z ##[error]Cannot call method getTitle() on App\Entity\Quiz|null.
+2026-02-18T17:02:17.3981779Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Question|null given.
+2026-02-18T17:02:17.3983105Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Question|null given.
+2026-02-18T17:02:17.3984422Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3985704Z ##[error]Only booleans are allowed in an if condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3986889Z ##[error]Cannot call method format() on DateTimeImmutable|null.
+2026-02-18T17:02:17.3988122Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3989450Z ##[error]Strict comparison using !== between mixed and null will always evaluate to true.
+2026-02-18T17:02:17.3991011Z ##[error]Only booleans are allowed in an if condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3992402Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3993751Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.
+2026-02-18T17:02:17.3995379Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\Course|null given.
+2026-02-18T17:02:17.3996625Z ##[error]Cannot call method format() on DateTimeImmutable|null.
+2026-02-18T17:02:17.3997966Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null given.
+2026-02-18T17:02:17.3999391Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4001004Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4002400Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4004008Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4005428Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4006834Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4008239Z ##[error]Parameter #3 $subject of function str_replace expects array|string, string|null given.
+2026-02-18T17:02:17.4009477Z ##[error]Cannot call method format() on DateTimeImmutable|null.
+2026-02-18T17:02:17.4011216Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/exports/' results in an error.
+2026-02-18T17:02:17.4012908Z ##[error]Method App\Controller\QuizController::generatePDFContent() has parameter $quizzes with no type specified.
+2026-02-18T17:02:17.4014406Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\QuizSettings|null given.
+2026-02-18T17:02:17.4015763Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Role|null given.
+2026-02-18T17:02:17.4017295Z ##[error]Parameter #1 $name of method App\Entity\Session::setName() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4018752Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4020864Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4022600Z ##[error]Parameter #1 $duration of method App\Entity\Session::setDuration() expects int, bool|float|int|string|null given.
+2026-02-18T17:02:17.4024535Z ##[error]Parameter #1 $sessionDescription of method App\Entity\Session::setSessionDescription() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.4026308Z ##[error]Parameter #1 $level of method App\Entity\Session::setLevel() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4027789Z ##[error]Parameter #1 $string of function trim expects string, bool|float|int|string given.
+2026-02-18T17:02:17.4029159Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4031063Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4032807Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4034451Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4036034Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4037483Z ##[error]Parameter #1 $string of function trim expects string, bool|float|int|string given.
+2026-02-18T17:02:17.4038891Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4040664Z ##[error]Parameter #1 $level of method App\Entity\Session::setLevel() expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4042297Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4043873Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4045236Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4046555Z ##[error]Parameter #1 $string of function trim expects string, bool|float|int|string given.
+2026-02-18T17:02:17.4047921Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4049529Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4051633Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4053452Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4055023Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4056464Z ##[error]Parameter #1 $string of function trim expects string, bool|float|int|string given.
+2026-02-18T17:02:17.4057832Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4059339Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4061294Z ##[error]Parameter #1 $datetime of class DateTime constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4062962Z ##[error]Parameter #1 $session of method App\Repository\SessionRepository::save() expects App\Entity\Session, object given.
+2026-02-18T17:02:17.4064396Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4065636Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4067158Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4068721Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4070177Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4071523Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4073207Z ##[error]Parameter #1 $datetime of class DateTimeImmutable constructor expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4074991Z ##[error]Parameter #1 $session of method App\Repository\SessionRepository::save() expects App\Entity\Session, object given.
+2026-02-18T17:02:17.4076397Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4077634Z ##[error]Only booleans are allowed in an if condition, DateTime|null given.
+2026-02-18T17:02:17.4078866Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4080994Z ##[error]Parameter #2 $token of method Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid() expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.4082612Z ##[error]Only booleans are allowed in a negated boolean, object|null given.
+2026-02-18T17:02:17.4083988Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Role|null given.
+2026-02-18T17:02:17.4085810Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\Role|null given.
+2026-02-18T17:02:17.4087780Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4089835Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.4091730Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4093572Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4095495Z ##[error]Only booleans are allowed in an if condition, bool|float|int|string|null given.
+2026-02-18T17:02:17.4122417Z ##[error]Parameter #1 $userId of method App\Repository\UserRepository::countCoursesByUser() expects int, int|null given.
+2026-02-18T17:02:17.4124245Z ##[error]Parameter #1 $userId of method App\Repository\UserRepository::countQuizResultsByUser() expects int, int|null given.
+2026-02-18T17:02:17.4125944Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4127876Z ##[error]Parameter #1 $query of method App\Service\YouTubeService::searchEducationalVideos() expects string, float|int<min, -1>|int<1, max>|string|true given.
+2026-02-18T17:02:17.4130118Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4131828Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4133251Z ##[error]Parameter #1 $string of function trim expects string, string|null given.
+2026-02-18T17:02:17.4134590Z ##[error]Property App\Entity\QuizResult::$scoreValidation is never read, only written.
+2026-02-18T17:02:17.4136028Z ##[error]Only numeric types are allowed in /, int<min, -1>|int<1, max>|null given on the right side.
+2026-02-18T17:02:17.4137370Z ##[error]Only numeric types are allowed in /, int|null given on the left side.
+2026-02-18T17:02:17.4138716Z ##[error]Unknown parameter $message in call to App\Validator\UniqueEmail constructor.
+2026-02-18T17:02:17.4140279Z ##[error]Only booleans are allowed in an if condition, App\Entity\Role|null given.
+2026-02-18T17:02:17.4141666Z ##[error]Parameter #1 $string of function strtoupper expects string, string|null given.
+2026-02-18T17:02:17.4143088Z ##[error]Method App\Entity\User::setAgreeTerms() has parameter $agreeTerms with no type specified.
+2026-02-18T17:02:17.4144615Z ##[error]Method App\Repository\CourseRepository::findByUser() has parameter $user with no type specified.
+2026-02-18T17:02:17.4146575Z ##[error]Method App\Security\LoginAuthenticator::onAuthenticationSuccess() never returns null so it can be removed from the return type.
+2026-02-18T17:02:17.4148024Z ##[error]Only booleans are allowed in an if condition, string|null given.
+2026-02-18T17:02:17.4149435Z ##[error]Property App\Security\LoginFormAuthenticator::$csrfTokenManager is never read, only written.
+2026-02-18T17:02:17.4151294Z ##[error]Property App\Security\LoginFormAuthenticator::$passwordHasher is never read, only written.
+2026-02-18T17:02:17.4153338Z ##[error]Parameter #1 $userIdentifier of class Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4154980Z ##[error]Only booleans are allowed in a negated boolean, App\Entity\User|null given.
+2026-02-18T17:02:17.4157025Z ##[error]Parameter #1 $password of class Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials constructor expects string, bool|float|int|string|null given.
+2026-02-18T17:02:17.4159814Z ##[error]Parameter #2 $csrfToken of class Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge constructor expects string|null, bool|float|int|string|null given.
+2026-02-18T17:02:17.4161471Z ##[error]Only booleans are allowed in an if condition, string|null given.
+2026-02-18T17:02:17.4162874Z ##[error]Property App\Service\AI\ContentValidationService::$httpClient is never read, only written.
+2026-02-18T17:02:17.4164373Z ##[error]Property App\Service\AI\ContentValidationService::$openaiApiKey is never read, only written.
+2026-02-18T17:02:17.4165894Z ##[error]Property App\Service\AI\ContentValidationService::$googleVisionKey is never read, only written.
+2026-02-18T17:02:17.4167229Z ##[error]Only booleans are allowed in an if condition, string|null given.
+2026-02-18T17:02:17.4168960Z ##[error]Only booleans are allowed in an if condition, int|false given.
+2026-02-18T17:02:17.4170456Z ##[error]Only booleans are allowed in a negated boolean, string|null given.
+2026-02-18T17:02:17.4171751Z ##[error]Only numeric types are allowed in -, float|null given on the left side.
+2026-02-18T17:02:17.4172940Z ##[error]Cannot call method getRating() on App\Entity\User|null.
+2026-02-18T17:02:17.4174402Z ##[error]Binary operation "/" between bool|float|int|string|null and float|int<1, max>|string|true results in an error.
+2026-02-18T17:02:17.4175972Z ##[error]Binary operation "*" between bool|float|int<min, -1>|int<1, max>|string|null and 2 results in an error.
+2026-02-18T17:02:17.4177295Z ##[error]Only booleans are allowed in an if condition, string|null given.
+2026-02-18T17:02:17.4178900Z ##[error]Property App\Service\AI\SellerBehaviorAnalyzer::$entityManager is never read, only written.
+2026-02-18T17:02:17.4180587Z ##[error]Property App\Service\AI\SellerBehaviorAnalyzer::$productRepository is never read, only written.
+2026-02-18T17:02:17.4182054Z ##[error]Binary operation "/" between float|int<1, max>|string|true and 4 results in an error.
+2026-02-18T17:02:17.4183615Z ##[error]Binary operation "/" between bool|float|int|string|null and float|int<1, max>|string|true results in an error.
+2026-02-18T17:02:17.4185020Z ##[error]Only numeric types are allowed in -, float|null given on the left side.
+2026-02-18T17:02:17.4186304Z ##[error]Only booleans are allowed in an if condition, App\Entity\User|null given.
+2026-02-18T17:02:17.4187673Z ##[error]Only booleans are allowed in a ternary operator condition, App\Entity\User|null given.
+2026-02-18T17:02:17.4188973Z ##[error]Only booleans are allowed in a negated boolean, string|null given.
+2026-02-18T17:02:17.4190675Z ##[error]Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects string, string|null given.
+2026-02-18T17:02:17.4192321Z ##[error]Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects string, string|null given.
+2026-02-18T17:02:17.4193624Z ##[error]Cannot call method getEmail() on App\Entity\User|null.
+2026-02-18T17:02:17.4195253Z ##[error]Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects string, string|null given.
+2026-02-18T17:02:17.4196874Z ##[error]Cannot call method getEmail() on App\Entity\User|null.
+2026-02-18T17:02:17.4198336Z ##[error]Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects string, string|null given.
+2026-02-18T17:02:17.4199631Z ##[error]Cannot call method getTitle() on App\Entity\Job|null.
+2026-02-18T17:02:17.4201255Z ##[error]Only booleans are allowed in a negated boolean, Symfony\Component\Security\Core\User\UserInterface|null given.
+2026-02-18T17:02:17.4203400Z ##[error]Parameter #1 $user of method App\Service\DiscoveryRecommendationService::getUserInterests() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4205453Z ##[error]Parameter #1 $title of method App\Service\DiscoveryRecommendationService::extractJobCategory() expects string, string|null given.
+2026-02-18T17:02:17.4206951Z ##[error]Only numeric types are allowed in -, float|null given on the left side.
+2026-02-18T17:02:17.4208250Z ##[error]Only numeric types are allowed in -, float|null given on the right side.
+2026-02-18T17:02:17.4209602Z ##[error]Parameter #1 $string of function strtolower expects string, string|null given.
+2026-02-18T17:02:17.4211072Z ##[error]Parameter #1 $string of function strtolower expects string, string|null given.
+2026-02-18T17:02:17.4212924Z ##[error]Binary operation "." between array|bool|float|int|string|UnitEnum|null and '/public/uploads…' results in an error.
+2026-02-18T17:02:17.4214821Z ##[error]Parameter #1 $category of method App\Service\PriceIntelligenceService::getMarketData() expects string, App\Entity\Category|null given.
+2026-02-18T17:02:17.4216743Z ##[error]Parameter #1 $price of method App\Service\PriceIntelligenceService::calculatePricePosition() expects float, float|null given.
+2026-02-18T17:02:17.4218668Z ##[error]Parameter #1 $currentPrice of method App\Service\PriceIntelligenceService::getPriceRecommendations() expects float, float|null given.
+2026-02-18T17:02:17.4220609Z ##[error]Parameter #1 $price of method App\Service\PriceIntelligenceService::getPriceLabel() expects float, float|null given.
+2026-02-18T17:02:17.4222561Z ##[error]Parameter #1 $currentPrice of method App\Service\PriceIntelligenceService::calculateOptimizationPotential() expects float, float|null given.
+2026-02-18T17:02:17.4224029Z ##[error]Comparison operation "<=" between 5|6 and 6 is always true.
+2026-02-18T17:02:17.4225262Z ##[error]Only numeric types are allowed in *, float|null given on the left side.
+2026-02-18T17:02:17.4227430Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::calculateAccountScore() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4230008Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::calculateAverageResponseTime() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4232353Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getReviewStats() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4234087Z ##[error]Binary operation "/" between bool|float|int|string|null and int<1, max> results in an error.
+2026-02-18T17:02:17.4236111Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getCompletionTrend() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4238394Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getResponseTrend() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4240853Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getRatingTrend() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4243280Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getDisputeTrend() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4245591Z ##[error]Parameter #1 $seller of method App\Service\SellerReputationService::getRecentAchievements() expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.
+2026-02-18T17:02:17.4247165Z ##[error]Variable $reviewStats on left side of ?? is never defined.
+2026-02-18T17:02:17.4248515Z ##[error]Only booleans are allowed in a ternary operator condition, DateTimeInterface|null given.
+2026-02-18T17:02:17.4250012Z ##[error]Else branch is unreachable because ternary operator condition is always true.
+2026-02-18T17:02:17.4251385Z ##[error]Strict comparison using !== between string and null will always evaluate to true.
+2026-02-18T17:02:17.4252630Z ##[error]Casting to string something that's already string.
+2026-02-18T17:02:17.4253768Z ##[error]Call to function in_array() requires parameter #3 to be set.
+2026-02-18T17:02:17.4255122Z ##[error]Instantiating DateTime with @1970-01-01 produces an error: Double timezone specification
+2026-02-18T17:02:17.4256653Z ##[error]Method App\Validator\UniqueEmailValidator::validate() has parameter $value with no type specified.
+2026-02-18T17:02:17.4257912Z ##[error]Class App\Validator\User not found.
+2026-02-18T17:02:17.4259102Z ##[error]Dynamic call to static method PHPUnit\Framework\Assert::assertInstanceOf().
+2026-02-18T17:02:17.4260551Z ##[error]Dynamic call to static method PHPUnit\Framework\Assert::assertContains().
+2026-02-18T17:02:17.4261865Z ##[error]Dynamic call to static method PHPUnit\Framework\Assert::assertInstanceOf().
+2026-02-18T17:02:17.4263442Z ##[error]Call to function method_exists() with 'Symfony\\Component\\Dotenv\\Dotenv' and 'bootEnv' will always evaluate to true.
+2026-02-18T17:02:17.4265839Z ##[error]Ignored error pattern #Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder# was not matched in reported errors.
+2026-02-18T17:02:17.4267589Z ##[error]Ignored error pattern #Method .* should return .* but returns mixed# was not matched in reported errors.
+2026-02-18T17:02:17.4271018Z ##[error]Process completed with exit code 1.

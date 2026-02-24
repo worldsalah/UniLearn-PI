@@ -1,0 +1,426 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Delete Account - Eduport{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Modern Instructor Delete Account Styles */
+.instructor-gradient {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    position: relative;
+    overflow: hidden;
+}
+.instructor-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center;
+    background-size: cover;
+    opacity: 0.1;
+}
+.profile-banner {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+.profile-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(13, 110, 253, 0.05) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+.avatar-enhanced {
+    border: 4px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+.avatar-enhanced:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+.verified-badge {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.delete-account-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border-left: 5px solid #dc3545;
+}
+.delete-account-card .card-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border: none;
+    padding: 1.5rem;
+}
+.delete-account-card .card-body {
+    padding: 2rem;
+}
+.warning-section {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+.warning-section h5 {
+    color: #856404;
+    margin-bottom: 1rem;
+}
+.warning-section ul {
+    color: #856404;
+    margin-bottom: 0;
+}
+.danger-list {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+.danger-list h5 {
+    color: #721c24;
+    margin-bottom: 1rem;
+}
+.danger-list ul {
+    color: #721c24;
+    margin-bottom: 0;
+}
+.danger-list li {
+    margin-bottom: 0.5rem;
+}
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+.form-control:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+}
+.btn-secondary {
+    border-radius: 10px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+}
+.form-check {
+    margin-bottom: 1rem;
+}
+.form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+.sidebar-modern {
+    background: #212529;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.sidebar-modern .list-group-item {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    margin: 5px;
+}
+.sidebar-modern .list-group-item:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(5px);
+}
+.sidebar-modern .list-group-item.active {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+.alert {
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 1rem;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+	
+<!-- =======================
+Page Banner START -->
+<section class="pt-0">
+	<!-- Main banner background image -->
+	<div class="container-fluid px-0">
+		<div class="instructor-gradient h-100px h-md-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
+		</div>
+	</div>
+	<div class="container mt-n4">
+		<div class="row">
+			<!-- Profile banner START -->
+			<div class="col-12">
+				<div class="profile-banner card-body p-4">
+					<div class="row d-flex justify-content-between">
+						<!-- Avatar -->
+						<div class="col-auto mt-4 mt-md-0">
+							<div class="avatar avatar-xxl mt-n3 position-relative">
+								<img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+								<div class="position-absolute bottom-0 end-0">
+									<span class="verified-badge">
+										<i class="bi bi-patch-check-fill"></i> Verified
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- Profile info -->
+						<div class="col d-md-flex justify-content-between align-items-center mt-4">
+							<div>
+								<h1 class="my-1 fs-3 fw-bold">{{ app.user ? app.user.name : 'Instructor' }}</h1>
+								<div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+									<span class="badge bg-primary bg-opacity-10 text-primary">
+										<i class="fas fa-tv me-1"></i>Instructor
+									</span>
+									<span class="badge bg-success bg-opacity-10 text-success">
+										<i class="fas fa-check-circle me-1"></i>Verified
+									</span>
+								</div>
+								<p class="text-muted mb-0">Professional Instructor | Content Creator | Educator</p>
+							</div>
+							<!-- Button -->
+							<div class="d-flex align-items-center mt-2 mt-md-0">
+								<a href="{{ path('app_instructor_dashboard') }}" class="btn btn-secondary">
+									<i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Profile banner END -->
+
+				<!-- Advanced filter responsive toggler START -->
+				<!-- Divider -->
+				<hr class="d-xl-none">
+				<div class="col-12 col-xl-3 d-flex justify-content-between align-items-center">
+					<a class="h6 mb-0 fw-bold d-xl-none" href="#">Menu</a>
+					<button class="btn btn-primary d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+						<i class="fas fa-sliders-h"></i>
+					</button>
+				</div>
+				<!-- Advanced filter responsive toggler END -->
+			</div>
+		</div>
+	</div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Page content START -->
+<section class="pt-0">
+	<div class="container">
+		<div class="row">
+			<!-- Left sidebar START -->
+			<div class="col-xl-3">
+				<!-- Responsive offcanvas body START -->
+				<div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
+					<!-- Offcanvas header -->
+					<div class="offcanvas-header bg-light">
+						<h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+						<button  type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+					</div>
+					<!-- Offcanvas body -->
+					<div class="offcanvas-body p-3 p-xl-0">
+						{% include 'instructor/_sidebar.html.twig' %}
+					</div>
+				</div>
+				<!-- Responsive offcanvas body END -->
+			</div>
+			<!-- Left sidebar END -->
+
+			<!-- Main content START -->
+			<div class="col-xl-9">
+				<!-- Flash messages -->
+				{% for type, messages in app.session.flashbag.all() %}
+					{% for message in messages %}
+						<div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+							{{ message }}
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					{% endfor %}
+				{% endfor %}
+
+				<!-- Delete Account Form START -->
+				<div class="delete-account-card">
+					<div class="card-header">
+						<h4 class="mb-0">
+							<i class="fas fa-exclamation-triangle me-2"></i>Delete Account
+						</h4>
+					</div>
+					<div class="card-body">
+						<!-- Warning Section -->
+						<div class="warning-section">
+							<h5><i class="fas fa-exclamation-triangle me-2"></i>Important Warning</h5>
+							<p class="mb-0">This action is <strong>permanent and cannot be undone</strong>. Please read the following information carefully before proceeding.</p>
+						</div>
+
+						<!-- What will be deleted -->
+						<div class="danger-list">
+							<h5><i class="fas fa-trash me-2"></i>What will be permanently deleted:</h5>
+							<ul>
+								<li>Your profile information and personal data</li>
+								<li>All courses you have created</li>
+								<li>All course content (lessons, chapters, quizzes)</li>
+								<li>Student enrollments and progress data</li>
+								<li>Earnings and payment history</li>
+								<li>Reviews and ratings</li>
+								<li>Messages and communications</li>
+								<li>Uploaded files and media</li>
+								<li>All account settings and preferences</li>
+							</ul>
+						</div>
+
+						<!-- Alternative Options -->
+						<div class="alert alert-info">
+							<h5><i class="fas fa-info-circle me-2"></i>Alternative Options</h5>
+							<p class="mb-2">Before deleting your account, consider these alternatives:</p>
+							<ul class="mb-0">
+								<li><strong>Deactivate your account:</strong> You can temporarily deactivate your account and reactivate it later</li>
+								<li><strong>Edit your profile:</strong> Update your information instead of deleting everything</li>
+								<li><strong>Contact support:</strong> We can help you with specific issues or concerns</li>
+							</ul>
+						</div>
+
+						<!-- Delete Account Form -->
+						{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+							<div class="row g-4">
+								<div class="col-12">
+									{{ form_label(form.password, 'Enter your password to confirm', {'label_attr': {'class': 'form-label'}}) }}
+									{{ form_widget(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Enter your password'}}) }}
+									{{ form_errors(form.password) }}
+									<small class="form-text text-muted">This is required to verify your identity and prevent unauthorized account deletion.</small>
+								</div>
+								<div class="col-12">
+									<div class="form-check">
+										{{ form_widget(form.confirm, {'attr': {'class': 'form-check-input'}}) }}
+										{{ form_label(form.confirm, 'I understand that this action cannot be undone and will permanently delete all my data', {'label_attr': {'class': 'form-check-label'}}) }}
+										{{ form_errors(form.confirm) }}
+									</div>
+								</div>
+							</div>
+
+							<!-- Final Confirmation -->
+							<div class="alert alert-danger mt-4">
+								<h5><i class="fas fa-skull-crossbones me-2"></i>Final Confirmation</h5>
+								<p class="mb-0">Are you absolutely sure you want to delete your account? This action is <strong>irreversible</strong> and will result in the permanent loss of all your data.</p>
+							</div>
+
+							<!-- Action Buttons -->
+							<div class="d-flex justify-content-between mt-4">
+								<a href="{{ path('app_instructor_dashboard') }}" class="btn btn-secondary">
+									<i class="fas fa-arrow-left me-2"></i>Cancel, Keep My Account
+								</a>
+								<button type="submit" class="btn btn-danger" 
+									onclick="return confirm('Are you absolutely sure? This will permanently delete your account and all associated data. This action cannot be undone.')">
+									<i class="fas fa-trash me-2"></i>Delete My Account Permanently
+								</button>
+							</div>
+						{{ form_end(form) }}
+					</div>
+				</div>
+				<!-- Delete Account Form END -->
+			</div>
+			<!-- Main content END -->
+		</div>
+	</div>
+</section>
+<!-- =======================
+Page content END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation feedback
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const password = document.getElementById('form_password');
+            const confirmCheckbox = document.getElementById('form_confirm');
+            
+            if (!password.value) {
+                e.preventDefault();
+                alert('Please enter your password to confirm account deletion.');
+                password.focus();
+                return false;
+            }
+            
+            if (!confirmCheckbox.checked) {
+                e.preventDefault();
+                alert('Please confirm that you understand the consequences of deleting your account.');
+                confirmCheckbox.focus();
+                return false;
+            }
+            
+            // Final confirmation
+            if (!confirm('This is your FINAL WARNING. Deleting your account will permanently remove ALL your data. Are you 100% sure you want to continue?')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+    
+    // Add visual feedback for checkbox
+    const confirmCheckbox = document.getElementById('form_confirm');
+    if (confirmCheckbox) {
+        confirmCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                this.parentElement.classList.add('text-danger');
+            } else {
+                this.parentElement.classList.remove('text-danger');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

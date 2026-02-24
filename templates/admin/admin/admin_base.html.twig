@@ -1,0 +1,268 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/apexcharts/css/apexcharts.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/overlay-scrollbar/css/overlayscrollbars.min.css') }}">
+{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+	
+<!-- Sidebar START -->
+<nav class="navbar sidebar navbar-expand-xl navbar-dark bg-dark" id="mainSidebar">
+
+	<!-- Navbar brand for xl START -->
+	<div class="d-flex align-items-center justify-content-between w-100">
+		<a class="navbar-brand" href="{{ path('app_home') }}">
+			<img class="navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="">
+		</a>
+		<button class="btn btn-link text-white d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+			<i class="fas fa-bars"></i>
+		</button>
+		<button class="btn btn-link text-white d-none d-xl-block" id="sidebarToggle" type="button">
+			<i class="fas fa-bars"></i>
+		</button>
+	</div>
+	<!-- Navbar brand for xl END -->
+	
+	<div class="offcanvas offcanvas-start flex-row custom-scrollbar h-100" data-bs-backdrop="true" tabindex="-1" id="offcanvasSidebar">
+		<div class="offcanvas-body sidebar-content d-flex flex-column bg-dark">
+
+			<!-- Sidebar menu START -->
+			<ul class="navbar-nav flex-column" id="navbar-sidebar">
+				
+				<!-- Menu item 1 -->
+				<li class="nav-item"><a href="{{ path('app_admin_dashboard') }}" class="nav-link {% if app.request.attributes.get('_route') == 'app_admin_dashboard' %}active{% endif %}"><i class="bi bi-house fa-fw me-2"></i>Dashboard</a></li>
+				
+				<!-- Title -->
+				<li class="nav-item ms-2 my-2">Management</li>
+
+				<!-- Menu item 3 -->
+				<li class="nav-item"> <a class="nav-link {% if app.request.attributes.get('_route') starts with 'app_admin_student' %}active{% endif %}" href="{{ path('app_admin_student_index') }}"><i class="fas fa-user-graduate fa-fw me-2"></i>Students (Freelancers)</a></li>
+
+				<!-- Menu item 4 -->
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_admin_product' or app.request.attributes.get('_route') starts with 'app_admin_job' or app.request.attributes.get('_route') starts with 'app_admin_order' or app.request.attributes.get('_route') starts with 'app_marketplace' %}active{% endif %}" href="#" id="marketplaceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="fas fa-store fa-fw me-2"></i>Marketplace
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="marketplaceDropdown">
+						<li><a class="dropdown-item {% if app.request.attributes.get('_route') starts with 'app_admin_product' %}active{% endif %}" href="{{ path('app_admin_product_index') }}"><i class="fas fa-box fa-fw me-2"></i>Services</a></li>
+						<li><a class="dropdown-item {% if app.request.attributes.get('_route') starts with 'app_admin_job' %}active{% endif %}" href="{{ path('app_admin_job_index') }}"><i class="fas fa-briefcase fa-fw me-2"></i>Job Requests</a></li>
+						<li><a class="dropdown-item {% if app.request.attributes.get('_route') starts with 'app_admin_order' %}active{% endif %}" href="{{ path('app_admin_order_index') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>Orders</a></li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_marketplace_index' %}active{% endif %}" href="{{ path('app_marketplace_index') }}"><i class="fas fa-tachometer-alt fa-fw me-2"></i>Marketplace Dashboard</a></li>
+						<li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_marketplace_shop' %}active{% endif %}" href="{{ path('app_marketplace_shop') }}"><i class="fas fa-store fa-fw me-2"></i>Browse Marketplace</a></li>
+					</ul>
+				</li>
+
+				
+				<!-- Menu item 10 -->
+				{% if app.user %}
+				<li class="nav-item"> <a class="nav-link {% if app.request.attributes.get('_route') starts with 'app_favorite' %}active{% endif %}" href="{{ path('app_favorite_index') }}"><i class="fas fa-heart fa-fw me-2"></i>My Favorites</a></li>
+				{% endif %}
+
+				<!-- Title -->
+				<li class="nav-item ms-2 my-2">Documentation</li>
+			</ul>
+			<!-- Sidebar menu end -->
+
+			<!-- Sidebar footer START -->
+			<div class="px-3 mt-auto pt-3">
+				<div class="d-flex align-items-center justify-content-between text-primary-hover">
+						<a class="h5 mb-0 text-body" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Settings">
+							<i class="bi bi-gear-fill"></i>
+						</a>
+						<a class="h5 mb-0 text-body" href="{{ path('app_home') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Home">
+							<i class="bi bi-globe"></i>
+						</a>
+						<a class="h5 mb-0 text-body" href="{{ path('app_logout') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Sign out">
+							<i class="bi bi-power"></i>
+						</a>
+				</div>
+			</div>
+			<!-- Sidebar footer END -->
+			
+		</div>
+	</div>
+</nav>
+<!-- Sidebar END -->
+
+<!-- Page content START -->
+<div class="page-content">
+
+	<!-- Top bar START -->
+	<nav class="navbar top-bar navbar-light border-bottom py-0 py-xl-3">
+		<div class="container-fluid p-0">
+			<div class="d-flex align-items-center w-100">
+
+				<!-- Logo START -->
+				<div class="d-flex align-items-center d-xl-none">
+					<a class="navbar-brand" href="{{ path('app_home') }}">
+						<img class="light-mode-item navbar-brand-item h-30px" src="{{ asset('assets/images/logo-mobile.svg') }}" alt="">
+						<img class="dark-mode-item navbar-brand-item h-30px" src="{{ asset('assets/images/logo-mobile-light.svg') }}" alt="">
+					</a>
+				</div>
+				<!-- Logo END -->
+
+				<!-- Toggler for sidebar START -->
+				<div class="navbar-expand-xl sidebar-offcanvas-menu">
+					<button class="navbar-toggler me-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar" aria-expanded="false" aria-label="Toggle navigation" data-bs-auto-close="outside">
+						<i class="bi bi-text-right fa-fw h2 lh-0 mb-0 rtl-flip" data-bs-target="#offcanvasMenu"> </i>
+					</button>
+				</div>
+				<!-- Toggler for sidebar END -->
+				
+				<!-- Top bar left -->
+				<div class="navbar-expand-lg ms-auto ms-xl-0">
+					
+					<!-- Toggler for menubar START -->
+					<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTopContent" aria-controls="navbarTopContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-animation">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</button>
+					<!-- Toggler for menubar END -->
+
+					<!-- Topbar menu START -->
+					<div class="collapse navbar-collapse w-100" id="navbarTopContent">
+						<!-- Top search START -->
+						<div class="nav my-3 my-xl-0 flex-nowrap align-items-center">
+							<div class="nav-item w-100">
+								<form class="position-relative">
+									<input class="form-control pe-5 bg-secondary bg-opacity-10 border-0" type="search" placeholder="Search" aria-label="Search">
+									<button class="bg-transparent px-2 py-0 border-0 position-absolute top-50 end-0 translate-middle-y" type="submit"><i class="fas fa-search fs-6 text-primary"></i></button>
+								</form>
+							</div>
+						</div>
+						<!-- Top search END -->
+					</div>
+					<!-- Topbar menu END -->
+				</div>
+				<!-- Top bar left END -->
+				
+				<!-- Top bar right START -->
+				<div class="ms-xl-auto">
+					<ul class="navbar-nav flex-row align-items-center">
+
+						<!-- Marketplace button START -->
+						<li class="nav-item ms-2 ms-md-3 dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="topMarketplaceDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="fas fa-store fa-fw me-1"></i>Marketplace
+							</a>
+							<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow" aria-labelledby="topMarketplaceDropdown">
+								<li><a class="dropdown-item" href="{{ path('app_admin_product_index') }}"><i class="fas fa-box fa-fw me-2"></i>Services</a></li>
+								<li><a class="dropdown-item" href="{{ path('app_admin_job_index') }}"><i class="fas fa-briefcase fa-fw me-2"></i>Job Requests</a></li>
+								<li><a class="dropdown-item" href="{{ path('app_admin_order_index') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>Orders</a></li>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="{{ path('app_marketplace_index') }}"><i class="fas fa-tachometer-alt fa-fw me-2"></i>Marketplace Dashboard</a></li>
+								<li><a class="dropdown-item" href="{{ path('app_marketplace_shop') }}"><i class="fas fa-store fa-fw me-2"></i>Browse Marketplace</a></li>
+							</ul>
+						</li>
+						<!-- Marketplace button END -->
+
+						<!-- Profile dropdown START -->
+						<li class="nav-item ms-2 ms-md-3 dropdown">
+							<!-- Avatar -->
+							<a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+								<img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+							</a>
+
+							<!-- Profile dropdown START -->
+							<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+								<!-- Profile info -->
+								<li class="px-3">
+									<div class="d-flex align-items-center">
+										<!-- Avatar -->
+										<div class="avatar me-3 mb-3">
+											<img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+										</div>
+										<div>
+											<a class="h6 mt-2 mt-sm-0" href="#">Admin User</a>
+											<p class="small m-0">admin@unilearn.com</p>
+										</div>
+									</div>
+								</li>
+                <li> <hr class="dropdown-divider"></li>
+								<!-- Links -->
+								<li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+								<li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+								<li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+							</ul>
+							<!-- Profile dropdown END -->
+						</li>
+						<!-- Profile dropdown END -->
+					</ul>
+				</div>
+				<!-- Top bar right END -->
+			</div>
+		</div>
+	</nav>
+	<!-- Top bar END -->
+
+	<!-- Page main content START -->
+	<div class="page-content-wrapper border">
+        {% block admin_content %}{% endblock %}
+	</div>
+	<!-- Page main content END -->
+</div>
+<!-- Page content END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('assets/vendor/apexcharts/js/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/overlay-scrollbar/js/overlayscrollbars.min.js') }}"></script>
+    <style>
+        .sidebar-collapsed {
+            margin-left: -250px !important;
+        }
+        
+        .sidebar-collapsed + .page-content-wrapper {
+            margin-left: 0 !important;
+        }
+        
+        .sidebar {
+            transition: margin-left 0.3s ease !important;
+        }
+        
+        .page-content-wrapper {
+            transition: margin-left 0.3s ease !important;
+        }
+        
+        #sidebarToggle {
+            transition: all 0.3s ease;
+        }
+        
+        #sidebarToggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('mainSidebar');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    
+                    // Toggle icon
+                    const icon = this.querySelector('i');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-chevron-right');
+                    } else {
+                        icon.classList.remove('fa-chevron-right');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

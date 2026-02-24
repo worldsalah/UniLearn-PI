@@ -2,7 +2,7 @@
 
 {% block title %}Student Dashboard - Unilearn{% endblock %}
 
-{% block body %}
+{% block content %}
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
 
@@ -17,10 +17,10 @@ Student Dashboard START -->
                 <div class="card shadow mb-4">
                     <div class="card-body text-center p-4">
                         <div class="avatar avatar-xl mb-3">
-                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/08.jpg') }}" alt="avatar">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
                         </div>
-                        <h5 class="mb-1">Alex Johnson</h5>
-                        <p class="mb-2">Web Development Student</p>
+                        <h5 class="mb-1">{{ user.name|default(user.email) }}</h5>
+                        <p class="mb-2">{{ user.email }}</p>
                         <div class="d-flex justify-content-center gap-2">
                             <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
                         </div>
@@ -32,22 +32,22 @@ Student Dashboard START -->
                 <div class="card shadow">
                     <div class="card-body p-0">
                         <div class="list-group list-group-flush">
-                            <a href="#" class="list-group-item list-group-item-action active">
+                            <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action active">
                                 <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                             </a>
-                            <a href="#" class="list-group-item list-group-item-action">
+                            <a href="{{ path('app_student_courses') }}" class="list-group-item list-group-item-action">
                                 <i class="fas fa-book me-2"></i>My Courses
                             </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-bookmark me-2"></i>Bookmarks
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action">
+                            <a href="{{ path('app_student_certificates') }}" class="list-group-item list-group-item-action">
                                 <i class="fas fa-certificate me-2"></i>Certificates
                             </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-credit-card me-2"></i>Payment Info
+                            <a href="{{ path('app_student_quiz_analysis') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-brain me-2"></i>AI Quiz Analysis
                             </a>
-                            <a href="#" class="list-group-item list-group-item-action">
+                            <a href="{{ path('app_student_ai_roadmap') }}" class="list-group-item list-group-item-action" onclick="console.log('AI Recommendations clicked'); window.location.href='{{ path('app_student_ai_roadmap') }}'; return false;">
+                                <i class="fas fa-lightbulb me-2"></i>AI Recommendations
+                            </a>
+                            <a href="{{ path('app_student_settings') }}" class="list-group-item list-group-item-action">
                                 <i class="fas fa-cog me-2"></i>Settings
                             </a>
                         </div>
@@ -61,7 +61,7 @@ Student Dashboard START -->
                 <!-- Welcome header START -->
                 <div class="card shadow mb-4">
                     <div class="card-body p-4">
-                        <h3 class="mb-1">Welcome back, Alex!</h3>
+                        <h3 class="mb-1">Welcome back, {{ user.name|default(user.email) }}!</h3>
                         <p class="mb-0">Continue learning and track your progress.</p>
                     </div>
                 </div>
@@ -77,7 +77,7 @@ Student Dashboard START -->
                                         <i class="fas fa-book"></i>
                                     </div>
                                 </div>
-                                <h4 class="mb-0">8</h4>
+                                <h4 class="mb-0">{{ totalEnrollments }}</h4>
                                 <p class="mb-0 small text-muted">Enrolled Courses</p>
                             </div>
                         </div>
@@ -90,7 +90,7 @@ Student Dashboard START -->
                                         <i class="fas fa-check-circle"></i>
                                     </div>
                                 </div>
-                                <h4 class="mb-0">3</h4>
+                                <h4 class="mb-0">{{ completedCourses }}</h4>
                                 <p class="mb-0 small text-muted">Completed Courses</p>
                             </div>
                         </div>
@@ -103,8 +103,8 @@ Student Dashboard START -->
                                         <i class="fas fa-clock"></i>
                                     </div>
                                 </div>
-                                <h4 class="mb-0">124h</h4>
-                                <p class="mb-0 small text-muted">Learning Hours</p>
+                                <h4 class="mb-0">{{ inProgressCourses }}</h4>
+                                <p class="mb-0 small text-muted">In Progress</p>
                             </div>
                         </div>
                     </div>
@@ -113,10 +113,10 @@ Student Dashboard START -->
                             <div class="card-body p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div class="icon-lg bg-info bg-opacity-10 text-info rounded-circle">
-                                        <i class="fas fa-certificate"></i>
+                                        <i class="fas fa-trophy"></i>
                                     </div>
                                 </div>
-                                <h4 class="mb-0">3</h4>
+                                <h4 class="mb-0">{{ completedCourses }}</h4>
                                 <p class="mb-0 small text-muted">Certificates</p>
                             </div>
                         </div>
@@ -129,52 +129,52 @@ Student Dashboard START -->
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="mb-0">Continue Learning</h5>
-                            <a href="#" class="btn btn-sm btn-primary">View All</a>
+                            <a href="{{ path('app_student_courses') }}" class="btn btn-sm btn-primary">View All Courses</a>
                         </div>
                         
                         <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="card border-0">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-start">
-                                            <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="rounded me-3" width="80" alt="Course">
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1">Web Development Bootcamp</h6>
-                                                <p class="mb-2 small text-muted">by John Doe</p>
-                                                <div class="progress mb-2" style="height: 8px;">
-                                                    <div class="progress-bar bg-primary" style="width: 65%"></div>
+                            {% for enrollment in enrollments|slice(0, 2) %}
+                                <div class="col-md-6">
+                                    <div class="card border-0">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-start">
+                                                {% if enrollment.course.thumbnailUrl %}
+                                                    <img src="{{ asset(enrollment.course.thumbnailUrl) }}" class="rounded me-3" width="80" alt="Course">
+                                                {% else %}
+                                                    <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="rounded me-3" width="80" alt="Course">
+                                                {% endif %}
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">{{ enrollment.course.title }}</h6>
+                                                    <p class="mb-2 small text-muted">{{ enrollment.course.shortDescription|slice(0, 50) }}...</p>
+                                                    <div class="progress mb-2" style="height: 8px;">
+                                                        <div class="progress-bar bg-primary" style="width: {{ enrollment.progress|default(0) }}%"></div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <small class="text-muted">{{ enrollment.progress|default(0) }}% Complete</small>
+                                                        <small class="text-muted">
+                                                            {% if enrollment.course.chapters %}
+                                                                {{ enrollment.course.chapters|length }} chapters
+                                                            {% else %}
+                                                                Multiple lessons
+                                                            {% endif %}
+                                                        </small>
+                                                    </div>
+                                                    <a href="{{ path('app_course_show', {'id': enrollment.course.id}) }}" class="btn btn-sm btn-primary mt-2">Continue</a>
                                                 </div>
-                                                <div class="d-flex justify-content-between">
-                                                    <small class="text-muted">65% Complete</small>
-                                                    <small class="text-muted">26 of 40 lessons</small>
-                                                </div>
-                                                <button class="btn btn-sm btn-primary mt-2">Continue</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card border-0">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-start">
-                                            <img src="{{ asset('assets/images/courses/4by3/02.jpg') }}" class="rounded me-3" width="80" alt="Course">
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1">React Masterclass</h6>
-                                                <p class="mb-2 small text-muted">by Jane Smith</p>
-                                                <div class="progress mb-2" style="height: 8px;">
-                                                    <div class="progress-bar bg-success" style="width: 40%"></div>
-                                                </div>
-                                                <div class="d-flex justify-content-between">
-                                                    <small class="text-muted">40% Complete</small>
-                                                    <small class="text-muted">16 of 40 lessons</small>
-                                                </div>
-                                                <button class="btn btn-sm btn-primary mt-2">Continue</button>
-                                            </div>
-                                        </div>
+                            {% else %}
+                                <div class="col-12">
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No courses yet</h5>
+                                        <p class="text-muted">Start by enrolling in your first course!</p>
+                                        <a href="{{ path('app_course_grid') }}" class="btn btn-primary">Browse Courses</a>
                                     </div>
                                 </div>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -186,42 +186,61 @@ Student Dashboard START -->
                         <h5 class="mb-4">Recent Achievements</h5>
                         
                         <div class="row g-3">
-                            <div class="col-6 col-md-3">
-                                <div class="text-center">
-                                    <div class="icon-xl bg-warning bg-opacity-10 text-warning rounded-circle mb-2 mx-auto">
-                                        <i class="fas fa-trophy fa-2x"></i>
+                            {% if completedCourses > 0 %}
+                                <div class="col-6 col-md-3">
+                                    <div class="text-center">
+                                        <div class="icon-xl bg-warning bg-opacity-10 text-warning rounded-circle mb-2 mx-auto">
+                                            <i class="fas fa-trophy fa-2x"></i>
+                                        </div>
+                                        <h6 class="mb-1">First Course</h6>
+                                        <p class="mb-0 small text-muted">Completed your first course</p>
                                     </div>
-                                    <h6 class="mb-1">First Course</h6>
-                                    <p class="mb-0 small text-muted">Completed your first course</p>
                                 </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="text-center">
-                                    <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mb-2 mx-auto">
-                                        <i class="fas fa-fire fa-2x"></i>
+                            {% endif %}
+                            
+                            {% if totalEnrollments >= 3 %}
+                                <div class="col-6 col-md-3">
+                                    <div class="text-center">
+                                        <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mb-2 mx-auto">
+                                            <i class="fas fa-fire fa-2x"></i>
+                                        </div>
+                                        <h6 class="mb-1">Dedicated Learner</h6>
+                                        <p class="mb-0 small text-muted">Enrolled in 3+ courses</p>
                                     </div>
-                                    <h6 class="mb-1">7-Day Streak</h6>
-                                    <p class="mb-0 small text-muted">Learned for 7 days straight</p>
                                 </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="text-center">
-                                    <div class="icon-xl bg-success bg-opacity-10 text-success rounded-circle mb-2 mx-auto">
-                                        <i class="fas fa-star fa-2x"></i>
+                            {% endif %}
+                            
+                            {% if completedCourses >= 2 %}
+                                <div class="col-6 col-md-3">
+                                    <div class="text-center">
+                                        <div class="icon-xl bg-success bg-opacity-10 text-success rounded-circle mb-2 mx-auto">
+                                            <i class="fas fa-graduation-cap fa-2x"></i>
+                                        </div>
+                                        <h6 class="mb-1">Knowledge Seeker</h6>
+                                        <p class="mb-0 small text-muted">Completed 2+ courses</p>
                                     </div>
-                                    <h6 class="mb-1">Top Student</h6>
-                                    <p class="mb-0 small text-muted">Scored 100% on quiz</p>
                                 </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="text-center">
-                                    <div class="icon-xl bg-info bg-opacity-10 text-info rounded-circle mb-2 mx-auto">
-                                        <i class="fas fa-medal fa-2x"></i>
+                            {% endif %}
+                            
+                            {% if totalEnrollments > 0 %}
+                                <div class="col-6 col-md-3">
+                                    <div class="text-center">
+                                        <div class="icon-xl bg-info bg-opacity-10 text-info rounded-circle mb-2 mx-auto">
+                                            <i class="fas fa-star fa-2x"></i>
+                                        </div>
+                                        <h6 class="mb-1">New Student</h6>
+                                        <p class="mb-0 small text-muted">Started your journey</p>
                                     </div>
-                                    <h6 class="mb-1">Quick Learner</h6>
-                                    <p class="mb-0 small text-muted">Completed course in record time</p>
                                 </div>
-                            </div>
+                            {% else %}
+                                <div class="col-12">
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-award fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No achievements yet</h5>
+                                        <p class="text-muted">Start learning to unlock achievements!</p>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -272,5 +291,11 @@ Student Dashboard END -->
 </main>
 <!-- **************** MAIN CONTENT END **************** -->
 
+
 {% include 'components/footer.html.twig' %}
+
+{% block javascripts %}
+<script>
+</script>
+{% endblock %}
 {% endblock %}

@@ -6,9 +6,12 @@
 parameters:
     google_youtube_api_key: '%env(GOOGLE_YOUTUBE_API_KEY)%'
     gemini_api_key: '%env(GEMINI_API_KEY)%'
+<<<<<<< HEAD
     google_books_api_key: '%env(GOOGLE_BOOKS_API_KEY)%'
     exchangerate_api_key: '%env(EXCHANGERATE_API_KEY)%'
     huggingface_api_key: '%env(HUGGINGFACE_API_KEY)%'
+=======
+>>>>>>> cf816a260170544787f79412c0c17aa87948a893
 
 services:
     # default configuration for services in *this* file
@@ -39,6 +42,7 @@ services:
         arguments:
             $googleYoutubeApiKey: '%google_youtube_api_key%'
 
+<<<<<<< HEAD
     # Currency Service Configuration
     App\Service\CurrencyService:
         arguments:
@@ -81,3 +85,27 @@ services:
     App\Twig\RecommendationExtension:
         tags:
             - { name: twig.extension }
+=======
+    # Gemini AI Service Configuration
+    App\Service\GeminiAiService:
+        arguments:
+            $apiKey: '%gemini_api_key%'
+
+    # Elasticsearch Finder Services
+    
+    App\Controller\Api\JobAutocompleteController:
+        arguments:
+            $finder: '@fos_elastica.finder.jobs'
+    
+    App\Controller\Api\ProductAutocompleteController:
+        arguments:
+            $finder: '@fos_elastica.finder.products'
+    
+        
+    App\Controller\Api\UniversalAutocompleteController:
+        arguments:
+            $coursesFinder: '@fos_elastica.finder.courses'
+            $jobsFinder: '@fos_elastica.finder.jobs'
+            $productsFinder: '@fos_elastica.finder.products'
+            $usersFinder: '@fos_elastica.finder.users'
+>>>>>>> cf816a260170544787f79412c0c17aa87948a893

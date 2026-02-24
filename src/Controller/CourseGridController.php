@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\Pagination\Pagination;
 
 class CourseGridController extends AbstractController
 {
@@ -25,6 +27,7 @@ class CourseGridController extends AbstractController
         CourseRepository $courseRepository,
         CategoryRepository $categoryRepository,
         EntityManagerInterface $entityManager,
+        PaginatorInterface $paginator,
     ): Response {
         // Get filter parameters
         $search = $request->query->get('search');
@@ -33,6 +36,26 @@ class CourseGridController extends AbstractController
         $levels = $request->query->all('levels');
         $priceType = $request->query->get('price_type');
         $languages = $request->query->all('languages');
+        $categories = $request->query->all('categories', []);
+        $levels = $request->query->all('levels', []);
+        $priceType = $request->query->get('price_type', '');
+        $languages = $request->query->all('languages', []);
+        $page = $request->query->getInt('page', 1);
+
+        // Ensure all filter parameters are arrays
+        $categories = is_array($categories) ? $categories : [];
+        $levels = is_array($levels) ? $levels : [];
+        $languages = is_array($languages) ? $languages : [];
+
+        // Clean up filter parameters - remove empty values and convert to strings
+        $categories = array_filter($categories, fn($cat) => is_string($cat) && $cat !== '');
+        $levels = array_filter($levels, fn($level) => is_string($level) && $level !== '');
+        $languages = array_filter($languages, fn($lang) => is_string($lang) && $lang !== '');
+
+        // Reset array keys to ensure clean indexed arrays
+        $categories = array_values($categories);
+        $levels = array_values($levels);
+        $languages = array_values($languages);
 
         // Build query for courses
         $queryBuilder = $courseRepository->createQueryBuilder('c')
@@ -123,6 +146,12 @@ class CourseGridController extends AbstractController
                     return $b->getCreatedAt() <=> $a->getCreatedAt();
                 });
         }
+        // Use pagination
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $page,
+            9 // 9 courses per page
+        );
 
         // Get filter data
         $categoriesWithCount = $categoryRepository->findCategoriesWithCourseCount();
@@ -130,7 +159,7 @@ class CourseGridController extends AbstractController
         $availableLanguages = $this->getAvailableLanguages($entityManager);
 
         return $this->render('course/course-grid.html.twig', [
-            'courses' => $courses,
+            'pagination' => $pagination,
             'categories' => $categoriesWithCount,
             'levels' => $availableLevels,
             'languages' => $availableLanguages,
@@ -142,6 +171,120 @@ class CourseGridController extends AbstractController
                 'price_type' => $priceType,
                 'languages' => $languages,
             ],
+        ]);
+    }
+
+    /**
+     * AJAX endpoint for filtering courses without page refresh
+     */
+    #[Route('/courses/filter', name: 'app_course_filter')]
+    public function filterCourses(
+        Request $request,
+        CourseRepository $courseRepository,
+        CategoryRepository $categoryRepository,
+        EntityManagerInterface $entityManager,
+        PaginatorInterface $paginator,
+    ): JsonResponse {
+        // Get filter parameters with safe defaults
+        $search = $request->query->get('search', '');
+        $sort = $request->query->get('sort', 'newest');
+        $categories = $request->query->all('categories', []);
+        $levels = $request->query->all('levels', []);
+        $priceType = $request->query->get('price_type', '');
+        $languages = $request->query->all('languages', []);
+        $page = $request->query->getInt('page', 1);
+
+        // Ensure all filter parameters are arrays
+        $categories = is_array($categories) ? $categories : [];
+        $levels = is_array($levels) ? $levels : [];
+        $languages = is_array($languages) ? $languages : [];
+
+        // Clean up filter parameters - remove empty values and convert to strings
+        $categories = array_filter($categories, fn($cat) => is_string($cat) && $cat !== '');
+        $levels = array_filter($levels, fn($level) => is_string($level) && $level !== '');
+        $languages = array_filter($languages, fn($lang) => is_string($lang) && $lang !== '');
+
+        // Reset array keys to ensure clean indexed arrays
+        $categories = array_values($categories);
+        $levels = array_values($levels);
+        $languages = array_values($languages);
+
+        // Build query for courses (same logic as main method)
+        $queryBuilder = $courseRepository->createQueryBuilder('c')
+            ->where('c.status = :status')
+            ->setParameter('status', 'live');
+
+        // Apply search filter
+        if ($search) {
+            $queryBuilder->andWhere('c.title LIKE :search OR c.shortDescription LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        // Apply category filter
+        if (!empty($categories)) {
+            // Since Course has ManyToOne relationship with Category, we need to handle multiple categories differently
+            $orConditions = [];
+            foreach ($categories as $index => $categoryId) {
+                $orConditions[] = "c.category = :category_$index";
+                $queryBuilder->setParameter("category_$index", $categoryId);
+            }
+            $queryBuilder->andWhere('(' . implode(' OR ', $orConditions) . ')');
+        }
+
+        // Apply level filter
+        if (!empty($levels)) {
+            $queryBuilder->andWhere('c.level IN (:levels)')
+                ->setParameter('levels', $levels);
+        }
+
+        // Apply price filter
+        if ('free' === $priceType) {
+            $queryBuilder->andWhere('c.price = :price')
+                ->setParameter('price', 0);
+        } elseif ('paid' === $priceType) {
+            $queryBuilder->andWhere('c.price > :price')
+                ->setParameter('price', 0);
+        }
+
+        // Apply language filter
+        if (!empty($languages)) {
+            $queryBuilder->andWhere('c.language IN (:languages)')
+                ->setParameter('languages', $languages);
+        }
+
+        // Use pagination for filter method
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $page,
+            9 // 9 courses per page
+        );
+
+        // Render the course grid HTML
+        $gridHtml = $this->renderView('course/_course-grid.html.twig', [
+            'pagination' => $pagination,
+            'currentFilters' => [
+                'search' => $search,
+                'sort' => $sort,
+                'categories' => $categories,
+                'levels' => $levels,
+                'price_type' => $priceType,
+                'languages' => $languages,
+            ],
+        ]);
+
+        // Return JSON response with HTML and metadata
+        return new JsonResponse([
+            'success' => true,
+            'html' => $gridHtml,
+            'count' => $pagination->getTotalItemCount(),
+            'filters' => [
+                'search' => $search,
+                'sort' => $sort,
+                'categories' => $categories,
+                'levels' => $levels,
+                'price_type' => $priceType,
+                'languages' => $languages,
+            ]
         ]);
     }
 

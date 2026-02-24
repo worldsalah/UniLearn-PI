@@ -1,0 +1,98 @@
+Service Pricing Calculator,Instructions,Notes
+Basic Information,Enter your service details below,All calculations are automatic
+Service Name,[Your Service Name],Example: Web Design
+Service Category,[Category],Example: Design
+Experience Level,[Beginner/Intermediate/Expert],Affects pricing multiplier
+Target Market,[B2B/B2C/Both],Affects pricing strategy
+
+Cost Analysis,Calculate your monthly costs,Include all business expenses
+Monthly Software Costs,$0,Adobe Creative Cloud, tools, etc.
+Monthly Hardware Costs,$0,Computer depreciation, equipment
+Marketing Costs,$0,Advertising, promotions
+Office/Space Costs,$0,Home office deduction, rent
+Insurance & Legal,$0,Professional insurance, legal fees
+Training & Education,$0,Courses, certifications
+Other Monthly Costs,$0,Utilities, internet, phone
+TOTAL MONTHLY COSTS,=SUM(B8:B13),Your total monthly overhead
+
+Time Investment,Track your time per project,Be realistic about hours
+Hours per Project - Research,0,Client research, planning
+Hours per Project - Execution,0,Main service delivery
+Hours per Project - Revisions,0,Client revisions, changes
+Hours per Project - Communication,0,Meetings, emails, calls
+Hours per Project - Admin,0,Invoicing, project management
+TOTAL HOURS PER PROJECT,=SUM(B18:B22),Total time investment
+
+Pricing Strategy,Different pricing models,Choose what fits your service
+Hourly Rate Calculation,=B14/B23*2.5,Industry standard: 2.5x hourly rate
+Project-Based Price,=B24*B23,Total project price
+Package Pricing - Basic,=B24*B23*0.8,20% discount for simple package
+Package Pricing - Standard,=B24*B23,Standard package price
+Package Pricing - Premium,=B24*B23*1.5,50% premium for full service
+Retainer Monthly,=B24*B23*4,4 projects per month retainer
+
+Market Analysis,Research competitor pricing,Adjust based on market
+Competitor Low Price,$0,Lowest price in market
+Competitor High Price,$0,Highest price in market
+Market Average Price,$0,Average market price
+Your Positioning,[Low/Mid/High],Where you fit in market
+Price Adjustment Factor,=IF(B31="Low",0.9,IF(B31="High",1.2,1)),Adjustment multiplier
+
+Final Pricing,Your recommended prices,Review and adjust as needed
+Recommended Hourly Rate,=B24*B32,Your final hourly rate
+Recommended Project Price,=B25*B32,Your final project price
+Basic Package Price,=B26*B32,Entry-level offering
+Standard Package Price,=B27*B32,Most popular option
+Premium Package Price,=B28*B32,High-end offering
+Monthly Retainer,=B29*B32,Ongoing income option
+
+Profit Analysis,Check your profitability,Maintain healthy margins
+Profit Margin - Hourly,=(B35-B24)/B35,Should be 60%+
+Profit Margin - Project,=(B36-B24*B23)/B36,Should be 50%+
+Monthly Profit @ 4 Projects,=(B36-B24*B23)*4,Monthly net profit
+Annual Profit Projection,=B43*12,Yearly earnings estimate
+Breakeven Projects,=B14/(B36-B24*B23),Projects to cover costs
+
+Package Details,Define what each package includes,Be specific about deliverables
+Basic Package - What's Included,[List deliverables],3-5 core features
+Basic Package - Turnaround,[Time frame],Example: 5-7 business days
+Basic Package - Revisions,[Number],Example: 2 revisions
+Standard Package - What's Included,[List deliverables],Basic + extras
+Standard Package - Turnaround,[Time frame],Example: 3-5 business days
+Standard Package - Revisions,[Number],Example: 3 revisions
+Premium Package - What's Included,[List deliverables],All features
+Premium Package - Turnaround,[Time frame],Example: 1-3 business days
+Premium Package - Revisions,[Number],Example: Unlimited revisions
+
+Value Propositions,Justify your pricing,Communicate value clearly
+ROI Calculator - Client Savings,$0,How much money you save clients
+ROI Calculator - Time Savings,$0,How much time you save clients
+ROI Calculator - Revenue Increase,$0,How much you help clients earn
+Total Client Value,=SUM(B53:B55),Total value delivered
+Value Proposition,=B56/B36,Value-to-price ratio (aim for 3x+)
+
+Pricing Psychology,Apply psychological pricing principles,Increase perceived value
+Charm Pricing - Basic,=INT(B37*0.99),$X.99 pricing
+Charm Pricing - Standard,=INT(B38*0.99),$X.99 pricing
+Charm Pricing - Premium,=INT(B39*0.99),$X.99 pricing
+Anchor Price,=B39*1.5,High anchor for comparison
+Discount Threshold,=B37*0.8,Minimum profitable discount
+Urgency Pricing,=B38*1.1,Limited-time premium
+
+Action Plan,Next steps for implementation,Start earning more
+1. Research Competitors,Market research,Week 1
+2. Test Basic Price,Start with basic package,Week 2
+3. Gather Feedback,Client testimonials,Week 3-4
+4. Adjust Pricing,Refine based on data,Month 2
+5. Launch Packages,Full rollout,Month 3
+6. Review Quarterly,Price optimization,Ongoing
+
+Notes & Tips,Important reminders,Review regularly
+• Review prices quarterly based on demand
+• Increase prices as experience grows
+• Add value before raising prices
+• Track time to ensure profitability
+• Consider seasonal demand fluctuations
+• Build in buffer for scope creep
+• Always get deposits for new clients
+• Have clear scope of work documents

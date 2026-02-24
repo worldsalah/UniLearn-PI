@@ -7,7 +7,6 @@ use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,9 +29,13 @@ class CourseGridController extends AbstractController
         EntityManagerInterface $entityManager,
         PaginatorInterface $paginator,
     ): Response {
-        // Get filter parameters with safe defaults
-        $search = $request->query->get('search', '');
+        // Get filter parameters
+        $search = $request->query->get('search');
         $sort = $request->query->get('sort', 'newest');
+        $categories = $request->query->all('categories');
+        $levels = $request->query->all('levels');
+        $priceType = $request->query->get('price_type');
+        $languages = $request->query->all('languages');
         $categories = $request->query->all('categories', []);
         $levels = $request->query->all('levels', []);
         $priceType = $request->query->get('price_type', '');
@@ -67,13 +70,8 @@ class CourseGridController extends AbstractController
 
         // Apply category filter
         if (!empty($categories)) {
-            // Since Course has ManyToOne relationship with Category, we need to handle multiple categories differently
-            $orConditions = [];
-            foreach ($categories as $index => $categoryId) {
-                $orConditions[] = "c.category = :category_$index";
-                $queryBuilder->setParameter("category_$index", $categoryId);
-            }
-            $queryBuilder->andWhere('(' . implode(' OR ', $orConditions) . ')');
+            $queryBuilder->andWhere('c.category IN (:categories)')
+                ->setParameter('categories', $categories);
         }
 
         // Apply level filter
@@ -97,6 +95,57 @@ class CourseGridController extends AbstractController
                 ->setParameter('languages', $languages);
         }
 
+        // Get all courses before sorting
+        $courses = $queryBuilder->getQuery()->getResult();
+
+        // Debug: Log the number of courses found
+        error_log('Found '.count($courses).' courses with current filters');
+        error_log('Query: '.$queryBuilder->getDQL());
+
+        if (0 === count($courses)) {
+            error_log('No courses found. Filters applied:');
+            error_log('Search: '.($search ?? 'none'));
+            error_log('Categories: '.json_encode($categories ?? []));
+            error_log('Levels: '.json_encode($levels ?? []));
+            error_log('Price type: '.($priceType ?? 'none'));
+            error_log('Languages: '.json_encode($languages ?? []));
+        }
+
+        // Apply sorting
+        switch ($sort) {
+            case 'popular':
+                // Sort by enrollment (placeholder - would need enrollment tracking)
+                usort($courses, function ($a, $b) {
+                    return $b->getCreatedAt() <=> $a->getCreatedAt();
+                });
+                break;
+            case 'newest':
+                usort($courses, function ($a, $b) {
+                    return $b->getCreatedAt() <=> $a->getCreatedAt();
+                });
+                break;
+            case 'rating':
+                // Sort by rating (placeholder - would need rating system)
+                usort($courses, function ($a, $b) {
+                    return $b->getCreatedAt() <=> $a->getCreatedAt();
+                });
+                break;
+            case 'price_low':
+                usort($courses, function ($a, $b) {
+                    return $a->getPrice() <=> $b->getPrice();
+                });
+                break;
+            case 'price_high':
+                usort($courses, function ($a, $b) {
+                    return $b->getPrice() <=> $a->getPrice();
+                });
+                break;
+            default:
+                // Default sorting (newest)
+                usort($courses, function ($a, $b) {
+                    return $b->getCreatedAt() <=> $a->getCreatedAt();
+                });
+        }
         // Use pagination
         $pagination = $paginator->paginate(
             $queryBuilder,

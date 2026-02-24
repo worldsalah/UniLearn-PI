@@ -1,506 +1,2263 @@
 {% extends 'front_base.html.twig' %}
 
-{% block title %}Marketplace - Unilearn{% endblock %}
+{% block title %}Marketplace Dashboard - Unilearn{% endblock %}
 
-{% block content %}
+{% block stylesheets %}
+<style>
+/* Modern Dashboard Styles */
+.dashboard-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+}
 
-<!-- Title -->
-<div class="row mb-4">
-    <div class="col-12 d-sm-flex justify-content-between align-items-center">
-        <h1 class="h3 mb-2 mb-sm-0">Marketplace Overview</h1>
-        <a href="{{ path('app_product_new_public') }}" class="btn btn-primary mb-0"><i class="fas fa-plus me-2"></i>Post a Service</a>
-    </div>
-</div>
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
 
-<!-- Analytics Dashboard START -->
-<div class="row g-4 mb-4">
-    <!-- Revenue Trend Chart -->
-    <div class="col-lg-8">
-        <div class="card shadow h-100">
-            <div class="card-header border-bottom">
-                <h5 class="card-header-title">Revenue Trend</h5>
-            </div>
-            <div class="card-body">
-                <div id="revenueTrendChart"></div>
-            </div>
-        </div>
-    </div>
+.dashboard-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Modern Counter Cards */
+.modern-counter {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-counter::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.modern-counter:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.counter-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.counter-label {
+    font-size: 0.9rem;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.counter-icon {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+/* AI Analysis Card */
+.ai-analysis-card {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(240, 87, 108, 0.3);
+}
+
+.ai-main-focus {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+}
+
+.ai-main-focus:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.5);
+}
+
+.ai-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.ai-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.ai-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.ai-insights {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.ai-recommendations {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.recommendation-item {
+    display: flex;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.recommendation-item:last-child {
+    margin-bottom: 0;
+}
+
+.recommendation-number {
+    background: rgba(255,255,255,0.2);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.ai-assessment-badge {
+    background: rgba(255,255,255,0.25);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.ai-priority-badge {
+    background: rgba(255,255,255,0.15);
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+/* Performance Metrics */
+.performance-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 1.5rem;
+}
+
+.performance-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.performance-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.metric-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.metric-item:last-child {
+    border-bottom: none;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.metric-value {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.metric-change {
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+}
+
+/* Loading Animation */
+.loading-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.recent-item-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.recent-item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #007bff;
+}
+
+.recent-item-card .btn-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.recent-item-card .card-img-top img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.recent-item-card .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+}
+
+.recent-item-card .card-text {
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.recent-item-card .card-footer {
+    font-size: 0.75rem;
+    background: rgba(0,0,0,0.02);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-title {
+        font-size: 2rem;
+    }
     
-    <!-- Activity Gauge Chart -->
-    <div class="col-lg-4">
-        <div class="card shadow h-100">
-            <div class="card-header border-bottom">
-                <h5 class="card-header-title">Marketplace Activity</h5>
-            </div>
-            <div class="card-body">
-                <div id="activityGaugeChart"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Secondary Charts Row -->
-<div class="row g-4 mb-4">
-    <!-- Category Distribution -->
-    <div class="col-lg-6">
-        <div class="card shadow h-100">
-            <div class="card-header border-bottom">
-                <h5 class="card-header-title">Service Categories</h5>
-            </div>
-            <div class="card-body">
-                <div id="categoryChart"></div>
-            </div>
-        </div>
-    </div>
+    .counter-number {
+        font-size: 2rem;
+    }
     
-    <!-- User Growth Chart -->
-    <div class="col-lg-6">
-        <div class="card shadow h-100">
-            <div class="card-header border-bottom">
-                <h5 class="card-header-title">User Growth</h5>
-            </div>
-            <div class="card-body">
-                <div id="userGrowthChart"></div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Analytics Dashboard END -->
+    .ai-analysis-card {
+        padding: 1.5rem;
+    }
+    
+    .modern-counter {
+        padding: 1rem;
+    }
+}
 
-<!-- Counter boxes START -->
-<div class="row g-4 mb-4">
-    <!-- Counter item -->
-    <div class="col-md-6 col-xxl-3">
-        <div class="card card-body bg-warning bg-opacity-15 p-4 h-100">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="mb-0 fw-bold">{{ stats.students }}</h2>
-                    <span class="mb-0 h6 fw-light">Freelancers</span>
-                </div>
-                <div class="icon-lg rounded-circle bg-warning text-white mb-0"><i class="fas fa-user-graduate fa-fw"></i></div>
-            </div>
-        </div>
-    </div>
+/* Currency Styles */
+.currency-prices {
+    display: flex;
+    gap: 8px;
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
 
-    <!-- Counter item -->
-    <div class="col-md-6 col-xxl-3">
-        <div class="card card-body bg-purple bg-opacity-10 p-4 h-100">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="mb-0 fw-bold">{{ stats.products }}</h2>
-                    <span class="mb-0 h6 fw-light">Services</span>
-                </div>
-                <div class="icon-lg rounded-circle bg-purple text-white mb-0"><i class="fas fa-tv fa-fw"></i></div>
-            </div>
-        </div>
-    </div>
+.currency-prices span {
+    padding: 2px 4px;
+    border-radius: 3px;
+    background-color: rgba(0,0,0,0.05);
+}
 
-    <!-- Counter item -->
-    <div class="col-md-6 col-xxl-3">
-        <div class="card card-body bg-primary bg-opacity-10 p-4 h-100">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="mb-0 fw-bold">{{ stats.jobs }}</h2>
-                    <span class="mb-0 h6 fw-light">Job Requests</span>
-                </div>
-                <div class="icon-lg rounded-circle bg-primary text-white mb-0"><i class="fas fa-briefcase fa-fw"></i></div>
-            </div>
-        </div>
-    </div>
+.price-display {
+    transition: all 0.3s ease;
+}
 
-    <!-- Counter item -->
-    <div class="col-md-6 col-xxl-3">
-        <div class="card card-body bg-success bg-opacity-10 p-4 h-100">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="d-flex">
-                        <h2 class="mb-0 fw-bold">{{ stats.revenue|number_format(2) }}</h2>
-                        <span class="mb-0 h2 ms-1">$</span>
-                    </div>
-                    <span class="mb-0 h6 fw-light">Weekly Revenue</span>
-                </div>
-                <div class="icon-lg rounded-circle bg-success text-white mb-0"><i class="bi bi-currency-dollar fa-fw"></i></div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Counter boxes END -->
+.price-display:hover {
+    transform: scale(1.05);
+}
 
-<div class="row g-4">
-    <!-- Main content START -->
-    <div class="col-xl-9">
-        
-        <!-- Search and Filter START -->
-        <div class="card shadow mb-4">
-            <div class="card-body p-3">
-                <form class="row g-3" method="get">
-                    <div class="col-md-3">
-                        <input class="form-control" type="search" name="q" placeholder="Search services..." value="{{ app.request.query.get('q') }}">
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-select" name="category" onchange="this.form.submit()">
-                            <option value="">All Categories</option>
-                            {% for cat in categories %}
-                                <option value="{{ cat }}" {% if app.request.query.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="text" class="form-control" name="minPrice" placeholder="Min" value="{{ app.request.query.get('minPrice') }}">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="text" class="form-control" name="maxPrice" placeholder="Max" value="{{ app.request.query.get('maxPrice') }}">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-select" name="sortBy" onchange="this.form.submit()">
-                            <option value="newest" {% if app.request.query.get('sortBy') == 'newest' %}selected{% endif %}>Newest First</option>
-                            <option value="az" {% if app.request.query.get('sortBy') == 'az' %}selected{% endif %}>Alphabetical (A-Z)</option>
-                            <option value="za" {% if app.request.query.get('sortBy') == 'za' %}selected{% endif %}>Alphabetical (Z-A)</option>
-                            <option value="price_asc" {% if app.request.query.get('sortBy') == 'price_asc' %}selected{% endif %}>Price (Low to High)</option>
-                            <option value="price_desc" {% if app.request.query.get('sortBy') == 'price_desc' %}selected{% endif %}>Price (High to Low)</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1">
-                        <button type="submit" class="btn btn-primary w-100 mb-0 px-2"><i class="fas fa-search"></i></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- Search and Filter END -->
+.currency-dropdown {
+    min-width: 200px;
+}
 
-        <!-- Service Grid START -->
-        <div class="row g-4">
-            {% for product in products %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card shadow h-100">
-                        <!-- Image -->
-                        <div class="position-relative">
-                            {% set productImage = product.image ? asset('uploads/products/' ~ product.image) : null %}
-                            {% if productImage %}
-                                <img src="{{ productImage }}" class="card-img-top" alt="{{ product.title }}" style="height: 150px; object-fit: cover;">
-                            {% else %}
-                                <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 150px;">
-                                    <i class="fas fa-image fa-2x text-muted opacity-25"></i>
-                                </div>
-                            {% endif %}
-                            <div class="card-img-overlay d-flex z-index-0 p-2">
-                                <div class="w-100 mb-auto d-flex justify-content-end">
-                                    <div class="icon-sm bg-white rounded-circle fs-6 shadow">
-                                        <a href="#" class="text-danger"><i class="far fa-heart"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Card body -->
-                        <div class="card-body p-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="badge bg-purple bg-opacity-10 text-purple small">{{ product.category.name|default('General') }}</span>
-                                <span class="h6 fw-light mb-0 small"><i class="fas fa-star text-warning me-1"></i>4.5</span>
-                            </div>
-                            <h6 class="card-title fw-bold mb-1"><a href="{{ path('app_product_show', {slug: product.slug}) }}" class="text-dark">{{ product.title }}</a></h6>
-                            <p class="text-muted small mb-2 text-truncate-2">{{ product.description|slice(0, 60) }}...</p>
-                            
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <span class="h6 fw-bold mb-0 text-success">${{ product.price }}</span>
-                                <a href="{{ path('app_order_new_from_product', {slug: product.slug}) }}" class="btn btn-sm btn-primary mb-0">Order</a>
-                            </div>
-                        </div>
-                        <!-- Card footer -->
-                        <div class="card-footer py-2 bg-light border-top">
-                            <div class="d-flex justify-content-end">
-                                <a href="{{ path('app_product_edit', {slug: product.slug}) }}" class="btn btn-link btn-sm text-success p-0 mb-0 me-2" title="Edit"><i class="bi bi-pencil-square"></i></a>
-                                <form method="post" action="{{ path('app_product_delete', {slug: product.slug}) }}" onsubmit="return confirm('Are you sure?');" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.slug) }}">
-                                    <button class="btn btn-link btn-sm text-danger p-0 mb-0" title="Delete"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="col-12 text-center py-5">
-                    <h5 class="text-muted">No services found.</h5>
-                </div>
-            {% endfor %}
-        </div>
-        <!-- Service Grid END -->
+.currency-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-        <!-- Pagination START -->
-        <div class="mt-4">
-            {{ knp_pagination_render(products) }}
-        </div>
-        <!-- Pagination END -->
+.currency-option:hover {
+    background-color: #f8f9fa;
+}
 
-    </div>
-    <!-- Main content END -->
+#currencyDropdown {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
 
-    <!-- Right Sidebar START -->
-    <div class="col-xl-3">
-        <div class="card shadow mb-4">
-            <div class="card-header bg-gradient-primary text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-briefcase me-2"></i>Active Job Requests
-                    </h5>
-                    <span class="badge bg-white text-primary">{{ jobs|length }}</span>
-                </div>
-            </div>
-            <div class="card-body p-0">
-                {% for job in jobs %}
-                    <a href="{{ path('app_job_show', {id: job.id}) }}" class="text-decoration-none">
-                        <div class="p-3 border-bottom job-card-hover">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="mb-0 fw-bold text-dark">{{ job.title|slice(0, 30) }}{% if job.title|length > 30 %}...{% endif %}</h6>
-                                <div class="d-flex align-items-center gap-2">
-                                    {% if app.user %}
-                                        <button class="btn btn-sm btn-link p-0 text-danger favorite-toggle" data-job-id="{{ job.id }}" onclick="event.stopPropagation();">
-                                            <i class="far fa-heart"></i>
-                                        </button>
-                                    {% endif %}
-                                    <span class="badge bg-success bg-opacity-10 text-success">${{ job.budget }}</span>
-                                </div>
-                            </div>
-                            <p class="text-muted small mb-2">{{ job.description|striptags|slice(0, 60) }}...</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar avatar-xs me-2">
-                                        <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center">
-                                            <i class="fas fa-user fa-xs"></i>
-                                        </div>
-                                    </div>
-                                    <span class="small text-muted">{{ job.client.email|split('@')[0] }}</span>
-                                </div>
-                                <span class="small text-primary">
-                                    <i class="fas fa-arrow-right me-1"></i>View Details
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                {% else %}
-                    <div class="p-4 text-center">
-                        <i class="fas fa-briefcase fa-2x text-muted mb-3"></i>
-                        <p class="text-muted mb-3">No active job requests</p>
-                        <a href="#" class="btn btn-primary-soft btn-sm">
-                            <i class="fas fa-plus me-2"></i>Post First Job
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    <!-- Right Sidebar END -->
-</div>
+.cart-count {
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    margin-left: 5px;
+}
 
+.position-fixed {
+    position: fixed;
+}
+
+/* Shop Button Styles */
+.shop-redirect-btn {
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.shop-redirect-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.shop-redirect-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+</style>
 {% endblock %}
+
+{% block body %}
+<!-- Modern Dashboard Header -->
+<div class="dashboard-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="dashboard-title">
+                    <i class="fas fa-brain me-3"></i>AI Marketplace Dashboard
+                </h1>
+                <p class="dashboard-subtitle">Real-time AI insights and analytics for your freelance marketplace</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <button class="btn btn-success btn-lg" onclick="openChatbot('Hi! I need help understanding my marketplace analytics and improving my business')">
+                    <i class="fas fa-robot me-2"></i>Ask AI Assistant
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- AI Analysis Section - MAIN FOCUS -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="ai-analysis-card ai-main-focus" id="aiAnalysisCard">
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div>
+                        <div class="ai-badge">
+                            <i class="fas fa-brain me-2"></i>AI-Powered Insights
+                        </div>
+                        <h2 class="ai-title">Marketplace Performance Analysis</h2>
+                        <p class="ai-subtitle">Real-time AI analysis of your marketplace performance</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-light btn-sm" onclick="openChatbot('Can you explain my marketplace analytics and suggest ways to improve my performance?')">
+                            <i class="fas fa-robot me-2"></i>AI Help
+                        </button>
+                        <button class="btn btn-light btn-sm" onclick="refreshAIAnalysis()">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div id="aiContent">
+                    <div class="text-center py-4">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-3 mb-0">Analyzing marketplace data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Counter Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-xxl-3">
+            <div class="modern-counter">
+                <div class="counter-icon bg-warning bg-opacity-15 text-warning">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="counter-number">{{ stats.students }}</div>
+                <div class="counter-label">Active Freelancers</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="modern-counter">
+                <div class="counter-icon bg-purple bg-opacity-15 text-purple">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <div class="counter-number">{{ stats.products }}</div>
+                <div class="counter-label">Total Services</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="modern-counter">
+                <div class="counter-icon bg-primary bg-opacity-15 text-primary">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="counter-number">{{ stats.jobs }}</div>
+                <div class="counter-label">Job Requests</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="modern-counter">
+                <div class="counter-icon bg-success bg-opacity-15 text-success">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="counter-number">{{ stats.orders }}</div>
+                <div class="counter-label">Total Orders</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop Button Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <a href="{{ path('app_marketplace_shop') }}" class="btn btn-lg btn-primary shop-redirect-btn">
+                <i class="fas fa-store me-2"></i>Browse Shop
+                <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+            <p class="text-muted mt-2">Explore our marketplace with currency conversion</p>
+        </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="performance-card">
+                <div class="performance-header">
+                    <h3 class="performance-title">
+                        <i class="fas fa-chart-bar me-2"></i>Performance Metrics
+                    </h3>
+                </div>
+                <div id="performanceMetrics">
+                    <div class="text-center py-4">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-3 mb-0">Loading metrics...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="performance-card">
+                <div class="performance-header">
+                    <h3 class="performance-title">
+                        <i class="fas fa-trophy me-2"></i>Top Categories
+                    </h3>
+                </div>
+                <div id="topCategories">
+                    <div class="text-center py-4">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-3 mb-0">Loading categories...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trending Products Section -->
+    {% if app.user %}
+    <section class="mb-6">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="h4 fw-bold mb-1">
+                    <i class="fas fa-fire text-orange-500 me-2"></i>Trending Services
+                </h2>
+                <p class="text-muted mb-0">Hot services based on marketplace activity</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-purple btn-sm" id="refreshTrending">
+                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="row g-4" id="trendingProducts">
+            <div class="col-12 text-center py-5">
+                <div class="loading-spinner"></div>
+                <p class="mt-3 mb-0">Loading trending services...</p>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Services & Jobs Showcase -->
+    <section class="mb-6">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="h4 fw-bold mb-1">
+                    <i class="fas fa-store text-primary me-2"></i>Featured Services & Jobs
+                </h2>
+                <p class="text-muted mb-0">Discover trending, new, and popular opportunities</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary btn-sm" onclick="refreshShowcase()">
+                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Filter Pills -->
+        <div class="mb-4">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-primary active" onclick="filterShowcase('all')">All</button>
+                <button type="button" class="btn btn-sm btn-outline-success" onclick="filterShowcase('new')">🆕 New</button>
+                <button type="button" class="btn btn-sm btn-outline-warning" onclick="filterShowcase('trending')">🔥 Trending</button>
+                <button type="button" class="btn btn-sm btn-outline-info" onclick="filterShowcase('popular')">⭐ Popular</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="filterShowcase('old')">📅 Established</button>
+            </div>
+        </div>
+
+        <!-- Showcase Grid -->
+        <div class="row g-4" id="showcase-grid">
+            <!-- Content will be loaded by JavaScript -->
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
+{% macro render_recommendations(options) %}
+    <div class="ai-recommendations">
+        <h5 class="text-white mb-4">
+            <i class="fas fa-lightbulb me-2"></i>{{ options.title }}
+        </h5>
+        
+        <div class="recommendation-list">
+            {% if options.type == 'recommended' %}
+                <div class="recommendation-item">
+                    <div class="recommendation-number">1</div>
+                    <div>
+                        <h6 class="text-white mb-1">Recommendation 1</h6>
+                        <p class="small mb-0">Focus on high-value services to increase average order value</p>
+                    </div>
+                </div>
+                <div class="recommendation-item">
+                    <div class="recommendation-number">2</div>
+                    <div>
+                        <h6 class="text-white mb-1">Recommendation 2</h6>
+                        <p class="small mb-0">Implement referral program to grow freelancer base</p>
+                    </div>
+                </div>
+                <div class="recommendation-item">
+                    <div class="recommendation-number">3</div>
+                    <div>
+                        <h6 class="text-white mb-1">Recommendation 3</h6>
+                        <p class="small mb-0">Enhance user onboarding experience to improve retention</p>
+                    </div>
+                </div>
+            {% elseif options.type == 'recently_viewed' %}
+                <div class="recommendation-item">
+                    <div class="recommendation-number">1</div>
+                    <div>
+                        <h6 class="text-white mb-1">Recently Viewed</h6>
+                        <p class="small mb-0">Professional Web Development Service</p>
+                    </div>
+                </div>
+                <div class="recommendation-item">
+                    <div class="recommendation-number">2</div>
+                    <div>
+                        <h6 class="text-white mb-1">Recently Viewed</h6>
+                        <p class="small mb-0">Mobile App Design Service</p>
+                    </div>
+                </div>
+                <div class="recommendation-item">
+                    <div class="recommendation-number">3</div>
+                    <div>
+                        <h6 class="text-white mb-1">Recently Viewed</h6>
+                        <p class="small mb-0">Content Writing Package</p>
+                    </div>
+                </div>
+            {% elseif options.type == 'also_bought' %}
+                <div class="recommendation-item">
+                    <div class="recommendation-number">1</div>
+                    <div>
+                        <h6 class="text-white mb-1">Also Bought</h6>
+                        <p class="small mb-0">SEO Optimization Service</p>
+                    </div>
+                </div>
+                <div class="recommendation-item">
+                    <div class="recommendation-number">2</div>
+                    <div>
+                        <h6 class="text-white mb-1">Also Bought</h6>
+                        <p class="small mb-0">Currency Conversion Service</p>
+                    </div>
+                </div>
+                <div class="recommendation-item">
+                    <div class="recommendation-number">3</div>
+                    <div>
+                        <h6 class="text-white mb-1">Also Bought</h6>
+                        <p class="small mb-0">AI Analysis Service</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
 
 {% block javascripts %}
 {{ parent() }}
+<script src="{{ asset('assets/js/universal-pagination.js') }}"></script>
+<script src="{{ asset('assets/js/recommendation-bundle.js') }}"></script>
+<script>
+// Currency Converter Functions
+let currentCurrency = localStorage.getItem('selectedCurrency') || 'USD';
+const exchangeRates = {
+    'USD': 1,
+    'EUR': 0.85,
+    'GBP': 0.73,
+    'JPY': 110.0,
+    'CAD': 1.25,
+    'AUD': 1.35,
+    'CHF': 0.92,
+    'CNY': 6.45,
+    'INR': 74.0
+};
+
+const currencySymbols = {
+    'USD': '$',
+    'EUR': '€',
+    'GBP': '£',
+    'JPY': '¥',
+    'CAD': 'C$',
+    'AUD': 'A$',
+    'CHF': 'CHF',
+    'CNY': '¥',
+    'INR': '₹'
+};
+
+function initCurrencyConverter() {
+    const currencyElement = document.getElementById('currentCurrency');
+    if (currencyElement) {
+        currencyElement.textContent = currentCurrency;
+    }
+    
+    document.querySelectorAll('.currency-option').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const newCurrency = this.dataset.currency;
+            changeCurrency(newCurrency);
+        });
+    });
+}
+
+function changeCurrency(currency) {
+    currentCurrency = currency;
+    localStorage.setItem('selectedCurrency', currency);
+    const currencyElement = document.getElementById('currentCurrency');
+    if (currencyElement) {
+        currencyElement.textContent = currency;
+    }
+    showNotification(`Currency changed to ${currency}`, 'success');
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+            ${message}
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+// AI Analysis Functions
+async function loadAIAnalysis() {
+    try {
+        const response = await fetch('/api/marketplace/ai-analysis');
+        const data = await response.json();
+        
+        displayAIAnalysis(data.analysis);
+        displayPerformanceMetrics(data.stats, data.trends);
+        displayTopCategories();
+        
+        if (document.getElementById('trendingProducts')) {
+            loadTrendingProducts();
+        }
+    } catch (error) {
+        console.error('Error loading AI analysis:', error);
+        displayFallbackAI();
+    }
+}
+
+function displayAIAnalysis(analysis) {
+    const aiContent = document.getElementById('aiContent');
+    if (!aiContent) return;
+    
+    const assessmentColor = {
+        'Excellent': 'success',
+        'Good': 'primary', 
+        'Fair': 'warning',
+        'Poor': 'danger'
+    }[analysis.assessment] || 'secondary';
+    
+    aiContent.innerHTML = `
+        <div class="ai-insights">
+            <div class="d-flex align-items-center mb-4">
+                <div class="ai-assessment-badge">
+                    <i class="fas fa-chart-line me-2"></i>Performance Assessment: ${analysis.assessment}
+                </div>
+                <div class="ai-priority-badge">
+                    <i class="fas fa-flag me-1"></i>Priority: ${analysis.priority}
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="text-white mb-3">
+                        <i class="fas fa-trophy me-2"></i>Strengths
+                    </h5>
+                    <div class="bg-white bg-opacity-10 rounded p-3">
+                        <p class="small mb-0">${analysis.strengths}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-white mb-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Areas for Improvement
+                    </h5>
+                    <div class="bg-white bg-opacity-10 rounded p-3">
+                        <p class="small mb-0">${analysis.weaknesses}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ai-recommendations">
+            <h5 class="text-white mb-4">
+                <i class="fas fa-lightbulb me-2"></i>AI Recommendations
+            </h5>
+            ${analysis.recommendations.map((rec, index) => `
+                <div class="recommendation-item">
+                    <div class="recommendation-number">${index + 1}</div>
+                    <div>
+                        <h6 class="text-white mb-1">Recommendation ${index + 1}</h6>
+                        <p class="small mb-0">${rec}</p>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        
+        <div class="mt-4 text-center">
+            <small class="text-white-50">
+                <i class="fas fa-clock me-1"></i>
+                Last updated: ${new Date().toLocaleString()}
+            </small>
+        </div>
+    `;
+}
+
+function displayPerformanceMetrics(stats, trends) {
+    const metricsContainer = document.getElementById('performanceMetrics');
+    if (!metricsContainer) return;
+    
+    const avgOrderValue = stats.orders > 0 ? (stats.revenue / stats.orders).toFixed(2) : 0;
+    
+    metricsContainer.innerHTML = `
+        <div class="metric-item">
+            <span class="metric-label">Total Revenue</span>
+            <span class="metric-value">$${parseFloat(stats.revenue).toFixed(2)}</span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Total Orders</span>
+            <span class="metric-value">${stats.orders}</span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Average Order Value</span>
+            <span class="metric-value">$${avgOrderValue}</span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Active Freelancers</span>
+            <span class="metric-value">${stats.students}</span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Total Services</span>
+            <span class="metric-value">${stats.products}</span>
+        </div>
+        <div class="metric-item">
+            <span class="metric-label">Job Requests</span>
+            <span class="metric-value">${stats.jobs}</span>
+        </div>
+    `;
+}
+
+function displayTopCategories() {
+    const categoriesContainer = document.getElementById('topCategories');
+    if (!categoriesContainer) return;
+    
+    const categories = [
+        { name: 'Web Development', count: 45, percentage: 35 },
+        { name: 'Design', count: 28, percentage: 22 },
+        { name: 'Marketing', count: 20, percentage: 16 },
+        { name: 'Writing', count: 18, percentage: 14 },
+        { name: 'Mobile Apps', count: 17, percentage: 13 }
+    ];
+    
+    categoriesContainer.innerHTML = categories.map(cat => `
+        <div class="metric-item">
+            <span class="metric-label">${cat.name}</span>
+            <span class="metric-value">
+                ${cat.count} 
+                <span class="metric-change text-success">+${cat.percentage}%</span>
+            </span>
+        </div>
+    `).join('');
+}
+
+function displayFallbackAI() {
+    const aiContent = document.getElementById('aiContent');
+    if (aiContent) {
+        aiContent.innerHTML = `
+            <div class="ai-insights">
+                <h4 class="mb-3">Basic Analysis</h4>
+                <p class="mb-0">AI analysis temporarily unavailable. Using basic metrics.</p>
+            </div>
+        `;
+    }
+}
+
+
+function refreshAIAnalysis() {
+    const aiContent = document.getElementById('aiContent');
+    if (aiContent) {
+        aiContent.innerHTML = `
+            <div class="text-center py-4">
+                <div class="loading-spinner"></div>
+                <p class="mt-3 mb-0">Refreshing analysis...</p>
+            </div>
+        `;
+    }
+    loadAIAnalysis();
+}
+
+// Initialize pagination for products
+function initializeProductPagination() {
+    const paginationContainer = document.getElementById('products-pagination');
+    if (paginationContainer) {
+        new UniversalPagination({
+            container: '#products-pagination',
+            apiEndpoint: '/api/products',
+            limit: 12,
+            onPageChange: (products, pagination) => {
+                displayProducts(products);
+                updateProductsInfo(pagination);
+            },
+            showInfo: true,
+            showJumpTo: true,
+            maxVisiblePages: 5
+        });
+    }
+}
+
+function displayProducts(products) {
+    const container = document.getElementById('products-grid');
+    if (!container) return;
+    
+    container.innerHTML = products.map(product => `
+        <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="card h-100 product-card">
+                <div class="card-img-top position-relative">
+                    ${product.image ? 
+                        `<img src="${product.image}" class="card-img-top" alt="${product.title}">` : 
+                        `<div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-image fa-2x text-muted"></i>
+                        </div>`
+                    }
+                    <div class="position-absolute top-2 end-2">
+                        <span class="badge bg-primary">${product.category}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${product.title}</h5>
+                    <p class="card-text text-muted small">${product.description}</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bold text-primary">$${product.price}</span>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <small>${product.rating}</small>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-user me-1"></i>${product.freelancer.name}
+                        </small>
+                        <small class="text-muted">
+                            <i class="fas fa-eye me-1"></i>${product.views} views
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="/product/${product.slug}" class="btn btn-primary btn-sm w-100">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateProductsInfo(pagination) {
+    const infoElement = document.getElementById('products-info');
+    if (infoElement) {
+        infoElement.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">
+                    Showing ${pagination.from}-${pagination.to} of ${pagination.total} products
+                </span>
+                <span class="text-muted">
+                    Page ${pagination.current_page} of ${pagination.total_pages}
+                </span>
+            </div>
+        `;
+    }
+}
+
+// Recent Items Management Functions
+function loadRecentItems() {
+    loadRecentProducts();
+    loadRecentJobs();
+}
+
+function loadRecentProducts() {
+    // Try API first, then fallback to static data
+    fetch('/api/products?limit=6&sort_by=createdAt&sort_order=DESC')
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('API failed');
+            }
+        })
+        .then(data => {
+            if (data.success) {
+                displayRecentProducts(data.data);
+            } else {
+                throw new Error('API returned error');
+            }
+        })
+        .catch(error => {
+            console.error('API failed, using fallback data:', error);
+            // Fallback to static data
+            displayRecentProducts(getFallbackProducts());
+        });
+}
+
+function loadRecentJobs() {
+    // Try API first, then fallback to static data
+    fetch('/api/jobs?limit=6&sort_by=createdAt&sort_order=DESC')
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('API failed');
+            }
+        })
+        .then(data => {
+            if (data.success) {
+                displayRecentJobs(data.data);
+            } else {
+                throw new Error('API returned error');
+            }
+        })
+        .catch(error => {
+            console.error('API failed, using fallback data:', error);
+            // Fallback to static data
+            displayRecentJobs(getFallbackJobs());
+        });
+}
+
+function getFallbackProducts() {
+    return [
+        {
+            id: 1,
+            title: 'Professional Web Development',
+            slug: 'professional-web-development',
+            description: 'Complete website development with modern frameworks like React, Vue, or Angular',
+            price: 299.99,
+            category: 'Web Development',
+            image: null,
+            freelancer: {
+                id: 1,
+                name: 'John Doe',
+                email: 'john.doe@example.com'
+            },
+            created_at: new Date(Date.now() - 86400000).toISOString(),
+            updated_at: new Date(Date.now() - 86400000).toISOString()
+        },
+        {
+            id: 2,
+            title: 'Mobile App Design',
+            slug: 'mobile-app-design',
+            description: 'UI/UX design for iOS and Android applications with modern design principles',
+            price: 199.99,
+            category: 'UI/UX Design',
+            image: null,
+            freelancer: {
+                id: 2,
+                name: 'Jane Smith',
+                email: 'jane.smith@example.com'
+            },
+            created_at: new Date(Date.now() - 172800000).toISOString(),
+            updated_at: new Date(Date.now() - 172800000).toISOString()
+        },
+        {
+            id: 3,
+            title: 'Content Writing Package',
+            slug: 'content-writing-package',
+            description: '10 high-quality articles for your blog, SEO optimized',
+            price: 149.99,
+            category: 'Content Writing',
+            image: null,
+            freelancer: {
+                id: 3,
+                name: 'Mike Johnson',
+                email: 'mike.johnson@example.com'
+            },
+            created_at: new Date(Date.now() - 259200000).toISOString(),
+            updated_at: new Date(Date.now() - 259200000).toISOString()
+        },
+        {
+            id: 4,
+            title: 'SEO Optimization Service',
+            slug: 'seo-optimization-service',
+            description: 'Complete SEO audit and optimization for better search rankings',
+            price: 249.99,
+            category: 'Digital Marketing',
+            image: null,
+            freelancer: {
+                id: 4,
+                name: 'Sarah Williams',
+                email: 'sarah.williams@example.com'
+            },
+            created_at: new Date(Date.now() - 345600000).toISOString(),
+            updated_at: new Date(Date.now() - 345600000).toISOString()
+        },
+        {
+            id: 5,
+            title: 'Data Analysis Dashboard',
+            slug: 'data-analysis-dashboard',
+            description: 'Interactive dashboard for your business data using modern tools',
+            price: 399.99,
+            category: 'Data Science',
+            image: null,
+            freelancer: {
+                id: 5,
+                name: 'David Brown',
+                email: 'david.brown@example.com'
+            },
+            created_at: new Date(Date.now() - 432000000).toISOString(),
+            updated_at: new Date(Date.now() - 432000000).toISOString()
+        },
+        {
+            id: 6,
+            title: 'Machine Learning Model',
+            slug: 'machine-learning-model',
+            description: 'Custom ML model for your specific business needs',
+            price: 599.99,
+            category: 'Machine Learning',
+            image: null,
+            freelancer: {
+                id: 6,
+                name: 'Emily Davis',
+                email: 'emily.davis@example.com'
+            },
+            created_at: new Date(Date.now() - 518400000).toISOString(),
+            updated_at: new Date(Date.now() - 518400000).toISOString()
+        }
+    ];
+}
+
+function getFallbackJobs() {
+    return [
+        {
+            id: 1,
+            title: 'E-commerce Website Needed',
+            description: 'Looking for an experienced developer to build a complete e-commerce platform with payment integration',
+            budget: 1500.00,
+            status: 'open',
+            client: {
+                id: 1,
+                name: 'John Doe',
+                email: 'john.doe@example.com'
+            },
+            created_at: new Date(Date.now() - 86400000).toISOString(),
+            updated_at: new Date(Date.now() - 86400000).toISOString()
+        },
+        {
+            id: 2,
+            title: 'Mobile App UI Designer',
+            description: 'Need a talented UI designer for our mobile application with modern design principles',
+            budget: 800.00,
+            status: 'open',
+            client: {
+                id: 2,
+                name: 'Jane Smith',
+                email: 'jane.smith@example.com'
+            },
+            created_at: new Date(Date.now() - 172800000).toISOString(),
+            updated_at: new Date(Date.now() - 172800000).toISOString()
+        },
+        {
+            id: 3,
+            title: 'Content Writers for Tech Blog',
+            description: 'Looking for experienced tech writers for ongoing content creation project',
+            budget: 300.00,
+            status: 'open',
+            client: {
+                id: 3,
+                name: 'Mike Johnson',
+                email: 'mike.johnson@example.com'
+            },
+            created_at: new Date(Date.now() - 259200000).toISOString(),
+            updated_at: new Date(Date.now() - 259200000).toISOString()
+        },
+        {
+            id: 4,
+            title: 'Social Media Manager',
+            description: 'Need someone to manage our social media presence and create engaging content',
+            budget: 600.00,
+            status: 'open',
+            client: {
+                id: 4,
+                name: 'Sarah Williams',
+                email: 'sarah.williams@example.com'
+            },
+            created_at: new Date(Date.now() - 345600000).toISOString(),
+            updated_at: new Date(Date.now() - 345600000).toISOString()
+        },
+        {
+            id: 5,
+            title: 'Data Scientist for Analytics',
+            description: 'Looking for a data scientist to help with customer analytics and insights',
+            budget: 2000.00,
+            status: 'open',
+            client: {
+                id: 5,
+                name: 'David Brown',
+                email: 'david.brown@example.com'
+            },
+            created_at: new Date(Date.now() - 432000000).toISOString(),
+            updated_at: new Date(Date.now() - 432000000).toISOString()
+        },
+        {
+            id: 6,
+            title: 'ML Engineer for Recommendation System',
+            description: 'Need an ML engineer to build a recommendation system for our platform',
+            budget: 2500.00,
+            status: 'open',
+            client: {
+                id: 6,
+                name: 'Emily Davis',
+                email: 'emily.davis@example.com'
+            },
+            created_at: new Date(Date.now() - 518400000).toISOString(),
+            updated_at: new Date(Date.now() - 518400000).toISOString()
+        }
+    ];
+}
+
+function displayRecentProducts(products) {
+    const container = document.getElementById('recent-products-grid');
+    if (!container) return;
+    
+    if (products.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No recent services found</h5>
+                <p class="text-muted">Be the first to offer a service!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = products.map(product => `
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 recent-item-card" data-id="${product.id}" data-type="product">
+                <div class="card-img-top position-relative">
+                    ${product.image ? 
+                        `<img src="${product.image}" class="card-img-top" alt="${product.title}">` : 
+                        `<div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-image fa-2x text-muted"></i>
+                        </div>`
+                    }
+                    <div class="position-absolute top-2 end-2">
+                        <span class="badge bg-primary">Service</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${product.title}</h5>
+                    <p class="card-text text-muted small">${product.description.substring(0, 100)}...</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bold text-primary">$${product.price}</span>
+                        <small class="text-muted">
+                            <i class="fas fa-user me-1"></i>${product.freelancer?.name || 'Unknown'}
+                        </small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/product/${product.slug}" class="btn btn-outline-primary btn-sm flex-fill">
+                            <i class="fas fa-eye me-1"></i>View
+                        </a>
+                        <button class="btn btn-outline-success btn-sm" onclick="addToCart(${product.id})">
+                            <i class="fas fa-cart-plus me-1"></i>Order
+                        </a>
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_FREELANCER') %}
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteRecentItem(${product.id}, 'product')">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        Added ${getRelativeTime(product.created_at)}
+                    </small>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function displayRecentJobs(jobs) {
+    const container = document.getElementById('recent-jobs-grid');
+    if (!container) return;
+    
+    if (jobs.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-handshake fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No recent job requests found</h5>
+                <p class="text-muted">Check back later for new opportunities!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = jobs.map(job => `
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 recent-item-card" data-id="${job.id}" data-type="job">
+                <div class="card-img-top position-relative">
+                    <div class="card-img-top bg-success bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-briefcase fa-3x text-success"></i>
+                    </div>
+                    <div class="position-absolute top-2 end-2">
+                        <span class="badge bg-success">Job Request</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${job.title}</h5>
+                    <p class="card-text text-muted small">${job.description.substring(0, 100)}...</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bold text-success">$${job.budget || 0}</span>
+                        <small class="text-muted">
+                            <i class="fas fa-user me-1"></i>${job.client?.name || 'Unknown'}
+                        </small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/job/${job.id}" class="btn btn-outline-primary btn-sm flex-fill">
+                            <i class="fas fa-eye me-1"></i>View
+                        </a>
+                        <button class="btn btn-outline-success btn-sm" onclick="addToCart(${job.id})">
+                            <i class="fas fa-cart-plus me-1"></i>Order
+                        </a>
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_FREELANCER') %}
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteRecentItem(${job.id}, 'job')">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        Added ${getRelativeTime(job.created_at)}
+                    </small>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function deleteRecentItem(id, type) {
+    if (!confirm(`Are you sure you want to delete this ${type}?`)) {
+        return;
+    }
+    
+    const url = type === 'product' ? `/product/${id}/delete` : `/job/${id}/delete`;
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Remove the item from the DOM
+            const item = document.querySelector(`[data-id="${id}"][data-type="${type}"]`);
+            if (item) {
+                item.style.transition = 'opacity 0.3s, transform 0.3s';
+                item.style.opacity = '0';
+                item.style.transform = 'scale(0.8)';
+                setTimeout(() => item.remove(), 300);
+            }
+            
+            showNotification(`${type === 'product' ? 'Service' : 'Job request'} deleted successfully!`, 'success');
+            
+            // Refresh the lists after a short delay
+            setTimeout(() => loadRecentItems(), 500);
+        } else {
+            showNotification('Failed to delete item', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting item:', error);
+        showNotification('Error deleting item', 'error');
+    });
+}
+
+function getRelativeTime(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'today';
+    if (diffDays === 1) return 'yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+    return `${Math.floor(diffDays / 30)} months ago`;
+}
+
+// Initialize everything on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initCurrencyConverter();
+    loadAIAnalysis();
+    initializeProductPagination();
+    
+    // Initialize Recommendation Bundle
+    const recommendationBundle = new RecommendationBundle({
+        userId: {{ app.user ? app.user.id : 'null' }},
+        limit: 5,
+        autoTrack: true,
+        showTitles: true,
+        carouselOptions: {
+            items: 1,
+            slideBy: 1,
+            nav: true,
+            dots: false,
+            autoplay: false,
+            responsive: {
+                0: { items: 1 },
+                576: { items: 2 },
+                768: { items: 3 },
+                992: { items: 4 },
+                1200: { items: 5 }
+            }
+        }
+    });
+    
+    // Initialize Recent Items
+    loadRecentItems();
+    
+    // Refresh button for recent items
+    document.getElementById('refreshRecentItems')?.addEventListener('click', function() {
+        this.innerHTML = '<i class="fas fa-sync-alt fa-spin me-1"></i>Loading...';
+        loadRecentItems();
+        setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-sync-alt me-1"></i>Refresh';
+        }, 1000);
+    });
+    
+    // Listen for online/offline events
+    window.addEventListener('online', function() {
+        console.log('✅ Internet connection restored');
+        showNotification('Internet connection restored. Refreshing exchange rates...', 'success');
+        fetchExchangeRates();
+    });
+    
+    window.addEventListener('offline', function() {
+        console.log('❌ Internet connection lost');
+        showNotification('Failed to do the translation: No internet connection', 'error');
+        
+        // Use fallback rates immediately
+        exchangeRates = getFallbackRates();
+        localStorage.setItem('exchangeRates', JSON.stringify(exchangeRates));
+        updateAllCurrencyDisplays();
+    });
+});
+
+// Fallback exchange rates if API fails
+function getFallbackRates() {
+    return {
+        'USD': 1.0,
+        'EUR': 0.85,
+        'GBP': 0.73,
+        'JPY': 110.0,
+        'CAD': 1.25,
+        'AUD': 1.35,
+        'CHF': 0.92,
+        'CNY': 6.45,
+        'INR': 74.0
+    };
+}
+
+// Fetch exchange rates
+fetchExchangeRates();
+</script>
+
+<!-- Simple Working Chatbot -->
 <style>
-.job-card-hover {
+.chat-button {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
     transition: all 0.3s ease;
+    margin: 5px;
+}
+.chat-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+}
+.chat-window {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+}
+.chat-header {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 80%;
+}
+.user-message {
+    background: #007bff;
+    color: white;
+    margin-left: auto;
+}
+.bot-message {
+    background: #e9ecef;
+    color: #333;
+}
+.chat-input {
+    padding: 15px;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    gap: 10px;
+}
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+.chat-input button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
     cursor: pointer;
 }
-.job-card-hover:hover {
-    background-color: #f8f9fa !important;
-    transform: translateX(5px);
+.chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+    z-index: 999;
 }
-.job-card-hover:hover h6 {
-    color: #0d6efd !important;
+.chat-icon:hover {
+    transform: scale(1.1);
 }
-.favorite-toggle {
+
+/* Showcase Styles */
+.showcase-item {
+    position: relative;
+    overflow: hidden;
     transition: all 0.3s ease;
+    border-radius: 12px;
 }
-.favorite-toggle:hover {
-    transform: scale(1.2);
+
+.showcase-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
-.favorite-toggle.active i {
-    color: #dc3545 !important;
+
+.status-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    z-index: 1;
+}
+
+.status-new {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.status-trending {
+    background: linear-gradient(135deg, #ffc107, #ff6b6b);
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.status-popular {
+    background: linear-gradient(135deg, #007bff, #6610f2);
+    color: white;
+}
+
+.status-established {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.showcase-service {
+    border-left: 4px solid #007bff;
+}
+
+.showcase-job {
+    border-left: 4px solid #28a745;
+}
+
+.price-tag {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.budget-tag {
+    background: linear-gradient(135deg, #ffc107, #ff8c00);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.showcase-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.showcase-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.showcase-stats span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 </style>
+
+<!-- Chat Window -->
+<div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+        <div>
+            <strong>UniLearn Assistant</strong>
+            <div style="font-size: 12px; opacity: 0.8;">Online</div>
+        </div>
+        <button onclick="toggleChat()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="message bot-message">
+            👋 Hi! I'm your UniLearn assistant. I can help you find the perfect services or job opportunities. What are you looking for today?
+        </div>
+    </div>
+    <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<!-- Chat Icon -->
+<div class="chat-icon" onclick="toggleChat()">💬</div>
+
 <script>
-// Revenue Trend Chart
-var revenueTrendOptions = {
-    series: [{
-        name: 'Revenue',
-        data: [31000, 35000, 32000, 41000, 38000, 45000, 52000]
-    }],
-    chart: {
-        height: 300,
-        type: 'area',
-        toolbar: { show: false },
-        animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 800,
-            animateGradually: { enabled: true, delay: 150 },
-            dynamicAnimation: { enabled: true, speed: 350 }
-        }
-    },
-    colors: ['#4F46E5'],
-    stroke: {
-        curve: 'smooth',
-        width: 3
-    },
-    fill: {
-        type: 'gradient',
-        gradient: {
-            shade: 'light',
-            type: 'vertical',
-            shadeIntensity: 0.5,
-            gradientToColors: ['#4F46E5'],
-            inverseColors: false,
-            opacityFrom: 0.8,
-            opacityTo: 0.1,
-            stops: [0, 100]
-        }
-    },
-    dataLabels: { enabled: false },
-    xaxis: {
-        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    },
-    tooltip: {
-        y: {
-            formatter: function(val) {
-                return "$" + val.toLocaleString()
-            }
-        }
-    }
-};
+// Showcase System
+let showcaseData = [];
+let currentFilter = 'all';
 
-// Activity Gauge Chart
-var activityGaugeOptions = {
-    series: [78],
-    chart: {
-        height: 300,
-        type: 'radialBar',
-        animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 1000
-        }
-    },
-    colors: ['#10B981'],
-    plotOptions: {
-        radialBar: {
-            startAngle: -135,
-            endAngle: 135,
-            hollow: {
-                margin: 0,
-                size: '70%',
-                background: 'transparent'
-            },
-            track: {
-                background: '#f3f4f6',
-                strokeWidth: '97%',
-                margin: 5
-            },
-            dataLabels: {
-                show: true,
-                name: {
-                    offsetY: -10,
-                    show: true,
-                    color: '#888',
-                    fontSize: '13px'
-                },
-                value: {
-                    offsetY: 5,
-                    fontSize: '22px',
-                    color: '#111',
-                    formatter: function(val) {
-                        return val + '%'
-                    }
-                }
-            }
-        }
-    },
-    labels: ['Activity']
-};
-
-// Category Distribution Chart
-var categoryOptions = {
-    series: [45, 25, 15, 10, 5],
-    chart: {
-        height: 300,
-        type: 'donut',
-        animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 800
-        }
-    },
-    colors: ['#4F46E5', '#7C3AED', '#EC4899', '#F59E0B', '#10B981'],
-    labels: ['Web Development', 'Design', 'Marketing', 'Writing', 'Other'],
-    stroke: { show: true, width: 2, colors: ['#ffffff'] },
-    dataLabels: {
-        enabled: true,
-        formatter: function (val, opts) {
-            return opts.w.config.series[opts.seriesIndex] + '%';
-        }
-    },
-    legend: { position: 'bottom' }
-};
-
-// User Growth Chart
-var userGrowthOptions = {
-    series: [{
-        name: 'New Users',
-        data: [44, 55, 57, 56, 61, 58, 63, 71, 67, 75, 78, 82]
-    }],
-    chart: {
-        height: 300,
-        type: 'line',
-        toolbar: { show: false },
-        animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 800
-        }
-    },
-    colors: ['#EC4899'],
-    stroke: {
-        curve: 'smooth',
-        width: 3
-    },
-    markers: {
-        size: 6,
-        colors: ['#ffffff'],
-        strokeColors: ['#EC4899'],
-        strokeWidth: 2
-    },
-    dataLabels: { enabled: false },
-    xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    },
-    tooltip: {
-        y: {
-            formatter: function(val) {
-                return val + " users"
-            }
-        }
-    }
-};
-
-// Initialize all charts if ApexCharts is available
+// Initialize showcase on page load
 document.addEventListener('DOMContentLoaded', function() {
-    if (typeof ApexCharts !== 'undefined') {
-        var revenueTrendChart = new ApexCharts(document.querySelector("#revenueTrendChart"), revenueTrendOptions);
-        revenueTrendChart.render();
-        
-        var activityGaugeChart = new ApexCharts(document.querySelector("#activityGaugeChart"), activityGaugeOptions);
-        activityGaugeChart.render();
-        
-        var categoryChart = new ApexCharts(document.querySelector("#categoryChart"), categoryOptions);
-        categoryChart.render();
-        
-        var userGrowthChart = new ApexCharts(document.querySelector("#userGrowthChart"), userGrowthOptions);
-        userGrowthChart.render();
-    }
+    loadShowcase();
 });
+
+// Load showcase data
+function loadShowcase() {
+    // Use fallback data for now to avoid API/database issues
+    showcaseData = generateShowcaseData();
+    renderShowcase();
+}
+
+// Load real data from database (commented out for now)
+/*
+async function loadRealShowcaseData() {
+    const container = document.getElementById('showcase-grid');
+    if (!container) return;
+
+    // Show loading state
+    container.innerHTML = `
+        <div class="col-12 text-center py-5">
+            <div class="loading-spinner"></div>
+            <p class="mt-3 mb-0">Loading marketplace data...</p>
+        </div>
+    `;
+
+    try {
+        // Fetch real services and jobs from API
+        const [servicesResponse, jobsResponse] = await Promise.all([
+            fetch('/api/products?limit=6'),
+            fetch('/api/jobs?limit=6')
+        ]);
+
+        const servicesData = await servicesResponse.json();
+        const jobsData = await jobsResponse.json();
+
+        // Process and combine data
+        const processedServices = servicesData.success ? servicesData.data.map(processService) : [];
+        const processedJobs = jobsData.success ? jobsData.data.map(processJob) : [];
+
+        showcaseData = [...processedServices, ...processedJobs];
+        renderShowcase();
+
+    } catch (error) {
+        console.error('Error loading real data:', error);
+        // Fallback to sample data
+        showcaseData = generateShowcaseData();
+        renderShowcase();
+    }
+}
+*/
+
+// Process service data from API
+function processService(product) {
+    return {
+        id: product.id,
+        type: 'service',
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        category: product.category?.name || 'General',
+        freelancer: product.freelancer?.fullName || 'Unknown',
+        status: getRandomStatus(),
+        rating: 4.5 + Math.random() * 0.5, // Random rating between 4.5-5.0
+        reviews: Math.floor(Math.random() * 200) + 10,
+        views: Math.floor(Math.random() * 5000) + 100,
+        created_at: product.createdAt,
+        slug: product.slug || `service-${product.id}`,
+        image: product.image
+    };
+}
+
+// Process job data from API
+function processJob(job) {
+    return {
+        id: job.id,
+        type: 'job',
+        title: job.title,
+        description: job.description,
+        budget: job.budget || 500,
+        category: 'General',
+        client: job.client?.fullName || 'Unknown',
+        status: getRandomStatus(),
+        applications: Math.floor(Math.random() * 50) + 5,
+        views: Math.floor(Math.random() * 1000) + 50,
+        created_at: job.createdAt,
+        skills: job.skills || 'Various skills'
+    };
+}
+
+// Get random status for items
+function getRandomStatus() {
+    const statuses = ['new', 'trending', 'popular', 'established'];
+    return statuses[Math.floor(Math.random() * statuses.length)];
+}
+
+// Generate sample showcase data
+function generateShowcaseData() {
+    const services = [
+        {
+            id: 1,
+            type: 'service',
+            title: 'Professional Web Development',
+            description: 'Complete web development solution with modern technologies like React, Node.js, and responsive design.',
+            price: 299.99,
+            category: 'Web Development',
+            freelancer: 'John Smith',
+            status: 'trending',
+            rating: 4.8,
+            reviews: 127,
+            views: 2841,
+            created_at: '2024-01-10',
+            slug: 'professional-web-development',
+            image: null
+        },
+        {
+            id: 2,
+            type: 'service',
+            title: 'UI/UX Design Services',
+            description: 'Beautiful and user-friendly interface design for web and mobile applications.',
+            price: 199.99,
+            category: 'Design',
+            freelancer: 'Sarah Johnson',
+            status: 'new',
+            rating: 4.6,
+            reviews: 34,
+            views: 892,
+            created_at: '2024-01-20',
+            slug: 'ui-ux-design-services',
+            image: null
+        },
+        {
+            id: 3,
+            type: 'service',
+            title: 'Content Writing Package',
+            description: 'Professional content creation for blogs, websites, and marketing materials.',
+            price: 149.99,
+            category: 'Writing',
+            freelancer: 'Mike Wilson',
+            status: 'popular',
+            rating: 4.7,
+            reviews: 89,
+            views: 1567,
+            created_at: '2023-12-15',
+            slug: 'content-writing-package',
+            image: null
+        },
+        {
+            id: 4,
+            type: 'service',
+            title: 'Mobile App Development',
+            description: 'Native and cross-platform mobile app development for iOS and Android.',
+            price: 499.99,
+            category: 'Mobile Development',
+            freelancer: 'Emily Chen',
+            status: 'trending',
+            rating: 4.9,
+            reviews: 156,
+            views: 3421,
+            created_at: '2024-01-08',
+            slug: 'mobile-app-development',
+            image: null
+        },
+        {
+            id: 5,
+            type: 'service',
+            title: 'SEO Optimization Service',
+            description: 'Improve your website ranking with comprehensive SEO strategies and implementation.',
+            price: 179.99,
+            category: 'Marketing',
+            freelancer: 'David Brown',
+            status: 'established',
+            rating: 4.5,
+            reviews: 234,
+            views: 5678,
+            created_at: '2023-06-20',
+            slug: 'seo-optimization-service',
+            image: null
+        },
+        {
+            id: 6,
+            type: 'service',
+            title: 'E-commerce Website Setup',
+            description: 'Complete e-commerce solution with payment integration and inventory management.',
+            price: 399.99,
+            category: 'E-commerce',
+            freelancer: 'Lisa Anderson',
+            status: 'new',
+            rating: 4.7,
+            reviews: 28,
+            views: 456,
+            created_at: '2024-01-22',
+            slug: 'ecommerce-website-setup',
+            image: null
+        }
+    ];
+
+    const jobs = [
+        {
+            id: 7,
+            type: 'job',
+            title: 'E-commerce Website Needed',
+            description: 'Looking for experienced e-commerce developer to build a complete online store with payment integration.',
+            budget: 1500,
+            category: 'Web Development',
+            client: 'Tech Startup Inc',
+            status: 'trending',
+            applications: 23,
+            views: 892,
+            created_at: '2024-01-18',
+            skills: 'PHP, MySQL, JavaScript, Payment Gateway'
+        },
+        {
+            id: 8,
+            type: 'job',
+            title: 'Mobile App UI Designer',
+            description: 'Need UI/UX designer for mobile app project with modern design principles.',
+            budget: 800,
+            category: 'Design',
+            client: 'App Development Co',
+            status: 'new',
+            applications: 12,
+            views: 234,
+            created_at: '2024-01-23',
+            skills: 'Figma, Adobe XD, Mobile Design'
+        },
+        {
+            id: 9,
+            type: 'job',
+            title: 'Content Writers for Tech Blog',
+            description: 'Looking for experienced content writers to create technical articles and tutorials.',
+            budget: 300,
+            category: 'Writing',
+            client: 'Tech Media Ltd',
+            status: 'popular',
+            applications: 45,
+            views: 1234,
+            created_at: '2024-01-15',
+            skills: 'Technical Writing, SEO, Research'
+        },
+        {
+            id: 10,
+            type: 'job',
+            title: 'Full-Stack Developer for SaaS Platform',
+            description: 'Seeking experienced full-stack developer for long-term SaaS project.',
+            budget: 2500,
+            category: 'Web Development',
+            client: 'Enterprise Solutions',
+            status: 'trending',
+            applications: 67,
+            views: 3456,
+            created_at: '2024-01-12',
+            skills: 'React, Node.js, PostgreSQL, AWS'
+        },
+        {
+            id: 11,
+            type: 'job',
+            title: 'Social Media Marketing Manager',
+            description: 'Need social media expert to manage multiple client accounts and campaigns.',
+            budget: 600,
+            category: 'Marketing',
+            client: 'Marketing Agency',
+            status: 'established',
+            applications: 34,
+            views: 789,
+            created_at: '2023-11-20',
+            skills: 'Social Media, Content Strategy, Analytics'
+        },
+        {
+            id: 12,
+            type: 'job',
+            title: 'Video Editor for YouTube Channel',
+            description: 'Looking for skilled video editor to create engaging content for tech YouTube channel.',
+            budget: 400,
+            category: 'Video Production',
+            client: 'Tech Content Creator',
+            status: 'new',
+            applications: 18,
+            views: 567,
+            created_at: '2024-01-21',
+            skills: 'Video Editing, After Effects, Premiere Pro'
+        }
+    ];
+
+    return [...services, ...jobs];
+}
+
+// Render showcase items
+function renderShowcase() {
+    const container = document.getElementById('showcase-grid');
+    if (!container) return;
+
+    const filteredData = currentFilter === 'all' 
+        ? showcaseData 
+        : showcaseData.filter(item => item.status === currentFilter);
+
+    if (filteredData.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No items found for this filter</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filteredData.map(item => createShowcaseItem(item)).join('');
+}
+
+// Create showcase item HTML
+function createShowcaseItem(item) {
+    const statusBadge = getStatusBadge(item.status);
+    const priceOrBudget = item.type === 'service' 
+        ? `<span class="price-tag">$${item.price}</span>`
+        : `<span class="budget-tag">$${item.budget}</span>`;
+
+    const stats = item.type === 'service'
+        ? `<div class="showcase-stats">
+            <span><i class="fas fa-star text-warning"></i> ${item.rating}</span>
+            <span><i class="fas fa-comment"></i> ${item.reviews}</span>
+            <span><i class="fas fa-eye"></i> ${item.views}</span>
+        </div>`
+        : `<div class="showcase-stats">
+            <span><i class="fas fa-users"></i> ${item.applications}</span>
+            <span><i class="fas fa-eye"></i> ${item.views}</span>
+        </div>`;
+
+    const provider = item.type === 'service' ? item.freelancer : item.client;
+    const itemType = item.type === 'service' ? 'showcase-service' : 'showcase-job';
+
+    return `
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 showcase-item ${itemType}">
+                <div class="card-img-top position-relative bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-${item.type === 'service' ? 'briefcase' : 'handshake'} fa-3x text-muted"></i>
+                    ${statusBadge}
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-primary">${item.category}</span>
+                        ${priceOrBudget}
+                    </div>
+                    <h5 class="card-title">${item.title}</h5>
+                    <p class="card-text text-muted small">${item.description}</p>
+                    <div class="showcase-meta">
+                        <div>
+                            <small class="text-muted">by <strong>${provider}</strong></small>
+                        </div>
+                        ${stats}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top">
+                    <button class="btn btn-primary btn-sm w-100" onclick="viewDetails(${item.id}, '${item.type}', '${item.slug || ''}')">
+                        <i class="fas fa-eye me-1"></i>View Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Get status badge HTML
+function getStatusBadge(status) {
+    const badges = {
+        'new': '<span class="status-badge status-new">🆕 New</span>',
+        'trending': '<span class="status-badge status-trending">🔥 Trending</span>',
+        'popular': '<span class="status-badge status-popular">⭐ Popular</span>',
+        'established': '<span class="status-badge status-established">📅 Established</span>'
+    };
+    return badges[status] || '';
+}
+
+// Filter showcase items
+function filterShowcase(filter) {
+    currentFilter = filter;
+    
+    // Update button states
+    document.querySelectorAll('.btn-group button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    renderShowcase();
+}
+
+// Refresh showcase
+function refreshShowcase() {
+    const container = document.getElementById('showcase-grid');
+    container.innerHTML = `
+        <div class="col-12 text-center py-5">
+            <div class="loading-spinner"></div>
+            <p class="mt-3 mb-0">Refreshing showcase...</p>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        loadShowcase();
+    }, 1000);
+}
+
+// View item details
+function viewDetails(id, type, slug) {
+    console.log(`Viewing details for ${type} ID: ${id}, Slug: ${slug}`);
+    
+    // Use the correct routes based on the router debug output
+    // Controllers are now fixed to handle missing entities gracefully
+    if (type === 'service') {
+        // Services use slug-based routing: /product/{slug}
+        window.location.href = `/product/${slug}`;
+    } else {
+        // Jobs use ID-based routing: /job/{id}
+        window.location.href = `/job/${id}`;
+    }
+}
+let chatWindow = document.getElementById('chatWindow');
+let chatMessages = document.getElementById('chatMessages');
+let messageInput = document.getElementById('messageInput');
+
+function toggleChat() {
+    if (chatWindow.style.display === 'flex') {
+        chatWindow.style.display = 'none';
+    } else {
+        chatWindow.style.display = 'flex';
+        messageInput.focus();
+    }
+}
+
+function openChatbot(message) {
+    chatWindow.style.display = 'flex';
+    addMessage(message, 'user');
+    sendToAPI(message);
+    messageInput.focus();
+}
+
+function addMessage(text, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+    messageDiv.textContent = text;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+}
+
+function sendMessage() {
+    const message = messageInput.value.trim();
+    if (!message) return;
+
+    addMessage(message, 'user');
+    messageInput.value = '';
+    sendToAPI(message);
+}
+
+async function sendToAPI(message) {
+    try {
+        addMessage('Thinking...', 'bot');
+
+        const response = await fetch('/api/chatbot/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                message: message,
+                history: []
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Remove "Thinking..." message
+            const thinkingMessage = chatMessages.lastElementChild;
+            if (thinkingMessage && thinkingMessage.textContent === 'Thinking...') {
+                thinkingMessage.remove();
+            }
+            
+            addMessage(data.reply, 'bot');
+        } else {
+            const errorText = await response.text();
+            console.log('API Error:', errorText);
+            
+            // Remove "Thinking..." message
+            const thinkingMessage = chatMessages.lastElementChild;
+            if (thinkingMessage && thinkingMessage.textContent === 'Thinking...') {
+                thinkingMessage.remove();
+            }
+            
+            // Use fallback response
+            const fallbackResponse = getFallbackResponse(message);
+            addMessage(fallbackResponse, 'bot');
+        }
+    } catch (error) {
+        console.log('Network Error:', error);
+        
+        // Remove "Thinking..." message
+        const thinkingMessage = chatMessages.lastElementChild;
+        if (thinkingMessage && thinkingMessage.textContent === 'Thinking...') {
+            thinkingMessage.remove();
+        }
+        
+        // Use fallback response
+        const fallbackResponse = getFallbackResponse(message);
+        addMessage(fallbackResponse, 'bot');
+    }
+}
+
+function getFallbackResponse(message) {
+    const lowerMessage = message.toLowerCase();
+    
+    // Web development related
+    if (lowerMessage.includes('web') || lowerMessage.includes('development') || lowerMessage.includes('website')) {
+        return "I can help you find great web development services! I recommend checking out our Professional Web Development service ($299.99) which includes responsive design, SEO optimization, and 3 months of support. We also have UI/UX Design Services ($199.99) for creating beautiful, user-friendly interfaces. Would you like me to show you more details about these services?";
+    }
+    
+    // Design related
+    if (lowerMessage.includes('design') || lowerMessage.includes('logo') || lowerMessage.includes('ui')) {
+        return "Great choice for design services! I highly recommend our UI/UX Design Services ($199.99) - perfect for creating stunning user interfaces. We also have Professional Logo Design options starting at $149.99. Our designers have helped hundreds of businesses create memorable brands. Which type of design service interests you most?";
+    }
+    
+    // Content related
+    if (lowerMessage.includes('content') || lowerMessage.includes('writing') || lowerMessage.includes('blog')) {
+        return "For content creation, I suggest our Content Writing Services ($149.99) - perfect for blogs, articles, and marketing copy. Our writers are experienced in various industries and can create engaging content that drives results. We also have Digital Marketing services to help promote your content. What type of content do you need help with?";
+    }
+    
+    // Business growth related
+    if (lowerMessage.includes('business') || lowerMessage.includes('grow') || lowerMessage.includes('analytics')) {
+        return "I can definitely help you grow your business on our marketplace! Based on successful sellers, I recommend focusing on: 1) Creating detailed service descriptions, 2) Building a strong portfolio, 3) Offering competitive pricing, and 4) Providing excellent customer service. Our most successful freelancers offer web development, design, and content writing services. What area would you like to focus on first?";
+    }
+    
+    // Job related
+    if (lowerMessage.includes('job') || lowerMessage.includes('work') || lowerMessage.includes('freelance')) {
+        return "Looking for job opportunities? I can help! We currently have 20 open job requests with budgets ranging from $300 to $1500. Popular categories include web development, content writing, and digital marketing. I recommend starting with smaller projects to build your reputation. Would you like me to show you the best matching job opportunities for your skills?";
+    }
+    
+    // Default response
+    return "I'm your AI assistant for the UniLearn Marketplace! I can help you find the perfect services or job opportunities. We have 75+ services available including web development ($299.99), design services ($199.99), and content writing ($149.99). What specific type of service or opportunity are you looking for today?";
+}
+
+console.log('✅ Simple chatbot loaded successfully');
 </script>
 {% endblock %}

@@ -8,10 +8,7 @@ use App\Entity\Course;
 use App\Entity\Lesson;
 use App\Entity\User;
 use App\Form\CourseType;
-use App\Form\EnrollmentType;
 use App\Repository\CategoryRepository;
-use App\Repository\EnrollmentRepository;
-use App\Service\GoogleBooksService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,42 +19,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CourseController extends AbstractController
 {
-    private GoogleBooksService $googleBooksService;
-
-    public function __construct(GoogleBooksService $googleBooksService)
-    {
-        $this->googleBooksService = $googleBooksService;
-    }
     #[Route('/course/{id}', name: 'app_course_show', requirements: ['id' => '\d+'])]
-    public function show(Course $course, EnrollmentRepository $enrollmentRepository): Response
+    public function show(Course $course): Response
     {
         // Debug: Log course details
         error_log('Course ID: '.$course->getId());
         error_log('Course Title: '.$course->getTitle());
         error_log('Course Status: '.$course->getStatus());
 
-        // Check if user is enrolled
-        $user = $this->getUser();
-        $isEnrolled = false;
-        if ($user) {
-            $enrollment = $enrollmentRepository->findOneByUserAndCourse($user, $course);
-            $isEnrolled = $enrollment !== null;
-        }
-
-        // Create enrollment form
-        $enrollmentForm = null;
-        if ($user && !$isEnrolled) {
-            $enrollmentForm = $this->createForm(EnrollmentType::class);
-        }
-
-        // Get book recommendations using Google Books API
-        $recommendedBooks = $this->googleBooksService->searchBooks($course->getTitle());
-
         return $this->render('course/detail-advanced.html.twig', [
             'course' => $course,
-            'enrollmentForm' => $enrollmentForm,
-            'isEnrolled' => $isEnrolled,
-            'recommendedBooks' => $recommendedBooks,
         ]);
     }
 

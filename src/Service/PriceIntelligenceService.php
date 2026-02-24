@@ -356,8 +356,8 @@ class PriceIntelligenceService
         $hour = (int) date('H');
         $dayOfWeek = (int) date('w');
 
-        // Weekend pricing boost (Saturday=6, Sunday=0)
-        if ($dayOfWeek === 0 || $dayOfWeek === 6) {
+        // Weekend pricing boost
+        if ($dayOfWeek >= 5 && $dayOfWeek <= 6) {
             return [
                 'type' => 'dynamic_pricing',
                 'priority' => 'low',

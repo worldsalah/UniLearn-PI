@@ -56,6 +56,25 @@
             <!-- Top bar right START -->
             <div class="ms-xl-auto">
                 <ul class="navbar-nav flex-row align-items-center">
+                    <!-- Currency Selector START -->
+                    <li class="nav-item ms-2 ms-md-3 dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="adminCurrencyDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-coins me-1"></i>
+                            <span id="adminCurrentCurrency">USD</span>
+                        </button>
+                        <ul class="dropdown-menu" id="adminCurrencyMenu">
+                            <li><a class="dropdown-item admin-currency-option" href="#" data-currency="USD">🇺🇸 USD - US Dollar</a></li>
+                            <li><a class="dropdown-item admin-currency-option" href="#" data-currency="EUR">🇪🇺 EUR - Euro</a></li>
+                            <li><a class="dropdown-item admin-currency-option" href="#" data-currency="GBP">🇬🇧 GBP - British Pound</a></li>
+                            <li><a class="dropdown-item admin-currency-option" href="#" data-currency="JPY">🇯🇵 JPY - Japanese Yen</a></li>
+                            <li><a class="dropdown-item admin-currency-option" href="#" data-currency="CAD">🇨🇦 CAD - Canadian Dollar</a></li>
+                            <li><a class="dropdown-item admin-currency-option" href="#" data-currency="AUD">🇦🇺 AUD - Australian Dollar</a></li>
+                            <li><a class="dropdown-item admin-currency-option" href="#" data-currency="CHF">🇨🇭 CHF - Swiss Franc</a></li>
+                            <li><a class="dropdown-item admin-currency-option" href="#" data-currency="CNY">🇨🇳 CNY - Chinese Yuan</a></li>
+                            <li><a class="dropdown-item admin-currency-option" href="#" data-currency="INR">🇮🇳 INR - Indian Rupee</a></li>
+                        </ul>
+                    </li>
+                    <!-- Currency Selector END -->
 
                     <!-- Notification dropdown START -->
                     <li class="nav-item ms-2 ms-md-3 dropdown">

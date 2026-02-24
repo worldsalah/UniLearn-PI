@@ -39,7 +39,6 @@ jobs:
         env:
 
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: unilearn_test_test
 
           MYSQL_DATABASE: unilearn_test
 
@@ -106,7 +105,6 @@ jobs:
         echo "APP_ENV=test" >> .env.local
 
         echo "APP_SECRET=test-secret-for-ci" >> .env.local
-        echo "DATABASE_URL=\"mysql://root:root@127.0.0.1:3306/unilearn_test_test?serverVersion=8.0&charset=utf8mb4\"" >> .env.local
 
 
 

@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     google_youtube_api_key: '%env(GOOGLE_YOUTUBE_API_KEY)%'
+    gemini_api_key: '%env(GEMINI_API_KEY)%'
 
 services:
     # default configuration for services in *this* file
@@ -30,38 +31,25 @@ services:
         arguments:
             $googleYoutubeApiKey: '%google_youtube_api_key%'
 
-    # Currency Service Configuration
-    App\Service\CurrencyService:
-        autowire: true
+    # Gemini AI Service Configuration
+    App\Service\GeminiAiService:
+        arguments:
+            $apiKey: '%gemini_api_key%'
 
-    # Twig Extension Configuration
-    App\Twig\CurrencyExtension:
-        tags:
-            - { name: twig.extension }
-
-    # AI Analyst Service Configuration
-    App\Service\AIAnalystService:
-        autowire: true
-
-    # AI Analyst Twig Extension Configuration
-    App\Twig\AIAnalystExtension:
-        tags:
-            - { name: twig.extension }
-
-    # Pagination API Controller Configuration
-    App\Controller\Api\PaginationApiController:
-        autowire: true
-
-    # Pagination Twig Extension Configuration
-    App\Twig\PaginationExtension:
-        tags:
-            - { name: twig.extension }
-
-    # Recommendation API Controller Configuration
-    App\Controller\Api\RecommendationApiController:
-        autowire: true
-
-    # Recommendation Twig Extension Configuration
-    App\Twig\RecommendationExtension:
-        tags:
-            - { name: twig.extension }
+    # Elasticsearch Finder Services
+    
+    App\Controller\Api\JobAutocompleteController:
+        arguments:
+            $finder: '@fos_elastica.finder.jobs'
+    
+    App\Controller\Api\ProductAutocompleteController:
+        arguments:
+            $finder: '@fos_elastica.finder.products'
+    
+        
+    App\Controller\Api\UniversalAutocompleteController:
+        arguments:
+            $coursesFinder: '@fos_elastica.finder.courses'
+            $jobsFinder: '@fos_elastica.finder.jobs'
+            $productsFinder: '@fos_elastica.finder.products'
+            $usersFinder: '@fos_elastica.finder.users'

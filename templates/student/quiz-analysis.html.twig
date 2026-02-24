@@ -1,0 +1,726 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}AI Quiz Performance Analysis{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Student Quiz Analysis START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">{{ user.name|default(user.email) }}</h5>
+                        <p class="mb-2">{{ user.email }}</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="{{ path('app_student_courses') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="{{ path('app_student_certificates') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="{{ path('app_student_ai_roadmap') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-lightbulb me-2"></i>AI Recommendations
+                            </a>
+                            <a href="{{ path('app_student_quiz_analysis') }}" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-brain me-2"></i>AI Quiz Analysis
+                            </a>
+                            <a href="{{ path('app_student_settings') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Welcome header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="mb-1">AI Quiz Performance Analysis</h3>
+                        <p class="mb-0">Advanced insights powered by artificial intelligence</p>
+                    </div>
+                </div>
+                <!-- Welcome header END -->
+
+                <!-- Stats START -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle">
+                                        <i class="fas fa-clipboard-list"></i>
+                                    </div>
+                                </div>
+                                <h4 class="mb-0">{{ analytics.totalQuizzes }}</h4>
+                                <p class="mb-0 small text-muted">Total Quizzes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle">
+                                        <i class="fas fa-percentage"></i>
+                                    </div>
+                                </div>
+                                <h4 class="mb-0">{{ analytics.averageScore }}%</h4>
+                                <p class="mb-0 small text-muted">Average Score</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-circle">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                </div>
+                                <h4 class="mb-0">{{ analytics.bestScore }}%</h4>
+                                <p class="mb-0 small text-muted">Best Score</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card card-hover-shadow border-0 h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="icon-lg bg-info bg-opacity-10 text-info rounded-circle">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                </div>
+                                <h4 class="mb-0">{{ analytics.studyTime }}m</h4>
+                                <p class="mb-0 small text-muted">Study Time</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Stats END -->
+
+                <!-- Performance Charts START -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-8">
+                        <div class="card shadow">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="mb-0">Performance Trend</h5>
+                                    <select class="form-select form-select-sm" id="trendFilter" style="width: auto;">
+                                        <option value="all">All Time</option>
+                                        <option value="30">Last 30 Days</option>
+                                        <option value="7">Last 7 Days</option>
+                                    </select>
+                                </div>
+                                <div style="height: 300px;">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card shadow">
+                            <div class="card-body p-4">
+                                <h5 class="mb-4">Score Distribution</h5>
+                                <div style="height: 300px;">
+                                    <canvas id="distributionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Performance Charts END -->
+
+                <!-- AI Insights START -->
+                {% if aiInsights %}
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">AI Learning Insights</h5>
+                                <p class="mb-0 small text-muted">Advanced Neural Analysis Engine</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="icon-sm bg-success bg-opacity-10 text-success rounded-circle me-3 mt-1">
+                                        <i class="fas fa-arrow-trend-up"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Improvement Rate</h6>
+                                        <p class="mb-0">{{ analytics.improvementRate|default(0) }}%</p>
+                                        <small class="text-muted">Performance improvement over time</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="icon-sm bg-info bg-opacity-10 text-info rounded-circle me-3 mt-1">
+                                        <i class="fas fa-bullseye"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Accuracy Rate</h6>
+                                        <p class="mb-0">{{ analytics.accuracyRate|default(0) }}%</p>
+                                        <small class="text-muted">Overall answer accuracy</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if analytics.recommendations|default([])|length > 0 %}
+                        <div class="mt-4">
+                            <h6 class="mb-3">AI Recommendations</h6>
+                            <div class="list-group list-group-flush">
+                                {% for recommendation in analytics.recommendations|slice(0, 3) %}
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-star text-warning me-2 mt-1"></i>
+                                        <p class="mb-0 small">{{ recommendation }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                <!-- AI Insights END -->
+
+                <!-- Recent Quiz Results START -->
+                {% if quizResults|length > 0 %}
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0">Recent Quiz Performance</h5>
+                            <div class="d-flex gap-2">
+                                <div class="input-group" style="width: 200px;">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" id="quizSearch" placeholder="Search quizzes...">
+                                </div>
+                                <select class="form-select" id="quizSort" style="width: auto;">
+                                    <option value="date">Sort by Date</option>
+                                    <option value="score">Sort by Score</option>
+                                    <option value="title">Sort by Title</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row" id="quizResultsGrid">
+                            {% for result in quizResults|slice(0, 6) %}
+                            <div class="col-md-6 mb-3 quiz-result-card" data-score="{{ result.score }}" data-date="{{ result.takenAt|date('Y-m-d') }}" data-title="{{ result.quiz.title|default('Quiz ' ~ loop.index) }}">
+                                <div class="card border h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title mb-1">{{ result.quiz.title|default('Quiz ' ~ loop.index) }}</h6>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="viewQuizDetails({{ result.id }})">
+                                                        <i class="fas fa-eye me-2"></i>View Details
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="retakeQuiz({{ result.quiz.id }})">
+                                                        <i class="fas fa-redo me-2"></i>Retake Quiz
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted small mb-2">{{ result.quiz.course.title|default('Unknown Course') }}</p>
+                                        <div class="progress mb-2" style="height: 8px;">
+                                            <div class="progress-bar {{ result.score >= 80 ? 'bg-success' : result.score >= 60 ? 'bg-warning' : 'bg-danger' }}" style="width: {{ result.score }}%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="badge {{ result.score >= 80 ? 'bg-success' : result.score >= 60 ? 'bg-warning' : 'bg-danger' }}">
+                                                {{ result.score }}%
+                                            </span>
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>{{ result.takenAt|date('M d, Y') }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if quizResults|length > 6 %}
+                        <div class="text-center mt-4">
+                            <button class="btn btn-outline-primary" id="loadMoreBtn">
+                                <i class="fas fa-plus me-2"></i>Load More Results
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <!-- Empty State START -->
+                <div class="card shadow">
+                    <div class="card-body p-5 text-center">
+                        <i class="fas fa-brain fa-4x text-muted mb-3"></i>
+                        <h4 class="text-muted mb-3">No Quiz Data Yet</h4>
+                        <p class="text-muted mb-4">Start taking quizzes to get AI-powered insights into your learning performance!</p>
+                        <a href="{{ path('app_course_grid') }}" class="btn btn-primary me-2">
+                            <i class="fas fa-play me-2"></i>Start Your First Quiz
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="takeTour()">
+                            <i class="fas fa-question-circle me-2"></i>Take a Tour
+                        </button>
+                    </div>
+                </div>
+                <!-- Empty State END -->
+                {% endif %}
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Student Quiz Analysis END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- AI Recommendations Modal -->
+<div class="modal fade" id="aiRecommendationsModal" tabindex="-1" aria-labelledby="aiRecommendationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aiRecommendationsModalLabel">
+                    <i class="fas fa-lightbulb me-2"></i>AI Learning Recommendations
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="aiRecommendationsForm">
+                    <div class="mb-4">
+                        <label for="learningGoalInput" class="form-label fw-bold">What do you want to learn?</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-target"></i>
+                            </span>
+                            <input type="text" class="form-control form-control-lg" id="learningGoalInput" 
+                                   placeholder="e.g., Web Development, Data Science, Machine Learning, Mobile App Development" 
+                                   required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="currentLevelInput" class="form-label fw-bold">Current Skill Level</label>
+                        <select class="form-select form-select-lg" id="currentLevelInput" required>
+                            <option value="">Select your current level</option>
+                            <option value="beginner">Beginner - Just starting out</option>
+                            <option value="intermediate">Intermediate - Some experience</option>
+                            <option value="advanced">Advanced - Experienced practitioner</option>
+                            <option value="expert">Expert - Professional level</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="timeCommitmentInput" class="form-label fw-bold">Weekly Time Commitment</label>
+                        <select class="form-select form-select-lg" id="timeCommitmentInput" required>
+                            <option value="">Select time availability</option>
+                            <option value="1-2">1-2 hours per week</option>
+                            <option value="3-5">3-5 hours per week</option>
+                            <option value="6-10">6-10 hours per week</option>
+                            <option value="10+">10+ hours per week</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Preferred Learning Style</label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="visualInput" name="learningStyleInput[]" value="visual">
+                                    <label class="form-check-label" for="visualInput">
+                                        <i class="fas fa-eye me-2"></i>Visual (Videos, Diagrams)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="practicalInput" name="learningStyleInput[]" value="practical">
+                                    <label class="form-check-label" for="practicalInput">
+                                        <i class="fas fa-code me-2"></i>Practical (Hands-on, Projects)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="readingInput" name="learningStyleInput[]" value="reading">
+                                    <label class="form-check-label" for="readingInput">
+                                        <i class="fas fa-book-open me-2"></i>Reading (Documentation, Articles)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interactiveInput" name="learningStyleInput[]" value="interactive">
+                                    <label class="form-check-label" for="interactiveInput">
+                                        <i class="fas fa-comments me-2"></i>Interactive (Quizzes, Discussions)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="fas fa-magic me-2"></i>Generate AI Recommendations
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="redirectToRoadmap()">Generate Full Roadmap</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- AI Recommendations Modal END -->
+
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Simple styles for quiz analysis */
+.card-hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.card-hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.quiz-result-card {
+    transition: all 0.3s ease;
+}
+
+.quiz-result-card:hover {
+    transform: translateY(-3px);
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+.icon-lg {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.icon-sm {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+}
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Chart initialization
+function initializeCharts() {
+    // Performance Trend Chart
+    const performanceCtx = document.getElementById('performanceChart');
+    if (performanceCtx && {{ quizData|length > 0 }}) {
+        const quizData = {{ quizData|json_encode|raw }};
+        const labels = quizData.map(item => new Date(item.taken_at).toLocaleDateString());
+        const scores = quizData.map(item => item.percentage);
+        
+        new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Quiz Scores',
+                    data: scores,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#0d6efd',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Score: ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#6c757d'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#6c757d',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Score Distribution Chart
+    const distributionCtx = document.getElementById('distributionChart');
+    if (distributionCtx && {{ quizData|length > 0 }}) {
+        const quizData = {{ quizData|json_encode|raw }};
+        const scores = quizData.map(item => item.percentage);
+        
+        const distribution = {
+            '0-40': 0,
+            '41-60': 0,
+            '61-80': 0,
+            '81-100': 0
+        };
+        
+        scores.forEach(score => {
+            if (score <= 40) distribution['0-40']++;
+            else if (score <= 60) distribution['41-60']++;
+            else if (score <= 80) distribution['61-80']++;
+            else distribution['81-100']++;
+        });
+        
+        new Chart(distributionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(distribution),
+                datasets: [{
+                    data: Object.values(distribution),
+                    backgroundColor: [
+                        '#dc3545',
+                        '#ffc107',
+                        '#0d6efd',
+                        '#198754'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#6c757d',
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        displayColors: true
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Search and filter functionality
+function initializeSearchAndSort() {
+    const searchInput = document.getElementById('quizSearch');
+    const sortSelect = document.getElementById('quizSort');
+    const resultsGrid = document.getElementById('quizResultsGrid');
+    
+    if (!searchInput || !sortSelect || !resultsGrid) return;
+    
+    searchInput.addEventListener('input', filterResults);
+    sortSelect.addEventListener('change', sortResults);
+}
+
+function filterResults() {
+    const searchTerm = document.getElementById('quizSearch').value.toLowerCase();
+    const cards = document.querySelectorAll('.quiz-result-card');
+    
+    cards.forEach(card => {
+        const title = card.getAttribute('data-title').toLowerCase();
+        const isVisible = title.includes(searchTerm);
+        card.style.display = isVisible ? 'block' : 'none';
+    });
+}
+
+function sortResults() {
+    const sortBy = document.getElementById('quizSort').value;
+    const resultsGrid = document.getElementById('quizResultsGrid');
+    const cards = Array.from(resultsGrid.querySelectorAll('.quiz-result-card'));
+    
+    cards.sort((a, b) => {
+        switch(sortBy) {
+            case 'score':
+                return parseFloat(b.getAttribute('data-score')) - parseFloat(a.getAttribute('data-score'));
+            case 'title':
+                return a.getAttribute('data-title').localeCompare(b.getAttribute('data-title'));
+            case 'date':
+            default:
+                return new Date(b.getAttribute('data-date')) - new Date(a.getAttribute('data-date'));
+        }
+    });
+    
+    resultsGrid.innerHTML = '';
+    cards.forEach(card => resultsGrid.appendChild(card));
+}
+
+// Load more functionality
+function initializeLoadMore() {
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (!loadMoreBtn) return;
+    
+    loadMoreBtn.addEventListener('click', function() {
+        // This would typically load more results via AJAX
+        loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+        setTimeout(() => {
+            loadMoreBtn.innerHTML = '<i class="fas fa-check me-2"></i>All Results Loaded';
+            loadMoreBtn.disabled = true;
+        }, 1000);
+    });
+}
+
+// Interactive functions
+function viewQuizDetails(resultId) {
+    console.log('Viewing quiz details for result:', resultId);
+}
+
+function retakeQuiz(quizId) {
+    console.log('Retaking quiz:', quizId);
+}
+
+function takeTour() {
+    console.log('Starting guided tour...');
+}
+
+// AI Recommendations Modal Functions
+function showAiRecommendationsModal() {
+    const modal = new bootstrap.Modal(document.getElementById('aiRecommendationsModal'));
+    modal.show();
+}
+
+function redirectToRoadmap() {
+    // Get form data
+    const learningGoal = document.getElementById('learningGoalInput').value;
+    const currentLevel = document.getElementById('currentLevelInput').value;
+    const timeCommitment = document.getElementById('timeCommitmentInput').value;
+    
+    if (!learningGoal || !currentLevel || !timeCommitment) {
+        alert('Please fill in all fields before generating a roadmap.');
+        return;
+    }
+    
+    // Store preferences and redirect to roadmap page
+    localStorage.setItem('aiLearningGoal', learningGoal);
+    localStorage.setItem('aiCurrentLevel', currentLevel);
+    localStorage.setItem('aiTimeCommitment', timeCommitment);
+    
+    // Close modal and redirect
+    const modal = bootstrap.Modal.getInstance(document.getElementById('aiRecommendationsModal'));
+    modal.hide();
+    
+    // Redirect to roadmap page
+    window.location.href = '/student-ai-roadmap';
+}
+
+// Handle AI Recommendations form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const aiForm = document.getElementById('aiRecommendationsForm');
+    if (aiForm) {
+        aiForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            redirectToRoadmap();
+        });
+    }
+});
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    initializeSearchAndSort();
+    initializeLoadMore();
+});
+</script>
+{% endblock %}

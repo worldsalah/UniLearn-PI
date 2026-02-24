@@ -1,0 +1,286 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}My Certificates - Student Dashboard{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Student Certificates START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">{{ user.name|default(user.email) }}</h5>
+                        <p class="mb-2">{{ user.email }}</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="{{ path('app_student_courses') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="{{ path('app_student_certificates') }}" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="{{ path('app_student_settings') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                            <a href="{{ path('app_student_quiz_analysis') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-brain me-2"></i>AI Quiz Analysis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-1">My Certificates</h3>
+                                <p class="mb-0 text-muted">Download and share your achievement certificates</p>
+                            </div>
+                            <div class="text-end">
+                                <h4 class="mb-0">{{ completedCourses|length }}</h4>
+                                <p class="mb-0 small text-muted">Earned Certificates</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Header END -->
+
+                <!-- Empty State START -->
+                {% if completedCourses|length == 0 %}
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center py-4">
+                            <i class="fas fa-certificate fa-4x text-muted mb-4"></i>
+                            <h4 class="text-muted mb-3">No certificates yet</h4>
+                            <p class="text-muted mb-4">Complete courses to earn your achievement certificates!</p>
+                            <div class="row justify-content-center">
+                                <div class="col-md-8">
+                                    <!-- Progress indicator -->
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted">Your Progress</span>
+                                            <span class="text-muted">0%</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{{ path('app_course_grid') }}" class="btn btn-primary">
+                                <i class="fas fa-graduation-cap me-2"></i>Continue Learning
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Certificates Content START -->
+                <!-- Statistics Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 bg-success bg-opacity-10">
+                            <div class="card-body text-center">
+                                <div class="icon-xl bg-success bg-opacity-10 text-success rounded-circle mx-auto mb-3">
+                                    <i class="fas fa-trophy fa-2x"></i>
+                                </div>
+                                <h4 class="mb-1">{{ completedCount }}</h4>
+                                <p class="mb-0 small text-muted">Completed Courses</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 bg-primary bg-opacity-10">
+                            <div class="card-body text-center">
+                                <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mx-auto mb-3">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                                <h4 class="mb-1">{{ totalHours }}</h4>
+                                <p class="mb-0 small text-muted">Learning Hours</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 bg-warning bg-opacity-10">
+                            <div class="card-body text-center">
+                                <div class="icon-xl bg-warning bg-opacity-10 text-warning rounded-circle mx-auto mb-3">
+                                    <i class="fas fa-star fa-2x"></i>
+                                </div>
+                                <h4 class="mb-1">{{ averageScore }}</h4>
+                                <p class="mb-0 small text-muted">Average Score</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificates Grid -->
+                <div class="row g-4">
+                    {% for enrollment in completedCourses %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-sm certificate-card">
+                                <!-- Certificate Preview -->
+                                <div class="certificate-preview position-relative">
+                                    <div class="bg-gradient-primary text-white p-4 text-center">
+                                        <div class="mb-3">
+                                            <i class="fas fa-certificate fa-3x"></i>
+                                        </div>
+                                        <h6 class="mb-2">Certificate of Completion</h6>
+                                        <p class="small mb-1">This is to certify that</p>
+                                        <h5 class="mb-2">{{ user.name|default(user.email) }}</h5>
+                                        <p class="small mb-1">has successfully completed</p>
+                                        <h6 class="mb-3">{{ enrollment.course.title }}</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small>
+                                                {% if enrollment.completedAt %}
+                                                    {{ enrollment.completedAt|date('M d, Y') }}
+                                                {% else %}
+                                                    Recently
+                                                {% endif %}
+                                            </small>
+                                            <div class="certificate-seal">
+                                                <i class="fas fa-award"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Certificate Actions -->
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge bg-success">Completed</span>
+                                            <small class="text-muted">
+                                                {% if enrollment.course.durationHours %}
+                                                    {{ enrollment.course.durationHours }} hours
+                                                {% else %}
+                                                    Self-paced
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                        <div class="progress mb-2" style="height: 6px;">
+                                            <div class="progress-bar bg-success" style="width: 100%"></div>
+                                        </div>
+                                        <small class="text-muted">100% Complete</small>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ path('app_certificate_preview', {'courseId': enrollment.course.id}) }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                                            <i class="fas fa-eye me-1"></i>Preview Certificate
+                                        </a>
+                                        <a href="{{ path('app_certificate_download', {'courseId': enrollment.course.id}) }}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-download me-1"></i>Download PDF
+                                        </a>
+                                        <button class="btn btn-outline-secondary btn-sm" onclick="shareCertificate({{ enrollment.course.id }})">
+                                            <i class="fas fa-share-alt me-1"></i>Share
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Share Modal -->
+                <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="shareModalLabel">Share Certificate</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary">
+                                        <i class="fab fa-linkedin me-2"></i>Share on LinkedIn
+                                    </button>
+                                    <button class="btn btn-info">
+                                        <i class="fab fa-twitter me-2"></i>Share on Twitter
+                                    </button>
+                                    <button class="btn btn-dark">
+                                        <i class="fas fa-envelope me-2"></i>Share via Email
+                                    </button>
+                                    <button class="btn btn-secondary">
+                                        <i class="fas fa-link me-2"></i>Copy Link
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Certificates Content END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Student Certificates END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<style>
+.certificate-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.certificate-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.certificate-preview {
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.certificate-seal {
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+</style>
+
+<script>
+function shareCertificate(courseId) {
+    // Show share modal
+    const modal = new bootstrap.Modal(document.getElementById('shareModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

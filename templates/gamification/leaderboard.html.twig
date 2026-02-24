@@ -1,0 +1,265 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-crown text-warning me-3"></i>
+                    Classement des Étudiants
+                </h1>
+                <p class="lead text-muted">Découvrez les meilleurs apprenants de notre plateforme</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Votre position -->
+    {% if current_rank %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm bg-primary text-white">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="mb-1">Votre classement</h5>
+                            <p class="mb-0">Vous êtes classé <strong>#{{ current_rank }}</strong> parmi tous les étudiants</p>
+                        </div>
+                        <div class="text-end">
+                            <i class="fas fa-chart-line fa-3x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Filtres -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary active" data-period="week">
+                                    Cette semaine
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" data-period="month">
+                                    Ce mois
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" data-period="all">
+                                    Tous les temps
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-filter me-2"></i>Filtrer par niveau
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Tous les niveaux</a></li>
+                                    <li><a class="dropdown-item" href="#">Beginner</a></li>
+                                    <li><a class="dropdown-item" href="#">Intermediate</a></li>
+                                    <li><a class="dropdown-item" href="#">Advanced</a></li>
+                                    <li><a class="dropdown-item" href="#">Expert</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="leaderboardTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="80">Rang</th>
+                                    <th>Étudiant</th>
+                                    <th>Niveau</th>
+                                    <th>Points XP</th>
+                                    <th>Progression</th>
+                                    <th>Badges</th>
+                                    <th>Inscription</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in leaderboard %}
+                                    <tr class="{% if app.user and entry.user.id == app.user.id %}table-primary{% endif %}">
+                                        <td>
+                                            <div class="text-center">
+                                                {% if loop.index == 1 %}
+                                                    <div class="text-warning">
+                                                        <i class="fas fa-trophy fa-2x mb-1"></i>
+                                                        <div class="fw-bold">#{{ entry.rankPosition }}</div>
+                                                    </div>
+                                                {% elseif loop.index == 2 %}
+                                                    <div class="text-secondary">
+                                                        <i class="fas fa-medal fa-2x mb-1"></i>
+                                                        <div class="fw-bold">#{{ entry.rankPosition }}</div>
+                                                    </div>
+                                                {% elseif loop.index == 3 %}
+                                                    <div class="text-warning" style="color: #cd7f32;">
+                                                        <i class="fas fa-medal fa-2x mb-1"></i>
+                                                        <div class="fw-bold">#{{ entry.rankPosition }}</div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="fw-bold">#{{ entry.rankPosition }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if entry.user.profileImage %}
+                                                    <img src="{{ asset('uploads/profile/' ~ entry.user.profileImage) }}" 
+                                                         class="rounded-circle me-3" 
+                                                         style="width: 48px; height: 48px; object-fit: cover;" 
+                                                         alt="{{ entry.user.fullName }}">
+                                                {% else %}
+                                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-3" 
+                                                         style="width: 48px; height: 48px;">
+                                                        <span class="text-white fw-bold fs-5">{{ entry.user.fullName|first|upper }}</span>
+                                                    </div>
+                                                {% endif %}
+                                                <div>
+                                                    <div class="fw-semibold">{{ entry.user.fullName }}</div>
+                                                    <small class="text-muted">{{ entry.user.email }}</small>
+                                                    {% if app.user and entry.user.id == app.user.id %}
+                                                        <div>
+                                                            <span class="badge bg-primary">Vous</span>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if entry.currentLevel %}
+                                                <span class="badge rounded-pill fs-6" 
+                                                      style="background-color: {{ entry.currentLevel.color }}; color: white;">
+                                                    {% if entry.currentLevel.icon %}
+                                                        <i class="{{ entry.currentLevel.icon }} me-1"></i>
+                                                    {% endif %}
+                                                    {{ entry.currentLevel.name }}
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Beginner</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold text-primary">{{ entry.totalPoints }}</div>
+                                            <small class="text-muted">XP</small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 8px; width: 100px;">
+                                                {% set progress = entry.currentLevel ? ((entry.currentLevelPoints - entry.currentLevel.minXp) / (entry.currentLevel.maxXp - entry.currentLevel.minXp) * 100) : 0 %}
+                                                <div class="progress-bar" 
+                                                     style="width: {{ progress|round(0) }}%; background-color: {{ entry.currentLevel.color|default('#6366f1') }};">
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">{{ progress|round(0) }}%</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-trophy me-1"></i>
+                                                {{ entry.user.userBadges|length }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">{{ entry.user.createdAt|date('M Y') }}</small>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Précédent</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Suivant</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<style>
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    cursor: pointer;
+}
+
+.table-primary {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.btn-group .btn.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des filtres de période
+    const periodButtons = document.querySelectorAll('[data-period]');
+    periodButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            periodButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Ici vous pourriez ajouter une requête AJAX pour recharger les données
+            const period = this.dataset.period;
+            console.log('Période sélectionnée:', period);
+        });
+    });
+
+    // Animation au survol des rangées
+    const tableRows = document.querySelectorAll('#leaderboardTable tbody tr');
+    tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateX(2px)';
+            this.style.transition = 'transform 0.2s ease';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateX(0)';
+        });
+    });
+});
+</script>
+{% endblock %}

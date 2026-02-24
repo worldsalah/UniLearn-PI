@@ -1,0 +1,81 @@
+﻿2026-02-18T17:01:11.9382635Z ##[group]Checking docker version
+2026-02-18T17:01:11.9396283Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+2026-02-18T17:01:12.0391898Z '1.52'
+2026-02-18T17:01:12.0405169Z Docker daemon API version: '1.52'
+2026-02-18T17:01:12.0406028Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+2026-02-18T17:01:12.0599895Z '1.52'
+2026-02-18T17:01:12.0614618Z Docker client API version: '1.52'
+2026-02-18T17:01:12.0620612Z ##[endgroup]
+2026-02-18T17:01:12.0623796Z ##[group]Clean up resources from previous jobs
+2026-02-18T17:01:12.0629632Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=c464e0"
+2026-02-18T17:01:12.0788938Z ##[command]/usr/bin/docker network prune --force --filter "label=c464e0"
+2026-02-18T17:01:12.0924405Z ##[endgroup]
+2026-02-18T17:01:12.0925276Z ##[group]Create local container network
+2026-02-18T17:01:12.0935591Z ##[command]/usr/bin/docker network create --label c464e0 github_network_53ef93041d8742a18e47008fb79280f5
+2026-02-18T17:01:12.1402056Z 73858d0c96454e4f3ddcf62c1e4803897e90c5c14d4bedb8d2e60bda8436a415
+2026-02-18T17:01:12.1424130Z ##[endgroup]
+2026-02-18T17:01:12.1448033Z ##[group]Starting mysql service container
+2026-02-18T17:01:12.1468560Z ##[command]/usr/bin/docker pull mysql:8.0
+2026-02-18T17:01:12.5056014Z 8.0: Pulling from library/mysql
+2026-02-18T17:01:12.7215453Z a9a9deeee02a: Pulling fs layer
+2026-02-18T17:01:12.7218318Z 4f37333d1be6: Pulling fs layer
+2026-02-18T17:01:12.7220192Z e05db5310ebc: Pulling fs layer
+2026-02-18T17:01:12.7221558Z f508d7fab5b3: Pulling fs layer
+2026-02-18T17:01:12.7222613Z bde62e757594: Pulling fs layer
+2026-02-18T17:01:12.7223907Z 23fbf4028535: Pulling fs layer
+2026-02-18T17:01:12.7224864Z d442b2c1726e: Pulling fs layer
+2026-02-18T17:01:12.7226023Z 2e2c1f6f8d57: Pulling fs layer
+2026-02-18T17:01:12.7226802Z bae900376130: Pulling fs layer
+2026-02-18T17:01:12.7227918Z e7a04c019bde: Pulling fs layer
+2026-02-18T17:01:12.7228822Z ce98f3559366: Pulling fs layer
+2026-02-18T17:01:12.8691679Z e7a04c019bde: Download complete
+2026-02-18T17:01:12.8697427Z ce98f3559366: Download complete
+2026-02-18T17:01:12.8716134Z e6e53730409b: Download complete
+2026-02-18T17:01:12.8729976Z e05db5310ebc: Download complete
+2026-02-18T17:01:12.8739147Z a9a9deeee02a: Download complete
+2026-02-18T17:01:12.8745621Z bde62e757594: Download complete
+2026-02-18T17:01:12.8752110Z 23fbf4028535: Download complete
+2026-02-18T17:01:12.9644376Z 8393005deaac: Download complete
+2026-02-18T17:01:12.9653935Z f508d7fab5b3: Download complete
+2026-02-18T17:01:13.0653405Z d442b2c1726e: Download complete
+2026-02-18T17:01:13.3647763Z 4f37333d1be6: Download complete
+2026-02-18T17:01:14.0636731Z bae900376130: Download complete
+2026-02-18T17:01:14.5662490Z bde62e757594: Pull complete
+2026-02-18T17:01:14.5676560Z f508d7fab5b3: Pull complete
+2026-02-18T17:01:14.5687344Z 4f37333d1be6: Pull complete
+2026-02-18T17:01:14.7655139Z a9a9deeee02a: Pull complete
+2026-02-18T17:01:14.7660409Z 23fbf4028535: Pull complete
+2026-02-18T17:01:14.7666924Z d442b2c1726e: Pull complete
+2026-02-18T17:01:15.0650829Z 2e2c1f6f8d57: Download complete
+2026-02-18T17:01:15.6653291Z ce98f3559366: Pull complete
+2026-02-18T17:01:15.6670177Z 2e2c1f6f8d57: Pull complete
+2026-02-18T17:01:20.1491604Z e7a04c019bde: Pull complete
+2026-02-18T17:01:20.1494269Z e05db5310ebc: Pull complete
+2026-02-18T17:01:20.1504877Z bae900376130: Pull complete
+2026-02-18T17:01:20.1507278Z Digest: sha256:99d774bf02a48a1bb1c599920d2571946d31e5940b854b02737d5e95c184358f
+2026-02-18T17:01:20.1508134Z Status: Downloaded newer image for mysql:8.0
+2026-02-18T17:01:20.1514553Z docker.io/library/mysql:8.0
+2026-02-18T17:01:20.1581205Z ##[command]/usr/bin/docker create --name 89811b0ce7d047a98f24f97630fc89d3_mysql80_e5da3a --label c464e0 --network github_network_53ef93041d8742a18e47008fb79280f5 --network-alias mysql -p 3306:3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 -e "MYSQL_ROOT_PASSWORD=root" -e "MYSQL_DATABASE=unilearn_test" -e GITHUB_ACTIONS=true -e CI=true mysql:8.0
+2026-02-18T17:01:23.0522148Z 9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3
+2026-02-18T17:01:23.0545298Z ##[command]/usr/bin/docker start 9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3
+2026-02-18T17:01:23.3582690Z 9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3
+2026-02-18T17:01:23.3604243Z ##[command]/usr/bin/docker ps --all --filter id=9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3 --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+2026-02-18T17:01:23.3865543Z 9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3 Up Less than a second (health: starting)
+2026-02-18T17:01:23.3889763Z ##[command]/usr/bin/docker port 9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3
+2026-02-18T17:01:23.4019468Z 3306/tcp -> 0.0.0.0:3306
+2026-02-18T17:01:23.4037502Z 3306/tcp -> [::]:3306
+2026-02-18T17:01:23.4087067Z ##[endgroup]
+2026-02-18T17:01:23.4099310Z ##[group]Waiting for all services to be ready
+2026-02-18T17:01:23.4118147Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3
+2026-02-18T17:01:23.4250637Z starting
+2026-02-18T17:01:23.4277056Z mysql service is starting, waiting 2 seconds before checking again.
+2026-02-18T17:01:25.4285742Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3
+2026-02-18T17:01:25.4453625Z starting
+2026-02-18T17:01:25.4473886Z mysql service is starting, waiting 3 seconds before checking again.
+2026-02-18T17:01:29.2240272Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3
+2026-02-18T17:01:29.2366049Z starting
+2026-02-18T17:01:29.2380274Z mysql service is starting, waiting 8 seconds before checking again.
+2026-02-18T17:01:38.1710215Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 9d2ca400e822eb2c3e9cf72a0171b74a9e6d7f9ea00b109b73530d031c5be8a3
+2026-02-18T17:01:38.1841647Z healthy
+2026-02-18T17:01:38.1860020Z mysql service is healthy.
+2026-02-18T17:01:38.1860765Z ##[endgroup]

@@ -1,0 +1,185 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Available Quizzes - Unilearn{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Student Quizzes START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/08.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">{{ app.user.name|default(app.user.email) }}</h5>
+                        <p class="mb-2">Student</p>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-bookmark me-2"></i>Bookmarks
+                            </a>
+                            <a href="{{ path('app_student_quizzes') }}" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-question-circle me-2"></i>Available Quizzes
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Page header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-1">Available Quizzes</h3>
+                                <p class="mb-0 text-muted">Test your knowledge with these quizzes</p>
+                            </div>
+                            <div class="text-end">
+                                <h4 class="mb-0 text-primary">{{ quizzes|length }}</h4>
+                                <small class="text-muted">Total Quizzes</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Page header END -->
+
+                <!-- Quizzes list START -->
+                {% if quizzes|length > 0 %}
+                    <div class="row g-4">
+                        {% for quiz in quizzes %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card card-hover-shadow h-100">
+                                <div class="card-body p-4">
+                                    <div class="text-center mb-3">
+                                        <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle mx-auto mb-3">
+                                            <i class="fas fa-question-circle fa-2x"></i>
+                                        </div>
+                                        <h5 class="card-title">{{ quiz.title }}</h5>
+                                        {% set status = quiz.status %}
+                                        {% if status == 'upcoming' %}
+                                            <span class="badge bg-warning mb-2">
+                                                <i class="fas fa-clock me-1"></i>Bientôt disponible
+                                            </span>
+                                        {% elseif status == 'closed' %}
+                                            <span class="badge bg-danger mb-2">
+                                                <i class="fas fa-lock me-1"></i>Fermé
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-success mb-2">
+                                                <i class="fas fa-play me-1"></i>Disponible
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <p class="text-muted small mb-2">
+                                            <i class="fas fa-book me-1"></i>
+                                            {% if quiz.course %}
+                                                {{ quiz.course.title }}
+                                            {% else %}
+                                                Quiz Général
+                                            {% endif %}
+                                        </p>
+                                        <p class="text-muted small mb-2">
+                                            <i class="fas fa-list me-1"></i>
+                                            {{ quiz.questions|length }} Questions
+                                        </p>
+                                        {% if quiz.duration %}
+                                        <p class="text-muted small mb-2">
+                                            <i class="fas fa-hourglass-half me-1"></i>
+                                            Durée: {{ quiz.duration }} secondes
+                                        </p>
+                                        {% endif %}
+                                        {% if quiz.openingDate %}
+                                        <p class="text-muted small mb-2">
+                                            <i class="fas fa-calendar-plus me-1"></i>
+                                            Ouverture: {{ quiz.openingDate|date('d/m/Y H:i') }}
+                                        </p>
+                                        {% endif %}
+                                        {% if quiz.closingDate %}
+                                        <p class="text-muted small mb-2">
+                                            <i class="fas fa-calendar-times me-1"></i>
+                                            Fermeture: {{ quiz.closingDate|date('d/m/Y H:i') }}
+                                        </p>
+                                        {% endif %}
+                                        <p class="text-muted small mb-0">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            Créé: {{ quiz.createdAt|date('d/m/Y') }}
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        {% if status == 'open' %}
+                                            <a href="{{ path('app_student_take_quiz', {'id': quiz.id}) }}" 
+                                               class="btn btn-primary">
+                                                <i class="fas fa-play me-2"></i>Commencer le Quiz
+                                            </a>
+                                        {% elseif status == 'upcoming' %}
+                                            <button class="btn btn-outline-warning" disabled>
+                                                <i class="fas fa-clock me-2"></i>Disponible le {{ quiz.openingDate|date('d/m à H:i') }}
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-outline-danger" disabled>
+                                                <i class="fas fa-lock me-2"></i>Quiz Fermé
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="card shadow">
+                        <div class="card-body text-center p-5">
+                            <div class="icon-xl bg-secondary bg-opacity-10 text-secondary rounded-circle mx-auto mb-3">
+                                <i class="fas fa-inbox fa-2x"></i>
+                            </div>
+                            <h4 class="mb-2">No Quizzes Available</h4>
+                            <p class="text-muted mb-0">There are no quizzes available at the moment. Check back later!</p>
+                        </div>
+                    </div>
+                {% endif %}
+                <!-- Quizzes list END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Student Quizzes END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

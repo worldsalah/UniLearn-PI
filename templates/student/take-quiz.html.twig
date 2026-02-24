@@ -1,0 +1,1746 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ quiz.title }} - Quiz - Unilearn{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Quiz Taking START -->
+<section class="quiz-enhanced pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- Quiz info START -->
+                <div class="quiz-info-card mb-4">
+                    <div class="card-body p-4">
+                        <div class="quiz-header">
+                            <div class="quiz-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h5 class="quiz-title">{{ quiz.title }}</h5>
+                        </div>
+                        <div class="quiz-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-book"></i>
+                                <span>{% if quiz.course %}{{ quiz.course.title }}{% else %}General Quiz{% endif %}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-list"></i>
+                                <span>{{ questions|length }} Questions</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>{% if quiz.duration %}Durée: {{ quiz.duration }}s{% else %}Pas de limite{% endif %}</span>
+                            </div>
+                        </div>
+                        <div class="quiz-progress-container">
+                            <div class="quiz-progress-bar">
+                                <div id="quiz-progress" class="progress-fill"></div>
+                            </div>
+                            <span class="progress-text">Progress: <span id="progress-text">0%</span></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Quiz info END -->
+
+                <!-- Timer START -->
+                {% if quiz.duration %}
+                <div class="timer-card mb-4">
+                    <div class="card-body p-4 text-center">
+                        <div class="timer-header">
+                            <i class="fas fa-hourglass-half"></i>
+                            <h6>Temps Restant</h6>
+                        </div>
+                        <div id="timer-display" class="timer-display">
+                            <span id="timer-minutes">{{ (quiz.duration // 60) }}</span>:<span id="timer-seconds">{{ "%02d"|format(quiz.duration % 60) }}</span>
+                        </div>
+                        <div class="timer-progress">
+                            <div id="timer-progress" class="timer-progress-fill"></div>
+                        </div>
+                        <p class="timer-note">Le quiz sera soumis automatiquement</p>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Timer END -->
+
+                <!-- Question navigation START -->
+                <div class="navigation-card">
+                    <div class="card-body p-4">
+                        <h6 class="nav-title">Navigation</h6>
+                        <div class="question-nav-grid" id="question-nav">
+                            {% for question in questions %}
+                            <button class="nav-btn" data-question="{{ loop.index0 }}">
+                                {{ loop.index }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Question navigation END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Quiz header START -->
+                <div class="quiz-main-card mb-4">
+                    <div class="card-body p-4">
+                        <div class="quiz-main-header">
+                            <div class="quiz-status">
+                                <span class="status-badge active">
+                                    <i class="fas fa-play"></i>
+                                    Quiz en cours
+                                </span>
+                            </div>
+                            <div class="quiz-actions">
+                                <button id="pause-btn" class="action-btn pause">
+                                    <i class="fas fa-pause"></i>
+                                    Pause
+                                </button>
+                                <button id="submit-quiz-btn" class="action-btn submit">
+                                    <i class="fas fa-check"></i>
+                                    Soumettre
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Quiz header END -->
+
+                <!-- Quiz form START -->
+                <form id="quiz-form">
+                    <div id="questions-container">
+                        {% for question in questions %}
+                        <div class="question-card" data-question-id="{{ question.id }}" style="display: {% if loop.first %}block{% else %}none{% endif %};">
+                            <div class="question-content">
+                                <div class="question-header">
+                                    <div class="question-number">
+                                        <span class="number-badge">Question {{ loop.index }}</span>
+                                        <div class="question-progress">
+                                            <div class="question-progress-fill" style="width: {{ (loop.index / questions|length) * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="question-actions">
+                                        <button type="button" class="flag-btn" data-question="{{ loop.index0 }}">
+                                            <i class="fas fa-flag"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="question-text">
+                                    <h4>{{ question.question }}</h4>
+                                </div>
+                                
+                                <div class="options-container">
+                                    <div class="option-group">
+                                        {% set optionLetters = ['A', 'B', 'C', 'D'] %}
+                                        {% for option in [question.optionA, question.optionB, question.optionC, question.optionD] %}
+                                        <div class="option-item" data-option="{{ optionLetters[loop.index0] }}">
+                                            <input type="radio" name="question_{{ question.id }}" value="{{ optionLetters[loop.index0] }}" id="option_{{ question.id }}_{{ optionLetters[loop.index0] }}" class="option-input">
+                                            <label for="option_{{ question.id }}_{{ optionLetters[loop.index0] }}" class="option-label">
+                                                <span class="option-letter">{{ optionLetters[loop.index0] }}</span>
+                                                <span class="option-text">{{ option }}</span>
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Navigation buttons -->
+                    <div class="quiz-navigation">
+                        <button type="button" id="prev-btn" class="nav-btn-prev" disabled>
+                            <i class="fas fa-arrow-left"></i>
+                            Précédent
+                        </button>
+                        <button type="button" id="next-btn" class="nav-btn-next">
+                            Suivant
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button type="button" id="finish-btn" class="nav-btn-finish" style="display: none;">
+                            <i class="fas fa-check-circle"></i>
+                            Terminer
+                        </button>
+                    </div>
+                </form>
+                <!-- Quiz form END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Quiz Taking END -->
+
+<!-- Oiseau animé -->
+<div class="quiz-bird" id="quiz-bird">
+    <div class="bird-body">
+        <div class="bird-eye left">
+            <div class="pupil"></div>
+        </div>
+        <div class="bird-eye right">
+            <div class="pupil"></div>
+        </div>
+        <div class="bird-beak"></div>
+        <div class="bird-wing left"></div>
+        <div class="bird-wing right"></div>
+        <div class="bird-tail"></div>
+        <!-- Bulle de dialogue -->
+        <div class="bird-speech-bubble" id="bird-speech">
+            <div class="speech-text">Salut ! Je suis là pour t'encourager ! 🌟</div>
+            <div class="speech-arrow"></div>
+        </div>
+    </div>
+</div>
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Gamification Assets -->
+{{ importmap('gamification') }}
+
+<style>
+/* Enhanced Quiz Styles */
+.quiz-enhanced {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Quiz Info Card */
+.quiz-info-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+}
+
+.quiz-info-card:hover {
+    transform: translateY(-5px);
+}
+
+.quiz-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quiz-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.quiz-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin: 0;
+}
+
+.quiz-meta {
+    margin-bottom: 20px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.meta-item i {
+    width: 20px;
+    margin-right: 10px;
+    color: #667eea;
+}
+
+.quiz-progress-container {
+    margin-top: 15px;
+}
+
+.quiz-progress-bar {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.progress-text {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Timer Card */
+.timer-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.timer-header {
+    margin-bottom: 15px;
+}
+
+.timer-header i {
+    color: #f39c12;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.timer-header h6 {
+    color: #2c3e50;
+    margin: 0;
+}
+
+.timer-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 15px;
+    font-family: 'Courier New', monospace;
+}
+
+.timer-progress {
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.timer-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f39c12, #e74c3c);
+    border-radius: 10px;
+    transition: width 1s linear;
+    width: 100%;
+}
+
+.timer-note {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Navigation Card */
+.navigation-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.nav-title {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.question-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    gap: 8px;
+}
+
+.nav-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #e9ecef;
+    background: white;
+    border-radius: 10px;
+    color: #6c757d;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+    transform: translateY(-2px);
+}
+
+.nav-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-color: #667eea;
+}
+
+.nav-btn.answered {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+/* Main Quiz Card */
+.quiz-main-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.quiz-main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.action-btn.pause {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.action-btn.submit {
+    background: #d4edda;
+    color: #155724;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Question Card */
+.question-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.question-content {
+    padding: 30px;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.question-number {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.number-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.question-progress {
+    width: 100px;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.question-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 10px;
+}
+
+.flag-btn {
+    background: none;
+    border: 2px solid #e9ecef;
+    color: #6c757d;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.flag-btn:hover {
+    border-color: #f39c12;
+    color: #f39c12;
+}
+
+.flag-btn.flagged {
+    background: #f39c12;
+    color: white;
+    border-color: #f39c12;
+}
+
+.question-text h4 {
+    color: #2c3e50;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+/* Options */
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.option-item {
+    position: relative;
+}
+
+.option-input {
+    position: absolute;
+    opacity: 0;
+}
+
+.option-label {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.option-label:hover {
+    background: #e9ecef;
+    border-color: #667eea;
+    transform: translateX(5px);
+}
+
+.option-input:checked + .option-label {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border-color: #667eea;
+    transform: translateX(10px);
+}
+
+.option-letter {
+    width: 40px;
+    height: 40px;
+    background: #667eea;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.option-text {
+    color: #2c3e50;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+/* Navigation Buttons */
+.quiz-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.nav-btn-prev,
+.nav-btn-next,
+.nav-btn-finish {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-btn-prev {
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+.nav-btn-next {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.nav-btn-finish {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.nav-btn-prev:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.nav-btn-prev:hover:not(:disabled),
+.nav-btn-next:hover,
+.nav-btn-finish:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Oiseau Super Mignon */
+.quiz-bird {
+    position: fixed;
+    top: 100px;
+    right: 50px;
+    z-index: 1000;
+    transition: all 0.1s ease-out;
+}
+
+.bird-body {
+    position: relative;
+    width: 90px;
+    height: 70px;
+    background: linear-gradient(135deg, #ff9ff3, #ff6ec7);
+    border-radius: 50% 50% 45% 45%;
+    box-shadow: 0 8px 20px rgba(255, 110, 199, 0.3);
+}
+
+.bird-eye {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: white;
+    border-radius: 50%;
+    top: 18px;
+    border: 3px solid #333;
+    overflow: hidden;
+}
+
+.bird-eye.left {
+    left: 18px;
+}
+
+.bird-eye.right {
+    right: 18px;
+}
+
+.pupil {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #333;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.1s ease-out;
+}
+
+/* Joues super mignonnes */
+.bird-eye::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    top: 4px;
+    left: 4px;
+}
+
+.bird-eye::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #ff1493;
+    border-radius: 50%;
+    top: 10px;
+    right: 6px;
+}
+
+/* Joues sur le corps */
+.bird-body::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #ff69b4;
+    border-radius: 50%;
+    top: 25px;
+    left: 25px;
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+}
+
+.bird-body::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #ff69b4;
+    border-radius: 50%;
+    top: 25px;
+    right: 25px;
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+}
+
+/* Bec super cute */
+.bird-beak {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 18px solid #ff6b9d;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50% 50% 50% 50%;
+}
+
+/* Ailes plus mignonnes */
+.bird-wing {
+    position: absolute;
+    width: 40px;
+    height: 50px;
+    background: linear-gradient(135deg, #ff9ff3, #ff6ec7);
+    border-radius: 50% 10% 50% 10%;
+    top: 12px;
+    transform-origin: center;
+    animation: wing-flap 2s infinite ease-in-out;
+    box-shadow: 0 4px 10px rgba(255, 110, 199, 0.2);
+}
+
+.bird-wing.left {
+    left: -15px;
+}
+
+.bird-wing.right {
+    right: -15px;
+    animation-delay: 0.1s;
+}
+
+/* Queue plus adorable */
+.bird-tail {
+    position: absolute;
+    width: 35px;
+    height: 25px;
+    background: linear-gradient(135deg, #ff9ff3, #ff6ec7);
+    border-radius: 50% 50% 0 50%;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    box-shadow: 0 4px 10px rgba(255, 110, 199, 0.2);
+}
+
+/* Petites plumes décoratives */
+.bird-tail::before,
+.bird-tail::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 12px;
+    background: linear-gradient(135deg, #ffb3d9, #ff6ec7);
+    border-radius: 50%;
+    bottom: 10px;
+}
+
+.bird-tail::before {
+    left: -8px;
+    transform: rotate(-25deg);
+}
+
+.bird-tail::after {
+    right: -8px;
+    transform: rotate(25deg);
+}
+
+/* Petits cœurs décoratifs */
+.bird-body::before {
+    content: '💕';
+    position: absolute;
+    font-size: 12px;
+    top: 15px;
+    left: 20px;
+    animation: float-heart 2s ease-in-out infinite;
+}
+
+.bird-body::after {
+    content: '💕';
+    position: absolute;
+    font-size: 12px;
+    top: 15px;
+    right: 20px;
+    animation: float-heart 2s ease-in-out infinite 0.5s;
+}
+
+/* Bulle de dialogue super kawaii */
+.bird-speech-bubble {
+    position: absolute;
+    top: -90px;
+    right: 20px;
+    background: linear-gradient(135deg, #fff0f5, #ffe4e6);
+    border-radius: 25px;
+    padding: 18px 22px;
+    box-shadow: 0 8px 25px rgba(255, 182, 193, 0.25);
+    min-width: 240px;
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1001;
+    border: 2px solid #ffb3d9;
+}
+
+.bird-speech-bubble.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.speech-text {
+    font-size: 1rem;
+    color: #d63384;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.4;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.speech-arrow {
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 12px solid #ffe4e6;
+}
+
+/* Expressions super mignonnes */
+.bird-body.happy {
+    animation: cute-bounce 0.8s ease;
+}
+
+.bird-body.excited {
+    animation: cute-wiggle 1s ease;
+}
+
+.bird-body.proud {
+    animation: cute-proud 1.2s ease;
+}
+
+.bird-body.thinking {
+    animation: cute-thinking 1.5s ease infinite;
+}
+
+.bird-body.celebrating {
+    animation: cute-celebrate 2s ease;
+}
+
+.bird-body.sleepy {
+    animation: cute-sleepy 2.5s ease infinite;
+}
+
+.bird-body.love {
+    animation: cute-love 1.3s ease;
+}
+
+.bird-body.wink {
+    animation: cute-wink 1s ease;
+}
+
+/* Animations kawaii */
+@keyframes cute-bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    25% { transform: translateY(-25px) scale(1.15); }
+    50% { transform: translateY(-30px) scale(1.1); }
+    75% { transform: translateY(-20px) scale(1.12); }
+}
+
+@keyframes cute-wiggle {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-20deg) scale(1.1); }
+    50% { transform: rotate(15deg) scale(1.2); }
+    75% { transform: rotate(-12deg) scale(1.05); }
+}
+
+@keyframes cute-proud {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.25); }
+    50% { transform: scale(1.3); }
+    75% { transform: scale(1.15); }
+}
+
+@keyframes cute-thinking {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(12deg); }
+    50% { transform: rotate(-12deg); }
+    75% { transform: rotate(8deg); }
+}
+
+@keyframes cute-celebrate {
+    0% { transform: rotate(0deg) translateY(0) scale(1); }
+    20% { transform: rotate(-25deg) translateY(-20px) scale(1.2); }
+    40% { transform: rotate(30deg) translateY(-30px) scale(1.3); }
+    60% { transform: rotate(-20deg) translateY(-25px) scale(1.25); }
+    80% { transform: rotate(15deg) translateY(-15px) scale(1.1); }
+    100% { transform: rotate(0deg) translateY(0) scale(1); }
+}
+
+@keyframes cute-sleepy {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes cute-love {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.3); }
+    50% { transform: scale(1.2); }
+    75% { transform: scale(1.25); }
+}
+
+@keyframes cute-wink {
+    0%, 100% { transform: scale(1); }
+    25%, 75% { transform: scale(1.1); }
+    50% { transform: scale(0.9); }
+}
+
+@keyframes wing-flap {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-30deg); }
+}
+
+/* Cœurs flottants */
+@keyframes float-heart {
+    0%, 100% { 
+        opacity: 0.6; 
+        transform: translateY(0) scale(1); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: translateY(-5px) scale(1.1); 
+    }
+}
+
+/* Ajout d'expression faciale */
+.bird-eye.winking .pupil {
+    animation: wink-pupil 0.4s ease;
+}
+
+@keyframes wink-pupil {
+    0%, 100% { height: 12px; }
+    50% { height: 3px; }
+}
+
+/* Coeurs flottants pour l'expression love */
+.bird-body.love::before {
+    content: '💖';
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    animation: float-heart-love 1.2s ease infinite;
+}
+
+@keyframes float-heart-love {
+    0%, 100% { opacity: 0; transform: translateY(0) translateX(-50%); }
+    50% { opacity: 1; transform: translateY(-15px) translateX(-50%); }
+}
+
+/* Étoiles scintillantes pour célébration */
+.bird-body.celebrating::after {
+    content: '✨';
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    animation: sparkle 1s ease infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0) translateX(-50%); }
+    50% { opacity: 1; transform: scale(1.2) translateX(-50%); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quiz-bird {
+        top: 50px;
+        right: 20px;
+        transform: scale(0.8);
+    }
+    
+    .question-content {
+        padding: 20px;
+    }
+    
+    .quiz-navigation {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .nav-btn-prev,
+    .nav-btn-next,
+    .nav-btn-finish {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentQuestion = 0;
+    const totalQuestions = {{ questions|length }};
+    const answers = {};
+    let timerInterval;
+    let timeLeft = {{ quiz.duration ?? 0 }};
+    
+    // Oiseau animé qui suit le curseur
+    const bird = document.getElementById('quiz-bird');
+    const birdBody = bird.querySelector('.bird-body');
+    const speechBubble = document.getElementById('bird-speech');
+    const speechText = speechBubble.querySelector('.speech-text');
+    const pupils = document.querySelectorAll('.pupil');
+    
+    // Messages motivationnels de l'oiseau
+    const motivationalMessages = {
+        questionStart: [
+            "Super ! Allons-y ! 💪",
+            "Tu peux le faire ! 🌟",
+            "Concentre-toi bien ! 🎯",
+            "C'est parti ! 🚀",
+            "Brave courage ! 🦁"
+        ],
+        questionProgress: [
+            "Excellent choix ! 👏",
+            "Bien raisonné ! 🤔",
+            "Continue comme ça ! ✨",
+            "Tu es sur la bonne voie ! 🛤️",
+            "J'adore ta logique ! 🧠"
+        ],
+        questionSkip: [
+            "Pas grave ! On continue ! 😊",
+            "La prochaine sera meilleure ! 🌈",
+            "Pas de souci ! 🌸",
+            "On avance ensemble ! 🤝",
+            "Courage ! 🌺"
+        ],
+        quizComplete: [
+            "Bravo ! Tu l'as fait ! 🎉",
+            "Mission accomplie ! 🏆",
+            "Quel champion ! ⭐",
+            "Tu es génial ! 🌟",
+            "Félicitations ! 🎊"
+        ]
+    };
+    
+    // Messages mignons supplémentaires
+    const cuteMessages = {
+        correct: [
+            "Trop bien ! 🌟",
+            "Super réponse ! ✨",
+            "Exactement ! 🎯",
+            "Parfait ! 💫",
+            "Bravo ! 👏"
+        ],
+        wrong: [
+            "Essaie encore ! 🤔",
+            "Pas tout à fait ! 😊",
+            "Réfléchis bien ! 🧐",
+            "Tu y es presque ! 🌈",
+            "Courage ! 💪"
+        ],
+        timeWarning: [
+            "Vite ! Le temps fuit ! ⏰",
+            "Accélère ! 🏃",
+            "Pressé ! ⚡",
+            "Dépêche-toi ! ⏳",
+            "Hâte-toi ! 🏃"
+        ]
+    };
+    
+    // Fonction pour faire parler l'oiseau avec expressions mignonnes
+    function birdSpeak(message, expression = 'happy') {
+        speechText.textContent = message;
+        speechBubble.classList.add('show');
+        birdBody.className = 'bird-body ' + expression;
+        
+        setTimeout(function() {
+            speechBubble.classList.remove('show');
+            birdBody.className = 'bird-body';
+        }, 3000);
+    }
+    
+    // Fonction pour faire cligner l'œil
+    function birdWink() {
+        const leftEye = bird.querySelector('.bird-eye.left');
+        const rightEye = bird.querySelector('.bird-eye.right');
+        
+        leftEye.classList.add('winking');
+        rightEye.classList.add('winking');
+        
+        setTimeout(function() {
+            leftEye.classList.remove('winking');
+            rightEye.classList.remove('winking');
+        }, 300);
+    }
+    
+    // Fonction pour faire dormir l'oiseau
+    function birdSleep() {
+        birdSpeak("Zzz... Je fais une petite sieste 😴", 'sleepy');
+    }
+    
+    // Fonction pour faire l'oiseau tomber amoureux
+    function birdLove() {
+        birdSpeak("Tu es trop génial ! 😍", 'love');
+    }
+    
+    // Message de bienvenue
+    setTimeout(function() {
+        birdSpeak("Salut ! Je suis là pour t'encourager ! 🌟", 'happy');
+    }, 1000);
+    
+    document.addEventListener('mousemove', function(e) {
+        // Position de l'oiseau
+        const birdRect = bird.getBoundingClientRect();
+        const birdCenterX = birdRect.left + birdRect.width / 2;
+        const birdCenterY = birdRect.top + birdRect.height / 2;
+        
+        // Calcul de l'angle pour les yeux
+        const angle = Math.atan2(e.clientY - birdCenterY, e.clientX - birdCenterX);
+        const distance = Math.min(3, Math.hypot(e.clientX - birdCenterX, e.clientY - birdCenterY) / 50);
+        
+        // Mouvement des pupilles
+        pupils.forEach(function(pupil) {
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+            pupil.style.transform = 'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px))';
+        });
+        
+        // Léger mouvement de l'oiseau
+        const moveX = (e.clientX - window.innerWidth / 2) * 0.02;
+        const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
+        bird.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px)';
+    });
+    
+    // Navigation entre questions
+    function showQuestion(index) {
+        const questions = document.querySelectorAll('.question-card');
+        const navBtns = document.querySelectorAll('.nav-btn');
+        
+        questions.forEach(function(q, i) {
+            q.style.display = i === index ? 'block' : 'none';
+        });
+        
+        navBtns.forEach(function(btn, i) {
+            btn.classList.toggle('active', i === index);
+        });
+        
+        updateProgress();
+        updateNavigationButtons();
+        
+        // Message de l'oiseau pour la nouvelle question
+        if (index > 0) {
+            const messages = motivationalMessages.questionProgress;
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            birdSpeak(randomMessage, 'excited');
+        }
+    }
+    
+    function updateProgress() {
+        const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+        document.getElementById('quiz-progress').style.width = progress + '%';
+        document.getElementById('progress-text').textContent = Math.round(progress) + '%';
+    }
+    
+    function updateNavigationButtons() {
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const finishBtn = document.getElementById('finish-btn');
+        
+        prevBtn.disabled = currentQuestion === 0;
+        
+        if (currentQuestion === totalQuestions - 1) {
+            nextBtn.style.display = 'none';
+            finishBtn.style.display = 'flex';
+        } else {
+            nextBtn.style.display = 'flex';
+            finishBtn.style.display = 'none';
+        }
+    }
+    
+    // Gestion des options
+    document.querySelectorAll('.option-input').forEach(function(input) {
+        input.addEventListener('change', function() {
+            const questionId = this.name.split('_')[1];
+            answers[questionId] = this.value;
+            
+            // Mettre à jour la navigation
+            const navBtn = document.querySelector('[data-question="' + currentQuestion + '"]');
+            navBtn.classList.add('answered');
+            
+            // Animation de validation
+            const optionLabel = this.nextElementSibling;
+            optionLabel.style.animation = 'pulse 0.5s ease';
+            setTimeout(function() {
+                optionLabel.style.animation = '';
+            }, 500);
+            
+            // Message de l'oiseau selon la réponse
+            const isCorrect = this.value === this.closest('.option-item').dataset.option;
+            const messages = isCorrect ? cuteMessages.correct : cuteMessages.wrong;
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            const expression = isCorrect ? 'excited' : 'thinking';
+            
+            birdSpeak(randomMessage, expression);
+            
+            // Faire cligner l'oiseau si la réponse est correcte
+            if (isCorrect) {
+                setTimeout(function() {
+                    birdWink();
+                }, 500);
+            }
+        });
+    });
+    
+    // Boutons de navigation
+    document.getElementById('next-btn').addEventListener('click', function() {
+        if (currentQuestion < totalQuestions - 1) {
+            currentQuestion++;
+            showQuestion(currentQuestion);
+        }
+    });
+    
+    document.getElementById('prev-btn').addEventListener('click', function() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            showQuestion(currentQuestion);
+            
+            // Message de l'oiseau pour retour en arrière
+            const messages = motivationalMessages.questionSkip;
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            birdSpeak(randomMessage, 'thinking');
+        }
+    });
+    
+    document.getElementById('finish-btn').addEventListener('click', function() {
+        submitQuiz();
+    });
+    
+    // Navigation par clic sur les boutons de question
+    document.querySelectorAll('.nav-btn').forEach(function(btn, index) {
+        btn.addEventListener('click', function() {
+            if (index !== currentQuestion) {
+                currentQuestion = index;
+                showQuestion(currentQuestion);
+            }
+        });
+    });
+    
+    // Timer
+    {% if quiz.duration %}
+    function startTimer() {
+        timerInterval = setInterval(function() {
+            timeLeft--;
+            
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            document.getElementById('timer-minutes').textContent = minutes;
+            document.getElementById('timer-seconds').textContent = seconds.toString().padStart(2, '0');
+            
+            const progress = (timeLeft / {{ quiz.duration }}) * 100;
+            document.getElementById('timer-progress').style.width = progress + '%';
+            
+            if (timeLeft <= 60) {
+                document.getElementById('timer-display').style.color = '#e74c3c';
+                document.querySelector('.timer-card').style.animation = 'pulse 1s infinite';
+                
+                // Messages d'urgence de l'oiseau
+                const warningMessages = cuteMessages.timeWarning;
+                const randomMessage = warningMessages[Math.floor(Math.random() * warningMessages.length)];
+                birdSpeak(randomMessage, 'excited');
+                
+                // Faire cligner l'oiseau pour montrer l'urgence
+                if (timeLeft === 60) {
+                    setTimeout(function() {
+                        birdWink();
+                    }, 1500);
+                }
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitQuiz();
+            }
+        }, 1000);
+    }
+    
+    startTimer();
+    {% endif %}
+    
+    // Soumission du quiz
+    function submitQuiz() {
+        const submitBtn = document.getElementById('submit-quiz-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Soumission...';
+        
+        // Message de l'oiseau pendant la soumission
+        birdSpeak("Patiente... Je vérifie tes réponses ! 🤔", 'thinking');
+        
+        fetch('/student/quiz/{{ quiz.id }}/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                answers: answers
+            })
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                showResults(data);
+            } else {
+                alert('Error submitting quiz: ' + data.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Soumettre';
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> Soumettre';
+        });
+    }
+    
+    // Affichage des résultats avec messages de l'oiseau
+    function showResults(results) {
+        clearInterval(timerInterval);
+        
+        const container = document.querySelector('.col-lg-9');
+        container.innerHTML = `
+            <div class="results-card">
+                <div class="results-content text-center p-5">
+                    <div class="results-icon ${results.score >= 70 ? 'success' : 'warning'}">
+                        <i class="fas fa-trophy fa-3x"></i>
+                    </div>
+                    <h2 class="results-title">Quiz Terminé!</h2>
+                    <div class="results-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${results.score}%</div>
+                            <div class="stat-label">Votre Score</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${results.correctAnswers}</div>
+                            <div class="stat-label">Réponses Correctes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${results.totalQuestions}</div>
+                            <div class="stat-label">Total Questions</div>
+                        </div>
+                    </div>
+                    <p class="results-message">${results.message}</p>
+                    
+                    <!-- Gamification Section -->
+                    <div class="gamification-results mb-4 p-3 bg-light rounded-3">
+                        <h5 class="mb-3">
+                            <i class="fas fa-trophy text-warning me-2"></i>
+                            Votre Progression
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="badge bg-primary fs-6 mb-2">
+                                        <i class="fas fa-star me-1"></i>
+                                        <span id="xp-earned">+${Math.round(results.score * 0.5)}</span> XP
+                                    </div>
+                                    <small class="text-muted">Points Gagnés</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="badge bg-success fs-6 mb-2">
+                                        <i class="fas fa-chart-line me-1"></i>
+                                        Niveau Supérieur!
+                                    </div>
+                                    <small class="text-muted">Achievement</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="badge bg-warning text-dark fs-6 mb-2">
+                                        <i class="fas fa-medal me-1"></i>
+                                        Nouveau Badge
+                                    </div>
+                                    <small class="text-muted">Récompense</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="badge bg-info fs-6 mb-2">
+                                        <i class="fas fa-fire me-1"></i>
+                                        Series: 3
+                                    </div>
+                                    <small class="text-muted">Jours Actifs</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="results-actions">
+                        <a href="{{ path('app_gamification_profile') }}" class="btn btn-success me-2">
+                            <i class="fas fa-trophy me-2"></i>Voir Mon Profil Gamifié
+                        </a>
+                        <a href="{{ path('app_gamification_leaderboard') }}" class="btn btn-info me-2">
+                            <i class="fas fa-crown me-2"></i>Voir le Classement
+                        </a>
+                        <a href="{{ path('app_student_quizzes') }}" class="btn btn-primary me-2">
+                            <i class="fas fa-list me-2"></i>Voir Plus de Quizzes
+                        </a>
+                        <a href="{{ path('app_student_dashboard') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-home me-2"></i>Retour au Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Messages et expressions de l'oiseau selon le score
+        let birdMessage, birdExpression;
+        
+        if (results.score >= 90) {
+            const messages = [
+                "INCROYABLE ! Tu es un génie ! 🧠✨",
+                "QUEL CHAMPION ! Tu es le meilleur ! 🏆👑",
+                "PERFECTION PURE ! 100% de génie ! 🌟⭐",
+                "TU ES MAGNIFIQUE ! J'en suis bouche bée ! 😮🎉"
+            ];
+            birdMessage = messages[Math.floor(Math.random() * messages.length)];
+            birdExpression = 'celebrating';
+            
+            // Animation spéciale pour les scores parfaits
+            setTimeout(function() {
+                birdWink();
+                setTimeout(function() {
+                    birdLove();
+                }, 500);
+            }, 500);
+        } else if (results.score >= 80) {
+            const messages = [
+                "EXCELLENT ! Tu as brillé ! ✨🌟",
+                "SUPER travail ! Je suis fier de toi ! 🦁💪",
+                "FORMIDABLE ! Tu es incroyable ! 🚀⭐",
+                "BRAVO ! Tu as cartonné ! 🎯🏆"
+            ];
+            birdMessage = messages[Math.floor(Math.random() * messages.length)];
+            birdExpression = 'excited';
+            
+            // Animation spéciale pour les très bons scores
+            setTimeout(function() {
+                birdWink();
+                setTimeout(function() {
+                    birdSpeak("Tu es incroyable ! 😍", 'love');
+                }, 1000);
+            }, 500);
+        } else if (results.score >= 70) {
+            const messages = [
+                "BIEN JOUÉ ! Tu l'as eu ! 👏🎉",
+                "SUPER ! Mission accomplie ! 🌟✨",
+                "BRAVO ! C'est réussi ! 🎊👏",
+                "GÉNIAL ! Tu es trop fort ! 💪⭐"
+            ];
+            birdMessage = messages[Math.floor(Math.random() * messages.length)];
+            birdExpression = 'happy';
+            
+            // Animation spéciale pour les bons scores
+            setTimeout(function() {
+                birdWink();
+            }, 500);
+        } else if (results.score >= 60) {
+            const messages = [
+                "PAS MAL ! Tu peux mieux faire ! 💪🌈",
+                "C'EST PAS GRAVE ! Révise et reviens ! 📚🌸",
+                "COURAGE ! La prochaine fois sera meilleure ! 🌺🤝",
+                "PAS DE SOUCI ! Continue d'essayer ! 😊🌟"
+            ];
+            birdMessage = messages[Math.floor(Math.random() * messages.length)];
+            birdExpression = 'thinking';
+            
+            // Animation de réflexion
+            setTimeout(function() {
+                birdSleep();
+                setTimeout(function() {
+                    birdSpeak("Révise un peu et réessaie ! 📚", 'happy');
+                }, 2000);
+            }, 1000);
+        } else if (results.score >= 50) {
+            const messages = [
+                "NE BAISSE PAS LES BRAS ! 🌱💪",
+                "REVISE UN PEU ET REVIENS ! 📚📖",
+                "LA PRATIQUE REND PARFAIT ! 🎯🏹",
+                "TU Y ARRIVERAS ! JE CROIS EN TOI ! 🌟🤗"
+            ];
+            birdMessage = messages[Math.floor(Math.random() * messages.length)];
+            birdExpression = 'thinking';
+            
+            // Animation de sommeil
+            setTimeout(function() {
+                birdSleep();
+            }, 500);
+        } else {
+            const messages = [
+                "C'EST UN DÉBUT ! Chaque expert a commencé quelque part ! 🌱🌈",
+                "NE T'INQUIÈTE PAS ! L'apprentissage prend du temps ! 📚🌸",
+                "PERSISTE ! Le succès viendra avec la pratique ! 💪🌟",
+                "JE SUIS LÀ POUR TOI ! NE RENONCE PAS ! 🤗🦁"
+            ];
+            birdMessage = messages[Math.floor(Math.random() * messages.length)];
+            birdExpression = 'thinking';
+            
+            // Animation de réconfort
+            setTimeout(function() {
+                birdSleep();
+                setTimeout(function() {
+                    birdSpeak("Je crois en toi ! 💪", 'happy');
+                }, 1500);
+            }, 500);
+        }
+        
+        // Faire parler l'oiseau avec le message approprié
+        setTimeout(function() {
+            birdSpeak(birdMessage, birdExpression);
+        }, 1000);
+        
+        // Animation spéciale de l'oiseau pour les bons scores
+        if (results.score >= 70) {
+            setTimeout(function() {
+                birdBody.style.animation = 'celebration 2s ease-in-out infinite';
+                setTimeout(function() {
+                    birdBody.style.animation = '';
+                }, 6000);
+            }, 1500);
+        }
+        
+        // Intégration gamification
+        setTimeout(function() {
+            console.log('Quiz results:', results);
+            console.log('Quiz score:', results.score);
+            
+            const xpEarned = Math.round(results.score * 0.5);
+            
+            // Test simple pour vérifier l'API
+            console.log('Attempting to add points:', xpEarned);
+            
+            // Ne pas ajouter de points si le score est 0
+            if (xpEarned <= 0) {
+                console.log('No points to add (score too low)');
+                return;
+            }
+            
+            fetch('/gamification/api/add-points', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: 'points=' + xpEarned + '&reason=Quiz terminé avec ' + results.score + '% de score'
+            })
+            .then(function(response) {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('Response data:', data);
+                if (data.success) {
+                    console.log('Points de gamification ajoutés:', data.new_stats);
+                    
+                    // Message de l'oiseau pour les points gagnés
+                    setTimeout(function() {
+                        birdSpeak('+' + xpEarned + ' XP gagnés ! Tu progresses ! 🚀✨', 'excited');
+                    }, 3000);
+                } else {
+                    console.error('API Error:', data.error);
+                }
+            })
+            .catch(function(error) {
+                console.error('Fetch Error:', error);
+                console.log('Intégration gamification non disponible');
+            });
+        }, 2000);
+    }
+    
+    // Animation CSS additionnelle
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes celebration {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(10deg); }
+            50% { transform: translateY(-30px) rotate(-10deg); }
+            75% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .results-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            margin-top: 20px;
+        }
+        
+        .results-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: white;
+        }
+        
+        .results-icon.success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .results-icon.warning {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+        
+        .results-title {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .results-message {
+            color: #6c757d;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .results-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .results-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .results-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .results-actions .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialisation
+    showQuestion(0);
+});
+</script>
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

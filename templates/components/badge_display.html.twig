@@ -1,0 +1,85 @@
+{# templates/components/badge_display.html.twig #}
+
+{# Affichage d'un badge individuel #}
+<div class="badge-display {{ size|default('medium') }} {{ interactive|default(false) ? 'interactive' : '' }}">
+    <div class="badge-icon-wrapper" 
+         {% if interactive %}data-bs-toggle="tooltip" title="{{ badge.description }}"{% endif %}
+         style="color: {{ badge.color }};">
+        <div class="badge-icon" 
+             style="background-color: {{ badge.color }}20; border-color: {{ badge.color }};">
+            {% if badge.icon %}
+                <i class="{{ badge.icon }}"></i>
+            {% else %}
+                <i class="fas fa-award"></i>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if show_label|default(true) %}
+        <div class="badge-label">
+            <span class="badge-name">{{ badge.name }}</span>
+            {% if show_category|default(false) %}
+                <span class="badge-category">{{ badge.category|title }}</span>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.badge-display {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.badge-display.small .badge-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+}
+
+.badge-display.medium .badge-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+}
+
+.badge-display.large .badge-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+}
+
+.badge-icon {
+    border-radius: 50%;
+    border: 3px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.badge-display.interactive {
+    cursor: pointer;
+}
+
+.badge-display.interactive:hover .badge-icon {
+    transform: scale(1.1);
+}
+
+.badge-label {
+    margin-top: 0.5rem;
+}
+
+.badge-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: block;
+}
+
+.badge-category {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+</style>

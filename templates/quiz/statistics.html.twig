@@ -1,0 +1,781 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques des Quiz{% endblock %}
+
+{% block stylesheets %}
+{{ importmap('styles/statistics') }}
+{% endblock %}
+
+{% block content %}
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<!-- Refresh Controls -->
+<div class="refresh-controls">
+    <button class="btn-refresh" id="refreshBtn">
+        <i class="fas fa-sync-alt me-2"></i>
+        Rafraîchir
+    </button>
+    <div class="auto-refresh-toggle">
+        <input type="checkbox" id="autoRefreshToggle">
+        <label for="autoRefreshToggle">Auto-rafraîchissement (30s)</label>
+    </div>
+</div>
+
+<div class="container statistics-container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">
+                <i class="fas fa-chart-line me-2"></i>
+                Statistiques Avancées des Quiz
+            </h1>
+        </div>
+    </div>
+
+    <!-- Cartes de statistiques sommaires -->
+    <div class="summary-cards" id="summaryCards">
+        <div class="summary-card primary">
+            <div class="icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="value" id="totalAttempts">-</div>
+            <div class="label">Tentatives Totales</div>
+            <div class="change" id="totalAttemptsChange"></div>
+        </div>
+        
+        <div class="summary-card success">
+            <div class="icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="value" id="averageScore">-</div>
+            <div class="label">Score Moyen</div>
+            <div class="change" id="averageScoreChange"></div>
+        </div>
+        
+        <div class="summary-card warning">
+            <div class="icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="value" id="averageTime">-</div>
+            <div class="label">Temps Moyen (s)</div>
+            <div class="change" id="averageTimeChange"></div>
+        </div>
+        
+        <div class="summary-card info">
+            <div class="icon">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="value" id="passRate">-</div>
+            <div class="label">Taux de Réussite</div>
+            <div class="change" id="passRateChange"></div>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="row">
+        <div class="col-12">
+            <div class="filters-card">
+                <h3 class="mb-4">
+                    <i class="fas fa-filter me-2"></i>
+                    Filtres
+                </h3>
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="start_date" class="form-label">Date début</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" 
+                               value="{{ currentFilters.start_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="end_date" class="form-label">Date fin</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" 
+                               value="{{ currentFilters.end_date }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="quiz_id" class="form-label">Quiz</label>
+                        <select class="form-select" id="quiz_id" name="quiz_id">
+                            <option value="">Tous les quiz</option>
+                            {% for quiz in quizzes %}
+                                <option value="{{ quiz.id }}" {% if currentFilters.quiz_id == quiz.id %}selected{% endif %}>
+                                    {{ quiz.title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-light">
+                                <i class="fas fa-search me-2"></i>
+                                Filtrer
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="chart-container" data-chart-type="scores">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Graph des Notes
+                    <button class="btn btn-sm btn-outline-secondary ms-2" onclick="resetZoom('scoresChart')">
+                        <i class="fas fa-search-minus"></i> Réinitialiser
+                    </button>
+                </h3>
+                <div class="chart-actions mb-2">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="changeChartType('scoresChart', 'bar')">
+                            <i class="fas fa-chart-bar"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="changeChartType('scoresChart', 'line')">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                    </div>
+                </div>
+                {{ render_chart(scoresChart) }}
+                <div class="chart-details mt-3" id="scoresChartDetails" style="display: none;">
+                    <h5>Détails du score sélectionné</h5>
+                    <div id="scoresChartDetailsContent"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="chart-container" data-chart-type="distribution">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Distribution de Réussite
+                    <button class="btn btn-sm btn-outline-secondary ms-2" onclick="resetZoom('successDistributionChart')">
+                        <i class="fas fa-search-minus"></i> Réinitialiser
+                    </button>
+                </h3>
+                <div class="chart-actions mb-2">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="changeChartType('successDistributionChart', 'pie')">
+                            <i class="fas fa-chart-pie"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="changeChartType('successDistributionChart', 'doughnut')">
+                            <i class="fas fa-circle-notch"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="changeChartType('successDistributionChart', 'bar')">
+                            <i class="fas fa-chart-bar"></i>
+                        </button>
+                    </div>
+                </div>
+                {{ render_chart(successDistributionChart) }}
+                <div class="chart-details mt-3" id="successDistributionChartDetails" style="display: none;">
+                    <h5>Détails de la catégorie sélectionnée</h5>
+                    <div id="successDistributionChartDetailsContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="chart-container" data-chart-type="difficulty">
+                <h3 class="chart-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Questions les Plus Difficiles
+                    <button class="btn btn-sm btn-outline-secondary ms-2" onclick="resetZoom('difficultQuestionsChart')">
+                        <i class="fas fa-search-minus"></i> Réinitialiser
+                    </button>
+                </h3>
+                <div class="chart-actions mb-2">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="changeChartType('difficultQuestionsChart', 'bar')">
+                            <i class="fas fa-chart-bar"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="changeChartType('difficultQuestionsChart', 'horizontalBar')">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <button class="btn btn-sm btn-outline-warning ms-2" onclick="showQuestionAnalysis()">
+                        <i class="fas fa-microscope"></i> Analyse détaillée
+                    </button>
+                </div>
+                {{ render_chart(difficultQuestionsChart) }}
+                <div class="chart-details mt-3" id="difficultQuestionsChartDetails" style="display: none;">
+                    <h5>Détails de la question sélectionnée</h5>
+                    <div id="difficultQuestionsChartDetailsContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des statistiques détaillées -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>
+                    <i class="fas fa-table me-2"></i>
+                    Statistiques Détaillées
+                </h3>
+                <div class="btn-group">
+                    <a href="{{ path('app_quiz_statistics_export', {'format': 'csv'}) }}" 
+                       class="export-btn">
+                        <i class="fas fa-download me-2"></i>
+                        Exporter CSV
+                    </a>
+                </div>
+            </div>
+            
+            <div class="stats-table">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Quiz</th>
+                                <th>Étudiant</th>
+                                <th>Score</th>
+                                <th>Questions</th>
+                                <th>Réponses Correctes</th>
+                                <th>Temps Moyen</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in pagination.items %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ stat.quiz.title }}</strong>
+                                        <br>
+                                        <small class="text-muted">ID: {{ stat.quiz.id }}</small>
+                                    </td>
+                                    <td>
+                                        {{ stat.student.name ?? stat.student.email }}
+                                        <br>
+                                        <small class="text-muted">{{ stat.student.email }}</small>
+                                    </td>
+                                    <td>
+                                        {% set scoreClass = '' %}
+                                        {% if stat.score >= 90 %}
+                                            {% set scoreClass = 'score-excellent' %}
+                                        {% elseif stat.score >= 75 %}
+                                            {% set scoreClass = 'score-good' %}
+                                        {% elseif stat.score >= 60 %}
+                                            {% set scoreClass = 'score-average' %}
+                                        {% else %}
+                                            {% set scoreClass = 'score-poor' %}
+                                        {% endif %}
+                                        
+                                        <span class="score-badge {{ scoreClass }}">
+                                            {{ stat.score }}%
+                                        </span>
+                                    </td>
+                                    <td>{{ stat.totalQuestions }}</td>
+                                    <td>{{ stat.correctAnswers }}</td>
+                                    <td>
+                                        <i class="fas fa-clock me-1"></i>
+                                        {{ stat.averageTimePerQuestion|number_format(1) }}s
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-calendar me-1"></i>
+                                        {{ stat.completedAt|date('d/m/Y H:i') }}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Aucune statistique trouvée pour les filtres sélectionnés
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            {% if pagination.items|length > 0 %}
+                <div class="pagination-container">
+                    {{ knp_pagination_render(pagination) }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ importmap('app') }}
+{{ importmap('chart.js') }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Variables globales
+    let autoRefreshInterval = null;
+    let previousData = {};
+    
+    // Éléments du DOM
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const autoRefreshToggle = document.getElementById('autoRefreshToggle');
+    
+    // Animation des graphiques au scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    document.querySelectorAll('.chart-container').forEach(chart => {
+        chart.style.opacity = '0';
+        chart.style.transform = 'translateY(20px)';
+        chart.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(chart);
+    });
+
+    // Fonction pour afficher/masquer le loader
+    function showLoading(show = true) {
+        loadingOverlay.style.display = show ? 'flex' : 'none';
+        if (refreshBtn) {
+            refreshBtn.disabled = show;
+            refreshBtn.innerHTML = show ? 
+                '<i class="fas fa-spinner fa-spin me-2"></i>Chargement...' : 
+                '<i class="fas fa-sync-alt me-2"></i>Rafraîchir';
+        }
+    }
+
+    // Fonction pour mettre à jour les cartes de statistiques
+    function updateSummaryCards(summary) {
+        const cards = {
+            totalAttempts: { value: summary.totalAttempts, element: 'totalAttempts' },
+            averageScore: { value: summary.averageScore, element: 'averageScore' },
+            averageTime: { value: summary.averageTime, element: 'averageTime' },
+            passRate: { value: summary.passRate, element: 'passRate' }
+        };
+
+        Object.keys(cards).forEach(key => {
+            const card = cards[key];
+            const element = document.getElementById(card.element);
+            const changeElement = document.getElementById(card.element + 'Change');
+            
+            if (element) {
+                // Animation du changement de valeur
+                const oldValue = previousData[key] || 0;
+                const newValue = card.value;
+                
+                // Mettre à jour la valeur avec animation
+                animateValue(element, oldValue, newValue, 1000);
+                
+                // Calculer et afficher le changement
+                if (changeElement && previousData[key] !== undefined) {
+                    const change = newValue - oldValue;
+                    const changePercent = oldValue > 0 ? ((change / oldValue) * 100).toFixed(1) : 0;
+                    
+                    if (change > 0) {
+                        changeElement.innerHTML = `<i class="fas fa-arrow-up"></i> +${changePercent}%`;
+                        changeElement.className = 'change positive';
+                    } else if (change < 0) {
+                        changeElement.innerHTML = `<i class="fas fa-arrow-down"></i> ${changePercent}%`;
+                        changeElement.className = 'change negative';
+                    } else {
+                        changeElement.innerHTML = '<i class="fas fa-minus"></i> 0%';
+                        changeElement.className = 'change';
+                    }
+                }
+                
+                previousData[key] = newValue;
+            }
+        });
+    }
+
+    // Fonction pour animer les valeurs
+    function animateValue(element, start, end, duration) {
+        const range = end - start;
+        const increment = range / (duration / 16);
+        let current = start;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                current = end;
+                clearInterval(timer);
+            }
+            
+            if (element.id === 'averageScore' || element.id === 'passRate') {
+                element.textContent = current.toFixed(1) + (element.id === 'passRate' ? '%' : '');
+            } else if (element.id === 'averageTime') {
+                element.textContent = current.toFixed(1) + 's';
+            } else {
+                element.textContent = Math.round(current);
+            }
+        }, 16);
+    }
+
+    // Fonction pour rafraîchir les données
+    async function refreshData() {
+        try {
+            showLoading(true);
+            
+            // Récupérer les filtres actuels
+            const urlParams = new URLSearchParams(window.location.search);
+            const apiUrl = '/admin/statistics/api/refresh?' + urlParams.toString();
+            
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            
+            if (data.success) {
+                // Mettre à jour les cartes de statistiques
+                updateSummaryCards(data.summary);
+                
+                // Mettre à jour les graphiques
+                updateCharts(data.charts);
+                
+                // Mettre à jour le timestamp
+                updateTimestamp(data.timestamp);
+                
+                // Notification de succès
+                showNotification('Données mises à jour avec succès', 'success');
+            } else {
+                showNotification('Erreur: ' + data.error, 'error');
+            }
+        } catch (error) {
+            console.error('Erreur lors du rafraîchissement:', error);
+            showNotification('Erreur de connexion au serveur', 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    // Fonction pour mettre à jour les graphiques (simplifiée)
+    function updateCharts(chartsData) {
+        // Cette fonction nécessiterait Chart.js pour mettre à jour les graphiques existants
+        // Pour l'instant, nous allons simplement recharger la page si les graphiques doivent être mis à jour
+        console.log('Graphiques mis à jour:', chartsData);
+        
+        // Stocker les données pour l'interactivité
+        window.chartsData = chartsData;
+    }
+
+    // Fonctions pour l'interactivité des graphiques
+    function changeChartType(chartId, newType) {
+        const chartElement = document.querySelector(`[data-chart-id="${chartId}"] canvas`);
+        if (chartElement && chartElement.chart) {
+            const chart = chartElement.chart;
+            const currentConfig = chart.config;
+            
+            // Mettre à jour le type de graphique
+            currentConfig.type = newType;
+            
+            // Ajuster les options en fonction du type
+            if (newType === 'horizontalBar') {
+                currentConfig.options.indexAxis = 'y';
+            } else {
+                delete currentConfig.options.indexAxis;
+            }
+            
+            chart.update();
+            showNotification(`Graphique changé en ${newType}`, 'info');
+        }
+    }
+
+    function resetZoom(chartId) {
+        const chartElement = document.querySelector(`[data-chart-id="${chartId}"] canvas`);
+        if (chartElement && chartElement.chart) {
+            const chart = chartElement.chart;
+            if (chart.resetZoom) {
+                chart.resetZoom();
+            } else {
+                // Alternative: réinitialiser les échelles
+                chart.options.scales.x.min = undefined;
+                chart.options.scales.x.max = undefined;
+                chart.options.scales.y.min = undefined;
+                chart.options.scales.y.max = undefined;
+                chart.update();
+            }
+            showNotification('Zoom réinitialisé', 'info');
+        }
+    }
+
+    function showQuestionAnalysis() {
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.innerHTML = `
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-microscope me-2"></i>
+                            Analyse Détaillée des Questions
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Statistiques Générales</h6>
+                                <table class="table table-sm">
+                                    <tr><td>Nombre total de questions</td><td id="totalQuestionsAnalysis">-</td></tr>
+                                    <tr><td>Taux de réussite moyen</td><td id="avgSuccessRate">-</td></tr>
+                                    <tr><td>Question la plus difficile</td><td id="hardestQuestion">-</td></tr>
+                                    <tr><td>Question la plus facile</td><td id="easiestQuestion">-</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Recommandations</h6>
+                                <div id="recommendations">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-lightbulb me-2"></i>
+                                        Analyse en cours...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <h6>Distribution par Niveau de Difficulté</h6>
+                            <canvas id="difficultyDistributionChart" height="100"></canvas>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary" onclick="exportAnalysis()">
+                            <i class="fas fa-download me-2"></i>Exporter l'analyse
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+        
+        // Charger les données d'analyse
+        loadQuestionAnalysis();
+        
+        // Nettoyer le modal quand il est fermé
+        modal.addEventListener('hidden.bs.modal', () => {
+            document.body.removeChild(modal);
+        });
+    }
+
+    async function loadQuestionAnalysis() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const response = await fetch('/admin/statistics/api/question-analysis?' + urlParams.toString());
+            const data = await response.json();
+            
+            if (data.success) {
+                updateQuestionAnalysisModal(data);
+            } else {
+                showNotification('Erreur lors du chargement de l\'analyse', 'error');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            showNotification('Erreur de connexion', 'error');
+        }
+    }
+
+    function updateQuestionAnalysisModal(data) {
+        // Mettre à jour les statistiques
+        document.getElementById('totalQuestionsAnalysis').textContent = data.totalQuestions || '-';
+        document.getElementById('avgSuccessRate').textContent = data.avgSuccessRate ? data.avgSuccessRate + '%' : '-';
+        document.getElementById('hardestQuestion').textContent = data.hardestQuestion || '-';
+        document.getElementById('easiestQuestion').textContent = data.easiestQuestion || '-';
+        
+        // Mettre à jour les recommandations
+        const recommendationsEl = document.getElementById('recommendations');
+        recommendationsEl.innerHTML = data.recommendations ? data.recommendations.map(rec => `
+            <div class="alert alert-warning mb-2">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                ${rec}
+            </div>
+        `).join('') : '<div class="alert alert-success">Aucune recommandation spécifique</div>';
+        
+        // Créer le graphique de distribution de difficulté
+        if (data.difficultyDistribution) {
+            createDifficultyDistributionChart(data.difficultyDistribution);
+        }
+    }
+
+    function createDifficultyDistributionChart(data) {
+        const ctx = document.getElementById('difficultyDistributionChart');
+        if (!ctx) return;
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Très Facile', 'Facile', 'Moyen', 'Difficile', 'Très Difficile'],
+                datasets: [{
+                    label: 'Nombre de questions',
+                    data: data,
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.5)',
+                        'rgba(23, 162, 184, 0.5)',
+                        'rgba(255, 193, 7, 0.5)',
+                        'rgba(255, 152, 0, 0.5)',
+                        'rgba(220, 53, 69, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(23, 162, 184, 1)',
+                        'rgba(255, 193, 7, 1)',
+                        'rgba(255, 152, 0, 1)',
+                        'rgba(220, 53, 69, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function exportAnalysis() {
+        // Implémenter l'exportation de l'analyse
+        showNotification('Export de l\'analyse en cours...', 'info');
+        // Logique d'exportation à implémenter
+    }
+
+    // Gestion des clics sur les graphiques
+    function setupChartInteractivity() {
+        // Ajouter des écouteurs d'événements aux graphiques Chart.js
+        document.querySelectorAll('canvas').forEach(canvas => {
+            if (canvas.chart) {
+                canvas.chart.options.onClick = function(event, elements) {
+                    if (elements.length > 0) {
+                        const element = elements[0];
+                        const datasetIndex = element.datasetIndex;
+                        const index = element.index;
+                        const chartId = canvas.id;
+                        
+                        handleChartClick(chartId, datasetIndex, index);
+                    }
+                };
+            }
+        });
+    }
+
+    function handleChartClick(chartId, datasetIndex, index) {
+        const chartsData = window.chartsData;
+        if (!chartsData || !chartsData[chartId]) return;
+        
+        const chartData = chartsData[chartId];
+        const label = chartData.labels[index];
+        const value = chartData.datasets[datasetIndex].data[index];
+        
+        // Afficher les détails
+        showChartDetails(chartId, label, value);
+    }
+
+    function showChartDetails(chartId, label, value) {
+        const detailsEl = document.getElementById(chartId + 'Details');
+        const contentEl = document.getElementById(chartId + 'DetailsContent');
+        
+        if (detailsEl && contentEl) {
+            contentEl.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Élément sélectionné:</strong> ${label}<br>
+                        <strong>Valeur:</strong> ${value}
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-sm btn-primary" onclick="drillDown('${chartId}', '${label}')">
+                            <i class="fas fa-search-plus"></i> Explorer en détail
+                        </button>
+                    </div>
+                </div>
+            `;
+            detailsEl.style.display = 'block';
+        }
+    }
+
+    function drillDown(chartId, label) {
+        // Implémenter le drill-down
+        showNotification(`Exploration détaillée de: ${label}`, 'info');
+        // Logique de drill-down à implémenter
+    }
+
+    // Fonction pour mettre à jour le timestamp
+    function updateTimestamp(timestamp) {
+        let timestampElement = document.getElementById('lastUpdate');
+        if (!timestampElement) {
+            timestampElement = document.createElement('div');
+            timestampElement.id = 'lastUpdate';
+            timestampElement.style.cssText = 'text-align: center; color: #6c757d; font-size: 0.875rem; margin-top: 1rem;';
+            document.querySelector('.statistics-container').appendChild(timestampElement);
+        }
+        timestampElement.innerHTML = `<i class="fas fa-clock me-1"></i>Dernière mise à jour: ${new Date(timestamp).toLocaleString('fr-FR')}`;
+    }
+
+    // Fonction pour afficher les notifications
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; min-width: 300px;';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto-suppression après 5 secondes
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+
+    // Gestion du rafraîchissement manuel
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', refreshData);
+    }
+
+    // Gestion de l'auto-rafraîchissement
+    if (autoRefreshToggle) {
+        autoRefreshToggle.addEventListener('change', function() {
+            if (this.checked) {
+                // Démarrer l'auto-rafraîchissement
+                autoRefreshInterval = setInterval(refreshData, 30000); // 30 secondes
+                showNotification('Auto-rafraîchissement activé (30s)', 'success');
+            } else {
+                // Arrêter l'auto-rafraîchissement
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+                showNotification('Auto-rafraîchissement désactivé', 'info');
+            }
+        });
+    }
+
+    // Gestion des filtres dynamiques
+    const filterForm = document.querySelector('form[method="get"]');
+    if (filterForm) {
+        filterForm.addEventListener('change', function(e) {
+            if (e.target.type === 'date' || e.target.tagName === 'SELECT') {
+                // Rafraîchir les données automatiquement lors du changement de filtre
+                setTimeout(refreshData, 500);
+            }
+        });
+    }
+
+    // Charger les données initiales
+    refreshData();
+    
+    // Initialiser l'interactivité des graphiques
+    setTimeout(setupChartInteractivity, 1000);
+});
+</script>
+{% endblock %}

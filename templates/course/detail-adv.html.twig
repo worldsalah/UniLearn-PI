@@ -1,0 +1,527 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Advanced Course Details{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* Advanced Course Detail Styles */
+.course-header-advanced {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    padding: 3rem 0;
+    color: white;
+}
+
+.course-title-advanced {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.course-meta-advanced {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.meta-item-advanced {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.video-player-advanced {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.video-player-advanced video {
+    width: 100%;
+    height: auto;
+}
+
+.course-section-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.course-section-header {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+}
+
+.course-section-body {
+    padding: 2rem;
+}
+
+.instructor-card-advanced {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.instructor-avatar-advanced {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    border: 4px solid #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.enrollment-form-advanced {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.btn-enroll-advanced {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-enroll-advanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.course-features-advanced {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.feature-item-advanced {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.feature-icon-advanced {
+    width: 48px;
+    height: 48px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.curriculum-section-advanced {
+    margin-bottom: 2rem;
+}
+
+.lesson-item-advanced {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    transition: background 0.2s ease;
+}
+
+.lesson-item-advanced:hover {
+    background: #f8f9fa;
+}
+
+.lesson-number-advanced {
+    width: 32px;
+    height: 32px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 1rem;
+}
+
+.lesson-content-advanced {
+    flex: 1;
+}
+
+.lesson-duration-advanced {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.reviews-section-advanced {
+    margin-top: 2rem;
+}
+
+.review-card-advanced {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.review-header-advanced {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.review-avatar-advanced {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 1rem;
+}
+
+.review-rating-advanced {
+    color: #ffc107;
+    margin-bottom: 0.5rem;
+}
+
+.review-text-advanced {
+    color: #495057;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .course-title-advanced {
+        font-size: 2rem;
+    }
+    
+    .course-meta-advanced {
+        gap: 1rem;
+    }
+    
+    .course-features-advanced {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Course Header -->
+<div class="course-header-advanced">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="course-title-advanced">{% if course is defined %}{{ course.title }}{% else %}Advanced Course{% endif %}</h1>
+                <div class="course-meta-advanced">
+                    <div class="meta-item-advanced">
+                        <i class="bi bi-person"></i>
+                        <span>{% if course is defined %}{{ course.instructor }}{% else %}Expert Instructor{% endif %}</span>
+                    </div>
+                    <div class="meta-item-advanced">
+                        <i class="bi bi-clock"></i>
+                        <span>{% if course is defined %}{{ course.duration }}{% else %}8 hours{% endif %}</span>
+                    </div>
+                    <div class="meta-item-advanced">
+                        <i class="bi bi-bar-chart"></i>
+                        <span>{% if course is defined %}{{ course.level }}{% else %}Advanced{% endif %}</span>
+                    </div>
+                    <div class="meta-item-advanced">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span>{% if course is defined %}{{ course.rating|default('4.8') }}{% else %}4.8{% endif %} ({% if course is defined %}{{ course.reviews|default('156') }}{% else %}156{% endif %} reviews)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-end">
+                <div class="h2 mb-0">${% if course is defined %}{{ course.price }}{% else %}99.99{% endif %}</div>
+                <p class="mb-0">One-time payment</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Video Player -->
+            {% if course is defined and course.videoUrl %}
+            <div class="video-player-advanced mb-4">
+                <video controls poster="{{ course.thumbnailUrl|default('/assets/images/course-placeholder.jpg') }}">
+                    <source src="{{ course.videoUrl }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            {% else %}
+            <div class="video-player-advanced mb-4">
+                <img src="/assets/images/course-placeholder.jpg" alt="Course Preview" class="w-100">
+            </div>
+            {% endif %}
+
+            <!-- Course Description -->
+            <div class="course-section-card">
+                <div class="course-section-header">
+                    <h4><i class="bi bi-info-circle me-2"></i>About This Course</h4>
+                </div>
+                <div class="course-section-body">
+                    <p class="lead">{% if course is defined %}{{ course.shortDescription }}{% else %}Master advanced concepts and techniques in this comprehensive course.{% endif %}</p>
+                    <p>{% if course is defined %}{{ course.description }}{% else %}This advanced course is designed for professionals who want to take their skills to the next level. You will learn cutting-edge techniques, best practices, and real-world applications from industry experts.{% endif %}</p>
+                </div>
+            </div>
+
+            <!-- What You'll Learn -->
+            <div class="course-section-card">
+                <div class="course-section-header">
+                    <h4><i class="bi bi-trophy me-2"></i>What You'll Learn</h4>
+                </div>
+                <div class="course-section-body">
+                    <div class="course-features-advanced">
+                        <div class="feature-item-advanced">
+                            <div class="feature-icon-advanced">
+                                <i class="bi bi-check"></i>
+                            </div>
+                            <div>
+                                <strong>Advanced Techniques</strong>
+                                <p class="mb-0 text-muted">Master cutting-edge methods and approaches</p>
+                            </div>
+                        </div>
+                        <div class="feature-item-advanced">
+                            <div class="feature-icon-advanced">
+                                <i class="bi bi-gear"></i>
+                            </div>
+                            <div>
+                                <strong>Practical Skills</strong>
+                                <p class="mb-0 text-muted">Apply knowledge to real-world scenarios</p>
+                            </div>
+                        </div>
+                        <div class="feature-item-advanced">
+                            <div class="feature-icon-advanced">
+                                <i class="bi bi-certificate"></i>
+                            </div>
+                            <div>
+                                <strong>Industry Recognition</strong>
+                                <p class="mb-0 text-muted">Earn a valuable certificate</p>
+                            </div>
+                        </div>
+                        <div class="feature-item-advanced">
+                            <div class="feature-icon-advanced">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div>
+                                <strong>Expert Support</strong>
+                                <p class="mb-0 text-muted">Get help from experienced instructors</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Curriculum -->
+            <div class="course-section-card">
+                <div class="course-section-header">
+                    <h4><i class="bi bi-list-ul me-2"></i>Course Curriculum</h4>
+                </div>
+                <div class="course-section-body">
+                    <div class="curriculum-section-advanced">
+                        <div class="lesson-item-advanced">
+                            <div class="lesson-number-advanced">1</div>
+                            <div class="lesson-content-advanced">
+                                <h6>Introduction to Advanced Concepts</h6>
+                                <p class="mb-0 text-muted">Get started with the fundamentals</p>
+                            </div>
+                            <div class="lesson-duration-advanced">
+                                <i class="bi bi-clock"></i> 45 min
+                            </div>
+                        </div>
+                        <div class="lesson-item-advanced">
+                            <div class="lesson-number-advanced">2</div>
+                            <div class="lesson-content-advanced">
+                                <h6>Core Principles and Theory</h6>
+                                <p class="mb-0 text-muted">Deep dive into theoretical foundations</p>
+                            </div>
+                            <div class="lesson-duration-advanced">
+                                <i class="bi bi-clock"></i> 1h 20min
+                            </div>
+                        </div>
+                        <div class="lesson-item-advanced">
+                            <div class="lesson-number-advanced">3</div>
+                            <div class="lesson-content-advanced">
+                                <h6>Practical Implementation</h6>
+                                <p class="mb-0 text-muted">Hands-on exercises and projects</p>
+                            </div>
+                            <div class="lesson-duration-advanced">
+                                <i class="bi bi-clock"></i> 2h 15min
+                            </div>
+                        </div>
+                        <div class="lesson-item-advanced">
+                            <div class="lesson-number-advanced">4</div>
+                            <div class="lesson-content-advanced">
+                                <h6>Advanced Techniques</h6>
+                                <p class="mb-0 text-muted">Master complex concepts</p>
+                            </div>
+                            <div class="lesson-duration-advanced">
+                                <i class="bi bi-clock"></i> 1h 45min
+                            </div>
+                        </div>
+                        <div class="lesson-item-advanced">
+                            <div class="lesson-number-advanced">5</div>
+                            <div class="lesson-content-advanced">
+                                <h6>Real-world Applications</h6>
+                                <p class="mb-0 text-muted">Apply skills to practical scenarios</p>
+                            </div>
+                            <div class="lesson-duration-advanced">
+                                <i class="bi bi-clock"></i> 2h 30min
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews -->
+            <div class="reviews-section-advanced">
+                <div class="course-section-card">
+                    <div class="course-section-header">
+                        <h4><i class="bi bi-star-fill me-2"></i>Student Reviews</h4>
+                    </div>
+                    <div class="course-section-body">
+                        <div class="review-card-advanced">
+                            <div class="review-header-advanced">
+                                <img src="/assets/images/avatar/01.jpg" alt="Student" class="review-avatar-advanced">
+                                <div>
+                                    <h6 class="mb-0">Sarah Johnson</h6>
+                                    <div class="review-rating-advanced">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="review-text-advanced">
+                                "This course exceeded my expectations! The instructor is knowledgeable and the content is well-structured. Highly recommend for anyone looking to advance their skills."
+                            </div>
+                        </div>
+                        <div class="review-card-advanced">
+                            <div class="review-header-advanced">
+                                <img src="/assets/images/avatar/02.jpg" alt="Student" class="review-avatar-advanced">
+                                <div>
+                                    <h6 class="mb-0">Michael Chen</h6>
+                                    <div class="review-rating-advanced">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="review-text-advanced">
+                                "Great content and practical examples. The only reason I'm not giving 5 stars is that I would have liked more advanced topics covered in depth."
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Instructor Card -->
+            <div class="instructor-card-advanced mb-4">
+                <img src="/assets/images/avatar/instructor.jpg" alt="Instructor" class="instructor-avatar-advanced">
+                <h5>{% if course is defined %}{{ course.instructor }}{% else %}Dr. Emily Smith{% endif %}</h5>
+                <p class="text-muted">{% if course is defined %}{{ course.instructorTitle }}{% else %}Senior Expert & Instructor{% endif %}</p>
+                <p class="small">{% if course is defined %}{{ course.instructorBio }}{% else %}15+ years of experience in the field with a passion for teaching and mentoring students.{% endif %}</p>
+                <div class="d-flex justify-content-center gap-3 mb-3">
+                    <div class="text-center">
+                        <div class="h5 mb-0">{% if course is defined %}{{ course.instructorCourses }}{% else %}12{% endif %}</div>
+                        <small class="text-muted">Courses</small>
+                    </div>
+                    <div class="text-center">
+                        <div class="h5 mb-0">{% if course is defined %}{{ course.instructorStudents }}{% else %}8,500{% endif %}</div>
+                        <small class="text-muted">Students</small>
+                    </div>
+                    <div class="text-center">
+                        <div class="h5 mb-0">{% if course is defined %}{{ course.instructorRating }}{% else %}4.9{% endif %}</div>
+                        <small class="text-muted">Rating</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment Form -->
+            <div class="enrollment-form-advanced">
+                <h5 class="mb-3">Ready to Get Started?</h5>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Course Price:</span>
+                        <strong>${% if course is defined %}{{ course.price }}{% else %}99.99{% endif %}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Duration:</span>
+                        <span>{% if course is defined %}{{ course.duration }}{% else %}8 hours{% endif %}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Certificate:</span>
+                        <span><i class="bi bi-check-circle text-success"></i> Included</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Lifetime Access:</span>
+                        <span><i class="bi bi-check-circle text-success"></i> Yes</span>
+                    </div>
+                </div>
+                <button class="btn btn-enroll-advanced w-100 mb-3">
+                    <i class="bi bi-cart-plus me-2"></i>Enroll Now
+                </button>
+                <p class="small text-muted text-center">
+                    <i class="bi bi-shield-check me-1"></i>
+                    30-day money-back guarantee
+                </p>
+            </div>
+
+            <!-- Course Features -->
+            <div class="course-section-card">
+                <div class="course-section-header">
+                    <h6><i class="bi bi-gear me-2"></i>Course Features</h6>
+                </div>
+                <div class="course-section-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            {% if course is defined %}{{ course.lessons }}{% else %}45{% endif %} video lessons
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            {% if course is defined %}{{ course.duration }}{% else %}8{% endif %} hours of content
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Downloadable resources
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Certificate of completion
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Lifetime access
+                        </li>
+                        <li class="mb-0">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Mobile and TV access
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,324 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Add New Quiz - Admin Dashboard{% endblock %}
+
+{% block admin_content %}
+
+		<!-- Title -->
+		<div class="row">
+			<div class="col-12 mb-3">
+				<div class="d-sm-flex justify-content-between align-items-center">
+					<div>
+						<h1 class="h3 mb-2">Add New Quiz</h1>
+						<p class="mb-0">Create a new quiz with questions.</p>
+					</div>
+					<div class="d-flex gap-2">
+						<a href="{{ path('app_admin_quizzes') }}" class="btn btn-secondary-soft">
+							<i class="bi bi-arrow-left me-2"></i>Back to Quizzes
+						</a>
+						<a href="{{ path('quiz_import_questions') }}" class="btn btn-primary-soft">
+							<i class="bi bi-cloud-download me-2"></i>Import Questions from API
+						</a>
+						<a href="{{ path('app_admin_dashboard') }}" class="btn btn-info-soft">
+							<i class="bi bi-house me-2"></i>Dashboard
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Quiz Creation Form START -->
+		<div class="row g-4 mb-4">
+			<div class="col-12">
+				<div class="card shadow">
+					<div class="card-header bg-primary text-white">
+						<h5 class="card-header-title mb-0">
+							<i class="bi bi-plus-circle me-2"></i>Quiz Information
+						</h5>
+					</div>
+					<div class="card-body">
+						<form id="quizCreateForm">
+							<div class="row g-3">
+								<div class="col-md-6">
+									<label for="quizTitle" class="form-label">Quiz Title *</label>
+									<input type="text" class="form-control" id="quizTitle" name="title" required placeholder="Enter quiz title">
+									<div class="form-text">Give your quiz a clear, descriptive title.</div>
+								</div>
+								<div class="col-md-6">
+									<label for="quizDescription" class="form-label">Description</label>
+									<textarea class="form-control" id="quizDescription" name="description" rows="3" placeholder="Enter quiz description (optional)"></textarea>
+									<div class="form-text">Brief description of what this quiz covers.</div>
+								</div>
+								<div class="col-md-6">
+									<label for="quizTimeLimit" class="form-label">Time Limit (minutes)</label>
+									<input type="number" class="form-control" id="quizTimeLimit" name="timeLimit" min="1" placeholder="60">
+									<div class="form-text">Leave empty for no time limit.</div>
+								</div>
+								<div class="col-md-6">
+									<label for="quizPassingScore" class="form-label">Passing Score (%)</label>
+									<input type="number" class="form-control" id="quizPassingScore" name="passingScore" min="0" max="100" value="70">
+									<div class="form-text">Minimum score required to pass.</div>
+								</div>
+								<div class="col-md-6">
+									<label for="quizAttempts" class="form-label">Max Attempts</label>
+									<input type="number" class="form-control" id="quizAttempts" name="maxAttempts" min="1" value="3">
+									<div class="form-text">Maximum number of attempts allowed.</div>
+								</div>
+								<div class="col-md-6">
+									<label for="quizCategory" class="form-label">Category</label>
+									<select class="form-select" id="quizCategory" name="category">
+										<option value="">Select category</option>
+										<option value="general">General Knowledge</option>
+										<option value="science">Science</option>
+										<option value="math">Mathematics</option>
+										<option value="history">History</option>
+										<option value="literature">Literature</option>
+										<option value="geography">Geography</option>
+									</select>
+								</div>
+								<div class="col-12">
+									<label for="quizInstructions" class="form-label">Instructions</label>
+									<textarea class="form-control" id="quizInstructions" name="instructions" rows="4" placeholder="Enter instructions for students taking this quiz"></textarea>
+									<div class="form-text">Provide clear instructions for quiz participants.</div>
+								</div>
+							</div>
+							
+							<div class="row mt-4">
+								<div class="col-12">
+									<div class="d-flex justify-content-between align-items-center">
+										<div>
+											<h6 class="mb-0">Questions</h6>
+											<p class="text-muted small mb-0">You can add questions after creating the quiz.</p>
+										</div>
+										<button type="button" class="btn btn-outline-success btn-sm" onclick="addQuestion()">
+											<i class="bi bi-plus-circle me-1"></i>Add Question
+										</button>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row mt-4">
+								<div class="col-12">
+									<div class="d-flex gap-2">
+										<button type="submit" class="btn btn-primary">
+											<i class="bi bi-check-circle me-2"></i>Create Quiz
+										</button>
+										<button type="button" class="btn btn-secondary" onclick="resetForm()">
+											<i class="bi bi-arrow-clockwise me-2"></i>Reset
+										</button>
+										<button type="button" class="btn btn-outline-info" onclick="saveAsDraft()">
+											<i class="bi bi-save me-2"></i>Save as Draft
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Quiz Creation Form END -->
+
+		<!-- Questions Preview Section -->
+		<div class="card shadow" id="questionsPreview" style="display: none;">
+			<div class="card-header bg-success text-white">
+				<h5 class="card-header-title mb-0">
+					<i class="bi bi-question-circle me-2"></i>Questions Preview
+				</h5>
+			</div>
+			<div class="card-body">
+				<div id="questionsList">
+					<p class="text-muted text-center">No questions added yet.</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!-- Page main content END -->
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+let questions = [];
+
+// Quiz form submission
+document.getElementById('quizCreateForm').addEventListener('submit', function(e) {
+	e.preventDefault();
+	
+	const formData = new FormData(this);
+	const data = {
+		title: formData.get('title'),
+		description: formData.get('description'),
+		timeLimit: formData.get('timeLimit'),
+		passingScore: formData.get('passingScore'),
+		maxAttempts: formData.get('maxAttempts'),
+		category: formData.get('category'),
+		instructions: formData.get('instructions'),
+		questions: questions
+	};
+	
+	// Validation
+	if (!data.title) {
+		showAlert('Quiz title is required', 'warning');
+		return;
+	}
+	
+	// Show loading
+	const submitBtn = this.querySelector('button[type="submit"]');
+	const originalText = submitBtn.innerHTML;
+	submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Creating...';
+	submitBtn.disabled = true;
+	
+	// Call the real API endpoint
+	fetch('/admin/quiz/create', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest'
+		},
+		body: JSON.stringify(data)
+	})
+	.then(response => response.json())
+	.then(data => {
+		if (data.success) {
+			showAlert('Quiz created successfully!', 'success');
+			
+			// Redirect to quizzes list after successful creation
+			setTimeout(() => {
+				window.location.href = '{{ path('app_admin_quizzes') }}';
+			}, 1500);
+		} else {
+			showAlert(data.message || 'Error creating quiz', 'danger');
+			// Re-enable button on error
+			submitBtn.innerHTML = originalText;
+			submitBtn.disabled = false;
+		}
+	})
+	.catch(error => {
+		console.error('Error:', error);
+		showAlert('Error creating quiz', 'danger');
+		// Re-enable button on error
+		submitBtn.innerHTML = originalText;
+		submitBtn.disabled = false;
+	});
+});
+
+function resetForm() {
+	if (confirm('Reset all form data?')) {
+		document.getElementById('quizCreateForm').reset();
+		questions = [];
+		updateQuestionsPreview();
+	}
+}
+
+function saveAsDraft() {
+	showAlert('Quiz saved as draft!', 'info');
+	// In real implementation, this would save to database as draft
+}
+
+function addQuestion() {
+	const questionText = prompt('Enter question text:');
+	if (questionText) {
+		const question = {
+			id: Date.now(), // Temporary ID
+			question: questionText,
+			type: 'multiple',
+			optionA: '',
+			optionB: '',
+			optionC: '',
+			optionD: '',
+			correctOption: 'A'
+		};
+		
+		questions.push(question);
+		updateQuestionsPreview();
+		showAlert('Question added!', 'success');
+	}
+}
+
+function updateQuestionsPreview() {
+	const questionsList = document.getElementById('questionsList');
+	const previewSection = document.getElementById('questionsPreview');
+	
+	if (questions.length === 0) {
+		questionsList.innerHTML = '<p class="text-muted text-center">No questions added yet.</p>';
+		previewSection.style.display = 'none';
+	} else {
+		previewSection.style.display = 'block';
+		let html = '<div class="table-responsive"><table class="table table-hover"><thead><tr><th>#</th><th>Question</th><th>Type</th><th>Actions</th></tr></thead><tbody>';
+		
+		questions.forEach((q, index) => {
+			html += `
+				<tr>
+					<td>${index + 1}</td>
+					<td>${q.question}</td>
+					<td><span class="badge bg-primary">${q.type}</span></td>
+					<td>
+						<button class="btn btn-sm btn-outline-warning" onclick="editQuestion(${q.id})">
+							<i class="bi bi-pencil"></i>
+						</button>
+						<button class="btn btn-sm btn-outline-danger" onclick="removeQuestion(${q.id})">
+							<i class="bi bi-trash"></i>
+						</button>
+					</td>
+				</tr>
+			`;
+		});
+		
+		html += '</tbody></table></div>';
+		questionsList.innerHTML = html;
+	}
+}
+
+function editQuestion(questionId) {
+	const question = questions.find(q => q.id === questionId);
+	if (question) {
+		const newText = prompt('Edit question:', question.question);
+		if (newText && newText !== question.question) {
+			question.question = newText;
+			updateQuestionsPreview();
+			showAlert('Question updated!', 'success');
+		}
+	}
+}
+
+function removeQuestion(questionId) {
+	if (confirm('Remove this question?')) {
+		questions = questions.filter(q => q.id !== questionId);
+		updateQuestionsPreview();
+		showAlert('Question removed!', 'info');
+	}
+}
+
+function showAlert(message, type = 'success') {
+	const alertHtml = `
+		<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+			<i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+			${message}
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		</div>
+	`;
+	
+	// Create alert container if it doesn't exist
+	let alertContainer = document.getElementById('alertContainer');
+	if (!alertContainer) {
+		alertContainer = document.createElement('div');
+		alertContainer.id = 'alertContainer';
+		alertContainer.className = 'position-fixed top-0 end-0 p-3';
+		alertContainer.style.zIndex = '1050';
+		document.body.appendChild(alertContainer);
+	}
+	
+	alertContainer.innerHTML = alertHtml;
+	
+	// Auto dismiss after 3 seconds
+	setTimeout(() => {
+		const alert = alertContainer.querySelector('.alert');
+		if (alert) {
+			const bsAlert = new bootstrap.Alert(alert);
+			bsAlert.close();
+		}
+	}, 3000);
+}
+</script>
+{% endblock %}

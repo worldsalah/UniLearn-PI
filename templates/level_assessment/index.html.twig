@@ -1,0 +1,188 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Level Assessment Test - Unilearn{% endblock %}
+
+{% block content %}
+<!-- =======================
+Page Banner START -->
+<section class="bg-primary bg-opacity-10 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="mb-3">Level <span class="text-primary">Assessment</span></h1>
+                    <p class="lead mb-0">Find your perfect starting point with our personalized assessment</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Assessment Content START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="text-center mb-4">
+                            <div class="mb-4">
+                                <i class="fas fa-brain text-primary" style="font-size: 4rem;"></i>
+                            </div>
+                            <h3 class="mb-3">Level Assessment Test</h3>
+                            <p class="text-muted">This assessment will help us determine your current level and recommend the best courses for you.</p>
+                        </div>
+
+                        <!-- Assessment Steps -->
+                        <div class="row text-center mb-5">
+                            <div class="col-md-4 mb-4 mb-md-0">
+                                <div class="assessment-step">
+                                    <div class="step-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <span class="fw-bold">1</span>
+                                    </div>
+                                    <h5>Choose Subject</h5>
+                                    <p class="text-muted small">Select your preferred subject area</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4 mb-md-0">
+                                <div class="assessment-step">
+                                    <div class="step-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <span class="fw-bold">2</span>
+                                    </div>
+                                    <h5>Take Test</h5>
+                                    <p class="text-muted small">Answer questions to evaluate your level</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="assessment-step">
+                                    <div class="step-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <span class="fw-bold">3</span>
+                                    </div>
+                                    <h5>Get Results</h5>
+                                    <p class="text-muted small">Receive personalized recommendations</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subject Selection -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Select Your Preferred Subject:</h5>
+                            <div class="row g-3">
+                                {% for categoryData in categoriesWithCourses %}
+                                    {% set category = categoryData.category %}
+                                    {% set courses = categoryData.courses %}
+                                    <div class="col-md-6">
+                                        <div class="card subject-card h-100 border-2" style="cursor: pointer;" data-category-id="{{ category.id }}" data-category-name="{{ category.name }}">
+                                            <div class="card-body text-center p-3">
+                                                <i class="{{ category.icon|default('fas fa-book') }} text-primary mb-2" style="font-size: 2rem;"></i>
+                                                <h6 class="mb-1">{{ category.name }}</h6>
+                                                <small class="text-muted d-block mb-2">
+                                                    {% if courses|length <= 3 %}
+                                                        {% for course in courses %}
+                                                            {{ course.title }}{% if not loop.last %}, {% endif %}
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        {% for course in courses|slice(0, 2) %}
+                                                            {{ course.title }}{% if not loop.last %}, {% endif %}
+                                                        {% endfor %}
+                                                        and {{ courses|length - 2 }} more
+                                                    {% endif %}
+                                                </small>
+                                                <div class="mt-2">
+                                                    <span class="badge bg-primary rounded-pill">{{ courses|length }} course{{ courses|length > 1 ? 's' : '' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-12">
+                                        <div class="alert alert-info text-center">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            No active courses available at the moment. Please check back later.
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button class="btn btn-primary btn-lg" id="startAssessmentBtn" disabled>
+                                <i class="fas fa-play me-2"></i>Start Assessment
+                            </button>
+                            <p class="text-muted small mt-3">Estimated time: 15-20 minutes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Assessment Content END -->
+
+<style>
+.assessment-step {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.assessment-step.active {
+    opacity: 1;
+}
+
+.subject-card {
+    transition: all 0.3s ease;
+    border-color: #dee2e6 !important;
+}
+
+.subject-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.subject-card.selected {
+    border-color: #0d6efd !important;
+    background-color: #f8f9ff;
+}
+
+.subject-card.selected .card-body i {
+    color: #0d6efd !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const subjectCards = document.querySelectorAll('.subject-card');
+    const startBtn = document.getElementById('startAssessmentBtn');
+    let selectedCategory = null;
+    let selectedCategoryId = null;
+
+    subjectCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Remove selected class from all cards
+            subjectCards.forEach(c => c.classList.remove('selected'));
+            
+            // Add selected class to clicked card
+            this.classList.add('selected');
+            
+            // Enable start button
+            startBtn.disabled = false;
+            
+            // Store selected category data
+            selectedCategory = this.dataset.categoryName;
+            selectedCategoryId = this.dataset.categoryId;
+        });
+    });
+
+    startBtn.addEventListener('click', function() {
+        if (selectedCategory && selectedCategoryId) {
+            // Redirect to the actual quiz for this category
+            window.location.href = '/level-assessment/quiz/' + selectedCategoryId;
+        }
+    });
+});
+</script>
+{% endblock %}

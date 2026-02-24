@@ -1,0 +1,425 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Level Assessment Quiz - {{ category.name }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+.quiz-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.quiz-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.quiz-progress {
+    background: #e9ecef;
+    height: 8px;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.quiz-progress-bar {
+    background: linear-gradient(90deg, #0d6efd, #6f42c1);
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.question-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: none;
+}
+
+.question-number {
+    background: linear-gradient(135deg, #0d6efd, #6f42c1);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.question-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.option-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.option-card:hover {
+    background: #e9ecef;
+    border-color: #0d6efd;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+}
+
+.option-card.selected {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(111, 66, 193, 0.1));
+    border-color: #0d6efd;
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+.option-card.selected::before {
+    content: '✓';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #0d6efd;
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.option-letter {
+    background: #6c757d;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 1rem;
+    font-size: 0.875rem;
+}
+
+.option-card.selected .option-letter {
+    background: #0d6efd;
+}
+
+.quiz-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn-quiz {
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-quiz:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-quiz:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.quiz-results {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.05), rgba(111, 66, 193, 0.05));
+    border-radius: 20px;
+    margin-top: 2rem;
+}
+
+.result-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.result-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.result-description {
+    font-size: 1.125rem;
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.recommendation-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-left: 4px solid #0d6efd;
+}
+
+.category-badge {
+    background: linear-gradient(135deg, #0d6efd, #6f42c1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.question-card {
+    animation: slideIn 0.5s ease-out;
+}
+
+.hidden {
+    display: none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <!-- Quiz Header -->
+    <div class="quiz-header">
+        <div class="category-badge mb-3">
+            <i class="fas fa-graduation-cap me-2"></i>{{ category.name }}
+        </div>
+        <h1 class="mb-3">Level Assessment Quiz</h1>
+        <p class="text-muted">Answer these questions to help us determine your skill level and recommend the best courses for you.</p>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="quiz-progress">
+        <div class="quiz-progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+
+    <!-- Quiz Questions -->
+    <div id="quizContainer">
+        {% for question in questions %}
+            <div class="question-card {% if not loop.first %}hidden{% endif %}" id="question-{{ loop.index0 }}">
+                <div class="question-number">{{ loop.index }}</div>
+                <h3 class="question-text">{{ question.question }}</h3>
+                
+                <div class="options-container">
+                    {% for option, text in question.options %}
+                        <div class="option-card" onclick="selectOption({{ loop.parent.loop.index0 }}, '{{ option }}', this)">
+                            <div class="d-flex align-items-center">
+                                <span class="option-letter">{{ option }}</span>
+                                <span class="option-text">{{ text }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Quiz Navigation -->
+    <div class="quiz-navigation">
+        <button class="btn btn-outline-secondary btn-quiz" id="prevBtn" onclick="previousQuestion()" disabled>
+            <i class="fas fa-arrow-left me-2"></i>Previous
+        </button>
+        
+        <span class="text-muted">
+            Question <span id="currentQuestion">1</span> of {{ questions|length }}
+        </span>
+        
+        <button class="btn btn-primary btn-quiz" id="nextBtn" onclick="nextQuestion()" disabled>
+            Next<i class="fas fa-arrow-right ms-2"></i>
+        </button>
+    </div>
+
+    <!-- Quiz Results (Hidden Initially) -->
+    <div class="quiz-results hidden" id="quizResults">
+        <div class="result-icon">🎯</div>
+        <h2 class="result-title">Assessment Complete!</h2>
+        <p class="result-description">Based on your answers, we've determined your skill level for {{ category.name }}.</p>
+        
+        <div id="levelRecommendation">
+            <!-- This will be populated by JavaScript -->
+        </div>
+        
+        <div class="mt-4">
+            <a href="{{ path('app_course_grid') }}" class="btn btn-primary btn-lg btn-quiz me-2">
+                <i class="fas fa-search me-2"></i>Browse Recommended Courses
+            </a>
+            <a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-lg btn-quiz">
+                <i class="fas fa-home me-2"></i>Go to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+const totalQuestions = {{ questions|length }};
+let currentQuestionIndex = 0;
+let answers = {};
+
+function selectOption(questionIndex, option, element) {
+    // Remove previous selection
+    const questionCard = document.getElementById(`question-${questionIndex}`);
+    const options = questionCard.querySelectorAll('.option-card');
+    options.forEach(opt => opt.classList.remove('selected'));
+    
+    // Add selection to clicked option
+    element.classList.add('selected');
+    
+    // Store answer
+    answers[questionIndex] = option;
+    
+    // Enable next button
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+    if (currentQuestionIndex < totalQuestions - 1) {
+        // Hide current question
+        document.getElementById(`question-${currentQuestionIndex}`).classList.add('hidden');
+        
+        // Show next question
+        currentQuestionIndex++;
+        document.getElementById(`question-${currentQuestionIndex}`).classList.remove('hidden');
+        
+        // Update UI
+        updateUI();
+        
+        // Check if next button should be enabled
+        const hasAnswer = answers.hasOwnProperty(currentQuestionIndex);
+        document.getElementById('nextBtn').disabled = !hasAnswer;
+    } else {
+        // Show results
+        showResults();
+    }
+}
+
+function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+        // Hide current question
+        document.getElementById(`question-${currentQuestionIndex}`).classList.add('hidden');
+        
+        // Show previous question
+        currentQuestionIndex--;
+        document.getElementById(`question-${currentQuestionIndex}`).classList.remove('hidden');
+        
+        // Update UI
+        updateUI();
+        
+        // Enable next button (since we're going back)
+        document.getElementById('nextBtn').disabled = false;
+    }
+}
+
+function updateUI() {
+    // Update progress bar
+    const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+    
+    // Update question counter
+    document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+    
+    // Update previous button
+    document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+    
+    // Update next button text
+    const nextBtn = document.getElementById('nextBtn');
+    if (currentQuestionIndex === totalQuestions - 1) {
+        nextBtn.innerHTML = 'Complete Quiz<i class="fas fa-check ms-2"></i>';
+    } else {
+        nextBtn.innerHTML = 'Next<i class="fas fa-arrow-right ms-2"></i>';
+    }
+}
+
+function calculateLevel() {
+    // Simple scoring system based on answer choices
+    let score = 0;
+    const answerValues = { 'A': 1, 'B': 2, 'C': 3, 'D': 4 };
+    
+    for (let key in answers) {
+        score += answerValues[answers[key]] || 1;
+    }
+    
+    const averageScore = score / totalQuestions;
+    
+    if (averageScore <= 1.5) {
+        return { level: 'Beginner', description: 'You\'re just starting out! We recommend beginner courses to build your foundation.' };
+    } else if (averageScore <= 2.5) {
+        return { level: 'Intermediate', description: 'You have some experience! Intermediate courses will help you expand your skills.' };
+    } else if (averageScore <= 3.5) {
+        return { level: 'Advanced', description: 'You\'re quite experienced! Advanced courses will challenge you and help you master complex topics.' };
+    } else {
+        return { level: 'Expert', description: 'You\'re highly skilled! We recommend expert-level courses to refine your expertise.' };
+    }
+}
+
+function showResults() {
+    // Hide quiz container and navigation
+    document.getElementById('quizContainer').classList.add('hidden');
+    document.querySelector('.quiz-navigation').classList.add('hidden');
+    
+    // Show results
+    document.getElementById('quizResults').classList.remove('hidden');
+    
+    // Calculate and display level
+    const result = calculateLevel();
+    
+    document.getElementById('levelRecommendation').innerHTML = `
+        <div class="recommendation-card">
+            <h4><i class="fas fa-trophy me-2 text-warning"></i>Your Level: ${result.level}</h4>
+            <p class="mb-0">${result.description}</p>
+        </div>
+        <div class="recommendation-card">
+            <h5><i class="fas fa-lightbulb me-2 text-primary"></i>Recommended Next Steps</h5>
+            <ul class="text-start mb-0">
+                <li>Start with ${result.level.toLowerCase()} level courses in {{ category.name }}</li>
+                <li>Focus on building practical skills through hands-on projects</li>
+                <li>Join study groups to enhance your learning experience</li>
+            </ul>
+        </div>
+    `;
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    updateUI();
+});
+</script>
+{% endblock %}

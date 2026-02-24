@@ -1,0 +1,37 @@
+RewriteEngine On
+
+# Determine the RewriteBase automatically and set it as environment variable.
+# If you are using Apache aliases to do mass virtual hosting or installed the
+# project in a subdirectory, the base path will be preset to /subdirectory.
+# If it does not exist, set the appropriate one manually.
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::$
+RewriteRule ^(.*) - [E=BASE:%1]
+
+# If the requested filename exists, simply serve it.
+# We only want to let Apache serve files and not directories.
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule .? - [L]
+
+# Rewrite all other queries to the front controller.
+RewriteRule .? %{ENV:BASE}/index.php [L]
+
+# Disable index.php as fallback resource
+# <IfModule !mod_negotiation.c>
+#     Options -MultiViews
+# </IfModule>
+
+# FallbackResource index.php
+
+<IfModule mod_php.c>
+    php_value upload_max_filesize 500M
+    php_value post_max_size 500M
+    php_value memory_limit 512M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
+# Add SVG MIME type
+<IfModule mod_mime.c>
+    AddType image/svg+xml svg svgz
+    AddEncoding gzip svgz
+</IfModule>

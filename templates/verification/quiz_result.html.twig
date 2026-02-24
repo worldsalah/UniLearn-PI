@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification du Rapport - {{ quiz.title }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-check-circle"></i>
+                        Rapport Authentique Confirmé
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-shield-alt"></i>
+                            Ce rapport est authentique et valide
+                        </h5>
+                        <p class="mb-0">
+                            Le rapport d'analyse pour le quiz "{{ quiz.title }}" a été vérifié avec succès.
+                        </p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Informations sur l'Étudiant</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Nom:</strong></td>
+                                    <td>{{ user.fullName }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>{{ user.email }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Informations sur le Quiz</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Quiz:</strong></td>
+                                    <td>{{ quiz.title }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date:</strong></td>
+                                    <td>{{ quizResult.takenAt|date('d/m/Y H:i') }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <h4>Résultat du Quiz</h4>
+                        <div class="display-4 text-primary">
+                            {{ quizResult.score }}/{{ quizResult.maxScore }}
+                            <small class="text-muted">({{ quizResult.percentage }}%)</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        ID du Rapport
+                                    </h6>
+                                    <p class="card-text">
+                                        <code>#{{ quizResult.id }}</code>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-clock"></i>
+                                        Date de Vérification
+                                    </h6>
+                                    <p class="card-text">
+                                        {{ verificationDate|date('d/m/Y H:i:s') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-4">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-info"></i>
+                            À propos de cette vérification
+                        </h6>
+                        <p class="mb-0">
+                            Ce système de vérification garantit l'authenticité des rapports générés par UniLearn.
+                            Chaque rapport contient un code QR unique qui permet de vérifier instantanément sa validité.
+                        </p>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="{{ path('app_home') }}" class="btn btn-primary">
+                            <i class="fas fa-home"></i>
+                            Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted text-center">
+                    <small>
+                        <i class="fas fa-lock"></i>
+                        Système de vérification sécurisé UniLearn
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

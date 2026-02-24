@@ -1,0 +1,481 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Quiz Final - {{ course.title }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+.quiz-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.quiz-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+}
+
+.quiz-body {
+    background: white;
+    padding: 2rem;
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.question-card {
+    background: #f8f9fa;
+    border: none;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.question-number {
+    background: #007bff;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.option-label {
+    display: block;
+    padding: 1rem;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.option-label:hover {
+    border-color: #007bff;
+    background: #f8f9ff;
+}
+
+.option-label input[type="radio"] {
+    margin-right: 0.75rem;
+}
+
+.option-label input[type="radio"]:checked + span {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.quiz-progress {
+    background: #e9ecef;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+.quiz-progress-bar {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.timer {
+    background: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.timer.warning {
+    background: #ffc107;
+}
+
+.timer.danger {
+    background: #dc3545;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.quiz-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.result-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+.score-excellent { color: #28a745; }
+.score-good { color: #007bff; }
+.score-average { color: #ffc107; }
+.score-poor { color: #dc3545; }
+
+.level-badge {
+    font-size: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    margin: 1rem 0;
+    display: inline-block;
+}
+
+.level-expert { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
+.level-advanced { background: linear-gradient(135deg, #007bff, #0056b3); color: white; }
+.level-intermediate { background: linear-gradient(135deg, #17a2b8, #138496); color: white; }
+.level-beginner { background: linear-gradient(135deg, #ffc107, #e0a800); color: #212529; }
+.level-novice { background: linear-gradient(135deg, #dc3545, #c82333); color: white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <!-- Quiz Header -->
+    <div class="quiz-header">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h1 class="h3 mb-1">Quiz Final</h1>
+                <p class="mb-0 opacity-75">{{ course.title }}</p>
+            </div>
+            <div class="timer" id="quizTimer">
+                <i class="bi bi-clock me-1"></i>
+                <span id="timeRemaining">30:00</span>
+            </div>
+        </div>
+        
+        <div class="quiz-progress">
+            <div class="quiz-progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <small><i class="bi bi-question-circle me-1"></i>{{ quiz.questions|length }} questions</small>
+            <small><i class="bi bi-trophy me-1"></i>Score : <span id="currentScore">0</span>/{{ quiz.questions|length }}</small>
+        </div>
+    </div>
+
+    <!-- Quiz Body -->
+    <div class="quiz-body">
+        {% if existingAttempt %}
+            <!-- Already Taken Quiz -->
+            <div class="result-card">
+                <div class="mb-4">
+                    <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                    <h2 class="h3 mt-3 mb-2">Quiz Déjà Complété</h2>
+                    <p class="text-muted">Vous avez déjà passé ce quiz le {{ existingAttempt.completedAt|date('d/m/Y à H:i') }}</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Votre Score</h5>
+                        <div class="score-display {{ existingAttempt.score >= 75 ? 'score-excellent' : (existingAttempt.score >= 60 ? 'score-good' : (existingAttempt.score >= 40 ? 'score-average' : 'score-poor')) }}">
+                            {{ existingAttempt.score|number_format(1) }}%
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Niveau Atteint</h5>
+                        <div class="level-badge level-{{ existingAttempt.score >= 90 ? 'expert' : (existingAttempt.score >= 75 ? 'advanced' : (existingAttempt.score >= 60 ? 'intermediate' : (existingAttempt.score >= 40 ? 'beginner' : 'novice'))) }}">
+                            {% if existingAttempt.score >= 90 %}Expert
+                            {% elseif existingAttempt.score >= 75 %}Avancé
+                            {% elseif existingAttempt.score >= 60 %}Intermédiaire
+                            {% elseif existingAttempt.score >= 40 %}Débutant
+                            {% else %}Novice{% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn btn-primary">
+                        <i class="bi bi-arrow-left me-2"></i>Retour au cours
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <!-- Quiz Form -->
+            <form id="quizForm" method="post" action="{{ path('app_course_quiz_submit', {'id': course.id}) }}">
+                {% for question in questions %}
+                    <div class="question-card" data-question="{{ loop.index }}">
+                        <div class="question-number">{{ loop.index }}</div>
+                        <h5 class="mb-3">{{ question.question }}</h5>
+                        
+                        <label class="option-label">
+                            <input type="radio" 
+                                   name="question_{{ question.id }}" 
+                                   value="A"
+                                   required>
+                            <span>A. {{ question.optionA }}</span>
+                        </label>
+                        
+                        <label class="option-label">
+                            <input type="radio" 
+                                   name="question_{{ question.id }}" 
+                                   value="B"
+                                   required>
+                            <span>B. {{ question.optionB }}</span>
+                        </label>
+                        
+                        <label class="option-label">
+                            <input type="radio" 
+                                   name="question_{{ question.id }}" 
+                                   value="C"
+                                   required>
+                            <span>C. {{ question.optionC }}</span>
+                        </label>
+                        
+                        <label class="option-label">
+                            <input type="radio" 
+                                   name="question_{{ question.id }}" 
+                                   value="D"
+                                   required>
+                            <span>D. {{ question.optionD }}</span>
+                        </label>
+                    </div>
+                {% endfor %}
+
+                <!-- Quiz Actions -->
+                <div class="quiz-actions">
+                    <button type="button" class="btn btn-outline-secondary" onclick="window.history.back()">
+                        <i class="bi bi-x-circle me-2"></i>Annuler
+                    </button>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-primary" onclick="saveProgress()">
+                            <i class="bi bi-save me-2"></i>Sauvegarder
+                        </button>
+                        <button type="submit" class="btn btn-success btn-lg" onclick="return confirmSubmit()">
+                            <i class="bi bi-check-circle me-2"></i>Soumettre le Quiz
+                        </button>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Résultats du Quiz</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center" id="resultContent">
+                <!-- Results will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn btn-primary">
+                    Retour au cours
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+let timeLeft = 30 * 60; // 30 minutes in seconds
+let timerInterval;
+
+// Timer functionality
+function startTimer() {
+    timerInterval = setInterval(function() {
+        timeLeft--;
+        updateTimerDisplay();
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            submitQuiz();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    const display = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+    
+    document.getElementById('timeRemaining').textContent = display;
+    
+    const timerElement = document.getElementById('quizTimer');
+    timerElement.classList.remove('warning', 'danger');
+    
+    if (timeLeft <= 300) { // 5 minutes
+        timerElement.classList.add('danger');
+    } else if (timeLeft <= 600) { // 10 minutes
+        timerElement.classList.add('warning');
+    }
+}
+
+// Progress tracking
+function updateProgress() {
+    const totalQuestions = {{ quiz.questions|length }};
+    const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+    const progress = (answeredQuestions / totalQuestions) * 100;
+    
+    document.getElementById('progressBar').style.width = progress + '%';
+    document.getElementById('currentScore').textContent = answeredQuestions;
+}
+
+// Form submission
+document.getElementById('quizForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    submitQuiz();
+});
+
+function submitQuiz() {
+    clearInterval(timerInterval);
+    
+    const formData = new FormData(document.getElementById('quizForm'));
+    
+    fetch('{{ path("app_course_quiz_submit", {"id": course.id}) }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showResults(data);
+        } else {
+            alert(data.error || 'Une erreur est survenue');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Une erreur est survenue lors de la soumission');
+    });
+}
+
+function showResults(data) {
+    const resultContent = document.getElementById('resultContent');
+    
+    let levelClass = 'novice';
+    if (data.percentage >= 90) levelClass = 'expert';
+    else if (data.percentage >= 75) levelClass = 'advanced';
+    else if (data.percentage >= 60) levelClass = 'intermediate';
+    else if (data.percentage >= 40) levelClass = 'beginner';
+    
+    resultContent.innerHTML = `
+        <div class="mb-4">
+            <i class="bi bi-trophy-fill text-warning fs-1"></i>
+            <h3 class="mt-3">Quiz Terminé !</h3>
+        </div>
+        
+        <div class="score-display score-${data.percentage >= 75 ? 'excellent' : (data.percentage >= 60 ? 'good' : (data.percentage >= 40 ? 'average' : 'poor'))}">
+            ${data.percentage}%
+        </div>
+        
+        <p class="mb-3">
+            <strong>${data.score}/${data.total}</strong> réponses correctes
+        </p>
+        
+        <div class="level-badge level-${levelClass} mb-3">
+            Niveau : ${data.level}
+        </div>
+        
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            ${data.message}
+        </div>
+    `;
+    
+    const modal = new bootstrap.Modal(document.getElementById('resultModal'));
+    modal.show();
+    
+    // Redirect after 3 seconds
+    setTimeout(() => {
+        window.location.href = '{{ path("app_course_show", {"id": course.id}) }}';
+    }, 3000);
+}
+
+function confirmSubmit() {
+    const unanswered = document.querySelectorAll('input[type="radio"]:not(:checked)').length;
+    if (unanswered > 0) {
+        return confirm(`Vous avez ${unanswered} question(s) sans réponse. Êtes-vous sûr de vouloir soumettre ?`);
+    }
+    return true;
+}
+
+function saveProgress() {
+    // Save progress to localStorage
+    const formData = new FormData(document.getElementById('quizForm'));
+    const progress = {};
+    
+    for (let [key, value] of formData.entries()) {
+        progress[key] = value;
+    }
+    
+    localStorage.setItem('quizProgress_{{ course.id }}', JSON.stringify(progress));
+    
+    // Show confirmation
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Sauvegardé !';
+    btn.classList.remove('btn-outline-primary');
+    btn.classList.add('btn-success');
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-outline-primary');
+    }, 2000);
+}
+
+// Load saved progress
+function loadProgress() {
+    const saved = localStorage.getItem('quizProgress_{{ course.id }}');
+    if (saved) {
+        const progress = JSON.parse(saved);
+        for (let [name, value] of Object.entries(progress)) {
+            const radio = document.querySelector(`input[name="${name}"][value="${value}"]`);
+            if (radio) radio.checked = true;
+        }
+        updateProgress();
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    if (!{{ existingAttempt ? 'true' : 'false' }}) {
+        startTimer();
+        loadProgress();
+        
+        // Update progress on change
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    }
+});
+</script>
+{% endblock %}

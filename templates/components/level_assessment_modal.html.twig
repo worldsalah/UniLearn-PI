@@ -1,0 +1,91 @@
+<!-- Level Assessment Test Modal -->
+<div class="modal fade" id="levelAssessmentModal" tabindex="-1" aria-labelledby="levelAssessmentModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 text-center pb-0">
+                <h5 class="modal-title w-100" id="levelAssessmentModalLabel">
+                    <i class="fas fa-graduation-cap text-primary mb-3 d-block fs-1"></i>
+                    Welcome to Your Learning Journey!
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModalBtn"></button>
+            </div>
+            <div class="modal-body text-center px-4 pb-4">
+                <p class="lead mb-4">
+                    Would you like to take a Level Assessment Test for your preferred subject?
+                </p>
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <div class="card bg-light border-0">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-chart-line text-success me-3 fs-4"></i>
+                                    <div class="text-start">
+                                        <h6 class="mb-1">Personalized Learning Path</h6>
+                                        <small class="text-muted">Get customized course recommendations based on your level</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary btn-lg" id="takeLevelTestBtn">
+                        <i class="fas fa-play-circle me-2"></i>
+                        ✅ Take the Level Test
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="skipTestBtn">
+                        <i class="fas fa-forward me-2"></i>
+                        ❌ Skip and Continue Browsing
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is a student and just logged in
+    const urlParams = new URLSearchParams(window.location.search);
+    const justLoggedIn = urlParams.get('logged_in') === 'true';
+    const isStudent = {{ app.user and 'ROLE_STUDENT' in app.user.roles ? 'true' : 'false' }};
+    
+    // Show modal if student just logged in
+    if (justLoggedIn && isStudent) {
+        const modal = new bootstrap.Modal(document.getElementById('levelAssessmentModal'));
+        modal.show();
+        
+        // Remove the parameter from URL to prevent showing modal again on refresh
+        const url = new URL(window.location);
+        url.searchParams.delete('logged_in');
+        window.history.replaceState({}, '', url);
+    }
+    
+    // Handle Take Level Test button
+    document.getElementById('takeLevelTestBtn').addEventListener('click', function() {
+        // Redirect to level test page
+        window.location.href = '{{ path("app_level_assessment") }}';
+    });
+    
+    // Handle Skip button
+    document.getElementById('skipTestBtn').addEventListener('click', function() {
+        // Simply close the modal
+        bootstrap.Modal.getInstance(document.getElementById('levelAssessmentModal')).hide();
+    });
+    
+    // Handle close button (X) - same as skip
+    document.getElementById('closeModalBtn').addEventListener('click', function() {
+        bootstrap.Modal.getInstance(document.getElementById('levelAssessmentModal')).hide();
+    });
+    
+    // Prevent modal from closing with escape key or backdrop click
+    document.getElementById('levelAssessmentModal').addEventListener('hide.bs.modal', function(e) {
+        // Allow closing only via our buttons
+        if (!e.target.classList.contains('btn-close') && !e.target.id === 'skipTestBtn') {
+            e.preventDefault();
+        }
+    });
+});
+</script>

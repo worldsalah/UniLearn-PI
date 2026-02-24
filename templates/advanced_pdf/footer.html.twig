@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .footer {
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            background: #f8f9fa;
+            color: #666;
+            font-size: 12px;
+            margin: 0;
+        }
+        .footer .page-number {
+            font-weight: bold;
+            color: #667eea;
+        }
+        .footer .confidential {
+            font-style: italic;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="footer">
+        <div>UniLearn - Plateforme d'Apprentissage Intelligent</div>
+        <div class="page-number">Page <span class="page"></span> / <span class="topage"></span></div>
+        <div class="confidential">Document confidentiel - Généré le {{ "now"|date('d/m/Y H:i') }}</div>
+    </div>
+</body>
+</html>

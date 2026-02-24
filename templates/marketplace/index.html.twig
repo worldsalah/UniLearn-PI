@@ -1,0 +1,506 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Marketplace - Unilearn{% endblock %}
+
+{% block content %}
+
+<!-- Title -->
+<div class="row mb-4">
+    <div class="col-12 d-sm-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-2 mb-sm-0">Marketplace Overview</h1>
+        <a href="{{ path('app_product_new_public') }}" class="btn btn-primary mb-0"><i class="fas fa-plus me-2"></i>Post a Service</a>
+    </div>
+</div>
+
+<!-- Analytics Dashboard START -->
+<div class="row g-4 mb-4">
+    <!-- Revenue Trend Chart -->
+    <div class="col-lg-8">
+        <div class="card shadow h-100">
+            <div class="card-header border-bottom">
+                <h5 class="card-header-title">Revenue Trend</h5>
+            </div>
+            <div class="card-body">
+                <div id="revenueTrendChart"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Activity Gauge Chart -->
+    <div class="col-lg-4">
+        <div class="card shadow h-100">
+            <div class="card-header border-bottom">
+                <h5 class="card-header-title">Marketplace Activity</h5>
+            </div>
+            <div class="card-body">
+                <div id="activityGaugeChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Secondary Charts Row -->
+<div class="row g-4 mb-4">
+    <!-- Category Distribution -->
+    <div class="col-lg-6">
+        <div class="card shadow h-100">
+            <div class="card-header border-bottom">
+                <h5 class="card-header-title">Service Categories</h5>
+            </div>
+            <div class="card-body">
+                <div id="categoryChart"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- User Growth Chart -->
+    <div class="col-lg-6">
+        <div class="card shadow h-100">
+            <div class="card-header border-bottom">
+                <h5 class="card-header-title">User Growth</h5>
+            </div>
+            <div class="card-body">
+                <div id="userGrowthChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Analytics Dashboard END -->
+
+<!-- Counter boxes START -->
+<div class="row g-4 mb-4">
+    <!-- Counter item -->
+    <div class="col-md-6 col-xxl-3">
+        <div class="card card-body bg-warning bg-opacity-15 p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-0 fw-bold">{{ stats.students }}</h2>
+                    <span class="mb-0 h6 fw-light">Freelancers</span>
+                </div>
+                <div class="icon-lg rounded-circle bg-warning text-white mb-0"><i class="fas fa-user-graduate fa-fw"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Counter item -->
+    <div class="col-md-6 col-xxl-3">
+        <div class="card card-body bg-purple bg-opacity-10 p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-0 fw-bold">{{ stats.products }}</h2>
+                    <span class="mb-0 h6 fw-light">Services</span>
+                </div>
+                <div class="icon-lg rounded-circle bg-purple text-white mb-0"><i class="fas fa-tv fa-fw"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Counter item -->
+    <div class="col-md-6 col-xxl-3">
+        <div class="card card-body bg-primary bg-opacity-10 p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-0 fw-bold">{{ stats.jobs }}</h2>
+                    <span class="mb-0 h6 fw-light">Job Requests</span>
+                </div>
+                <div class="icon-lg rounded-circle bg-primary text-white mb-0"><i class="fas fa-briefcase fa-fw"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Counter item -->
+    <div class="col-md-6 col-xxl-3">
+        <div class="card card-body bg-success bg-opacity-10 p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="d-flex">
+                        <h2 class="mb-0 fw-bold">{{ stats.revenue|number_format(2) }}</h2>
+                        <span class="mb-0 h2 ms-1">$</span>
+                    </div>
+                    <span class="mb-0 h6 fw-light">Weekly Revenue</span>
+                </div>
+                <div class="icon-lg rounded-circle bg-success text-white mb-0"><i class="bi bi-currency-dollar fa-fw"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Counter boxes END -->
+
+<div class="row g-4">
+    <!-- Main content START -->
+    <div class="col-xl-9">
+        
+        <!-- Search and Filter START -->
+        <div class="card shadow mb-4">
+            <div class="card-body p-3">
+                <form class="row g-3" method="get">
+                    <div class="col-md-3">
+                        <input class="form-control" type="search" name="q" placeholder="Search services..." value="{{ app.request.query.get('q') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="category" onchange="this.form.submit()">
+                            <option value="">All Categories</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat }}" {% if app.request.query.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="text" class="form-control" name="minPrice" placeholder="Min" value="{{ app.request.query.get('minPrice') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="text" class="form-control" name="maxPrice" placeholder="Max" value="{{ app.request.query.get('maxPrice') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="sortBy" onchange="this.form.submit()">
+                            <option value="newest" {% if app.request.query.get('sortBy') == 'newest' %}selected{% endif %}>Newest First</option>
+                            <option value="az" {% if app.request.query.get('sortBy') == 'az' %}selected{% endif %}>Alphabetical (A-Z)</option>
+                            <option value="za" {% if app.request.query.get('sortBy') == 'za' %}selected{% endif %}>Alphabetical (Z-A)</option>
+                            <option value="price_asc" {% if app.request.query.get('sortBy') == 'price_asc' %}selected{% endif %}>Price (Low to High)</option>
+                            <option value="price_desc" {% if app.request.query.get('sortBy') == 'price_desc' %}selected{% endif %}>Price (High to Low)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary w-100 mb-0 px-2"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Search and Filter END -->
+
+        <!-- Service Grid START -->
+        <div class="row g-4">
+            {% for product in products %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow h-100">
+                        <!-- Image -->
+                        <div class="position-relative">
+                            {% set productImage = product.image ? asset('uploads/products/' ~ product.image) : null %}
+                            {% if productImage %}
+                                <img src="{{ productImage }}" class="card-img-top" alt="{{ product.title }}" style="height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 150px;">
+                                    <i class="fas fa-image fa-2x text-muted opacity-25"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-img-overlay d-flex z-index-0 p-2">
+                                <div class="w-100 mb-auto d-flex justify-content-end">
+                                    <div class="icon-sm bg-white rounded-circle fs-6 shadow">
+                                        <a href="#" class="text-danger"><i class="far fa-heart"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card body -->
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="badge bg-purple bg-opacity-10 text-purple small">{{ product.category.name|default('General') }}</span>
+                                <span class="h6 fw-light mb-0 small"><i class="fas fa-star text-warning me-1"></i>4.5</span>
+                            </div>
+                            <h6 class="card-title fw-bold mb-1"><a href="{{ path('app_product_show', {slug: product.slug}) }}" class="text-dark">{{ product.title }}</a></h6>
+                            <p class="text-muted small mb-2 text-truncate-2">{{ product.description|slice(0, 60) }}...</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <span class="h6 fw-bold mb-0 text-success">${{ product.price }}</span>
+                                <a href="{{ path('app_order_new_from_product', {slug: product.slug}) }}" class="btn btn-sm btn-primary mb-0">Order</a>
+                            </div>
+                        </div>
+                        <!-- Card footer -->
+                        <div class="card-footer py-2 bg-light border-top">
+                            <div class="d-flex justify-content-end">
+                                <a href="{{ path('app_product_edit', {slug: product.slug}) }}" class="btn btn-link btn-sm text-success p-0 mb-0 me-2" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                                <form method="post" action="{{ path('app_product_delete', {slug: product.slug}) }}" onsubmit="return confirm('Are you sure?');" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.slug) }}">
+                                    <button class="btn btn-link btn-sm text-danger p-0 mb-0" title="Delete"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <h5 class="text-muted">No services found.</h5>
+                </div>
+            {% endfor %}
+        </div>
+        <!-- Service Grid END -->
+
+        <!-- Pagination START -->
+        <div class="mt-4">
+            {{ knp_pagination_render(products) }}
+        </div>
+        <!-- Pagination END -->
+
+    </div>
+    <!-- Main content END -->
+
+    <!-- Right Sidebar START -->
+    <div class="col-xl-3">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-gradient-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-briefcase me-2"></i>Active Job Requests
+                    </h5>
+                    <span class="badge bg-white text-primary">{{ jobs|length }}</span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% for job in jobs %}
+                    <a href="{{ path('app_job_show', {id: job.id}) }}" class="text-decoration-none">
+                        <div class="p-3 border-bottom job-card-hover">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0 fw-bold text-dark">{{ job.title|slice(0, 30) }}{% if job.title|length > 30 %}...{% endif %}</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if app.user %}
+                                        <button class="btn btn-sm btn-link p-0 text-danger favorite-toggle" data-job-id="{{ job.id }}" onclick="event.stopPropagation();">
+                                            <i class="far fa-heart"></i>
+                                        </button>
+                                    {% endif %}
+                                    <span class="badge bg-success bg-opacity-10 text-success">${{ job.budget }}</span>
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-2">{{ job.description|striptags|slice(0, 60) }}...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-xs me-2">
+                                        <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-user fa-xs"></i>
+                                        </div>
+                                    </div>
+                                    <span class="small text-muted">{{ job.client.email|split('@')[0] }}</span>
+                                </div>
+                                <span class="small text-primary">
+                                    <i class="fas fa-arrow-right me-1"></i>View Details
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                {% else %}
+                    <div class="p-4 text-center">
+                        <i class="fas fa-briefcase fa-2x text-muted mb-3"></i>
+                        <p class="text-muted mb-3">No active job requests</p>
+                        <a href="#" class="btn btn-primary-soft btn-sm">
+                            <i class="fas fa-plus me-2"></i>Post First Job
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- Right Sidebar END -->
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<style>
+.job-card-hover {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.job-card-hover:hover {
+    background-color: #f8f9fa !important;
+    transform: translateX(5px);
+}
+.job-card-hover:hover h6 {
+    color: #0d6efd !important;
+}
+.favorite-toggle {
+    transition: all 0.3s ease;
+}
+.favorite-toggle:hover {
+    transform: scale(1.2);
+}
+.favorite-toggle.active i {
+    color: #dc3545 !important;
+}
+</style>
+<script>
+// Revenue Trend Chart
+var revenueTrendOptions = {
+    series: [{
+        name: 'Revenue',
+        data: [31000, 35000, 32000, 41000, 38000, 45000, 52000]
+    }],
+    chart: {
+        height: 300,
+        type: 'area',
+        toolbar: { show: false },
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: { enabled: true, delay: 150 },
+            dynamicAnimation: { enabled: true, speed: 350 }
+        }
+    },
+    colors: ['#4F46E5'],
+    stroke: {
+        curve: 'smooth',
+        width: 3
+    },
+    fill: {
+        type: 'gradient',
+        gradient: {
+            shade: 'light',
+            type: 'vertical',
+            shadeIntensity: 0.5,
+            gradientToColors: ['#4F46E5'],
+            inverseColors: false,
+            opacityFrom: 0.8,
+            opacityTo: 0.1,
+            stops: [0, 100]
+        }
+    },
+    dataLabels: { enabled: false },
+    xaxis: {
+        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    tooltip: {
+        y: {
+            formatter: function(val) {
+                return "$" + val.toLocaleString()
+            }
+        }
+    }
+};
+
+// Activity Gauge Chart
+var activityGaugeOptions = {
+    series: [78],
+    chart: {
+        height: 300,
+        type: 'radialBar',
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 1000
+        }
+    },
+    colors: ['#10B981'],
+    plotOptions: {
+        radialBar: {
+            startAngle: -135,
+            endAngle: 135,
+            hollow: {
+                margin: 0,
+                size: '70%',
+                background: 'transparent'
+            },
+            track: {
+                background: '#f3f4f6',
+                strokeWidth: '97%',
+                margin: 5
+            },
+            dataLabels: {
+                show: true,
+                name: {
+                    offsetY: -10,
+                    show: true,
+                    color: '#888',
+                    fontSize: '13px'
+                },
+                value: {
+                    offsetY: 5,
+                    fontSize: '22px',
+                    color: '#111',
+                    formatter: function(val) {
+                        return val + '%'
+                    }
+                }
+            }
+        }
+    },
+    labels: ['Activity']
+};
+
+// Category Distribution Chart
+var categoryOptions = {
+    series: [45, 25, 15, 10, 5],
+    chart: {
+        height: 300,
+        type: 'donut',
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800
+        }
+    },
+    colors: ['#4F46E5', '#7C3AED', '#EC4899', '#F59E0B', '#10B981'],
+    labels: ['Web Development', 'Design', 'Marketing', 'Writing', 'Other'],
+    stroke: { show: true, width: 2, colors: ['#ffffff'] },
+    dataLabels: {
+        enabled: true,
+        formatter: function (val, opts) {
+            return opts.w.config.series[opts.seriesIndex] + '%';
+        }
+    },
+    legend: { position: 'bottom' }
+};
+
+// User Growth Chart
+var userGrowthOptions = {
+    series: [{
+        name: 'New Users',
+        data: [44, 55, 57, 56, 61, 58, 63, 71, 67, 75, 78, 82]
+    }],
+    chart: {
+        height: 300,
+        type: 'line',
+        toolbar: { show: false },
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800
+        }
+    },
+    colors: ['#EC4899'],
+    stroke: {
+        curve: 'smooth',
+        width: 3
+    },
+    markers: {
+        size: 6,
+        colors: ['#ffffff'],
+        strokeColors: ['#EC4899'],
+        strokeWidth: 2
+    },
+    dataLabels: { enabled: false },
+    xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    },
+    tooltip: {
+        y: {
+            formatter: function(val) {
+                return val + " users"
+            }
+        }
+    }
+};
+
+// Initialize all charts if ApexCharts is available
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof ApexCharts !== 'undefined') {
+        var revenueTrendChart = new ApexCharts(document.querySelector("#revenueTrendChart"), revenueTrendOptions);
+        revenueTrendChart.render();
+        
+        var activityGaugeChart = new ApexCharts(document.querySelector("#activityGaugeChart"), activityGaugeOptions);
+        activityGaugeChart.render();
+        
+        var categoryChart = new ApexCharts(document.querySelector("#categoryChart"), categoryOptions);
+        categoryChart.render();
+        
+        var userGrowthChart = new ApexCharts(document.querySelector("#userGrowthChart"), userGrowthOptions);
+        userGrowthChart.render();
+    }
+});
+</script>
+{% endblock %}

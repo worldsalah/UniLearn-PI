@@ -1,0 +1,777 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ quiz.title }} - Quiz - Unilearn{% endblock %}
+
+{% block body %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Quiz Taking START -->
+<section class="quiz-enhanced pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- Quiz info START -->
+                <div class="quiz-info-card mb-4">
+                    <div class="card-body p-4">
+                        <div class="quiz-header">
+                            <div class="quiz-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h5 class="quiz-title">{{ quiz.title }}</h5>
+                        </div>
+                        <div class="quiz-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-book"></i>
+                                <span>{% if quiz.course %}{{ quiz.course.title }}{% else %}General Quiz{% endif %}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-list"></i>
+                                <span>{{ questions|length }} Questions</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>{% if quiz.duration %}Durée: {{ quiz.duration }}s{% else %}Pas de limite{% endif %}</span>
+                            </div>
+                        </div>
+                        <div class="quiz-progress-container">
+                            <div class="quiz-progress-bar">
+                                <div id="quiz-progress" class="progress-fill"></div>
+                            </div>
+                            <span class="progress-text">Progress: <span id="progress-text">0%</span></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Quiz info END -->
+
+                <!-- Timer START -->
+                {% if quiz.duration %}
+                <div class="timer-card mb-4">
+                    <div class="card-body p-4 text-center">
+                        <div class="timer-header">
+                            <i class="fas fa-hourglass-half"></i>
+                            <h6>Temps Restant</h6>
+                        </div>
+                        <div id="timer-display" class="timer-display">
+                            <span id="timer-minutes">{{ (quiz.duration // 60) }}</span>:<span id="timer-seconds">{{ "%02d"|format(quiz.duration % 60) }}</span>
+                        </div>
+                        <div class="timer-progress">
+                            <div id="timer-progress" class="timer-progress-fill"></div>
+                        </div>
+                        <p class="timer-note">Le quiz sera soumis automatiquement</p>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Timer END -->
+
+                <!-- Question navigation START -->
+                <div class="navigation-card">
+                    <div class="card-body p-4">
+                        <h6 class="nav-title">Navigation</h6>
+                        <div class="question-nav-grid" id="question-nav">
+                            {% for question in questions %}
+                            <button class="nav-btn" data-question="{{ loop.index0 }}">
+                                {{ loop.index }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Question navigation END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Quiz header START -->
+                <div class="quiz-main-card mb-4">
+                    <div class="card-body p-4">
+                        <div class="quiz-main-header">
+                            <div class="quiz-status">
+                                <span class="status-badge active">
+                                    <i class="fas fa-play"></i>
+                                    Quiz en cours
+                                </span>
+                            </div>
+                            <div class="quiz-actions">
+                                <button id="pause-btn" class="action-btn pause">
+                                    <i class="fas fa-pause"></i>
+                                    Pause
+                                </button>
+                                <button id="submit-quiz-btn" class="action-btn submit">
+                                    <i class="fas fa-check"></i>
+                                    Soumettre
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Quiz header END -->
+
+                <!-- Quiz form START -->
+                <form id="quiz-form">
+                    <div id="questions-container">
+                        {% for question in questions %}
+                        <div class="question-card" data-question-id="{{ question.id }}" style="display: {% if loop.first %}block{% else %}none{% endif %};">
+                            <div class="question-content">
+                                <div class="question-header">
+                                    <div class="question-number">
+                                        <span class="number-badge">Question {{ loop.index }}</span>
+                                        <div class="question-progress">
+                                            <div class="question-progress-fill" style="width: {{ (loop.index / questions|length) * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="question-actions">
+                                        <button type="button" class="flag-btn" data-question="{{ loop.index0 }}">
+                                            <i class="fas fa-flag"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="question-text">
+                                    <h4>{{ question.question }}</h4>
+                                </div>
+                                
+                                <div class="options-container">
+                                    <div class="option-group">
+                                        {% set optionLetters = ['A', 'B', 'C', 'D'] %}
+                                        {% for option in [question.optionA, question.optionB, question.optionC, question.optionD] %}
+                                        <div class="option-item" data-option="{{ optionLetters[loop.index0] }}">
+                                            <input type="radio" name="question_{{ question.id }}" value="{{ optionLetters[loop.index0] }}" id="option_{{ question.id }}_{{ optionLetters[loop.index0] }}" class="option-input">
+                                            <label for="option_{{ question.id }}_{{ optionLetters[loop.index0] }}" class="option-label">
+                                                <span class="option-letter">{{ optionLetters[loop.index0] }}</span>
+                                                <span class="option-text">{{ option }}</span>
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Navigation buttons -->
+                    <div class="quiz-navigation">
+                        <button type="button" id="prev-btn" class="nav-btn-prev" disabled>
+                            <i class="fas fa-arrow-left"></i>
+                            Précédent
+                        </button>
+                        <button type="button" id="next-btn" class="nav-btn-next">
+                            Suivant
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button type="button" id="finish-btn" class="nav-btn-finish" style="display: none;">
+                            <i class="fas fa-check-circle"></i>
+                            Terminer
+                        </button>
+                    </div>
+                </form>
+                <!-- Quiz form END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Quiz Taking END -->
+
+<!-- Oiseau animé -->
+<div class="quiz-bird" id="quiz-bird">
+    <div class="bird-body">
+        <div class="bird-eye left">
+            <div class="pupil"></div>
+        </div>
+        <div class="bird-eye right">
+            <div class="pupil"></div>
+        </div>
+        <div class="bird-beak"></div>
+        <div class="bird-wing left"></div>
+        <div class="bird-wing right"></div>
+        <div class="bird-tail"></div>
+    </div>
+</div>
+                                    <h5 class="mb-0">Question {{ loop.index }}</h5>
+                                    <span class="badge bg-primary">Required</span>
+                                </div>
+                                
+                                <p class="mb-4">{{ question.question }}</p>
+                                
+                                <div class="options-container">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" 
+                                               name="question_{{ question.id }}" 
+                                               id="option_a_{{ question.id }}" 
+                                               value="A">
+                                        <label class="form-check-label" for="option_a_{{ question.id }}">
+                                            <strong>A.</strong> {{ question.optionA }}
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" 
+                                               name="question_{{ question.id }}" 
+                                               id="option_b_{{ question.id }}" 
+                                               value="B">
+                                        <label class="form-check-label" for="option_b_{{ question.id }}">
+                                            <strong>B.</strong> {{ question.optionB }}
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" 
+                                               name="question_{{ question.id }}" 
+                                               id="option_c_{{ question.id }}" 
+                                               value="C">
+                                        <label class="form-check-label" for="option_c_{{ question.id }}">
+                                            <strong>C.</strong> {{ question.optionC }}
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" 
+                                               name="question_{{ question.id }}" 
+                                               id="option_d_{{ question.id }}" 
+                                               value="D">
+                                        <label class="form-check-label" for="option_d_{{ question.id }}">
+                                            <strong>D.</strong> {{ question.optionD }}
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" 
+                                            class="btn btn-outline-secondary prev-question-btn {% if loop.first %}disabled{% endif %}"
+                                            {% if loop.first %}disabled{% endif %}>
+                                        <i class="fas fa-arrow-left me-1"></i>Previous
+                                    </button>
+                                    <button type="button" 
+                                            class="btn btn-primary next-question-btn {% if loop.last %}d-none{% endif %}">
+                                        Next<i class="fas fa-arrow-right ms-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </form>
+                <!-- Quiz form END -->
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Quiz Taking END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<style>
+.question-card {
+    transition: all 0.3s ease;
+}
+
+.question-nav-btn.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+.question-nav-btn.answered {
+    background-color: #198754;
+    border-color: #198754;
+    color: white;
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.form-check-label {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.form-check-label:hover {
+    background-color: #f8f9fa;
+}
+
+.form-check-input:checked + .form-check-label {
+    background-color: #e7f3ff;
+    font-weight: 500;
+}
+
+.timer-display {
+    font-size: 2.5rem;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    color: #0d6efd;
+    margin: 10px 0;
+}
+
+.timer-display.text-danger {
+    color: #dc3545;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const questions = document.querySelectorAll('.question-card');
+    const navButtons = document.querySelectorAll('.question-nav-btn');
+    const prevBtn = document.querySelector('.prev-question-btn');
+    const nextBtn = document.querySelector('.next-question-btn');
+    const progressBar = document.getElementById('quiz-progress');
+    const progressText = document.getElementById('progress-text');
+    const submitBtn = document.getElementById('submit-quiz-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    
+    let currentQuestion = 0;
+    const totalQuestions = questions.length;
+    
+    // Timer variables
+    {% if quiz.duration %}
+    const totalSeconds = {{ quiz.duration }};
+    let timeRemaining = totalSeconds;
+    let timerInterval;
+    const timerMinutes = document.getElementById('timer-minutes');
+    const timerSeconds = document.getElementById('timer-seconds');
+    const timerProgress = document.getElementById('timer-progress');
+    {% endif %}
+    
+    function showQuestion(index) {
+        questions.forEach((q, i) => {
+            q.style.display = i === index ? 'block' : 'none';
+        });
+        
+        navButtons.forEach((btn, i) => {
+            btn.classList.toggle('active', i === index);
+        });
+        
+        // Update navigation buttons
+        if (prevBtn) {
+            prevBtn.disabled = index === 0;
+            prevBtn.classList.toggle('disabled', index === 0);
+        }
+        
+        if (nextBtn) {
+            nextBtn.style.display = index === totalQuestions - 1 ? 'none' : 'block';
+        }
+        
+        updateProgress();
+        updateNavButtons();
+    }
+    
+    function updateProgress() {
+        const answered = document.querySelectorAll('.form-check-input:checked').length;
+        const progress = Math.round((answered / totalQuestions) * 100);
+        progressBar.style.width = progress + '%';
+        progressText.textContent = progress + '%';
+    }
+    
+    function updateNavButtons() {
+        navButtons.forEach((btn, index) => {
+            const questionCard = questions[index];
+            const checkedInput = questionCard.querySelector('.form-check-input:checked');
+            btn.classList.toggle('answered', !!checkedInput);
+        });
+    }
+    
+    function submitQuiz(isAutoSubmit = false) {
+        const answers = {};
+        let unansweredCount = 0;
+        
+        questions.forEach(card => {
+            const questionId = card.dataset.questionId;
+            const checkedInput = card.querySelector('.form-check-input:checked');
+            
+            if (checkedInput) {
+                answers[questionId] = checkedInput.value;
+            } else {
+                unansweredCount++;
+            }
+        });
+        
+        if (!isAutoSubmit && unansweredCount > 0) {
+            if (!confirm(`Vous avez ${unansweredCount} question(s) sans réponse. Êtes-vous sûr de vouloir soumettre ?`)) {
+                return;
+            }
+        }
+        
+        // Stop timer if running
+        {% if quiz.duration %}
+        stopTimer();
+        {% endif %}
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Soumission...';
+        
+        // Submit the quiz
+        fetch('{{ path("app_student_submit_quiz", {"id": quiz.id}) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                answers: answers
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show results
+                showResults(data);
+            } else {
+                alert('Error submitting quiz: ' + data.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check me-1"></i>Submit Quiz';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error submitting quiz. Please try again.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-check me-1"></i>Submit Quiz';
+        });
+    }
+    
+    {% if quiz.duration %}
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            
+            timerMinutes.textContent = minutes.toString().padStart(2, '0');
+            timerSeconds.textContent = seconds.toString().padStart(2, '0');
+            
+            // Update timer progress bar
+            const progressPercent = (timeRemaining / totalSeconds) * 100;
+            timerProgress.style.width = progressPercent + '%';
+            
+            // Change color when time is running out
+            if (timeRemaining <= 60) {
+                timerProgress.classList.remove('bg-warning');
+                timerProgress.classList.add('bg-danger');
+                timerMinutes.parentElement.classList.add('text-danger');
+            }
+            
+            // Auto-submit when time expires
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                submitQuiz(true); // Auto-submit flag
+            }
+        }, 1000);
+    }
+    
+    function stopTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+    }
+    {% endif %}
+    
+    function showResults(results) {
+        const container = document.querySelector('.col-lg-9');
+        container.innerHTML = `
+            <div class="card shadow">
+                <div class="card-body text-center p-5">
+                    <div class="icon-xl ${results.score >= 70 ? 'bg-success' : 'bg-warning'} bg-opacity-10 text-${results.score >= 70 ? 'success' : 'warning'} rounded-circle mx-auto mb-3">
+                        <i class="fas fa-trophy fa-2x"></i>
+                    </div>
+                    <h3 class="mb-3">Quiz Completed!</h3>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <h4 class="text-primary mb-1">${results.score}%</h4>
+                                    <small class="text-muted">Your Score</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <h4 class="text-success mb-1">${results.correctAnswers}</h4>
+                                    <small class="text-muted">Correct Answers</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <h4 class="text-info mb-1">${results.totalQuestions}</h4>
+                                    <small class="text-muted">Total Questions</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-4">${results.message}</p>
+                    
+                    <!-- Gamification Section -->
+                    <div class="gamification-results mb-4 p-3 bg-light rounded-3">
+                        <h5 class="mb-3">
+                            <i class="fas fa-trophy text-warning me-2"></i>
+                            Your Gamification Progress
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="badge bg-primary fs-6 mb-2">
+                                        <i class="fas fa-star me-1"></i>
+                                        <span id="xp-earned">+${Math.round(results.score * 0.5)}</span> XP
+                                    </div>
+                                    <small class="text-muted">Points Earned</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="badge bg-success fs-6 mb-2">
+                                        <i class="fas fa-chart-line me-1"></i>
+                                        Level Up!
+                                    </div>
+                                    <small class="text-muted">Achievement</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="badge bg-warning text-dark fs-6 mb-2">
+                                        <i class="fas fa-medal me-1"></i>
+                                        New Badge
+                                    </div>
+                                    <small class="text-muted">Reward</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="badge bg-info fs-6 mb-2">
+                                        <i class="fas fa-fire me-1"></i>
+                                        Streak: 3
+                                    </div>
+                                    <small class="text-muted">Days Active</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center gap-2 mb-3">
+                        <a href="{{ path('app_gamification_profile') }}" class="btn btn-success">
+                            <i class="fas fa-trophy me-2"></i>View My Gamified Profile
+                        </a>
+                        <a href="{{ path('app_gamification_leaderboard') }}" class="btn btn-info">
+                            <i class="fas fa-crown me-2"></i>View Leaderboard
+                        </a>
+                    </div>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{{ path('app_student_quizzes') }}" class="btn btn-primary">
+                            <i class="fas fa-list me-2"></i>View More Quizzes
+                        </a>
+                        <a href="{{ path('app_student_dashboard') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-home me-2"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Event listeners
+    navButtons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            currentQuestion = index;
+            showQuestion(currentQuestion);
+        });
+    });
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < totalQuestions - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        });
+    }
+    
+    submitBtn.addEventListener('click', submitQuiz);
+    
+    // Update progress when answers change
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('form-check-input')) {
+            updateProgress();
+            updateNavButtons();
+        }
+    });
+    
+    // Initialize
+    showQuestion(0);
+    
+    // Start timer if quiz has duration
+    {% if quiz.duration %}
+    startTimer();
+    {% endif %}
+});
+</script>
+
+<!-- Gamification Assets -->
+<link rel="stylesheet" href="{{ asset('assets/css/gamification.css') }}">
+<script src="{{ asset('assets/js/gamification.js') }}"></script>
+
+<script>
+// Integration with Gamification System
+document.addEventListener('DOMContentLoaded', function() {
+    // Override showResults to include gamification
+    const originalShowResults = window.showResults;
+    window.showResults = function(results) {
+        // Call original function
+        originalShowResults(results);
+        
+        // Add gamification integration
+        setTimeout(() => {
+            // Calculate XP based on score
+            const xpEarned = Math.round(results.score * 0.5);
+            
+            // Trigger gamification events
+            if (window.gamificationManager) {
+                // Add points to user
+                fetch('/gamification/api/add-points', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        points: xpEarned,
+                        reason: `Quiz completed with ${results.score}% score`
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update gamification display
+                        updateGamificationDisplay(data.new_stats);
+                        
+                        // Show celebration effects
+                        showCelebrationEffects(results.score);
+                    }
+                })
+                .catch(error => {
+                    console.log('Gamification integration not available');
+                });
+            }
+            
+            // Animate gamification results
+            animateGamificationResults();
+        }, 500);
+    };
+    
+    function updateGamificationDisplay(stats) {
+        // Update XP display if elements exist
+        const xpElements = document.querySelectorAll('[data-gamification="points"]');
+        xpElements.forEach(element => {
+            element.textContent = stats.total_points;
+        });
+    }
+    
+    function showCelebrationEffects(score) {
+        if (score >= 70) {
+            // Show celebration for good scores
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+    }
+    
+    function animateGamificationResults() {
+        const gamificationSection = document.querySelector('.gamification-results');
+        if (gamificationSection) {
+            gamificationSection.style.opacity = '0';
+            gamificationSection.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                gamificationSection.style.transition = 'all 0.5s ease';
+                gamificationSection.style.opacity = '1';
+                gamificationSection.style.transform = 'translateY(0)';
+            }, 100);
+            
+            // Animate each badge
+            const badges = gamificationSection.querySelectorAll('.badge');
+            badges.forEach((badge, index) => {
+                badge.style.opacity = '0';
+                badge.style.transform = 'scale(0.8)';
+                
+                setTimeout(() => {
+                    badge.style.transition = 'all 0.3s ease';
+                    badge.style.opacity = '1';
+                    badge.style.transform = 'scale(1)';
+                }, 200 + (index * 100));
+            });
+        }
+    }
+    
+    // Simple confetti effect
+    function confetti(options) {
+        const defaults = {
+            particleCount: 50,
+            spread: 70,
+            origin: { y: 0.6 }
+        };
+        
+        const opts = Object.assign({}, defaults, options);
+        
+        for (let i = 0; i < opts.particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = '10px';
+            particle.style.height = '10px';
+            particle.style.backgroundColor = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'][Math.floor(Math.random() * 16)];
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = '-10px';
+            particle.style.opacity = '1';
+            particle.style.transform = `translateX(${(Math.random() - 0.5) * opts.spread * 2}px)`;
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '9999';
+            
+            document.body.appendChild(particle);
+            
+            const animation = particle.animate([
+                { transform: `translateX(${(Math.random() - 0.5) * opts.spread * 2}px) translateY(0)`, opacity: 1 },
+                { transform: `translateX(${(Math.random() - 0.5) * opts.spread * 2}px) translateY(${window.innerHeight}px)`, opacity: 0 }
+            ], {
+                duration: Math.random() * 1000 + 1000,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            });
+            
+            animation.onfinish = () => particle.remove();
+        }
+    }
+});
+</script>
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

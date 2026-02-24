@@ -1,0 +1,40 @@
+{# templates/components/gamification_widget.html.twig #}
+
+{# Widget principal pour afficher le profil gamifié d'un utilisateur #}
+<div class="gamification-widget">
+    {% if user_points and user_points.current_level %}
+        <div class="d-flex align-items-center gap-3">
+            <!-- Niveau -->
+            <div class="level-badge">
+                <span class="badge rounded-pill fs-6" 
+                      style="background-color: {{ user_points.current_level.color }}; color: white;">
+                    {% if user_points.current_level.icon %}
+                        <i class="{{ user_points.current_level.icon }} me-1"></i>
+                    {% endif %}
+                    {{ user_points.current_level.name }}
+                </span>
+            </div>
+            
+            <!-- Points XP -->
+            <div class="xp-points">
+                <span class="fw-bold text-primary">{{ user_points.total_points }}</span>
+                <small class="text-muted">XP</small>
+            </div>
+            
+            <!-- Progression -->
+            <div class="progress flex-grow-1" style="height: 8px;">
+                {% set progress = user_points.progressToNextLevel %}
+                <div class="progress-bar" 
+                     style="width: {{ progress }}%; background-color: {{ user_points.current_level.color }};">
+                </div>
+            </div>
+            
+            <!-- Rank -->
+            {% if show_rank is not defined or show_rank %}
+                <div class="rank-position">
+                    <span class="badge bg-success">#{{ user_points.rankPosition }}</span>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

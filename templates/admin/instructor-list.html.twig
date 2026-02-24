@@ -1,0 +1,188 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Instructor List - Admin{% endblock %}
+
+{% block admin_content %}
+<!-- Title -->
+<div class="row mb-4">
+    <div class="col-12 d-sm-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-2 mb-sm-0">Instructors</h1>
+        <a href="#" class="btn btn-sm btn-primary mb-0">Add Instructor</a>
+    </div>
+</div>
+
+<!-- Statistics cards START -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card stats-card stats-primary">
+            <i class="bi bi-people stats-icon text-primary"></i>
+            <h6 class="text-muted mb-3">Total Instructors</h6>
+            <div class="stats-number text-primary">{{ instructors|length }}</div>
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stats-card stats-success">
+            <i class="bi bi-person-plus stats-icon text-success"></i>
+            <h6 class="text-muted mb-3">New This Month</h6>
+            <div class="stats-number text-success">{{ instructors|length }}</div>
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stats-card stats-warning">
+            <i class="bi bi-person-check stats-icon text-warning"></i>
+            <h6 class="text-muted mb-3">Active Instructors</h6>
+            <div class="stats-number text-warning">{{ instructors|filter(i => i.rating >= 4.0)|length }}</div>
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar bg-warning" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stats-card stats-danger">
+            <i class="bi bi-clock stats-icon text-danger"></i>
+            <h6 class="text-muted mb-3">Pending Approval</h6>
+            <div class="stats-number text-danger">{{ instructors|filter(i => i.rating < 4.0)|length }}</div>
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 15%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Statistics cards END -->
+
+<!-- Search and filter START -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search instructors...">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option selected>All Status</option>
+                    <option>Active</option>
+                    <option>Inactive</option>
+                    <option>Pending</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option selected>Specialization</option>
+                    <option>Development</option>
+                    <option>Design</option>
+                    <option>Business</option>
+                    <option>Marketing</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Instructor table START -->
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Instructor</th>
+                        <th>Specialization</th>
+                        <th>Courses</th>
+                        <th>Students</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for instructor in instructors %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="rounded-circle" width="40" alt="instructor">
+                                <div class="ms-3">
+                                    <h6 class="mb-0">{{ instructor.name }}</h6>
+                                    <p class="mb-0 small text-muted">{{ instructor.email }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-primary bg-opacity-10 text-primary">{{ instructor.specialization ?? 'General' }}</span></td>
+                        <td>{{ instructor.coursesCount }}</td>
+                        <td>{{ instructor.studentsCount ?? 0 }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="text-warning me-1">{{ instructor.rating ?? 0 }}</span>
+                                <div class="text-warning">
+                                    {% set rating = instructor.rating ?? 0 %}
+                                    {% for i in range(5) %}
+                                        {% if i < rating %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star-half"></i>{% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-success bg-opacity-15 text-success">{{ instructor.status ?? 'Active' }}</span></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="bi bi-inbox display-1 text-muted"></i>
+                            <p class="text-muted mt-3">No instructors found.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination START -->
+        <div class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4">
+            <p class="mb-0 text-muted">Showing 1 to {{ instructors|length > 0 ? instructors|length : 0 }} of {{ instructors|length }} entries</p>
+            <nav class="mt-2 mt-sm-0">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    {% if instructors|length > 1 %}
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    {% endif %}
+                    {% if instructors|length > 2 %}
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    {% endif %}
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- Pagination END -->
+    </div>
+</div>
+<!-- Instructor table END -->
+{% endblock %}

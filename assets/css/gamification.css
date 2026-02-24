@@ -1,0 +1,386 @@
+/* Gamification Styles */
+/* =================== */
+
+/* Variables de couleur pour les niveaux */
+:root {
+    --level-beginner: #6366f1;
+    --level-novice: #22c55e;
+    --level-intermediate: #f59e0b;
+    --level-advanced: #ef4444;
+    --level-expert: #8b5cf6;
+    --level-master: #ec4899;
+    --level-legend: #f97316;
+    
+    --xp-primary: #3b82f6;
+    --xp-secondary: #1e40af;
+    --badge-gold: #fbbf24;
+    --badge-silver: #9ca3af;
+    --badge-bronze: #cd7f32;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40%, 43% {
+        transform: translateY(-8px);
+    }
+    70% {
+        transform: translateY(-4px);
+    }
+    90% {
+        transform: translateY(-2px);
+    }
+}
+
+/* Widget de Gamification */
+.gamification-widget {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 1rem;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.gamification-widget .level-badge .badge {
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.gamification-widget .xp-points {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.gamification-widget .progress {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.gamification-widget .progress-bar {
+    background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Badges */
+.badge-icon-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.badge-icon {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.badge-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+}
+
+.badge-display.interactive:hover .badge-icon::before {
+    animation: shimmer 0.5s ease;
+    opacity: 1;
+}
+
+.badge-display.interactive:hover .badge-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Badge unlocked animation */
+.badge-unlock {
+    animation: bounce 1s ease, pulse 2s infinite 1s;
+}
+
+.badge-unlock .badge-icon {
+    box-shadow: 0 0 30px currentColor;
+}
+
+/* Niveaux */
+.level-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.level-indicator:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Progression de niveau */
+.level-progress {
+    position: relative;
+    background: #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 30px;
+}
+
+.level-progress .progress-bar {
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    transition: width 1s ease;
+}
+
+.level-progress .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* Leaderboard */
+.leaderboard-entry {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.leaderboard-entry:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    border-left-color: var(--xp-primary);
+    transform: translateX(4px);
+}
+
+.leaderboard-entry.current-user {
+    background: linear-gradient(90deg, rgba(0, 123, 255, 0.1) 0%, transparent 100%);
+    border-left-color: var(--xp-primary);
+}
+
+.rank-medal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.rank-medal.gold {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+}
+
+.rank-medal.silver {
+    background: linear-gradient(135deg, #e5e7eb, #9ca3af);
+    color: white;
+    box-shadow: 0 4px 15px rgba(156, 163, 175, 0.4);
+}
+
+.rank-medal.bronze {
+    background: linear-gradient(135deg, #d97706, #cd7f32);
+    color: white;
+    box-shadow: 0 4px 15px rgba(205, 127, 50, 0.4);
+}
+
+/* Points XP Animation */
+.points-earned {
+    position: fixed;
+    background: var(--xp-primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    z-index: 1000;
+    pointer-events: none;
+    animation: pointsFloat 2s ease-out forwards;
+}
+
+@keyframes pointsFloat {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(0) scale(1.1);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(-30px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-60px) scale(0.9);
+    }
+}
+
+/* Notification de badge */
+.badge-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1050;
+    min-width: 300px;
+    animation: slideInRight 0.5s ease, slideOutRight 0.5s ease 2.5s forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .gamification-widget {
+        padding: 0.75rem;
+    }
+    
+    .gamification-widget .d-flex {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .badge-display.large .badge-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .leaderboard-entry {
+        padding: 0.75rem;
+    }
+    
+    .rank-medal {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .gamification-widget {
+        background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%);
+    }
+    
+    .badge-notification {
+        background: #1f2937;
+        color: white;
+    }
+    
+    .leaderboard-entry:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+    }
+}
+
+/* Thèmes pour les catégories de badges */
+.badge-category-achievement {
+    --badge-color: var(--badge-gold);
+}
+
+.badge-category-learning {
+    --badge-color: var(--level-beginner);
+}
+
+.badge-category-participation {
+    --badge-color: var(--level-novice);
+}
+
+.badge-category-milestone {
+    --badge-color: var(--level-advanced);
+}
+
+/* Effets spéciaux */
+.glow-effect {
+    box-shadow: 0 0 20px currentColor;
+}
+
+.pulse-effect {
+    animation: pulse 2s infinite;
+}
+
+.float-effect {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}

@@ -1,0 +1,28 @@
+<!-- Timer display for quiz table -->
+{% if quiz.duration %}
+<span class="badge bg-info-subtle text-info me-1" title="Duration">
+    <i class="fas fa-hourglass-half me-1"></i>{{ quiz.duration }}min
+</span>
+{% endif %}
+
+{% if quiz.openingDate %}
+<span class="badge bg-warning-subtle text-warning me-1" title="Opens">
+    <i class="fas fa-calendar-plus me-1"></i>{{ quiz.openingDate|date('d/m') }}
+</span>
+{% endif %}
+
+{% if quiz.closingDate %}
+<span class="badge bg-danger-subtle text-danger me-1" title="Closes">
+    <i class="fas fa-calendar-times me-1"></i>{{ quiz.closingDate|date('d/m') }}
+</span>
+{% endif %}
+
+{% if quiz.status %}
+    {% if quiz.status == 'upcoming' %}
+        <span class="badge bg-warning">Bientôt</span>
+    {% elseif quiz.status == 'closed' %}
+        <span class="badge bg-danger">Fermé</span>
+    {% else %}
+        <span class="badge bg-success">Ouvert</span>
+    {% endif %}
+{% endif %}

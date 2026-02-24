@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\Job;
 use App\Entity\User;
 use App\Repository\ProductRepository;
+use App\Repository\JobRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,6 +19,7 @@ class CartController extends AbstractController
 {
     public function __construct(
         private ProductRepository $productRepository,
+        private JobRepository $jobRepository,
         private EntityManagerInterface $entityManager,
         private RequestStack $requestStack
     ) {}
@@ -29,15 +32,30 @@ class CartController extends AbstractController
         $cartItems = [];
         $total = 0;
 
-        foreach ($cart as $productId => $quantity) {
-            $product = $this->productRepository->find($productId);
+        foreach ($cart as $itemId => $quantity) {
+            // Try to find as product first
+            $product = $this->productRepository->find($itemId);
             if ($product) {
                 $cartItems[] = [
+                    'type' => 'product',
                     'product' => $product,
                     'quantity' => $quantity,
                     'subtotal' => $product->getPrice() * $quantity
                 ];
                 $total += $product->getPrice() * $quantity;
+                continue;
+            }
+            
+            // Try to find as job
+            $job = $this->jobRepository->find($itemId);
+            if ($job) {
+                $cartItems[] = [
+                    'type' => 'job',
+                    'job' => $job,
+                    'quantity' => $quantity,
+                    'subtotal' => ($job->getBudget() ?? 0) * $quantity
+                ];
+                $total += ($job->getBudget() ?? 0) * $quantity;
             }
         }
 

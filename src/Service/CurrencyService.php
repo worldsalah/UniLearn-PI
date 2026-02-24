@@ -22,8 +22,39 @@ class CurrencyService
         'INR' => '₹'
     ];
 
-    public function __construct(private HttpClientInterface $httpClient)
+    public function __construct(private HttpClientInterface $httpClient, string $exchangerateApiKey = null)
     {
+        // Use injected key if available, otherwise use default
+        $this->apiKey = $exchangerateApiKey ?? $this->apiKey;
+    }
+
+    private function fetchExchangeRates(): void
+    {
+        try {
+            // Try without API key first (free tier)
+            $response = $this->httpClient->request('GET', $this->apiUrl, [
+                'timeout' => 10
+            ]);
+
+            $data = $response->toArray();
+            
+            if (!isset($data['rates'])) {
+                throw new \Exception('Invalid API response: No rates found');
+            }
+
+            if (empty($data['rates'])) {
+                throw new \Exception('No exchange rates available');
+            }
+
+            $this->exchangeRates = $data['rates'];
+            
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            error_log('Currency API Error: ' . $e->getMessage());
+            
+            // Use fallback rates if API fails
+            $this->exchangeRates = $this->getFallbackRates();
+        }
     }
 
     public function getExchangeRates(): array
@@ -84,31 +115,19 @@ class CurrencyService
         }
     }
 
-    private function fetchExchangeRates(): void
+    private function getFallbackRates(): array
     {
-        try {
-            $response = $this->httpClient->request('GET', $this->apiUrl . '?access_key=' . $this->apiKey);
-            $data = $response->toArray();
-            
-            if (isset($data['rates'])) {
-                $this->exchangeRates = $data['rates'];
-                // Add USD as base rate (1:1)
-                $this->exchangeRates['USD'] = 1.0;
-            }
-        } catch (\Exception $e) {
-            // Fallback to default rates if API fails
-            $this->exchangeRates = [
-                'USD' => 1.0,
-                'EUR' => 0.85,
-                'GBP' => 0.73,
-                'JPY' => 110.0,
-                'CAD' => 1.25,
-                'AUD' => 1.35,
-                'CHF' => 0.92,
-                'CNY' => 6.45,
-                'INR' => 74.0
-            ];
-        }
+        return [
+            'USD' => 1.0,
+            'EUR' => 0.85,
+            'GBP' => 0.73,
+            'JPY' => 110.0,
+            'CAD' => 1.25,
+            'AUD' => 1.35,
+            'CHF' => 0.92,
+            'CNY' => 6.45,
+            'INR' => 74.0
+        ];
     }
 
     public function getCurrencySelector(): array

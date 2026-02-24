@@ -56,8 +56,48 @@
             "./migrations/.gitignore"
         ]
     },
+<<<<<<< Updated upstream
+=======
+    "easycorp/easyadmin-bundle": {
+        "version": "4.29",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.14",
+            "ref": "13b3e524d1038a6861ad6c7fc64e31b644ba0c54"
+        },
+        "files": [
+            "./config/routes/easyadmin.yaml"
+        ]
+    },
+    "google/apiclient": {
+        "version": "2.19",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "2.10",
+            "ref": "07a97ec434d43b7903c78069a04c92adb6442e52"
+        },
+        "files": [
+            "./config/packages/google_apiclient.yaml"
+        ]
+    },
+>>>>>>> Stashed changes
     "knplabs/knp-paginator-bundle": {
         "version": "v6.10.0"
+    },
+    "nelmio/api-doc-bundle": {
+        "version": "5.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "c8e0c38e1a280ab9e37587a8fa32b251d5bc1c94"
+        },
+        "files": [
+            "./config/packages/nelmio_api_doc.yaml",
+            "./config/routes/nelmio_api_doc.yaml"
+        ]
     },
     "php-cs-fixer/shim": {
         "version": "3.94",
@@ -319,6 +359,18 @@
             "./templates/base.html.twig"
         ]
     },
+    "symfony/uid": {
+        "version": "6.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.2",
+            "ref": "d294ad4add3e15d7eb1bae0221588ca89b38e558"
+        },
+        "files": [
+            "./config/packages/uid.yaml"
+        ]
+    },
     "symfony/ux-turbo": {
         "version": "2.32",
         "recipe": {
@@ -327,6 +379,18 @@
             "version": "2.19",
             "ref": "9dd2778a116b6e5e01e5e1582d03d5a9e82630de"
         }
+    },
+    "symfony/ux-twig-component": {
+        "version": "2.32",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.13",
+            "ref": "f367ae2a1faf01c503de2171f1ec22567febeead"
+        },
+        "files": [
+            "./config/packages/twig_component.yaml"
+        ]
     },
     "symfony/validator": {
         "version": "6.4",

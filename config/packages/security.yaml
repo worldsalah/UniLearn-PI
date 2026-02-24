@@ -28,6 +28,7 @@ security:
         - { path: ^/product, roles: PUBLIC_ACCESS }
         - { path: ^/job, roles: PUBLIC_ACCESS }
         - { path: ^/order, roles: PUBLIC_ACCESS }
+        - { path: ^/ai-analysis, roles: PUBLIC_ACCESS }
         # Admin routes require authentication
         - { path: ^/admin, roles: ROLE_ADMIN }
         # Profile and user-specific routes require authentication

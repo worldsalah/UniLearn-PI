@@ -59,50 +59,56 @@ class RecommendationBundle {
     }
 
     async loadRecentlyViewed() {
-        const container = document.querySelector(this.options.recentlyViewedContainer);
-        if (!container) return;
-
         try {
-            const params = new URLSearchParams({
-                limit: this.options.limit,
-                ...(this.options.userId && { user_id: this.options.userId })
+            const response = await fetch(this.options.apiEndpoints.recentlyViewed, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
 
-            const response = await fetch(`${this.options.apiEndpoints.recentlyViewed}?${params}`);
-            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
 
-            if (data.success) {
-                this.renderRecentlyViewed(data.data, container);
+            const data = await response.json();
+            
+            if (data.success && data.data && data.data.length > 0) {
+                this.displayRecentlyViewed(data.data);
             } else {
-                throw new Error(data.error);
+                this.showEmptyState(this.options.recentlyViewedContainer, 'No recently viewed products');
             }
         } catch (error) {
             console.error('Error loading recently viewed:', error);
-            container.innerHTML = this.getErrorHTML('Recently Viewed');
+            this.showEmptyState(this.options.recentlyViewedContainer, 'Unable to load recently viewed products');
         }
     }
 
     async loadRecommended() {
-        const container = document.querySelector(this.options.recommendedContainer);
-        if (!container) return;
-
         try {
-            const params = new URLSearchParams({
-                limit: this.options.limit,
-                ...(this.options.userId && { user_id: this.options.userId })
+            const response = await fetch(this.options.apiEndpoints.recommended, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
 
-            const response = await fetch(`${this.options.apiEndpoints.recommended}?${params}`);
-            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
 
-            if (data.success) {
-                this.renderRecommended(data.data, container);
+            const data = await response.json();
+            
+            if (data.success && data.data && data.data.length > 0) {
+                this.displayRecommended(data.data);
             } else {
-                throw new Error(data.error);
+                this.showEmptyState(this.options.recommendedContainer, 'No recommendations available');
             }
         } catch (error) {
-            console.error('Error loading recommended:', error);
-            container.innerHTML = this.getErrorHTML('Recommended for you');
+            console.error('Error loading recommendations:', error);
+            this.showEmptyState(this.options.recommendedContainer, 'Unable to load recommendations');
         }
     }
 
@@ -129,21 +135,20 @@ class RecommendationBundle {
         }
     }
 
-    renderRecentlyViewed(products, container) {
-        if (products.length === 0) {
-            container.innerHTML = this.getEmptyHTML('No recently viewed products');
-            return;
-        }
+    displayRecentlyViewed(products) {
+        const container = document.querySelector(this.options.recentlyViewedContainer);
+        if (!container) return;
 
-        const html = `
-            ${this.options.showTitles ? '<h3 class="recommendation-title">🛍 Recently Viewed</h3>' : ''}
-            <div class="recommendation-carousel" data-carousel="recently-viewed">
-                ${products.map(product => this.getProductCard(product)).join('')}
-            </div>
-        `;
+        // Add tags and categories to products
+        const productsWithTags = products.map(product => ({
+            ...product,
+            tags: this.generateProductTags(product),
+            category: this.getProductCategory(product),
+            isHot: this.isHotProduct(product),
+            isCheap: this.isCheapProduct(product)
+        }));
 
-        container.innerHTML = html;
-        this.initializeCarousel(container.querySelector('[data-carousel="recently-viewed"]'));
+        this.renderCarousel(container, productsWithTags, 'Recently Viewed');
     }
 
     renderRecommended(products, container) {

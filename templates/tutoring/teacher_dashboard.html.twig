@@ -1,0 +1,189 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Teacher Dashboard - UniLearn{% endblock %}
+
+{% block body %}
+<div class="bg-gray-50 min-h-screen">
+    {# Header #}
+    <div class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <h1 class="text-2xl font-bold text-gray-900">Welcome back, {{ app.user.firstName }}!</h1>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        {# Stats Cards #}
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <span class="text-2xl">👥</span>
+                    </div>
+                    <div class="ml-4">
+                        <div class="text-gray-500 text-sm">Total Students</div>
+                        <div class="text-2xl font-bold">{{ stats.totalStudents }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-full">
+                        <span class="text-2xl">📅</span>
+                    </div>
+                    <div class="ml-4">
+                        <div class="text-gray-500 text-sm">This Week</div>
+                        <div class="text-2xl font-bold">{{ stats.weekSessions }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 rounded-full">
+                        <span class="text-2xl">⭐</span>
+                    </div>
+                    <div class="ml-4">
+                        <div class="text-gray-500 text-sm">Rating</div>
+                        <div class="text-2xl font-bold">{{ stats.rating|number_format(1) }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-100 rounded-full">
+                        <span class="text-2xl">💬</span>
+                    </div>
+                    <div class="ml-4">
+                        <div class="text-gray-500 text-sm">Reviews</div>
+                        <div class="text-2xl font-bold">{{ stats.reviewCount }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {# Today's Schedule #}
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b">
+                    <h2 class="text-xl font-semibold">Today's Schedule</h2>
+                </div>
+                <div class="p-6">
+                    {% if todayBookings|length > 0 %}
+                    <div class="space-y-4">
+                        {% for booking in todayBookings %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-4">
+                                <div class="text-center">
+                                    <div class="text-lg font-semibold">{{ booking.timeSlot.startTime|date('H:i') }}</div>
+                                    <div class="text-gray-500 text-sm">{{ booking.timeSlot.endTime|date('H:i') }}</div>
+                                </div>
+                                <div>
+                                    <div class="font-medium">{{ booking.student.firstName }} {{ booking.student.lastName }}</div>
+                                    <div class="text-gray-500 text-sm">
+                                        {% if booking.notes %}{{ booking.notes|slice(0, 50) }}{% else %}No notes{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-1 text-xs rounded-full
+                                    {{ booking.status == 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
+                                    {{ booking.status|capitalize }}
+                                </span>
+                                {% if booking.status == 'confirmed' %}
+                                <button class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    Start
+                                </button>
+                                {% elseif booking.status == 'pending' %}
+                                <button class="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700">
+                                    Confirm
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8 text-gray-500">
+                        <div class="text-4xl mb-2">📅</div>
+                        <p>No sessions today</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Pending Requests #}
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b">
+                    <h2 class="text-xl font-semibold">Pending Requests</h2>
+                </div>
+                <div class="p-6">
+                    {% if pendingBookings|length > 0 %}
+                    <div class="space-y-4">
+                        {% for booking in pendingBookings %}
+                        <div class="p-4 border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="font-medium">{{ booking.student.firstName }} {{ booking.student.lastName }}</div>
+                                    <div class="text-gray-500 text-sm">
+                                        {{ booking.timeSlot.date|date('M j') }} at {{ booking.timeSlot.startTime|date('H:i') }}
+                                    </div>
+                                </div>
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">
+                                    Pending
+                                </span>
+                            </div>
+                            <div class="flex gap-2 mt-3">
+                                <button class="flex-1 px-3 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700">
+                                    Accept
+                                </button>
+                                <button class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50">
+                                    Propose Time
+                                </button>
+                                <button class="px-3 py-2 border border-red-300 text-red-600 rounded text-sm hover:bg-red-50">
+                                    Decline
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8 text-gray-500">
+                        <div class="text-4xl mb-2">✅</div>
+                        <p>No pending requests</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Quick Actions #}
+        <div class="mt-8 bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="{{ path('tutoring_availability') }}" 
+                   class="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
+                    <span class="text-3xl mb-2">📅</span>
+                    <span class="text-sm font-medium">Set Availability</span>
+                </a>
+                <a href="{{ path('tutoring_bookings') }}" 
+                   class="flex flex-col items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition">
+                    <span class="text-3xl mb-2">📋</span>
+                    <span class="text-sm font-medium">All Bookings</span>
+                </a>
+                <a href="{{ path('profile') }}" 
+                   class="flex flex-col items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition">
+                    <span class="text-3xl mb-2">👤</span>
+                    <span class="text-sm font-medium">Edit Profile</span>
+                </a>
+                <a href="#" 
+                   class="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                    <span class="text-3xl mb-2">💰</span>
+                    <span class="text-sm font-medium">Earnings</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

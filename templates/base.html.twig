@@ -95,7 +95,10 @@
 
     <!-- Theme CSS -->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
-
+    
+    <!-- Importmap for AssetMapper -->
+    {{ importmap('app') }}
+    
     <!-- Global Notification Styles -->
     <style>
     /* Beautiful Global Notification System */
@@ -273,9 +276,9 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Disable Turbo for lesson pages -->
+    <!-- Disable Turbo for lesson and test pages -->
     <script>
-        if (window.location.pathname.includes('/lesson/')) {
+        if (window.location.pathname.includes('/lesson/') || window.location.pathname.includes('/test')) {
             if (window.Turbo) {
                 Turbo.session.drive = false;
             }

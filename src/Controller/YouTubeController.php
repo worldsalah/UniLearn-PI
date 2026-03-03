@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class YouTubeController extends AbstractController
 {
@@ -88,7 +88,7 @@ class YouTubeController extends AbstractController
         $maxResults = $request->query->get('maxResults', 1);
         $maxResults = is_numeric($maxResults) ? (int) $maxResults : 1;
 
-        if (empty($query)) {
+        if (!is_string($query) || $query === '') {
             return new JsonResponse(['error' => 'Query parameter is required'], 400);
         }
 

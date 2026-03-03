@@ -20,7 +20,7 @@ class OrderController extends AbstractController
         // Get the currently logged-in user
         $user = $this->getUser();
 
-        if (!$user) {
+        if ($user === null) {
             // If no user is logged in, redirect to login
             return $this->redirectToRoute('app_login');
         }
@@ -28,7 +28,7 @@ class OrderController extends AbstractController
         $order = new Order();
         $order->setProduct($product);
         $order->setBuyer($user instanceof \App\Entity\User ? $user : null);
-        $order->setTotalPrice($product->getPrice());
+        $order->setTotalPrice($product->getPrice() ?? 0.0);
 
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
@@ -52,7 +52,7 @@ class OrderController extends AbstractController
         // Get the currently logged-in user
         $user = $this->getUser();
 
-        if (!$user) {
+        if ($user === null) {
             // If no user is logged in, redirect to login
             return $this->redirectToRoute('app_login');
         }
@@ -66,7 +66,7 @@ class OrderController extends AbstractController
 
         $order->setStatus('completed');
         $order->setRating((int) $rating);
-        $order->setReview($review);
+        $order->setReview(is_string($review) ? $review : null);
 
         $entityManager->flush();
 

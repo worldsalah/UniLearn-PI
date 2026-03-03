@@ -1,69 +1,23 @@
 {% extends 'front_base.html.twig' %}
 
-{% block title %}All Courses{% endblock %}
+{% block title %}All Courses - UniLearn{% endblock %}
 
 {% block stylesheets %}
+{{ parent() }}
 <style>
-/* Course Grid Styles */
-.page-banner {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 4rem 0;
-    color: white;
-}
-
-.page-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-.breadcrumb {
-    background: transparent;
-    padding: 0;
-}
-
-.breadcrumb-item {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.breadcrumb-item.active {
-    color: white;
-}
-
-.breadcrumb-item a {
-    color: white;
-    text-decoration: none;
-}
-
-.breadcrumb-item a:hover {
-    text-decoration: underline;
-}
-
-.search-form {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.input-borderless {
-    border: none !important;
-}
-
-.input-borderless input:focus {
-    box-shadow: none !important;
+html, body {
+    background-color: #ffffff !important;
 }
 
 .course-card {
-    border: none;
-    border-radius: 12px;
-    overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
+    border: none;
+    overflow: hidden;
 }
 
 .course-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
 .course-card .card-img-top {
@@ -76,16 +30,63 @@
     transform: scale(1.05);
 }
 
-.course-badge {
+/* Enhanced Course Image Container */
+.course-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.course-image-container .card-img-top {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.course-card:hover .course-image-container .card-img-top {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.course-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.course-card:hover .course-image-overlay {
+    opacity: 1;
+}
+
+.course-duration-badge,
+.course-level-badge {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
     font-size: 0.75rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 15px;
     font-weight: 600;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    align-self: flex-start;
+}
+
+.course-level-badge {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
 }
 
 .course-title {
     font-size: 1.1rem;
     font-weight: 600;
+    line-height: 1.4;
     margin-bottom: 0.5rem;
 }
 
@@ -96,192 +97,597 @@
 }
 
 .course-title a:hover {
-    color: #667eea;
+    color: #007bff;
 }
 
 .course-description {
-    font-size: 0.9rem;
-    color: #6c757d;
-    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    margin-bottom: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
+.course-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
 .rating-stars {
     color: #ffc107;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
+}
+
+.rating-stars i {
+    margin-right: 2px;
 }
 
 .course-meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: #6c757d;
 }
 
-.sidebar-card {
+.course-meta i {
+    margin-right: 5px;
+}
+
+.search-form {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.search-form .form-control,
+.search-form .form-select {
     border: none;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     background: white;
 }
 
-.sidebar-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #2c3e50;
-}
-
-.filter-section {
-    margin-bottom: 1.5rem;
-}
-
-.filter-section h4 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #2c3e50;
-}
-
-.filter-section h6 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: #495057;
-}
-
-.filter-list {
-    list-style: none;
-    padding: 0;
-}
-
-.filter-list li {
-    padding: 0.5rem 0;
-    border-bottom: none;
-}
-
-.filter-list li:last-child {
-    border-bottom: none;
-}
-
-.filter-list a {
-    color: #6c757d;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.filter-list a:hover {
-    color: #667eea;
-}
-
-.filter-list .active {
-    color: #667eea;
-    font-weight: 600;
-}
-
-/* Checkbox filter styles */
-.d-flex justify-content-between align-items-center {
-    padding: 0.25rem 0;
-}
-
-.form-check {
-    margin-bottom: 0.5rem;
-}
-
-.form-check-input:checked {
-    background-color: #667eea;
-    border-color: #667eea;
-}
-
-.form-check-label {
-    color: #495057;
-    font-size: 0.9rem;
-}
-
-/* Button filter styles */
-.btn-primary-soft-check {
-    background: rgba(102, 126, 234, 0.1);
-    border: 1px solid rgba(102, 126, 234, 0.2);
-    color: #667eea;
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
-    border-radius: 0.375rem;
-    transition: all 0.3s ease;
-}
-
-.btn-primary-soft-check:hover {
-    background: rgba(102, 126, 234, 0.2);
-    border-color: #667eea;
-    color: #667eea;
-}
-
-.btn-check:checked + .btn-primary-soft-check {
-    background: #667eea;
-    border-color: #667eea;
-    color: white;
-}
-
-/* Collapse styles */
-.btn-more {
-    color: #667eea;
-    text-decoration: none;
-    font-size: 0.875rem;
-    cursor: pointer;
-}
-
-.btn-more:hover {
-    color: #5a6fd8;
-    text-decoration: underline;
-}
-
-.see-less {
-    display: none;
-}
-
-[aria-expanded="true"] .see-more {
-    display: none;
-}
-
-[aria-expanded="true"] .see-less {
-    display: inline;
-}
-
-.price-range {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-.price-range input {
-    width: 100%;
+.search-form .form-control:focus,
+.search-form .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
 }
 
 .results-count {
-    font-size: 0.9rem;
     color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.filter-sidebar .card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+}
+
+.filter-sidebar .form-check {
+    margin-bottom: 0.75rem;
+}
+
+.filter-sidebar .form-check-input:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Complete Enhanced Pagination Styles */
+nav[aria-label="Course pagination"] {
+    position: relative;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+}
+
+nav[aria-label="Course pagination"]::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 6px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 3px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 40px rgba(0,0,0,0.1),
+        0 0 0 1px rgba(102, 126, 234, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.pagination::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+    animation: shimmer 3s infinite linear;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* All pagination elements */
+.pagination .first,
+.pagination .previous,
+.pagination .page,
+.pagination .current,
+.pagination .next,
+.pagination .last {
+    position: relative;
+}
+
+.pagination .first a,
+.pagination .previous a,
+.pagination .page a,
+.pagination .next a,
+.pagination .last a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    height: 52px;
+    border: none;
+    color: #495057;
+    padding: 0.75rem 1.25rem;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    box-shadow: 
+        0 4px 12px rgba(0,0,0,0.08),
+        0 0 0 1px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.pagination .first a::before,
+.pagination .previous a::before,
+.pagination .page a::before,
+.pagination .next a::before,
+.pagination .last a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+}
+
+.pagination .first a:hover::before,
+.pagination .previous a:hover::before,
+.pagination .page a:hover::before,
+.pagination .next a:hover::before,
+.pagination .last a:hover::before {
+    left: 0;
+}
+
+.pagination .first a:hover,
+.pagination .previous a:hover,
+.pagination .page a:hover,
+.pagination .next a:hover,
+.pagination .last a:hover {
+    color: white;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 
+        0 12px 25px rgba(102, 126, 234, 0.4),
+        0 0 0 1px rgba(102, 126, 234, 0.2);
+}
+
+.pagination .first a span,
+.pagination .previous a span,
+.pagination .page a span,
+.pagination .next a span,
+.pagination .last a span {
+    position: relative;
+    z-index: 1;
+}
+
+/* Current page - completely different design */
+.pagination .current {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 
+        0 12px 25px rgba(102, 126, 234, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.pagination .current::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        transparent 70%);
+    animation: shine 3s infinite linear;
+}
+
+@keyframes shine {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.pagination .current::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 20px;
+    z-index: -1;
+    opacity: 0.4;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.05);
+    }
+}
+
+/* Special styling for navigation buttons */
+.pagination .first a,
+.pagination .previous a,
+.pagination .next a,
+.pagination .last a {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    color: #495057;
+    font-weight: 700;
+    border: 2px solid #e9ecef;
+    position: relative;
+}
+
+.pagination .first a::after,
+.pagination .previous a::after,
+.pagination .next a::after,
+.pagination .last a::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(102, 126, 234, 0.1);
+    transform: translate(-50%, -50%);
+    transition: all 0.4s ease;
+}
+
+.pagination .first a:hover::after,
+.pagination .previous a:hover::after,
+.pagination .next a:hover::after,
+.pagination .last a:hover::after {
+    width: 100%;
+    height: 100%;
+}
+
+.pagination .first a:hover,
+.pagination .previous a:hover,
+.pagination .next a:hover,
+.pagination .last a:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-color: #667eea;
+    transform: translateY(-3px) scale(1.08);
+}
+
+/* Page number buttons */
+.pagination .page a {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    color: #667eea;
+    font-weight: 600;
+}
+
+.pagination .page a:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Disabled states */
+.pagination .first.disabled a,
+.pagination .previous.disabled a,
+.pagination .next.disabled a,
+.pagination .last.disabled a {
+    color: #adb5bd;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 
+        0 2px 8px rgba(0,0,0,0.05),
+        0 0 0 1px rgba(0,0,0,0.05);
+}
+
+.pagination .first.disabled a:hover,
+.pagination .previous.disabled a:hover,
+.pagination .next.disabled a:hover,
+.pagination .last.disabled a:hover {
+    color: #adb5bd;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    transform: none;
+    box-shadow: 
+        0 2px 8px rgba(0,0,0,0.05),
+        0 0 0 1px rgba(0,0,0,0.05);
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+    nav[aria-label="Course pagination"] {
+        margin-top: 3rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .pagination {
+        padding: 1.5rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .pagination .first a,
+    .pagination .previous a,
+    .pagination .page a,
+    .pagination .next a,
+    .pagination .last a {
+        min-width: 44px;
+        height: 44px;
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .pagination .current {
+        min-width: 48px;
+        height: 48px;
+        font-size: 1rem;
+    }
+    
+    .pagination .first a:hover,
+    .pagination .previous a:hover,
+    .pagination .page a:hover,
+    .pagination .next a:hover,
+    .pagination .last a:hover {
+        transform: translateY(-2px) scale(1.02);
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination {
+        padding: 1rem;
+        gap: 0.25rem;
+    }
+    
+    .pagination .first a,
+    .pagination .previous a,
+    .pagination .page a,
+    .pagination .next a,
+    .pagination .last a {
+        min-width: 40px;
+        height: 40px;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .pagination .current {
+        min-width: 44px;
+        height: 44px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Loading state for pagination */
+.pagination.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.pagination.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #667eea;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+}
+
+.loading-spinner.active {
+    display: block;
 }
 
 @media (max-width: 768px) {
-    .page-title {
-        font-size: 2rem;
+    .course-card .card-img-top {
+        height: 150px;
     }
     
-    .course-card {
-        margin-bottom: 1.5rem;
+    .course-title {
+        font-size: 1rem;
+    }
+    
+    .course-description {
+        font-size: 0.8rem;
     }
 }
 </style>
 {% endblock %}
 
 {% block content %}
+<!-- Flash Messages -->
+{% for message in app.flashes('error') %}
+    <div data-flash-type="error" 
+         data-flash-title="Access Denied" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('success') %}
+    <div data-flash-type="success" 
+         data-flash-title="Success" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{# Backend Logic Implementation #}
+{# Get and process filter parameters #}
+{% set search = app.request.query.get('search', '') %}
+{% set sort = app.request.query.get('sort', 'newest') %}
+{# Use controller-provided data instead of request parameters #}
+{% set selectedCategories = currentFilters.categories is iterable ? currentFilters.categories : [] %}
+{% set selectedLevels = currentFilters.levels is iterable ? currentFilters.levels : [] %}
+{% set selectedLanguages = currentFilters.languages is iterable ? currentFilters.languages : [] %}
+{% set priceType = currentFilters.price_type is defined ? currentFilters.price_type : '' %}
+{% set currentPage = app.request.query.getInt('page', 1) %}
+
+{# Clean filter parameters #}
+{% set selectedCategories = selectedCategories|filter(v => v is not empty) %}
+{% set selectedLevels = selectedLevels|filter(v => v is not empty) %}
+{% set selectedLanguages = selectedLanguages|filter(v => v is not empty) %}
+
+{# Get all courses from controller data #}
+{% set allCourses = pagination.items %}
+
+{# Apply additional filtering in template if needed #}
+{% set filteredCourses = allCourses %}
+
+{# Apply search filter #}
+{% if search is not empty %}
+    {% set filteredCourses = filteredCourses|filter(course => course.title matches '/' ~ search ~ '/i' or course.shortDescription matches '/' ~ search ~ '/i') %}
+{% endif %}
+
+{# Apply category filter #}
+{% if selectedCategories is not empty %}
+    {% set filteredCourses = filteredCourses|filter(course => course.category and course.category.name in selectedCategories) %}
+{% endif %}
+
+{# Apply level filter #}
+{% if selectedLevels is not empty %}
+    {% set filteredCourses = filteredCourses|filter(course => course.level in selectedLevels) %}
+{% endif %}
+
+{# Apply language filter #}
+{% if selectedLanguages is not empty %}
+    {% set filteredCourses = filteredCourses|filter(course => course.language in selectedLanguages) %}
+{% endif %}
+
+{# Apply price filter #}
+{% if priceType == 'free' %}
+    {% set filteredCourses = filteredCourses|filter(course => course.price == 0) %}
+{% elseif priceType == 'paid' %}
+    {% set filteredCourses = filteredCourses|filter(course => course.price > 0) %}
+{% endif %}
+
+{# Sort courses #}
+{% set sortedCourses = filteredCourses %}
+{% if sort == 'newest' %}
+    {% set sortedCourses = filteredCourses|sort((a, b) => b.createdAt <=> a.createdAt) %}
+{% elseif sort == 'oldest' %}
+    {% set sortedCourses = filteredCourses|sort((a, b) => a.createdAt <=> b.createdAt) %}
+{% elseif sort == 'price-low' %}
+    {% set sortedCourses = filteredCourses|sort((a, b) => a.price <=> b.price) %}
+{% elseif sort == 'price-high' %}
+    {% set sortedCourses = filteredCourses|sort((a, b) => b.price <=> a.price) %}
+{% elseif sort == 'title-asc' %}
+    {% set sortedCourses = filteredCourses|sort((a, b) => a.title <=> b.title) %}
+{% elseif sort == 'title-desc' %}
+    {% set sortedCourses = filteredCourses|sort((a, b) => b.title <=> a.title) %}
+{% endif %}
+
+{# Display courses from pagination #}
+{% set coursesToDisplay = pagination.items %}
+
+{# Calculate filter counts #}
+{% set categoryCounts = {} %}
+{% set levelCounts = {} %}
+{% set languageCounts = {} %}
+
+{% for course in allCourses %}
+    {# Count by category #}
+    {% if course.category %}
+        {% set categoryId = course.category.id %}
+        {% set categoryName = course.category.name %}
+        {% set categoryCounts = categoryCounts|merge({(categoryId): {
+            'name': categoryName,
+            'count': (categoryCounts[categoryId].count|default(0)) + 1
+        }}) %}
+    {% endif %}
+    
+    {# Count by level #}
+    {% if course.level %}
+        {% set levelName = course.level %}
+        {% set levelCounts = levelCounts|merge({(levelName): (levelCounts[levelName]|default(0)) + 1}) %}
+    {% endif %}
+    
+    {# Count by language #}
+    {% if course.language %}
+        {% set langName = course.language %}
+        {% set languageCounts = languageCounts|merge({(langName): (languageCounts[langName]|default(0)) + 1}) %}
+    {% endif %}
+{% endfor %}
+
 <!-- Page Banner -->
-<section class="bg-blue align-items-center d-flex" style="background:url(assets/images/pattern/04.png) no-repeat center center; background-size:cover;">
+<section class="bg-blue align-items-center d-flex" style="background:url(/assets/images/pattern/04.png) no-repeat center center; background-size:cover;">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center">
@@ -291,7 +697,7 @@
                 <div class="d-flex justify-content-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb breadcrumb-dark breadcrumb-dots mb-0">
-                            <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Home</a></li>
                             <li class="breadcrumb-item active text-white" aria-current="page">Courses</li>
                         </ol>
                     </nav>
@@ -313,7 +719,7 @@
                     <div class="col-xl-6">
                         <div class="search-form p-2">
                             <div class="input-group input-borderless">
-                                <input class="form-control me-1" type="search" name="search" placeholder="Find your course" value="{{ app.request.query.get('search') }}">
+                                <input class="form-control me-1" type="search" name="search" placeholder="Find your course" value="{{ search }}">
                                 <button type="submit" class="btn btn-primary mb-0 rounded">
                                     <i class="fas fa-search"></i>
                                 </button>
@@ -325,11 +731,11 @@
                     <div class="col-xl-3 mt-3 mt-xl-0">
                         <div class="search-form p-2">
                             <select class="form-select form-select-sm border-0" name="sort" onchange="this.form.submit()">
-                                <option value="popular" {{ app.request.query.get('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
-                                <option value="newest" {{ app.request.query.get('sort') == 'newest' ? 'selected' : '' }}>Newest First</option>
-                                <option value="rating" {{ app.request.query.get('sort') == 'rating' ? 'selected' : '' }}>Top Rated</option>
-                                <option value="price_low" {{ app.request.query.get('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-                                <option value="price_high" {{ app.request.query.get('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                                <option value="newest" {{ sort == 'newest' ? 'selected' : '' }}>Newest First</option>
+                                <option value="oldest" {{ sort == 'oldest' ? 'selected' : '' }}>Oldest First</option>
+                                <option value="price_low" {{ sort == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                                <option value="price_high" {{ sort == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                                <option value="name" {{ sort == 'name' ? 'selected' : '' }}>Name: A to Z</option>
                             </select>
                         </div>
                     </div>
@@ -339,36 +745,95 @@
                         <button class="btn btn-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
                             <i class="fas fa-sliders-h me-1"></i> Show filter
                         </button>
-                        <span class="results-count">Showing {{ courses|length }} courses</span>
+                        <span class="results-count">Showing {{ pagination.items|length }} of {{ pagination.getTotalItemCount }} courses</span>
                     </div>
                 </form>
 
+                <!-- Loading Spinner -->
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading courses...</p>
+                </div>
+
                 <!-- Course Grid -->
-                <div class="row g-4">
-                    {% for course in courses %}
+                <div class="row g-4" id="courseGrid">
+                    {% for course in pagination.items %}
                         <div class="col-sm-6 col-xl-4">
-                            <div class="card course-card shadow h-100">
+                            <div class="card course-card shadow h-100 {% if 'Ruby' in course.title or 'Rails' in course.title %}ruby-course{% endif %}">
                                 <!-- Course Image -->
-                                {% if course.thumbnailUrl %}
-                                    <img src="{{ asset(course.thumbnailUrl) }}" class="card-img-top" alt="{{ course.title }}">
+                                {% set thumbnail = course.thumbnailUrl %}
+                                {% if thumbnail %}
+                                    <div class="course-image-container">
+                                        {% if thumbnail starts with 'http' or thumbnail starts with 'https' %}
+                                            <img src="{{ thumbnail }}" class="card-img-top" alt="{{ course.title }}">
+                                        {% else %}
+                                            <img src="{{ asset(thumbnail) }}" class="card-img-top" alt="{{ course.title }}">
+                                        {% endif %}
+                                        <div class="course-image-overlay">
+                                            <div class="course-duration-badge">
+                                                <i class="fas fa-clock me-1"></i>
+                                                {% if course.duration %}{{ course.duration }}h{% else %}Self-paced{% endif %}
+                                            </div>
+                                            <div class="course-level-badge">
+                                                {{ course.level|default('Beginner') }}
+                                            </div>
+                                            {% if 'Ruby' in course.title or 'Rails' in course.title %}
+                                            <div class="ruby-badge">
+                                                <i class="fas fa-gem"></i>
+                                                Ruby/Rails
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 {% else %}
-                                    <img src="{{ asset('assets/images/avatar/01.jpg') }}" class="card-img-top" alt="{{ course.title }}">
+                                    <div class="course-image-container">
+                                        {% set randomImage = random(['programming', 'webdev', 'design', 'business', 'data']) %}
+                                        {% if 'Ruby' in course.title or 'Rails' in course.title %}
+                                            {% set randomImage = 'ruby' %}
+                                        {% endif %}
+                                        {% if randomImage == 'programming' %}
+                                            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ course.title }}">
+                                        {% elseif randomImage == 'webdev' %}
+                                            <img src="https://images.unsplash.com/photo-1522252234503-e356532cafd5?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ course.title }}">
+                                        {% elseif randomImage == 'design' %}
+                                            <img src="https://images.unsplash.com/photo-1559028006-848465da746a?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ course.title }}">
+                                        {% elseif randomImage == 'business' %}
+                                            <img src="https://images.unsplash.com/photo-1507003211169-0a1a7661f27?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ course.title }}">
+                                        {% elseif randomImage == 'data' %}
+                                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ course.title }}">
+                                        {% elseif randomImage == 'ruby' %}
+                                            <img src="https://images.unsplash.com/photo-1618399812474-7b6e8aebf1b?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ course.title }}">
+                                        {% else %}
+                                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ course.title }}">
+                                        {% endif %}
+                                        <div class="course-image-overlay">
+                                            <div class="course-duration-badge">
+                                                <i class="fas fa-clock me-1"></i>
+                                                {% if course.duration %}{{ course.duration }}h{% else %}Self-paced{% endif %}
+                                            </div>
+                                            <div class="course-level-badge">
+                                                {{ course.level|default('Beginner') }}
+                                            </div>
+                                            {% if 'Ruby' in course.title or 'Rails' in course.title %}
+                                            <div class="ruby-badge">
+                                                <i class="fas fa-gem"></i>
+                                                Ruby/Rails
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 {% endif %}
                                 
                                 <!-- Card Body -->
                                 <div class="card-body pb-0">
                                     <!-- Badge and Favorite -->
                                     <div class="d-flex justify-content-between mb-2">
-                                        {% if course.level %}
-                                            <span class="badge course-badge bg-primary bg-opacity-10 text-primary">
-                                                {{ course.level }}
-                                            </span>
-                                        {% else %}
-                                            <span class="badge course-badge bg-secondary bg-opacity-10 text-secondary">
-                                                All Levels
-                                            </span>
-                                        {% endif %}
-                                        <a href="#" class="text-muted">
+                                        <span class="badge course-badge bg-primary bg-opacity-10 text-primary">
+                                            {{ course.level|default('Beginner') }}
+                                        </span>
+                                        <a href="#" class="text-muted" onclick="toggleFavorite(event, {{ course.id }})">
                                             <i class="far fa-heart"></i>
                                         </a>
                                     </div>
@@ -392,7 +857,7 @@
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star-half-alt"></i>
-                                        <span class="ms-2">{{ random(4.0, 4.9) }}/5.0</span>
+                                        <span class="ms-2">4.0/5.0</span>
                                     </div>
                                 </div>
                                 
@@ -409,7 +874,7 @@
                                             {% endif %}
                                         </span>
                                         <span>
-                                            {% if course.chapters %}
+                                            {% if course.chapters|default([])|length > 0 %}
                                                 {{ course.chapters|length }} chapters
                                             {% else %}
                                                 0 chapters
@@ -419,54 +884,27 @@
                                 </div>
                             </div>
                         </div>
-                    {% else %}
-                        <div class="col-12">
-                            <div class="text-center py-5">
-                                <div class="mb-4">
-                                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
-                                </div>
-                                <h3 class="text-muted mb-3">No courses found</h3>
-                                <p class="text-muted mb-4">We couldn't find any courses matching your search.</p>
-                                
-                                <div class="alert alert-info mx-auto" style="max-width: 500px;">
-                                    <h5 class="alert-heading">
-                                        <i class="fas fa-lightbulb me-2"></i>Suggestions:
-                                    </h5>
-                                    <ul class="text-start mb-0">
-                                        <li>Check your spelling for typos</li>
-                                        <li>Try more general keywords (e.g., "web" instead of "web development advanced")</li>
-                                        <li>Use different search terms</li>
-                                        <li>Browse our <a href="{{ path('app_course_categories') }}" class="alert-link">course categories</a></li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="mt-4">
-                                    <a href="{{ path('app_course_grid') }}" class="btn btn-primary">
-                                        <i class="fas fa-times me-2"></i>Clear Search
-                                    </a>
-                                    <a href="{{ path('app_course_categories') }}" class="btn btn-outline-primary ms-2">
-                                        <i class="fas fa-th me-2"></i>Browse All Courses
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
                     {% endfor %}
                 </div>
 
-                <!-- Pagination -->
-                {% if courses|length > 9 %}
+                <!-- No Results Message -->
+                {% if pagination.items|length == 0 %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h3 class="text-muted">No courses found</h3>
+                        <p class="text-muted">Try adjusting your filters or search terms</p>
+                        <a href="{{ path('app_course_grid') }}" class="btn btn-primary">
+                            <i class="fas fa-redo me-2"></i>Reset Filters
+                        </a>
+                    </div>
+                {% endif %}
+
+                <!-- KnpPaginator Pagination -->
+                {% if pagination.getTotalItemCount > pagination.getItemNumberPerPage %}
                     <nav aria-label="Course pagination" class="mt-5">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">Previous</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Next</a>
-                            </li>
-                        </ul>
+                        <div class="d-flex justify-content-center">
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
                     </nav>
                 {% endif %}
             </div>
@@ -482,8 +920,9 @@
                     <div class="offcanvas-body p-3 p-lg-0">
                         <form method="get" action="{{ path('app_course_grid') }}" id="filter-form">
                             <!-- Preserve current search and sort parameters -->
-                            <input type="hidden" name="search" value="{{ app.request.query.get('search') }}">
-                            <input type="hidden" name="sort" value="{{ app.request.query.get('sort') }}">
+                            <input type="hidden" name="search" value="{{ search }}">
+                            <input type="hidden" name="sort" value="{{ sort }}">
+                            
                             <!-- Category START -->
                             <div class="card card-body shadow p-4 mb-4">
                                 <!-- Title -->
@@ -493,294 +932,231 @@
                                     <!-- All Categories -->
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="category-all" {{ currentFilters.categories is empty ? 'checked' : '' }}>
+                                            <input class="form-check-input" type="checkbox" value="" id="category-all" {{ selectedCategories is empty ? 'checked' : '' }}>
                                             <label class="form-check-label" for="category-all">All</label>
                                         </div>
-                                        <span class="small">({{ courses|length }})</span>
+                                        <span class="small">({{ pagination.getTotalItemCount }})</span>
                                     </div>
                                     
-                                    {% for category in categories %}
+                                    {% for categoryData in categories %}
+                                        {% set category = categoryData[0] %}
+                                        {% set courseCount = categoryData.courseCount|default(0) %}
                                         <!-- Checkbox -->
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="form-check">
-                                                <input class="form-check-input category-filter" type="checkbox" value="{{ category.id }}" id="category-{{ category.id }}" {{ category.id in currentFilters.categories ? 'checked' : '' }}>
+                                                <input class="form-check-input category-filter" type="checkbox" value="{{ category.id }}" id="category-{{ category.id }}" name="categories[]" {{ category.id in selectedCategories ? 'checked' : '' }}>
                                                 <label class="form-check-label" for="category-{{ category.id }}">{{ category.name }}</label>
                                             </div>
-                                            <span class="small">({{ category.courseCount }})</span>
+                                            <span class="small">({{ courseCount }})</span>
                                         </div>
                                     {% endfor %}
-                                    
-                                    {% if categories|length > 6 %}
-                                        <!-- Collapse body for additional categories -->
-                                        <div class="collapse multi-collapse" id="moreCategories">
-                                            <div class="card card-body p-0">
-                                                <!-- Additional categories would go here if needed -->
-                                            </div>
-                                        </div>
-                                        <!-- Collapse button -->
-                                        <a class="p-0 mb-0 mt-2 btn-more d-flex align-items-center" data-bs-toggle="collapse" href="#moreCategories" role="button" aria-expanded="false" aria-controls="moreCategories">
-                                            See <span class="see-more ms-1">more</span><span class="see-less ms-1">less</span><i class="fas fa-angle-down ms-2"></i>
-                                        </a>
-                                    {% endif %}
                                 </div>
                             </div>
-                            <!-- Category END -->
+
+                            <!-- Level START -->
+                            <div class="card card-body shadow p-4 mb-4">
+                                <!-- Title -->
+                                <h4 class="mb-3">Level</h4>
+                                <!-- Level group -->
+                                <div class="col-12">
+                                    {% for levelName, count in levelCounts %}
+                                        <!-- Checkbox -->
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="form-check">
+                                                <input class="form-check-input level-filter" type="checkbox" value="{{ levelName }}" id="level-{{ loop.index }}" name="levels[]" {{ levelName in selectedLevels ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="level-{{ loop.index }}">{{ levelName }}</label>
+                                            </div>
+                                            <span class="small">({{ count }})</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
 
                             <!-- Price START -->
                             <div class="card card-body shadow p-4 mb-4">
                                 <!-- Title -->
-                                <h4 class="mb-3">Price Level</h4>
-                                <ul class="list-inline mb-0">
-                                    <!-- All -->
-                                    <li class="list-inline-item">
-                                        <input type="radio" class="btn-check price-filter" name="price_type" id="price-option1" value="" {{ currentFilters.price_type is empty ? 'checked' : '' }}>
-                                        <label class="btn btn-light btn-primary-soft-check" for="price-option1">All</label>
-                                    </li>
+                                <h4 class="mb-3">Price</h4>
+                                <!-- Price group -->
+                                <div class="col-12">
+                                    <!-- All Prices -->
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" value="" id="price-all" name="price_type" {{ priceType is empty ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="price-all">All</label>
+                                        </div>
+                                    </div>
+                                    
                                     <!-- Free -->
-                                    <li class="list-inline-item">
-                                        <input type="radio" class="btn-check price-filter" name="price_type" id="price-option2" value="free" {{ currentFilters.price_type == 'free' ? 'checked' : '' }}>
-                                        <label class="btn btn-light btn-primary-soft-check" for="price-option2">Free</label>
-                                    </li>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" value="free" id="price-free" name="price_type" {{ priceType == 'free' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="price-free">Free</label>
+                                        </div>
+                                    </div>
+                                    
                                     <!-- Paid -->
-                                    <li class="list-inline-item">
-                                        <input type="radio" class="btn-check price-filter" name="price_type" id="price-option3" value="paid" {{ currentFilters.price_type == 'paid' ? 'checked' : '' }}>
-                                        <label class="btn btn-light btn-primary-soft-check" for="price-option3">Paid</label>
-                                    </li>
-                                </ul>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" value="paid" id="price-paid" name="price_type" {{ priceType == 'paid' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="price-paid">Paid</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <!-- Price END -->
-
-                            <!-- Skill level START -->
-                            <div class="card card-body shadow p-4 mb-4">
-                                <!-- Title -->
-                                <h4 class="mb-3">Skill level</h4>
-                                <ul class="list-inline mb-0">
-                                    <!-- All levels -->
-                                    <li class="list-inline-item mb-2">
-                                        <input type="checkbox" class="btn-check level-filter" id="btn-check-all" value="" {{ currentFilters.levels is empty or (currentFilters.levels|length == 1 and currentFilters.levels[0] == '') ? 'checked' : '' }}>
-                                        <label class="btn btn-light btn-primary-soft-check" for="btn-check-all">All levels</label>
-                                    </li>
-                                    <!-- Beginner -->
-                                    <li class="list-inline-item mb-2">
-                                        <input type="checkbox" class="btn-check level-filter" id="btn-check-beginner" value="Beginner" {{ 'Beginner' in currentFilters.levels ? 'checked' : '' }}>
-                                        <label class="btn btn-light btn-primary-soft-check" for="btn-check-beginner">Beginner</label>
-                                    </li>
-                                    <!-- Intermediate -->
-                                    <li class="list-inline-item mb-2">
-                                        <input type="checkbox" class="btn-check level-filter" id="btn-check-intermediate" value="Intermediate" {{ 'Intermediate' in currentFilters.levels ? 'checked' : '' }}>
-                                        <label class="btn btn-light btn-primary-soft-check" for="btn-check-intermediate">Intermediate</label>
-                                    </li>
-                                    <!-- Advanced -->
-                                    <li class="list-inline-item mb-2">
-                                        <input type="checkbox" class="btn-check level-filter" id="btn-check-advanced" value="Advanced" {{ 'Advanced' in currentFilters.levels ? 'checked' : '' }}>
-                                        <label class="btn btn-light btn-primary-soft-check" for="btn-check-advanced">Advanced</label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- Skill level END -->
 
                             <!-- Language START -->
                             <div class="card card-body shadow p-4 mb-4">
                                 <!-- Title -->
                                 <h4 class="mb-3">Language</h4>
-                                <ul class="list-inline mb-0 g-3">
-                                    {% for language in languages %}
-                                        <!-- Item -->
-                                        <li class="list-inline-item mb-2">
-                                            <input type="checkbox" class="btn-check language-filter" id="btn-check-lang-{{ loop.index }}" value="{{ language.name }}" {{ language.name in currentFilters.languages ? 'checked' : '' }}>
-                                            <label class="btn btn-light btn-primary-soft-check" for="btn-check-lang-{{ loop.index }}">{{ language.name }}</label>
-                                        </li>
+                                <!-- Language group -->
+                                <div class="col-12">
+                                    {% for langName, count in languageCounts %}
+                                        {% if langName %}
+                                            <!-- Checkbox -->
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input language-filter" type="checkbox" value="{{ langName }}" id="lang-{{ loop.index }}" name="languages[]" {{ langName in selectedLanguages ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="lang-{{ loop.index }}">{{ langName|upper }}</label>
+                                                </div>
+                                                <span class="small">({{ count }})</span>
+                                            </div>
+                                        {% endif %}
                                     {% endfor %}
-                                </ul>
+                                </div>
                             </div>
-                            <!-- Language END -->
-                            
-                            <!-- Button -->
-                            <div class="d-grid p-2 p-lg-0 text-center">
-                                <button type="submit" class="btn btn-primary mb-0">Filter Results</button>
+
+                            <!-- Apply Filters Button -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                <a href="{{ path('app_course_grid') }}" class="btn btn-outline-secondary">Reset All</a>
                             </div>
-                        </form><!-- Form End -->
-                <!-- Responsive offcanvas body END -->
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-{% endblock %}
-
-{% block javascripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // AJAX filtering without page refresh
-    const levelFilters = document.querySelectorAll('.level-filter');
-    const levelAll = document.getElementById('btn-check-all');
-    const categoryFilters = document.querySelectorAll('.category-filter');
+    // Handle "All" checkboxes
     const categoryAll = document.getElementById('category-all');
+    const categoryCheckboxes = document.querySelectorAll('.category-filter');
     
-    function updateFilters() {
-        // Get all form data
-        const formData = new FormData(document.getElementById('filter-form'));
-        const params = new URLSearchParams();
-        
-        // Add all form parameters
-        for (let [key, value] of formData.entries()) {
-            if (value !== '') {
-                params.append(key, value);
-            }
-        }
-        
-        // Handle level filters separately to ensure proper array format
-        const selectedLevels = [];
-        levelFilters.forEach(filter => {
-            if (filter.checked && filter.value) {
-                selectedLevels.push(filter.value);
+    if (categoryAll) {
+        categoryAll.addEventListener('change', function() {
+            if (this.checked) {
+                categoryCheckboxes.forEach(checkbox => checkbox.checked = false);
             }
         });
-        
-        // Remove existing levels and add as array
-        params.delete('levels');
-        params.delete('levels[]');
-        selectedLevels.forEach(level => {
-            params.append('levels[]', level);
-        });
-        
-        // Handle category filters separately to ensure proper array format
-        const selectedCategories = [];
-        categoryFilters.forEach(filter => {
-            if (filter.checked && filter.value) {
-                selectedCategories.push(filter.value);
-            }
-        });
-        
-        // Remove existing categories and add as array
-        params.delete('categories');
-        params.delete('categories[]');
-        selectedCategories.forEach(category => {
-            params.append('categories[]', category);
-        });
-        
-        // Handle language filters separately to ensure proper array format
-        const languageFilters = document.querySelectorAll('.language-filter');
-        const selectedLanguages = [];
-        languageFilters.forEach(filter => {
-            if (filter.checked && filter.value) {
-                selectedLanguages.push(filter.value);
-            }
-        });
-        
-        // Remove existing languages and add as array
-        params.delete('languages');
-        params.delete('languages[]');
-        selectedLanguages.forEach(language => {
-            params.append('languages[]', language);
-        });
-        
-        console.log('Filter params:', params.toString());
-        
-        // Update URL without page refresh
-        const newUrl = window.location.pathname + '?' + params.toString();
-        window.history.pushState({}, '', newUrl);
-        
-        // Fetch filtered results via AJAX
-        fetchFilteredResults(params.toString());
     }
     
-    levelFilters.forEach(filter => {
-        filter.addEventListener('change', function() {
-            // Handle "All levels" logic
-            if (this.id !== 'btn-check-all' && this.checked && levelAll) {
-                levelAll.checked = false;
-            }
-            if (this.id === 'btn-check-all' && this.checked) {
-                levelFilters.forEach(f => {
-                    if (f.id !== 'btn-check-all') {
-                        f.checked = false;
-                    }
-                });
-            }
-            
-            updateFilters();
-        });
-    });
-    
-    // Handle category filters
-    categoryFilters.forEach(filter => {
-        filter.addEventListener('change', function() {
+    categoryCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
             if (this.checked && categoryAll) {
                 categoryAll.checked = false;
             }
-            if (this.id === 'category-all' && this.checked) {
-                categoryFilters.forEach(f => {
-                    if (f.id !== 'category-all') {
-                        f.checked = false;
-                    }
-                });
-            }
-            updateFilters();
         });
     });
     
-    const priceFilters = document.querySelectorAll('.price-filter');
-    priceFilters.forEach(filter => {
-        filter.addEventListener('change', updateFilters);
-    });
+    // Auto-submit filter form on checkbox change
+    const filterForm = document.getElementById('filter-form');
+    const filterInputs = filterForm.querySelectorAll('input[type="checkbox"], input[type="radio"]');
     
-    const languageFilters = document.querySelectorAll('.language-filter');
-    languageFilters.forEach(filter => {
-        filter.addEventListener('change', updateFilters);
-    });
-    
-    // Function to fetch filtered results via AJAX
-    function fetchFilteredResults(queryString) {
-        console.log('Fetching results with:', queryString);
-        
-        // Show loading state
-        const courseGrid = document.querySelector('.row.g-4');
-        if (courseGrid) {
-            courseGrid.style.opacity = '0.5';
-            courseGrid.innerHTML = '<div class="col-12 text-center py-5"><i class="fas fa-spinner fa-spin me-2"></i>Loading...</div>';
-        }
-        
-        // Fetch filtered courses
-        fetch(`/courses/filter${queryString ? '?' + queryString : ''}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Received data:', data);
-            
-            if (data.success) {
-                // Update the course grid with new results
-                if (courseGrid) {
-                    courseGrid.innerHTML = data.html;
-                    courseGrid.style.opacity = '1';
-                }
+    filterInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            // Show loading spinner
+            const spinner = document.getElementById('loadingSpinner');
+            const grid = document.getElementById('courseGrid');
+            if (spinner && grid) {
+                spinner.classList.add('active');
+                grid.style.opacity = '0.5';
                 
-                // Update results count
-                const resultsCount = document.querySelector('.results-count');
-                if (resultsCount) {
-                    resultsCount.textContent = `Showing ${data.count} courses`;
-                }
-            } else {
-                throw new Error('Filter request failed');
+                // Submit form after a short delay to show loading
+                setTimeout(() => {
+                    filterForm.submit();
+                }, 300);
             }
-        })
-        .catch(error => {
-            console.error('Error fetching filtered results:', error);
-            if (courseGrid) {
-                courseGrid.style.opacity = '1';
-                courseGrid.innerHTML = '<div class="col-12 text-center py-5"><i class="fas fa-exclamation-triangle me-2"></i>Error loading results. Please try again.</div>';
+        });
+    });
+    
+    // Handle search input with debounce
+    const searchInput = document.querySelector('input[name="search"]');
+    let searchTimeout;
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const spinner = document.getElementById('loadingSpinner');
+                const grid = document.getElementById('courseGrid');
+                if (spinner && grid) {
+                    spinner.classList.add('active');
+                    grid.style.opacity = '0.5';
+                    
+                    setTimeout(() => {
+                        document.getElementById('main-search-form').submit();
+                    }, 300);
+                }
+            }, 500);
+        });
+    }
+    
+    // Handle sort change with loading
+    const sortSelect = document.querySelector('select[name="sort"]');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const spinner = document.getElementById('loadingSpinner');
+            const grid = document.getElementById('courseGrid');
+            if (spinner && grid) {
+                spinner.classList.add('active');
+                grid.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    document.getElementById('main-search-form').submit();
+                }, 300);
             }
         });
     }
+    
+    // Toggle favorite functionality
+    window.toggleFavorite = function(event, courseId) {
+        event.preventDefault();
+        const heartIcon = event.target;
+        const isFavorited = heartIcon.classList.contains('fas');
+        
+        if (isFavorited) {
+            heartIcon.classList.remove('fas');
+            heartIcon.classList.add('far');
+        } else {
+            heartIcon.classList.remove('far');
+            heartIcon.classList.add('fas');
+            heartIcon.style.color = '#e74c3c';
+        }
+        
+        // Here you would normally make an AJAX call to save the preference
+        console.log('Toggled favorite for course:', courseId);
+    };
+    
+    // Smooth scroll for pagination
+    document.querySelectorAll('.pagination a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const href = this.getAttribute('href');
+            const spinner = document.getElementById('loadingSpinner');
+            const grid = document.getElementById('courseGrid');
+            
+            if (spinner && grid) {
+                spinner.classList.add('active');
+                grid.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 300);
+            }
+        });
+    });
 });
 </script>
 {% endblock %}

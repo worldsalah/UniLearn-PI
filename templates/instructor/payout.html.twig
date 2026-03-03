@@ -110,7 +110,7 @@ Page Banner START -->
 						<!-- Avatar -->
 						<div class="col-auto mt-4 mt-md-0">
 							<div class="avatar avatar-xxl mt-n3 position-relative">
-								<img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+								<img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset(teacher.avatar) }}" alt="">
 								<div class="position-absolute bottom-0 end-0">
 									<span class="verified-badge">
 										<i class="bi bi-patch-check-fill"></i> Verified
@@ -121,7 +121,7 @@ Page Banner START -->
 						<!-- Profile info -->
 						<div class="col d-md-flex justify-content-between align-items-center mt-4">
 							<div>
-								<h1 class="my-1 fs-3 fw-bold">{{ app.user ? app.user.name : 'Instructor' }}</h1>
+								<h1 class="my-1 fs-3 fw-bold">{{ teacher.name }}</h1>
 								<div class="d-flex flex-wrap align-items-center gap-3 mb-2">
 									<span class="badge bg-primary bg-opacity-10 text-primary">
 										<i class="fas fa-tv me-1"></i>Instructor
@@ -130,7 +130,7 @@ Page Banner START -->
 										<i class="fas fa-check-circle me-1"></i>Verified
 									</span>
 								</div>
-								<p class="text-muted mb-0">Professional Instructor | Content Creator | Educator</p>
+								<p class="text-muted mb-0">{{ totalCourses }} Courses | {{ totalStudents }} Students</p>
 							</div>
 						</div>
 					</div>
@@ -179,18 +179,173 @@ Page content START -->
 
 			<!-- Main content START -->
 			<div class="col-xl-9">
-				<div class="card bg-transparent border">
+				<!-- Earnings Overview Cards -->
+				<div class="row g-4 mb-4">
+					<div class="col-md-4">
+						<div class="card bg-success text-white h-100">
+							<div class="card-body">
+								<div class="d-flex justify-content-between align-items-start">
+									<div>
+										<h6 class="mb-1 opacity-75">Total Earnings</h6>
+										<h2 class="mb-0">${{ totalEarnings|number_format(2) }}</h2>
+									</div>
+									<div class="display-6 opacity-50"><i class="bi bi-cash-stack"></i></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card bg-primary text-white h-100">
+							<div class="card-body">
+								<div class="d-flex justify-content-between align-items-start">
+									<div>
+										<h6 class="mb-1 opacity-75">Available for Withdrawal</h6>
+										<h2 class="mb-0">${{ availableForWithdrawal|number_format(2) }}</h2>
+									</div>
+									<div class="display-6 opacity-50"><i class="bi bi-wallet2"></i></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card bg-warning text-dark h-100">
+							<div class="card-body">
+								<div class="d-flex justify-content-between align-items-start">
+									<div>
+										<h6 class="mb-1 opacity-75">Pending Payout</h6>
+										<h2 class="mb-0">${{ pendingPayout|number_format(2) }}</h2>
+									</div>
+									<div class="display-6 opacity-50"><i class="bi bi-hourglass-split"></i></div>
+								</div>
+								<small class="text-muted">Current month</small>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Monthly Earnings Chart -->
+				<div class="card bg-transparent border mb-4">
 					<div class="card-header bg-light border-bottom">
-						<h5 class="mb-0">Payout Management</h5>
+						<h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Monthly Earnings</h5>
 					</div>
 					<div class="card-body">
-						<p>Payout management functionality will be implemented here.</p>
+						{% if monthlyEarnings|length > 0 %}
+							<div class="table-responsive">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>Month</th>
+											<th>Earnings</th>
+											<th>Status</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% set months = {'01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'Jun', '07': 'Jul', '08': 'Aug', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'} %}
+										{% for month, earnings in monthlyEarnings %}
+											{% set monthParts = month|split('-') %}
+											{% set year = monthParts[0] %}
+											{% set monthNum = monthParts[1] %}
+											<tr>
+												<td>{{ months[monthNum] ~ ' ' ~ year }}</td>
+												<td>${{ earnings|number_format(2) }}</td>
+												<td>
+													{% if month == "now"|date('Y-m') %}
+														<span class="badge bg-warning">Pending</span>
+													{% else %}
+														<span class="badge bg-success">Available</span>
+													{% endif %}
+												</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						{% else %}
+							<div class="text-center py-4">
+								<i class="bi bi-graph-up display-4 text-muted"></i>
+								<p class="text-muted mt-2">No earnings data available yet.</p>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+
+				<!-- Course Earnings Breakdown -->
+				<div class="card bg-transparent border mb-4">
+					<div class="card-header bg-light border-bottom">
+						<h5 class="mb-0"><i class="bi bi-book me-2"></i>Course Earnings Breakdown</h5>
+					</div>
+					<div class="card-body">
+						{% if courseEarnings|length > 0 %}
+							<div class="table-responsive">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>Course</th>
+											<th>Price</th>
+											<th>Enrollments</th>
+											<th>Total Revenue</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for item in courseEarnings %}
+											<tr>
+												<td>
+													<div class="d-flex align-items-center">
+														{% if item.course.thumbnailUrl %}
+															<img src="{{ asset(item.course.thumbnailUrl) }}" alt="" class="rounded me-2" style="width: 40px; height: 30px; object-fit: cover;">
+														{% endif %}
+														<span>{{ item.course.title }}</span>
+													</div>
+												</td>
+												<td>${{ item.course.price|number_format(2) }}</td>
+												<td>{{ item.enrollments }}</td>
+												<td><strong>${{ item.revenue|number_format(2) }}</strong></td>
+											</tr>
+										{% endfor %}
+									</tbody>
+									<tfoot>
+										<tr class="table-light">
+											<td colspan="3"><strong>Total</strong></td>
+											<td><strong>${{ totalEarnings|number_format(2) }}</strong></td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						{% else %}
+							<div class="text-center py-4">
+								<i class="bi bi-book display-4 text-muted"></i>
+								<p class="text-muted mt-2">No courses yet. Create a course to start earning!</p>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+
+				<!-- Withdrawal Actions -->
+				<div class="card bg-transparent border">
+					<div class="card-header bg-light border-bottom">
+						<h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Withdrawal</h5>
+					</div>
+					<div class="card-body">
+						{% if availableForWithdrawal > 0 %}
+							<div class="alert alert-success">
+								<i class="bi bi-check-circle me-2"></i>
+								You have <strong>${{ availableForWithdrawal|number_format(2) }}</strong> available for withdrawal.
+							</div>
+							<button class="btn btn-primary btn-lg" disabled>
+								<i class="bi bi-wallet me-2"></i>Request Withdrawal
+							</button>
+							<small class="text-muted d-block mt-2">Withdrawal feature coming soon!</small>
+						{% else %}
+							<div class="alert alert-info">
+								<i class="bi bi-info-circle me-2"></i>
+								No funds available for withdrawal yet. Earnings become available after the current month ends.
+							</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>
 			<!-- Main content END -->
 		</div>
-	</div>
 	</div>
 </section>
 <!-- =======================

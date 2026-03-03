@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CheckoutRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CheckoutRepository::class)]
@@ -66,16 +67,19 @@ class Checkout
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'Le numéro de carte est obligatoire.')]
     #[Assert\Regex(pattern: '/^[0-9\s]{13,19}$/', message: 'Le numéro de carte n\'est pas valide.')]
+    #[Ignore]
     private ?string $cardNumber = null;
 
     #[ORM\Column(length: 10)]
     #[Assert\NotBlank(message: 'La date d\'expiration est obligatoire.')]
     #[Assert\Regex(pattern: '/^(0[1-9]|1[0-2])\/\d{2}$/', message: 'La date d\'expiration doit être au format MM/AA.')]
+    #[Ignore]
     private ?string $expiryDate = null;
 
     #[ORM\Column(length: 5)]
     #[Assert\NotBlank(message: 'Le CVV est obligatoire.')]
     #[Assert\Regex(pattern: '/^[0-9]{3,4}$/', message: 'Le CVV doit contenir 3 ou 4 chiffres.')]
+    #[Ignore]
     private ?string $cvv = null;
 
     #[ORM\Column(length: 100)]
@@ -96,9 +100,9 @@ class Checkout
     #[ORM\Column(length: 20, options: ['default' => 'pending'])]
     private ?string $status = 'pending';
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     #[Assert\Positive(message: 'Le montant total doit être un nombre positif.')]
-    private ?float $totalAmount = null;
+    private ?string $totalAmount = null;
 
     public function __construct()
     {
@@ -223,7 +227,7 @@ class Checkout
         return $this->cardNumber;
     }
 
-    public function setCardNumber(string $cardNumber): static
+    public function setCardNumber(#[\SensitiveParameter] string $cardNumber): static
     {
         $this->cardNumber = $cardNumber;
 
@@ -235,7 +239,7 @@ class Checkout
         return $this->expiryDate;
     }
 
-    public function setExpiryDate(string $expiryDate): static
+    public function setExpiryDate(#[\SensitiveParameter] string $expiryDate): static
     {
         $this->expiryDate = $expiryDate;
 
@@ -247,7 +251,7 @@ class Checkout
         return $this->cvv;
     }
 
-    public function setCvv(string $cvv): static
+    public function setCvv(#[\SensitiveParameter] string $cvv): static
     {
         $this->cvv = $cvv;
 

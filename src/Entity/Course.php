@@ -32,15 +32,14 @@ class Course
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Le niveau du cours est obligatoire.')]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $level = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     #[Assert\NotBlank(message: 'Le prix est obligatoire.')]
     #[Assert\Positive(message: 'Le prix doit être un nombre positif.')]
     #[Assert\LessThanOrEqual(value: 9999.99, message: 'Le prix ne peut pas dépasser {{ value }}')]
-    private ?float $price = null;
+    private ?string $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $thumbnailUrl = null;
@@ -48,11 +47,20 @@ class Course
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $videoUrl = null;
 
-    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Chapter::class, cascade: ['persist', 'remove'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Chapter::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $chapters;
 
-    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Quiz::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Quiz::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $quizzes;
+
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: CourseTest::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $tests;
+
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: LessonCompletion::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $lessonCompletions;
 
     #[ORM\ManyToOne(inversedBy: 'courses')]
     #[ORM\JoinColumn(nullable: true)]
@@ -101,6 +109,8 @@ class Course
     {
         $this->chapters = new ArrayCollection();
         $this->quizzes = new ArrayCollection();
+        $this->tests = new ArrayCollection();
+        $this->lessonCompletions = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -265,6 +275,18 @@ class Course
         return $this;
     }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Chapter>
      */
@@ -407,6 +429,71 @@ class Course
         return $this;
     }
 
+    /**
+     * @return Collection<int, CourseTest>
+     */
+    public function getTests(): Collection
+    {
+        return $this->tests;
+    }
+
+    public function addTest(CourseTest $test): static
+    {
+        if (!$this->tests->contains($test)) {
+            $this->tests->add($test);
+            $test->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTest(CourseTest $test): static
+    {
+        if ($this->tests->removeElement($test)) {
+            // set the owning side to null (unless already changed)
+            if ($test->getCourse() === $this) {
+                $test->setCourse(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPlacementTest(): ?CourseTest
+    {
+        foreach ($this->tests as $test) {
+            if ($test->getTestType() === 'placement') {
+                return $test;
+            }
+        }
+        return null;
+    }
+
+    public function getPlacementQuiz(): ?Quiz
+    {
+        foreach ($this->quizzes as $quiz) {
+            if ($quiz->isPlacementQuiz()) {
+                return $quiz;
+            }
+        }
+        return null;
+    }
+
+    public function getFinalQuiz(): ?Quiz
+    {
+        foreach ($this->quizzes as $quiz) {
+            if ($quiz->isFinalQuiz()) {
+                return $quiz;
+            }
+        }
+        return null;
+    }
+
+    public function getLessonQuizzes(): Collection
+    {
+        return $this->quizzes->filter(fn(Quiz $quiz) => $quiz->isLessonQuiz());
+    }
+
     // Virtual file handling methods for thumbnail
     public function getThumbnailFile(): ?string
     {
@@ -434,23 +521,5 @@ class Course
     public function __toString(): string
     {
         return $this->title ?? '';
-    }
-
-    /**
-     * Get description for Elasticsearch (alias for shortDescription)
-     */
-    public function getDescription(): ?string
-    {
-        return $this->shortDescription;
-    }
-
-    /**
-     * Set description for Elasticsearch (alias for shortDescription)
-     */
-    public function setDescription(?string $description): static
-    {
-        $this->shortDescription = $description;
-
-        return $this;
     }
 }

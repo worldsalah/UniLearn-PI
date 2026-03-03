@@ -1,0 +1,178 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Payment Cancelled - Unilearn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <!-- Cancel Card -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5 text-center">
+                    <!-- Cancel Icon -->
+                    <div class="mb-4">
+                        <div class="cancel-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Cancel Message -->
+                    <h2 class="mb-3">Payment Cancelled</h2>
+                    <p class="text-muted mb-4">Your payment has been cancelled. No charges were made to your account.</p>
+                    
+                    <!-- Options -->
+                    <div class="options mb-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="option-card">
+                                    <i class="fas fa-redo fa-2x text-warning mb-2"></i>
+                                    <h6>Try Again</h6>
+                                    <p class="small text-muted">Return to payment page to complete your purchase</p>
+                                    <a href="{{ path('app_payment') }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-redo me-1"></i>Try Payment Again
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="option-card">
+                                    <i class="fas fa-shopping-bag fa-2x text-primary mb-2"></i>
+                                    <h6>Continue Shopping</h6>
+                                    <p class="small text-muted">Browse more services in our marketplace</p>
+                                    <a href="{{ path('app_marketplace') }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-shopping-bag me-1"></i>Browse Marketplace
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Help Section -->
+                    <div class="help-section bg-light rounded p-4 mb-4">
+                        <h5 class="mb-3">Need Help?</h5>
+                        <p class="text-muted mb-3">If you encountered any issues during payment, our support team is here to help.</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="help-item">
+                                    <i class="fas fa-envelope text-info me-2"></i>
+                                    <a href="mailto:support@unilearn.com">support@unilearn.com</a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="help-item">
+                                    <i class="fas fa-phone text-success me-2"></i>
+                                    <a href="tel:+18001234567">1-800-123-4567</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cart Status -->
+                    <div class="cart-status">
+                        <p class="small text-muted">
+                            <i class="fas fa-shopping-cart me-1"></i>
+                            Your cart items have been saved and are still available for checkout.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+// Auto-redirect after 30 seconds
+let redirectTimer = setTimeout(() => {
+    if (confirm('Would you like to try your payment again?')) {
+        window.location.href = '{{ path('app_payment') }}';
+    }
+}, 30000);
+
+// Clear timer if user interacts
+document.addEventListener('click', () => {
+    clearTimeout(redirectTimer);
+});
+
+document.addEventListener('keypress', () => {
+    clearTimeout(redirectTimer);
+});
+</script>
+
+<style>
+.cancel-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #dc3545, #fd7e14);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: cancelPulse 2s ease-in-out;
+}
+
+.cancel-icon i {
+    color: white;
+    font-size: 3rem;
+}
+
+@keyframes cancelPulse {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.option-card {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e9ecef;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.option-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.help-item {
+    margin-bottom: 0.5rem;
+}
+
+.help-item a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.help-item a:hover {
+    text-decoration: underline;
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+</style>
+{% endblock %}

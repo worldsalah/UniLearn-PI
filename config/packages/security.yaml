@@ -12,44 +12,115 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        api_login:
-            pattern: ^/api/login
-            stateless: true
-            json_login:
-                check_path: /api/login_check
-                username_path: email
-                password_path: password
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        
+        # Booking feedback API routes - MUST be first to avoid JWT interception
+        booking_feedback_api:
+            pattern: ^/api/booking/.*/feedback.*
+            stateless: false
+            provider: app_user_provider
+            custom_authenticator: App\Security\LoginFormAuthenticator
+        
+        # API routes that use session auth (tutoring platform)
+        tutoring_api:
+            pattern: ^/api/teacher
+            stateless: false
+            provider: app_user_provider
+            custom_authenticator: App\Security\LoginFormAuthenticator
+        
+        tutoring_availability_api:
+            pattern: ^/api/availability
+            stateless: false
+            provider: app_user_provider
+            custom_authenticator: App\Security\LoginFormAuthenticator
+        
+        tutoring_bookings_api:
+            pattern: ^/api/bookings
+            stateless: false
+            provider: app_user_provider
+            custom_authenticator: App\Security\LoginFormAuthenticator
+        
+        # Public API routes (no auth needed)
+        public_api:
+            pattern: ^/api/bookings/booked-dates
+            security: false
+        
+        # JWT Authentication for API
         api:
             pattern: ^/api
             stateless: true
             jwt: ~
+        
         main:
             lazy: true
             provider: app_user_provider
-            custom_authenticators:
-                - App\Security\LoginAuthenticator
-                - App\Security\GoogleAuthenticator
-            entry_point: App\Security\LoginAuthenticator
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                default_target_path: app_home
-                enable_csrf: true
-                username_parameter: email
-                password_parameter: password
+            custom_authenticator: App\Security\LoginFormAuthenticator
+            entry_point: App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
                 target: app_home
+            # Enable JWT for getting token
+            json_login:
+                check_path: /api/login_check
+                username_path: email
+                password_path: password
 
     # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+    # Note that only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/auth/google, roles: PUBLIC_ACCESS }
+        # Public access to login and auth pages only
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/forgot-password, roles: PUBLIC_ACCESS }
+        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+        - { path: ^/sign-in, roles: PUBLIC_ACCESS }
+        - { path: ^/sign-up, roles: PUBLIC_ACCESS }
+        # Public access to face auth routes (for login)
+        - { path: ^/face-auth/verify, roles: PUBLIC_ACCESS }
+        - { path: ^/face-auth/status, roles: PUBLIC_ACCESS }
+        # Public access to OAuth routes
         - { path: ^/connect/facebook, roles: PUBLIC_ACCESS }
+        - { path: ^/connect/facebook/check, roles: PUBLIC_ACCESS }
+        - { path: ^/auth/google, roles: PUBLIC_ACCESS }
+        - { path: ^/auth/google/callback, roles: PUBLIC_ACCESS }
+        # ALL other pages require authentication
+        - { path: ^/course, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/courses, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/category, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/categories, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/instructor, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/student, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/enroll, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/enrollment, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/quiz, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/test, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/lesson, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/chapter, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/dashboard, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/my-courses, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/wishlist, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/cart, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/checkout, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/payment, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/order, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/certificate, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/gamification, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/ai-roadmap, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/progress, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/sessions, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/bookings, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/, roles: PUBLIC_ACCESS }
+        # Face authentication routes (public access for login)
+        - { path: ^/face-auth/verify, roles: PUBLIC_ACCESS }
+        - { path: ^/face-auth/status, roles: PUBLIC_ACCESS }
+        # API login route (public)
+        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
+        # API feedback routes - allow session auth
+        - { path: ^/api/booking/.*/feedback, roles: IS_AUTHENTICATED_FULLY }
+        # API routes require JWT authentication
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        # Admin routes require admin role
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
     security:

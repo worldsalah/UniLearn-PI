@@ -1,4 +1,4 @@
-x²{% extends 'front_base.html.twig' %}
+{% extends 'front_base.html.twig' %}
 
 {% block title %}Quiz Management - Unilearn{% endblock %}
 
@@ -17,7 +17,57 @@ x²{% extends 'front_base.html.twig' %}
     background-color: #e9ecef;
 }
 .quiz-actions {
-    pointer-events: none;
+    pointer-events: auto;
+}
+.quiz-actions .btn-group {
+    pointer-events: auto;
+}
+
+/* Purple button for AI features */
+.btn-purple {
+    background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);
+    border-color: #6f42c1;
+    color: white;
+    transition: all 0.3s ease;
+}
+.btn-purple:hover {
+    background: linear-gradient(135deg, #5a32a3 0%, #4a2891 100%);
+    border-color: #5a32a3;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.4);
+}
+.btn-purple:active {
+    transform: translateY(0);
+}
+
+/* Fix modal z-index issues */
+.modal-backdrop {
+    z-index: 9998 !important;
+}
+.modal {
+    z-index: 9999 !important;
+}
+.modal-dialog {
+    z-index: 10000 !important;
+}
+.modal-content {
+    background: white !important;
+    border: 1px solid rgba(0,0,0,0.2) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.5) !important;
+}
+.modal-body {
+    background: white !important;
+    padding: 1rem !important;
+}
+.modal-header {
+    background: white !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+.modal-footer {
+    background: white !important;
+    border-top: 1px solid #dee2e6 !important;
 }
 
 /* Dashboard Styles */
@@ -291,7 +341,10 @@ Page content START -->
 						<button class="btn btn-outline-secondary btn-sm" onclick="exportResults()">
 							<i class="bi bi-download me-1"></i> Export
 						</button>
-						<button class="btn btn-outline-warning btn-sm" onclick="testSorting()">
+						<button class="btn btn-outline-success btn-sm" onclick="showGenerateQuestionsModal()">
+							<i class="bi bi-magic me-1"></i> Generate Questions
+						</button>
+						<button class="btn btn-outline-info btn-sm" onclick="testSorting()">
 							<i class="bi bi-sort-down me-1"></i> Test Sort
 						</button>
 					</div>
@@ -444,13 +497,23 @@ Page content START -->
 																<i class="bi bi-list-ul me-2"></i>
 																Questions for {{ quiz.title }}
 															</h6>
-															<span class="badge bg-secondary">{{ quiz.questions|length }} Questions</span>
+															<div class="d-flex gap-2 align-items-center">
+																<span class="badge bg-secondary">{{ quiz.questions|length }} Questions</span>
+																{% if quiz.course %}
+																	<button class="btn btn-purple btn-sm" onclick="event.stopPropagation(); openAIQuestionModal({{ quiz.id }}, {{ quiz.course.id }})">
+																		<i class="bi bi-robot me-1"></i>Generate AI Questions
+																	</button>
+																{% endif %}
+																<button class="btn btn-success btn-sm" onclick="event.stopPropagation(); translateAllQuizQuestions({{ quiz.id }}, '{{ quiz.title|e('js') }}')">
+																	<i class="bi bi-translate me-1"></i>Translate All to French
+																</button>
+															</div>
 														</div>
 														{% if quiz.questions|length > 0 %}
 															<div class="row">
 																{% for question in quiz.questions %}
 																	<div class="col-md-6 mb-3">
-																		<div class="card border-0 shadow-sm">
+																		<div class="card border-0 shadow-sm" data-question-id="{{ question.id }}">
 																			<div class="card-body">
 																				<div class="d-flex justify-content-between align-items-start mb-2">
 																					<div class="flex-grow-1">
@@ -461,8 +524,14 @@ Page content START -->
 																						</div>
 																					</div>
 																					<div class="d-flex gap-1">
-																						<button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); editQuestion({{ question.id }}, '{{ question.question|e('js') }}')" title="Edit Question">
+																						<button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); editQuestionWithAI({{ question.id }}, '{{ question.question|e('js') }}')" title="Edit Question">
 																							<i class="bi bi-pencil"></i>
+																						</button>
+																						<button class="btn btn-outline-info btn-sm" onclick="event.stopPropagation(); showTranslateQuestionModal({{ question.id }}, { question: '{{ question.question|e('js') }}', options: { A: '{{ question.optionA|e('js') }}', B: '{{ question.optionB|e('js') }}', C: '{{ question.optionC|e('js') }}', D: '{{ question.optionD|e('js') }}' }, correctOption: '{{ question.correctOption }}' })" title="Auto-translate to French">
+																							<i class="bi bi-translate"></i>
+																						</button>
+																						<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation(); translateAllQuizQuestions({{ quiz.id }}, '{{ quiz.title|e('js') }}')" title="Translate All Questions to French">
+																							<i class="bi bi-translate"></i>
 																						</button>
 																						<button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteQuestion({{ question.id }}, '{{ question.question|e('js') }}')" title="Delete Question">
 																							<i class="bi bi-trash"></i>
@@ -495,12 +564,26 @@ Page content START -->
 																{% endfor %}
 															</div>
 														{% else %}
-															<div class="text-center py-5">
+															<div class="text-center py-5" id="noQuestionsContainer">
 																<i class="bi bi-question-circle fs-1 text-muted mb-3"></i>
 																<p class="text-muted mb-3">No questions added yet</p>
-																<button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openAddQuestionModal({{ quiz.id }}, '{{ quiz.title|e('js') }}')">
-																	<i class="bi bi-plus-circle me-1"></i> Add First Question
-																</button>
+																<div class="d-flex justify-content-center gap-2">
+																	<button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openAddQuestionModal({{ quiz.id }}, '{{ quiz.title|e('js') }}')">
+																		<i class="bi bi-plus-circle me-1"></i> Add First Question
+																	</button>
+																	{% if quiz.course %}
+																		<button class="btn btn-purple btn-sm" onclick="event.stopPropagation(); console.log('Button clicked'); openAIQuestionModal({{ quiz.id }}, {{ quiz.course.id }})">
+																			<i class="bi bi-robot me-1"></i> Generate AI Questions
+																		</button>
+																	{% endif %}
+																</div>
+																<!-- Loading state (hidden by default) -->
+																<div id="aiLoadingState" class="text-center py-5" style="display: none;">
+																	<div class="spinner-border text-primary" role="status">
+																		<span class="visually-hidden">Generating questions...</span>
+																	</div>
+																	<p class="text-muted mt-3">AI is generating questions, please wait...</p>
+																</div>
 															</div>
 														{% endif %}
 													</div>
@@ -590,6 +673,20 @@ Page content END -->
 						<div class="invalid-feedback" id="quizCourseError"></div>
 						<small class="form-text text-muted">
 							⚠️ You can create quizzes for inactive courses, but they will only be visible when the course is activated.
+						</small>
+					</div>
+					<div class="mb-3">
+						<label for="quizType" class="form-label">Quiz Type</label>
+						<select class="form-control" id="quizType" name="quiz_type" required>
+							<option value="lesson">📚 Lesson Quiz - For a specific lesson</option>
+							<option value="placement">🎯 Placement Quiz - At course start (determine student level)</option>
+							<option value="final">🏆 Final Quiz - At course end (completion test)</option>
+						</select>
+						<div class="invalid-feedback" id="quizTypeError"></div>
+						<small class="form-text text-muted">
+							<strong>Placement Quiz:</strong> Shown when student first enrolls to assess their starting level.<br>
+							<strong>Final Quiz:</strong> Shown after course completion to test overall knowledge.<br>
+							<strong>Lesson Quiz:</strong> For specific lessons within the course.
 						</small>
 					</div>
 					<div class="mb-3">
@@ -992,6 +1089,260 @@ Page content END -->
 	</div>
 </div>
 
+<!-- AI Question Generation Modal -->
+<div class="modal fade" id="generateQuestionsModal" tabindex="-1" aria-labelledby="generateQuestionsModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header bg-success text-white">
+				<h5 class="modal-title" id="generateQuestionsModalLabel">
+					<i class="bi bi-magic me-2"></i>AI Question Generator
+				</h5>
+				<button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close">
+					<i class="bi bi-x-lg"></i>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="generateQuestionsForm">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="genQuizSelect" class="form-label">Select Quiz</label>
+								<select class="form-control" id="genQuizSelect" name="quiz_id" required>
+									<option value="">Choose a quiz...</option>
+									{% if quizzes is defined %}
+										{% for quiz in quizzes %}
+											<option value="{{ quiz.id }}">{{ quiz.title }} ({{ quiz.questions|length }} questions)</option>
+										{% endfor %}
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="genQuestionCount" class="form-label">Number of Questions</label>
+								<input type="number" class="form-control" id="genQuestionCount" name="question_count" value="5" min="1" max="20" required>
+								<small class="text-muted">Generate 1-20 questions</small>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="genDifficulty" class="form-label">Difficulty Level</label>
+								<select class="form-control" id="genDifficulty" name="difficulty">
+									<option value="beginner">Beginner</option>
+									<option value="medium" selected>Medium</option>
+									<option value="advanced">Advanced</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="genLanguage" class="form-label">Language</label>
+								<select class="form-control" id="genLanguage" name="language">
+									<option value="en" selected>English</option>
+									<option value="es">Spanish</option>
+									<option value="fr">French</option>
+									<option value="de">German</option>
+									<option value="it">Italian</option>
+									<option value="pt">Portuguese</option>
+									<option value="zh">Chinese</option>
+									<option value="ja">Japanese</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label for="genCourseDescription" class="form-label">Course Description (Optional)</label>
+						<textarea class="form-control" id="genCourseDescription" name="course_description" rows="3" placeholder="Add course context for better question generation..."></textarea>
+						<small class="text-muted">Providing course description helps generate more relevant questions</small>
+					</div>
+					<div class="alert alert-info">
+						<i class="bi bi-info-circle me-2"></i>
+						<strong>AI-Powered Generation:</strong> Our AI will create high-quality, context-aware questions based on your course content and specified difficulty level.
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-success" onclick="generateAIQuestions()">
+					<i class="bi bi-magic me-1"></i> Generate Questions
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Question Translation Modal -->
+<div class="modal fade" id="translateQuestionModal" tabindex="-1" aria-labelledby="translateQuestionModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header bg-info text-white">
+				<h5 class="modal-title" id="translateQuestionModalLabel">
+					<i class="bi bi-translate me-2"></i>AI Question Translator
+				</h5>
+				<button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close">
+					<i class="bi bi-x-lg"></i>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="translationContent">
+					<div class="row">
+						<div class="col-md-6">
+							<h6>Original Question (English)</h6>
+							<div id="originalQuestionDisplay" class="border rounded p-3 bg-light">
+								<p class="mb-0"><strong>Question:</strong> <span id="originalQuestionText"></span></p>
+								<div class="mt-2">
+									<div class="row">
+										<div class="col-6"><strong>A:</strong> <span id="originalOptionA"></span></div>
+										<div class="col-6"><strong>B:</strong> <span id="originalOptionB"></span></div>
+									</div>
+									<div class="row mt-1">
+										<div class="col-6"><strong>C:</strong> <span id="originalOptionC"></span></div>
+										<div class="col-6"><strong>D:</strong> <span id="originalOptionD"></span></div>
+									</div>
+								</div>
+								<p class="mb-0 mt-2"><strong>Correct Answer:</strong> <span id="originalCorrectOption" class="badge bg-success"></span></p>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<h6>Translated Question (French)</h6>
+							<div id="translatedQuestionDisplay" class="border rounded p-3 bg-light">
+								<div id="translationLoading" class="text-center py-4" style="display: block;">
+									<div class="spinner-border text-primary" role="status">
+										<span class="visually-hidden">Loading...</span>
+									</div>
+									<p class="mt-2 mb-0">Translating to French...</p>
+								</div>
+								<div id="translationResult" style="display: none;">
+									<p class="mb-0"><strong>Question:</strong> <span id="translatedQuestionText"></span></p>
+									<div class="mt-2">
+										<div class="row">
+											<div class="col-6"><strong>A:</strong> <span id="translatedOptionA"></span></div>
+											<div class="col-6"><strong>B:</strong> <span id="translatedOptionB"></span></div>
+										</div>
+										<div class="row mt-1">
+											<div class="col-6"><strong>C:</strong> <span id="translatedOptionC"></span></div>
+											<div class="col-6"><strong>D:</strong> <span id="translatedOptionD"></span></div>
+										</div>
+									</div>
+									<p class="mb-0 mt-2"><strong>Correct Answer:</strong> <span id="translatedCorrectOption" class="badge bg-success"></span></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="alert alert-info mt-3">
+						<i class="bi bi-info-circle me-2"></i>
+						<strong>Auto-Translation:</strong> Automatically translating from English to French using AI.
+					</div>
+				</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-success" id="saveTranslatedBtn" onclick="saveTranslatedQuestion()" style="display: none;">
+					<i class="bi bi-check-circle me-1"></i> Save Translation
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Translate All Questions Modal -->
+<div class="modal fade" id="translateAllQuestionsModal" tabindex="-1" aria-labelledby="translateAllQuestionsModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header bg-success text-white">
+				<h5 class="modal-title" id="translateAllQuestionsModalLabel">
+					<i class="bi bi-translate me-2"></i>Translate All Quiz Questions
+				</h5>
+				<button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close">
+					<i class="bi bi-x-lg"></i>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="translateAllContent">
+					<div class="text-center mb-4">
+						<h6 id="quizTitleForTranslation"></h6>
+						<p class="text-muted">Translating all questions from English to French...</p>
+					</div>
+					
+					<div id="translationProgress">
+						<div class="progress mb-3" style="height: 25px;">
+							<div class="progress-bar bg-success" id="progressBar" role="progressbar" style="width: 0%">
+								<span id="progressText">0%</span>
+							</div>
+						</div>
+						<div class="text-center">
+							<small class="text-muted" id="progressStatus">Starting translation...</small>
+						</div>
+					</div>
+					
+					<div id="translationResults" style="display: none;">
+						<div class="alert alert-success">
+							<i class="bi bi-check-circle me-2"></i>
+							<strong>Translation Complete!</strong> All questions have been translated to French.
+						</div>
+						<div id="translatedQuestionsList"></div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-success" id="saveAllTranslationsBtn" onclick="saveAllTranslations()" style="display: none;">
+					<i class="bi bi-check-circle me-1"></i>Save All Translations
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- AI Question Generation Modal -->
+<div class="modal fade" id="aiQuestionModal" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content" style="background-color: #ffffff !important; border: 2px solid #6f42c1; border-radius: 10px;">
+			<div class="modal-header" style="background-color: #6f42c1 !important; color: white; border-radius: 8px 8px 0 0;">
+				<h5 class="modal-title">
+					<i class="bi bi-robot me-2"></i>Generate AI Questions
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body" style="background-color: #ffffff !important; padding: 20px;">
+				<form id="aiQuestionForm">
+					<div class="mb-3">
+						<label class="form-label fw-bold" style="color: #333;">Number of Questions</label>
+						<select class="form-select" id="aiQuestionCount" style="background-color: #fff; border: 1px solid #ced4da;">
+							<option value="3">3 Questions</option>
+							<option value="5" selected>5 Questions</option>
+							<option value="10">10 Questions</option>
+							<option value="15">15 Questions</option>
+						</select>
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-bold" style="color: #333;">Difficulty Level</label>
+						<select class="form-select" id="aiDifficulty" style="background-color: #fff; border: 1px solid #ced4da;">
+							<option value="easy">Easy</option>
+							<option value="medium" selected>Medium</option>
+							<option value="hard">Hard</option>
+						</select>
+					</div>
+					<div class="alert alert-info mb-0" style="background-color: #e7f3ff; border: 1px solid #b8daff; color: #004085;">
+						<i class="bi bi-info-circle me-2"></i>
+						AI will generate questions based on the course content.
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer" style="background-color: #ffffff !important; border-radius: 0 0 8px 8px;">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" onclick="generateAIQuestionsCustom()">
+					<i class="bi bi-robot me-1"></i> Generate
+				</button>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" id="aiQuizId" value="">
+	<input type="hidden" id="aiCourseId" value="">
+</div>
+
 {% endblock %}
 
 {% block javascripts %}
@@ -1323,6 +1674,7 @@ function addQuiz() {
     const data = {
         title: formData.get('title'),
         course_id: formData.get('course_id'),
+        quiz_type: formData.get('quiz_type'),
         description: formData.get('description')
     };
 
@@ -2244,6 +2596,865 @@ function exportToCSV() {
             console.error('Export error:', error);
             showNotification('Failed to export quiz data. Please try again.', 'danger');
         });
+}
+
+// AI Question Generation Functions
+function showGenerateQuestionsModal() {
+    const modal = new bootstrap.Modal(document.getElementById('generateQuestionsModal'));
+    modal.show();
+    
+    // Load quizzes for selection
+    loadQuizzesForGeneration();
+}
+
+function loadQuizzesForGeneration() {
+    // This would be populated by Twig template, but we can refresh if needed
+    const select = document.getElementById('genQuizSelect');
+    if (select && select.options.length <= 1) {
+        // Reload page or fetch fresh data if needed
+        console.log('Quizzes loaded for generation');
+    }
+}
+
+function generateAIQuestions() {
+    const form = document.getElementById('generateQuestionsForm');
+    const formData = new FormData(form);
+    const data = {
+        quiz_id: formData.get('quiz_id'),
+        course_title: formData.get('quiz_title') || '', // Will be populated from quiz selection
+        course_description: formData.get('course_description'),
+        question_count: parseInt(formData.get('question_count')),
+        difficulty: formData.get('difficulty'),
+        language: formData.get('language')
+    };
+
+    // Validate required fields
+    if (!data.quiz_id) {
+        showNotification('Please select a quiz', 'warning');
+        return;
+    }
+
+    // Get course title from selected quiz
+    const quizSelect = document.getElementById('genQuizSelect');
+    if (quizSelect && quizSelect.value) {
+        const selectedOption = quizSelect.options[quizSelect.selectedIndex];
+        data.course_title = selectedOption.text.replace(/\s+\(\d+.*\)/, ''); // Remove question count from title
+    }
+
+    // Show loading state
+    const generateBtn = event.target;
+    const originalText = generateBtn.innerHTML;
+    generateBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Generating...';
+    generateBtn.disabled = true;
+
+    fetch('/quiz/generate-questions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification(`Successfully generated ${data.total_generated} questions!`, 'success');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('generateQuestionsModal'));
+            modal.hide();
+            
+            // Reload page to show new questions
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showNotification('Error: ' + data.message, 'danger');
+            
+            // If fallback questions provided, show them
+            if (data.fallback_questions && data.fallback_questions.length > 0) {
+                console.log('Fallback questions available:', data.fallback_questions);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while generating questions', 'danger');
+    })
+    .finally(() => {
+        // Restore button state
+        generateBtn.innerHTML = originalText;
+        generateBtn.disabled = false;
+    });
+}
+
+// AI Translation Functions
+function showTranslateQuestionModal(questionId, questionData) {
+    // Store the current question ID globally for auto-translation
+    window.currentTranslationQuestionId = questionId;
+    
+    // Populate original question display
+    document.getElementById('originalQuestionText').textContent = questionData.question;
+    document.getElementById('originalOptionA').textContent = questionData.options.A;
+    document.getElementById('originalOptionB').textContent = questionData.options.B;
+    document.getElementById('originalOptionC').textContent = questionData.options.C;
+    document.getElementById('originalOptionD').textContent = questionData.options.D;
+    document.getElementById('originalCorrectOption').textContent = 'Option ' + questionData.correctOption;
+    
+    // Reset translation display
+    resetTranslationDisplay();
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('translateQuestionModal'));
+    modal.show();
+    
+    // Automatically trigger translation after a short delay
+    setTimeout(() => {
+        translateQuestionAuto('French');
+    }, 500);
+}
+
+function loadQuestionsForTranslation(selectedQuestionId) {
+    // This would typically be populated by Twig template
+    const select = document.getElementById('translateQuestionSelect');
+    if (select) {
+        // Clear existing options except the first one
+        select.innerHTML = '<option value="">Choose a question...</option>';
+        
+        // Add questions from current page
+        const questionCards = document.querySelectorAll('.question-card');
+        questionCards.forEach((card, index) => {
+            const questionText = card.querySelector('h6')?.textContent;
+            if (questionText) {
+                const option = document.createElement('option');
+                option.value = card.dataset.questionId || (index + 1);
+                option.textContent = questionText.substring(0, 100) + (questionText.length > 100 ? '...' : '');
+                select.appendChild(option);
+            }
+        });
+        
+        // Set selected question if provided
+        if (selectedQuestionId) {
+            select.value = selectedQuestionId;
+        }
+    }
+}
+
+function resetTranslationDisplay() {
+    // Check if elements exist before trying to access them
+    const translationLoading = document.getElementById('translationLoading');
+    const translationResult = document.getElementById('translationResult');
+    const saveTranslatedBtn = document.getElementById('saveTranslatedBtn');
+    
+    if (translationLoading) {
+        translationLoading.style.display = 'block';
+    }
+    if (translationResult) {
+        translationResult.style.display = 'none';
+    }
+    if (saveTranslatedBtn) {
+        saveTranslatedBtn.style.display = 'none';
+    }
+    
+    // Clear translated content (check if elements exist)
+    const translatedQuestionText = document.getElementById('translatedQuestionText');
+    const translatedOptionA = document.getElementById('translatedOptionA');
+    const translatedOptionB = document.getElementById('translatedOptionB');
+    const translatedOptionC = document.getElementById('translatedOptionC');
+    const translatedOptionD = document.getElementById('translatedOptionD');
+    const translatedCorrectOption = document.getElementById('translatedCorrectOption');
+    
+    if (translatedQuestionText) {
+        translatedQuestionText.textContent = '';
+    }
+    if (translatedOptionA) {
+        translatedOptionA.textContent = '';
+    }
+    if (translatedOptionB) {
+        translatedOptionB.textContent = '';
+    }
+    if (translatedOptionC) {
+        translatedOptionC.textContent = '';
+    }
+    if (translatedOptionD) {
+        translatedOptionD.textContent = '';
+    }
+    if (translatedCorrectOption) {
+        translatedCorrectOption.textContent = '';
+    }
+    
+    // targetLanguageDisplay was removed, so we don't try to access it anymore
+}
+
+function translateQuestion() {
+    const form = document.getElementById('translateQuestionForm');
+    const formData = new FormData(form);
+    const data = {
+        question_id: formData.get('question_id'),
+        target_language: formData.get('target_language')
+    };
+
+    // Validate required fields
+    if (!data.question_id || !data.target_language) {
+        showNotification('Please select a question and target language', 'warning');
+        return;
+    }
+
+    // Show loading state
+    const translateBtn = event.target;
+    const originalText = translateBtn.innerHTML;
+    translateBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Translating...';
+    translateBtn.disabled = true;
+
+    fetch('/quiz/translate-question', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Display translated question
+            displayTranslatedQuestion(data.translated_question);
+            
+            // Store translated data for saving
+            window.currentTranslation = {
+                question_id: data.original_question.id,
+                translated_data: data.translated_question
+            };
+            
+            showNotification('Question translated successfully!', 'success');
+        } else {
+            showNotification('Translation Error: ' + data.message, 'danger');
+            
+            // Show fallback if available
+            if (data.fallback_translation) {
+                displayTranslatedQuestion(data.fallback_translation);
+                showNotification('Using fallback translation', 'warning');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while translating question', 'danger');
+    })
+    .finally(() => {
+        // Restore button state
+        translateBtn.innerHTML = originalText;
+        translateBtn.disabled = false;
+    });
+}
+
+// Auto-translate function for French translation
+function translateQuestionAuto(targetLanguage = 'French') {
+    // Get the question ID from the current translation context
+    const questionId = window.currentTranslationQuestionId;
+    
+    if (!questionId) {
+        showNotification('No question selected', 'warning');
+        return;
+    }
+
+    const data = {
+        question_id: questionId,
+        target_language: targetLanguage
+    };
+
+    // Show loading state
+    const translationLoading = document.getElementById('translationLoading');
+    const translationResult = document.getElementById('translationResult');
+    
+    if (translationLoading) {
+        translationLoading.style.display = 'block';
+    }
+    if (translationResult) {
+        translationResult.style.display = 'none';
+    }
+
+    fetch('/quiz/translate-question', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Display translated question
+            displayTranslatedQuestion(data.translated_question);
+            
+            // Store translated data for saving
+            window.currentTranslation = {
+                question_id: data.original_question.id,
+                translated_data: data.translated_question
+            };
+            
+            showNotification('Question automatically translated to French!', 'success');
+        } else {
+            showNotification('Translation Error: ' + data.message, 'danger');
+            
+            // Show fallback if available
+            if (data.fallback_translation) {
+                displayTranslatedQuestion(data.fallback_translation);
+                showNotification('Using fallback translation', 'warning');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Translation error:', error);
+        showNotification('Auto-translation failed. Please try manually.', 'danger');
+        
+        // Hide loading and show error state
+        if (translationLoading) {
+            translationLoading.style.display = 'none';
+        }
+    })
+    .finally(() => {
+        // Always hide loading and show result after processing
+        if (translationLoading) {
+            translationLoading.style.display = 'none';
+        }
+        if (translationResult) {
+            translationResult.style.display = 'block';
+        }
+    });
+}
+
+// Generate AI Questions Function
+async function generateAIQuestions(quizId, courseId) {
+    // Show confirmation modal
+    const confirmed = confirm('This will generate 5 AI questions based on the course content. Continue?');
+    if (!confirmed) return;
+    
+    // Hide no questions container and show loading
+    const noQuestionsContainer = document.getElementById('noQuestionsContainer');
+    const loadingState = document.getElementById('aiLoadingState');
+    
+    if (noQuestionsContainer) {
+        noQuestionsContainer.style.display = 'none';
+    }
+    if (loadingState) {
+        loadingState.style.display = 'block';
+    }
+    
+    // Show loading
+    showNotification('Generating AI questions... Please wait.', 'info');
+    
+    try {
+        const response = await fetch('/quiz/generate-questions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                quiz_id: quizId,
+                course_id: courseId,
+                question_count: 5,
+                difficulty: 'medium',
+                language: 'en'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification(`Successfully generated ${data.total_generated} questions!`, 'success');
+            // Reload the page to show new questions
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            showNotification('Error: ' + (data.message || 'Failed to generate questions'), 'danger');
+        }
+    } catch (error) {
+        console.error('Error generating questions:', error);
+        showNotification('Error: Failed to generate questions. Please try again.', 'danger');
+    } finally {
+        // Hide loading state
+        if (loadingState) {
+            loadingState.style.display = 'none';
+        }
+        if (noQuestionsContainer) {
+            noQuestionsContainer.style.display = 'block';
+        }
+    }
+}
+
+// AI Question Generation Modal
+function openAIQuestionModal(quizId, courseId) {
+    console.log('openAIQuestionModal called with quizId:', quizId, 'courseId:', courseId);
+    
+    // Set modal values
+    const quizIdInput = document.getElementById('aiQuizId');
+    const courseIdInput = document.getElementById('aiCourseId');
+    const questionCountSelect = document.getElementById('aiQuestionCount');
+    const difficultySelect = document.getElementById('aiDifficulty');
+    const modalElement = document.getElementById('aiQuestionModal');
+    
+    console.log('Modal element:', modalElement);
+    console.log('Quiz ID input:', quizIdInput);
+    console.log('Course ID input:', courseIdInput);
+    
+    if (!modalElement) {
+        console.error('Modal element not found!');
+        alert('Error: Modal not found');
+        return;
+    }
+    
+    if (quizIdInput) quizIdInput.value = quizId;
+    if (courseIdInput) courseIdInput.value = courseId;
+    if (questionCountSelect) questionCountSelect.value = 5;
+    if (difficultySelect) difficultySelect.value = 'medium';
+    
+    // Move modal to body to avoid z-index issues
+    document.body.appendChild(modalElement);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(modalElement, {
+        backdrop: true,
+        keyboard: true
+    });
+    modal.show();
+    
+    console.log('Modal should be visible now');
+}
+
+// Generate AI Questions with Custom Parameters
+async function generateAIQuestionsCustom() {
+    const quizId = document.getElementById('aiQuizId').value;
+    const courseId = document.getElementById('aiCourseId').value;
+    const questionCount = parseInt(document.getElementById('aiQuestionCount').value);
+    const difficulty = document.getElementById('aiDifficulty').value;
+    
+    if (!quizId || !courseId) {
+        showNotification('Missing quiz or course information', 'danger');
+        return;
+    }
+    
+    // Get the generate button and add loading state
+    const generateBtn = document.querySelector('#aiQuestionModal .btn-primary');
+    const cancelBtn = document.querySelector('#aiQuestionModal .btn-secondary');
+    const originalBtnText = generateBtn.innerHTML;
+    
+    // Disable buttons and show loading
+    generateBtn.disabled = true;
+    cancelBtn.disabled = true;
+    generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Generating...';
+    
+    // Add loading indicator to modal body
+    const modalBody = document.querySelector('#aiQuestionModal .modal-body');
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'aiModalLoading';
+    loadingDiv.className = 'alert alert-info mt-3 text-center';
+    loadingDiv.innerHTML = '<div class="d-flex align-items-center justify-content-center"><div class="spinner-border spinner-border-sm me-2" role="status"></div><span>AI is generating ' + questionCount + ' ' + difficulty + ' questions... Please wait.</span></div>';
+    modalBody.appendChild(loadingDiv);
+    
+    try {
+        const response = await fetch('/quiz/generate-questions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                quiz_id: quizId,
+                course_id: courseId,
+                question_count: questionCount,
+                difficulty: difficulty,
+                language: 'en'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Show success in modal
+            loadingDiv.className = 'alert alert-success mt-3 text-center';
+            loadingDiv.innerHTML = '<i class="bi bi-check-circle me-2"></i>Successfully generated ' + data.total_generated + ' questions! Reloading page...';
+            
+            // Close modal and reload after a short delay
+            setTimeout(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('aiQuestionModal'));
+                modal.hide();
+                location.reload();
+            }, 1500);
+        } else {
+            // Check for quota exceeded error
+            if (data.error === 'quota_exceeded') {
+                loadingDiv.className = 'alert alert-warning mt-3 text-center';
+                loadingDiv.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>Daily Quota Exceeded!</strong><br><small>' + data.message + '</small>';
+            } else {
+                // Show other errors in modal
+                loadingDiv.className = 'alert alert-danger mt-3 text-center';
+                loadingDiv.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Error: ' + (data.message || 'Failed to generate questions');
+            }
+            
+            // Re-enable buttons
+            generateBtn.disabled = false;
+            cancelBtn.disabled = false;
+            generateBtn.innerHTML = originalBtnText;
+        }
+    } catch (error) {
+        console.error('Error generating questions:', error);
+        
+        // Show error in modal
+        loadingDiv.className = 'alert alert-danger mt-3 text-center';
+        loadingDiv.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Error: Failed to generate questions. Please try again.';
+        
+        // Re-enable buttons
+        generateBtn.disabled = false;
+        cancelBtn.disabled = false;
+        generateBtn.innerHTML = originalBtnText;
+    }
+}
+
+// Translate All Quiz Questions Function
+function translateAllQuizQuestions(quizId, quizTitle) {
+    // Store quiz data globally
+    window.currentQuizId = quizId;
+    window.currentQuizTitle = quizTitle;
+    window.allTranslations = [];
+    
+    // Set modal title
+    document.getElementById('quizTitleForTranslation').textContent = quizTitle;
+    
+    // Reset progress
+    resetTranslateAllProgress();
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('translateAllQuestionsModal'));
+    modal.show();
+    
+    // Start translation process
+    setTimeout(() => {
+        startBatchTranslation(quizId);
+    }, 500);
+}
+
+function resetTranslateAllProgress() {
+    document.getElementById('progressBar').style.width = '0%';
+    document.getElementById('progressText').textContent = '0%';
+    document.getElementById('progressStatus').textContent = 'Starting translation...';
+    document.getElementById('translationResults').style.display = 'none';
+    document.getElementById('saveAllTranslationsBtn').style.display = 'none';
+    document.getElementById('translatedQuestionsList').innerHTML = '';
+}
+
+async function startBatchTranslation(quizId) {
+    try {
+        console.log('Starting batch translation for quiz ID:', quizId);
+        
+        // Get all questions for this quiz
+        const response = await fetch(`/quiz/${quizId}/data`);
+        console.log('Response status:', response.status);
+        
+        const data = await response.json();
+        console.log('Response data:', data);
+        
+        if (!data.success || !data.quiz || !data.quiz.questions) {
+            console.error('Invalid response structure:', data);
+            showNotification('Failed to load quiz questions: ' + (data.message || 'Invalid response structure'), 'danger');
+            document.getElementById('progressStatus').textContent = 'Failed to load quiz questions. Please try again.';
+            return;
+        }
+        
+        const questions = data.quiz.questions;
+        const totalQuestions = questions.length;
+        console.log('Found questions:', totalQuestions);
+        
+        if (totalQuestions === 0) {
+            showNotification('No questions found in this quiz', 'warning');
+            document.getElementById('progressStatus').textContent = 'No questions to translate.';
+            return;
+        }
+        
+        let translatedCount = 0;
+        
+        // Update progress status
+        document.getElementById('progressStatus').textContent = `Translating 0 of ${totalQuestions} questions...`;
+        
+        // Translate each question
+        for (let i = 0; i < questions.length; i++) {
+            const question = questions[i];
+            console.log('Translating question:', question.id, question.question.substring(0, 50) + '...');
+            
+            try {
+                // Update progress
+                const progress = Math.round(((i + 1) / totalQuestions) * 100);
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressText').textContent = progress + '%';
+                document.getElementById('progressStatus').textContent = `Translating ${i + 1} of ${totalQuestions} questions...`;
+                
+                // Translate this question
+                const translationResponse = await fetch('/quiz/translate-question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question_id: question.id,
+                        target_language: 'French'
+                    })
+                });
+                
+                const translationData = await translationResponse.json();
+                console.log('Translation response for question', question.id, ':', translationData);
+                
+                if (translationData.success) {
+                    window.allTranslations.push({
+                        original_question: question,
+                        translated_data: translationData.translated_question
+                    });
+                    translatedCount++;
+                    console.log('Successfully translated question:', question.id);
+                } else {
+                    console.error('Failed to translate question:', question.id, translationData.message);
+                }
+                
+                // Small delay to show progress
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+            } catch (error) {
+                console.error('Error translating question:', question.id, error);
+            }
+        }
+        
+        console.log('Translation complete. Translated:', translatedCount, 'of', totalQuestions);
+        
+        // Show results
+        showTranslationResults(translatedCount, totalQuestions);
+        
+    } catch (error) {
+        console.error('Error in batch translation:', error);
+        showNotification('Batch translation failed: ' + error.message, 'danger');
+        document.getElementById('progressStatus').textContent = 'Translation failed: ' + error.message + '. Please try again.';
+    }
+}
+
+function showTranslationResults(translatedCount, totalQuestions) {
+    // Hide progress, show results
+    document.getElementById('translationProgress').style.display = 'none';
+    document.getElementById('translationResults').style.display = 'block';
+    document.getElementById('saveAllTranslationsBtn').style.display = 'inline-block';
+    
+    // Update success message
+    const successAlert = document.querySelector('#translationResults .alert');
+    successAlert.innerHTML = `
+        <i class="bi bi-check-circle me-2"></i>
+        <strong>Translation Complete!</strong> Successfully translated ${translatedCount} of ${totalQuestions} questions to French.
+    `;
+    
+    // Show translated questions summary
+    const translatedQuestionsList = document.getElementById('translatedQuestionsList');
+    translatedQuestionsList.innerHTML = `
+        <div class="mt-3">
+            <h6>Translation Summary:</h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="text-success">Original Questions</h6>
+                            <ul class="small">
+                                ${window.allTranslations.slice(0, 3).map(t => `<li>${t.original_question.question.substring(0, 50)}...</li>`).join('')}
+                                ${window.allTranslations.length > 3 ? '<li>... and more</li>' : ''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="text-info">French Translations</h6>
+                            <ul class="small">
+                                ${window.allTranslations.slice(0, 3).map(t => `<li>${t.translated_data.question.substring(0, 50)}...</li>`).join('')}
+                                ${window.allTranslations.length > 3 ? '<li>... and more</li>' : ''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    showNotification(`Successfully translated ${translatedCount} questions to French!`, 'success');
+}
+
+function saveAllTranslations() {
+    if (!window.allTranslations || window.allTranslations.length === 0) {
+        showNotification('No translations to save', 'warning');
+        return;
+    }
+    
+    const saveBtn = document.getElementById('saveAllTranslationsBtn');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Saving...';
+    saveBtn.disabled = true;
+    
+    // Save each translation
+    let savedCount = 0;
+    const totalTranslations = window.allTranslations.length;
+    
+    window.allTranslations.forEach(async (translation, index) => {
+        try {
+            const response = await fetch('/quiz/save-translated-question', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    question_id: translation.original_question.id,
+                    translated_data: translation.translated_data
+                })
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                savedCount++;
+            }
+        } catch (error) {
+            console.error('Error saving translation:', error);
+        }
+        
+        // Check if this was the last one
+        if (index === totalTranslations - 1) {
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+            
+            if (savedCount > 0) {
+                showNotification(`Successfully saved ${savedCount} translations!`, 'success');
+                
+                // Close modal and refresh page after a delay
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('translateAllQuestionsModal'));
+                    modal.hide();
+                    setTimeout(() => location.reload(), 1000);
+                }, 1500);
+            } else {
+                showNotification('Failed to save translations', 'danger');
+            }
+        }
+    });
+}
+
+function displayTranslatedQuestion(translatedData) {
+    // Hide loading, show result
+    const translationLoading = document.getElementById('translationLoading');
+    const translationResult = document.getElementById('translationResult');
+    const saveTranslatedBtn = document.getElementById('saveTranslatedBtn');
+    
+    if (translationLoading) {
+        translationLoading.style.display = 'none';
+    }
+    if (translationResult) {
+        translationResult.style.display = 'block';
+    }
+    if (saveTranslatedBtn) {
+        saveTranslatedBtn.style.display = 'inline-block';
+    }
+    
+    // Populate translated content (check if elements exist)
+    const translatedQuestionText = document.getElementById('translatedQuestionText');
+    const translatedOptionA = document.getElementById('translatedOptionA');
+    const translatedOptionB = document.getElementById('translatedOptionB');
+    const translatedOptionC = document.getElementById('translatedOptionC');
+    const translatedOptionD = document.getElementById('translatedOptionD');
+    const translatedCorrectOption = document.getElementById('translatedCorrectOption');
+    
+    if (translatedQuestionText) {
+        translatedQuestionText.textContent = translatedData.question;
+    }
+    if (translatedOptionA) {
+        translatedOptionA.textContent = translatedData.option_a;
+    }
+    if (translatedOptionB) {
+        translatedOptionB.textContent = translatedData.option_b;
+    }
+    if (translatedOptionC) {
+        translatedOptionC.textContent = translatedData.option_c;
+    }
+    if (translatedOptionD) {
+        translatedOptionD.textContent = translatedData.option_d;
+    }
+    if (translatedCorrectOption) {
+        translatedCorrectOption.textContent = translatedData.correct_option;
+    }
+    
+    // targetLanguageDisplay was removed, so we don't try to access it anymore
+}
+
+function saveTranslatedQuestion() {
+    if (!window.currentTranslation) {
+        showNotification('No translation data available to save', 'warning');
+        return;
+    }
+
+    const saveBtn = event.target;
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Saving...';
+    saveBtn.disabled = true;
+
+    fetch('/quiz/save-translated-question', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(window.currentTranslation)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Translated question saved successfully!', 'success');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('translateQuestionModal'));
+            modal.hide();
+            
+            // Reload page to show updated question
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showNotification('Error: ' + data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while saving translated question', 'danger');
+    })
+    .finally(() => {
+        // Restore button state
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+    });
+}
+
+// Enhanced question editing with AI translation
+function editQuestionWithAI(questionId, questionText) {
+    // First show the regular edit modal
+    editQuestion(questionId, questionText);
+    
+    // Add AI translation button to the modal
+    setTimeout(() => {
+        const modalFooter = document.querySelector('#editQuestionModal .modal-footer');
+        if (modalFooter && !modalFooter.querySelector('.ai-translate-btn')) {
+            const aiTranslateBtn = document.createElement('button');
+            aiTranslateBtn.type = 'button';
+            aiTranslateBtn.className = 'btn btn-outline-info ai-translate-btn';
+            aiTranslateBtn.innerHTML = '<i class="bi bi-translate me-1"></i> AI Translate';
+            aiTranslateBtn.onclick = () => {
+                const questionData = {
+                    question: document.getElementById('editQuestionText').value,
+                    options: {
+                        A: document.querySelector('input[name="editOption1"]').value,
+                        B: document.querySelector('input[name="editOption2"]').value,
+                        C: document.querySelector('input[name="editOption3"]').value,
+                        D: document.querySelector('input[name="editOption4"]').value
+                    },
+                    correct_option: document.querySelector('input[name="editCorrectOption"]:checked')?.value || 'A'
+                };
+                showTranslateQuestionModal(questionId, questionData);
+            };
+            
+            modalFooter.insertBefore(aiTranslateBtn, modalFooter.firstChild);
+        }
+    }, 500);
 }
 </script>
 {% endblock %}

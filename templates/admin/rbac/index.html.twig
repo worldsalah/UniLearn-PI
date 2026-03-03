@@ -1,0 +1,97 @@
+{% extends 'admin/admin.base.html.twig' %}
+
+{% block title %}Gestion des Rôles et Permissions{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Gestion des Rôles et Permissions (RBAC)</h1>
+        <div>
+            <a href="{{ path('admin_rbac_initialize') }}" class="btn btn-warning" onclick="return confirm('Cela va créer les permissions par défaut. Continuer?')">
+                <i class="fas fa-magic"></i> Initialiser les Permissions
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Rôles</h5>
+                    <a href="{{ path('admin_rbac_role_new') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus"></i> Nouveau
+                    </a>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Description</th>
+                                <th>Permissions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for role in roles %}
+                            <tr>
+                                <td>{{ role.name }}</td>
+                                <td>{{ role.description|default('N/A') }}</td>
+                                <td>
+                                    <span class="badge bg-info">{{ role.permissions|length }}</span>
+                                </td>
+                                <td>
+                                    <a href="{{ path('admin_rbac_role_edit', {'id': role.id}) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% if role.users|length == 0 %}
+                                    <form action="{{ path('admin_rbac_role_delete', {'id': role.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Supprimer ce rôle?')">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Permissions par Catégorie</h5>
+                    <a href="{{ path('admin_rbac_permission_new') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus"></i> Nouvelle
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% for category, permissions in groupedPermissions %}
+                    <div class="mb-3">
+                        <h6 class="text-primary">{{ category|title }}</h6>
+                        <div class="list-group list-group-flush">
+                            {% for permission in permissions %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                <div>
+                                    <strong>{{ permission.name }}</strong>
+                                    <small class="d-block text-muted">{{ permission.description|default('') }}</small>
+                                </div>
+                                <form action="{{ path('admin_rbac_permission_delete', {'id': permission.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Supprimer cette permission?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

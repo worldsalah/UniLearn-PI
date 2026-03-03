@@ -1,0 +1,89 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Classement{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-crown me-2"></i>Classement Général
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if leaderboard|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Rang</th>
+                                        <th>Utilisateur</th>
+                                        <th>Niveau</th>
+                                        <th>XP Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in leaderboard %}
+                                        <tr class="{% if current_rank and entry.user.id == app.user.id %}table-primary{% endif %}">
+                                            <td>
+                                                {% if entry.rankPosition == 1 %}
+                                                    <i class="fas fa-trophy text-warning"></i> 1er
+                                                {% elseif entry.rankPosition == 2 %}
+                                                    <i class="fas fa-medal text-secondary"></i> 2ème
+                                                {% elseif entry.rankPosition == 3 %}
+                                                    <i class="fas fa-medal" style="color: #cd7f32;"></i> 3ème
+                                                {% else %}
+                                                    #{{ entry.rankPosition }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    {% if entry.user.profileImage %}
+                                                        <img src="{{ asset('uploads/profile/' ~ entry.user.profileImage) }}" 
+                                                             class="rounded-circle me-2" 
+                                                             style="width: 30px; height: 30px; object-fit: cover;" 
+                                                             alt="{{ entry.user.fullName }}">
+                                                    {% else %}
+                                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2" 
+                                                             style="width: 30px; height: 30px;">
+                                                            <span class="text-white fw-bold">{{ entry.user.fullName|first|upper }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                    {{ entry.user.fullName }}
+                                                    {% if current_rank and entry.user.id == app.user.id %}
+                                                        <span class="badge bg-primary ms-2">Vous</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {% if entry.currentLevel %}
+                                                    <span class="badge" style="background-color: {{ entry.currentLevel.color }}; color: white;">
+                                                        {{ entry.currentLevel.name }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Beginner</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <strong>{{ entry.totalPoints }}</strong> XP
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5>Pas encore de classement</h5>
+                            <p class="text-muted">Commencez à apprendre pour apparaître dans le classement</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

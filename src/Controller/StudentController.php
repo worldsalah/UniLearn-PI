@@ -28,7 +28,7 @@ class StudentController extends AbstractController
         // Get the currently logged-in user
         $user = $this->getUser();
 
-        if (!$user) {
+        if ($user === null) {
             // If no user is logged in, redirect to login
             return $this->redirectToRoute('app_login');
         }
@@ -43,7 +43,7 @@ class StudentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Assigner le rôle "student" par défaut
             $studentRole = $entityManager->getRepository(Role::class)->findOneBy(['name' => 'student']);
-            if ($studentRole) {
+            if ($studentRole !== null) {
                 $student->setRole($studentRole);
             }
 

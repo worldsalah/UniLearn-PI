@@ -136,7 +136,7 @@ class SellerBehaviorAnalyzer
         }
 
         // Detect sudden spikes (more than 3x normal rate)
-        $normalRate = $monthlyOrders > 0 ? $monthlyOrders / 4 : 0; // Weekly average
+        $normalRate = $monthlyOrders > 0 ? (float) $monthlyOrders / 4.0 : 0.0; // Weekly average
         if ($recentOrders > $normalRate * 3 && $recentOrders > 10) {
             return 60.0; // Suspicious spike
         }
@@ -198,7 +198,7 @@ class SellerBehaviorAnalyzer
             $cancelledOrders = 0;
         }
 
-        $cancellationRate = $totalOrders > 0 ? ($cancelledOrders / $totalOrders) * 100 : 0;
+        $cancellationRate = $totalOrders > 0 ? ((float) $cancelledOrders / (float) $totalOrders) * 100 : 0.0;
 
         // Score decreases with higher cancellation rate
         return max(0, 100 - ($cancellationRate * 5));
@@ -245,7 +245,7 @@ class SellerBehaviorAnalyzer
 
         // All products have same/similar prices (potential scam)
         if ($products->count() > 3) {
-            $prices = array_map(fn ($p) => $p->getPrice(), $products->toArray());
+            $prices = array_map(fn ($p) => $p->getPrice() ?? 0.0, $products->toArray());
             $avgPrice = array_sum($prices) / count($prices);
             $variance = 0;
             foreach ($prices as $price) {

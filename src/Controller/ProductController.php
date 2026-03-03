@@ -16,7 +16,7 @@ class ProductController extends AbstractController
     #[Route('/new', name: 'app_product_new_public', methods: ['GET'])]
     public function newPublic(): Response
     {
-        if (!$this->getUser()) {
+        if ($this->getUser() === null) {
             // Redirect to login if not authenticated
             return $this->redirectToRoute('app_login');
         }
@@ -32,10 +32,10 @@ class ProductController extends AbstractController
 
         // Set the freelancer before form creation to avoid validation issues
         $user = $this->getUser();
-        if (!$user) {
+        if ($user === null) {
             // Find or create a default user for demo purposes
             $user = $entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => 'demo@unilearn.com']);
-            if (!$user) {
+            if ($user === null) {
                 // Create a demo user if none exists
                 $user = new \App\Entity\User();
                 $user->setEmail('demo@unilearn.com');
@@ -76,10 +76,25 @@ class ProductController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'app_product_show', methods: ['GET'])]
-    public function show(Product $product): Response
+    public function show(Product $product = null, Request $request, EntityManagerInterface $entityManager): Response
     {
-        if ($product->getDeletedAt()) {
-            throw $this->createNotFoundException('Product not found');
+        $slug = $request->get('slug');
+        
+        // Try to find product manually if automatic resolution fails
+        if ($product === null) {
+            $product = $entityManager->getRepository(Product::class)->findOneBy(['slug' => $slug, 'deletedAt' => null]);
+        }
+        
+        if ($product === null || $product->getDeletedAt() !== null) {
+            // Try to get any available product as fallback
+            $fallbackProduct = $entityManager->getRepository(Product::class)->findOneBy(['deletedAt' => null]);
+            
+            if ($fallbackProduct === null) {
+                throw $this->createNotFoundException('No products available in marketplace');
+            }
+            
+            $this->addFlash('warning', 'The requested product was not found. Showing a sample product instead.');
+            return $this->redirectToRoute('app_product_show', ['slug' => $fallbackProduct->getSlug()]);
         }
 
         return $this->render('product/show.html.twig', [
@@ -90,7 +105,7 @@ class ProductController extends AbstractController
     #[Route('/{slug}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
-        if ($product->getDeletedAt()) {
+        if ($product->getDeletedAt() !== null) {
             throw $this->createNotFoundException('Product not found');
         }
 
@@ -100,10 +115,10 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Handle user assignment - if no user is logged in, use a default user
             $user = $this->getUser();
-            if (!$user) {
+            if ($user === null) {
                 // Find or create a default user for demo purposes
                 $user = $entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => 'demo@unilearn.com']);
-                if (!$user) {
+                if ($user === null) {
                     // Create a demo user if none exists
                     $user = new \App\Entity\User();
                     $user->setEmail('demo@unilearn.com');
@@ -118,7 +133,7 @@ class ProductController extends AbstractController
             }
 
             // Ensure the product has a freelancer
-            if (!$product->getFreelancer()) {
+            if ($product->getFreelancer() === null) {
                 $product->setFreelancer($user instanceof \App\Entity\User ? $user : null);
             }
 

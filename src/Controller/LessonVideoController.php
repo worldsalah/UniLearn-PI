@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class LessonVideoController extends AbstractController
 {
@@ -51,7 +51,7 @@ class LessonVideoController extends AbstractController
         try {
             $lesson = $this->lessonRepository->find($data['lessonId']);
 
-            if (!$lesson) {
+            if ($lesson === null) {
                 return new JsonResponse([
                     'success' => false,
                     'error' => 'Lesson not found',
@@ -95,7 +95,7 @@ class LessonVideoController extends AbstractController
             // Get the currently logged-in user
             $user = $this->security->getUser();
 
-            if (!$user) {
+            if ($user === null) {
                 return new JsonResponse([
                     'success' => false,
                     'error' => 'User not authenticated',

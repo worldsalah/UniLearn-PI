@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use App\Validator\UniqueEmail as UniqueEmailConstraint;
+use App\Entity\Certificate;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -37,15 +39,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire.')]
     #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.', max: 4096, maxMessage: 'Le mot de passe ne peut pas dépasser {{ limit }} caractères.')]
     #[Assert\Regex(pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/', message: 'Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial (@$!%*?&).')]
+    #[Ignore]
     private ?string $password = null;
 
     #[Assert\IsTrue(message: 'Vous devez accepter les conditions générales pour vous inscrire.')]
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $agreeTerms = false;
 
-    #[ORM\ManyToOne(targetEntity: Role::class)]
+    #[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
     #[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')]
     private ?Role $role = null;
+
+    #[ORM\OneToMany(targetEntity: LearningRoadmap::class, mappedBy: 'user')]
+    private Collection $learningRoadmaps;
 
     #[ORM\Column(name: 'created_at', type: 'datetime')]
     private ?\DateTimeInterface $createdAt = null;
@@ -68,17 +74,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profileImage = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleId = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $facebookId = null;
 
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Ignore]
     private ?string $resetToken = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Ignore]
     private ?\DateTimeInterface $resetTokenExpiresAt = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $faceEncoding = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $faceEnabled = false;
+
+    #[ORM\Column(type: 'decimal', precision: 12, scale: 2, options: ['default' => 0])]
+    private ?string $income = '0';
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Course::class)]
     private Collection $courses;
@@ -104,6 +121,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'instructor', targetEntity: Session::class)]
     private Collection $sessions;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserBadge::class)]
+    private Collection $userBadges;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Certificate::class)]
+    private Collection $certificates;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserPoints::class)]
+    private Collection $userPointsList;
+
+    #[ORM\OneToMany(targetEntity: LessonCompletion::class, mappedBy: 'user')]
+    private Collection $lessonCompletions;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: Bundle::class)]
+    private Collection $bundles;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: Review::class)]
+    private Collection $reviewsGiven;
+
+    #[ORM\OneToMany(mappedBy: 'teacher', targetEntity: Review::class)]
+    private Collection $reviewsReceived;
+
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: TeacherProfile::class)]
+    private ?TeacherProfile $teacherProfile = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -114,6 +155,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->applications = new ArrayCollection();
         $this->favorites = new ArrayCollection();
         $this->sessions = new ArrayCollection();
+        $this->userBadges = new ArrayCollection();
+        $this->certificates = new ArrayCollection();
+        $this->learningRoadmaps = new ArrayCollection();
+        $this->lessonCompletions = new ArrayCollection();
+        $this->bundles = new ArrayCollection();
+        $this->reviewsGiven = new ArrayCollection();
+        $this->reviewsReceived = new ArrayCollection();
+        $this->userPointsList = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -164,7 +213,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(#[\SensitiveParameter] string $password): self
     {
         $this->password = $password;
 
@@ -207,6 +256,88 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): self
+    {
+        $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    public function getFacebookId(): ?string
+    {
+        return $this->facebookId;
+    }
+
+    public function setFacebookId(?string $facebookId): self
+    {
+        $this->facebookId = $facebookId;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(#[\SensitiveParameter] ?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    public function getResetTokenExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->resetTokenExpiresAt;
+    }
+
+    public function setResetTokenExpiresAt(?\DateTimeInterface $resetTokenExpiresAt): self
+    {
+        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
+
+        return $this;
+    }
+
+    // ================= FACE AUTHENTICATION =================
+
+    public function getFaceEncoding(): ?string
+    {
+        return $this->faceEncoding;
+    }
+
+    public function setFaceEncoding(?string $faceEncoding): self
+    {
+        $this->faceEncoding = $faceEncoding;
+
+        return $this;
+    }
+
+    public function isFaceEnabled(): bool
+    {
+        return $this->faceEnabled;
+    }
+
+    public function setFaceEnabled(bool $faceEnabled): self
+    {
+        $this->faceEnabled = $faceEnabled;
+
+        return $this;
+    }
+
+    public function isResetTokenValid(): bool
+    {
+        if ($this->resetToken === null || $this->resetTokenExpiresAt === null) {
+            return false;
+        }
+        return $this->resetTokenExpiresAt > new \DateTime();
+    }
+
     // ================= SECURITY =================
 
     public function getUserIdentifier(): string
@@ -216,14 +347,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
+        $roles = ['ROLE_USER']; // Base role for all authenticated users
+        
         if ($this->role !== null) {
-            return ['ROLE_'.strtoupper($this->role->getName())];
+            $roleName = $this->role->getName();
+            $roles[] = 'ROLE_'.strtoupper($roleName ?? '');
         }
-
-        return ['ROLE_USER'];
+        
+        return $roles;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
@@ -479,18 +613,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->agreeTerms;
     }
 
-    public function setAgreeTerms($agreeTerms): self
+    public function setAgreeTerms(bool $agreeTerms): self
     {
-        // Convert various input types to boolean
-        if (is_string($agreeTerms)) {
-            $this->agreeTerms = in_array(strtolower($agreeTerms), ['1', 'true', 'on', 'yes'], true);
-        } elseif (is_bool($agreeTerms)) {
-            $this->agreeTerms = $agreeTerms;
-        } elseif (is_int($agreeTerms)) {
-            $this->agreeTerms = (bool) $agreeTerms;
-        } else {
-            $this->agreeTerms = false;
-        }
+        $this->agreeTerms = $agreeTerms;
 
         return $this;
     }
@@ -560,58 +685,153 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGoogleId(): ?string
+    public function getLearningRoadmaps(): Collection
     {
-        return $this->googleId;
+        return $this->learningRoadmaps;
     }
 
-    public function setGoogleId(?string $googleId): self
+    public function addLearningRoadmap(LearningRoadmap $learningRoadmap): self
     {
-        $this->googleId = $googleId;
+        if (!$this->learningRoadmaps->contains($learningRoadmap)) {
+            $this->learningRoadmaps->add($learningRoadmap);
+            $learningRoadmap->setUser($this);
+        }
 
         return $this;
     }
 
-    public function getFacebookId(): ?string
+    public function removeLearningRoadmap(LearningRoadmap $learningRoadmap): self
     {
-        return $this->facebookId;
-    }
-
-    public function setFacebookId(?string $facebookId): self
-    {
-        $this->facebookId = $facebookId;
+        if ($this->learningRoadmaps->removeElement($learningRoadmap)) {
+            // set the owning side to null (unless already changed)
+            if ($learningRoadmap->getUser() === $this) {
+                $learningRoadmap->setUser(null);
+            }
+        }
 
         return $this;
     }
 
-    public function getResetToken(): ?string
+    /**
+     * @return Collection<int, UserBadge>
+     */
+    public function getUserBadges(): Collection
     {
-        return $this->resetToken;
+        return $this->userBadges;
     }
 
-    public function setResetToken(?string $resetToken): self
+    public function addUserBadge(UserBadge $userBadge): self
     {
-        $this->resetToken = $resetToken;
+        if (!$this->userBadges->contains($userBadge)) {
+            $this->userBadges->add($userBadge);
+            $userBadge->setUser($this);
+        }
 
         return $this;
     }
 
-    public function getResetTokenExpiresAt(): ?\DateTimeInterface
+    public function removeUserBadge(UserBadge $userBadge): self
     {
-        return $this->resetTokenExpiresAt;
-    }
-
-    public function setResetTokenExpiresAt(?\DateTimeInterface $resetTokenExpiresAt): self
-    {
-        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
+        if ($this->userBadges->removeElement($userBadge)) {
+            // set the owning side to null (unless already changed)
+            if ($userBadge->getUser() === $this) {
+                $userBadge->setUser(null);
+            }
+        }
 
         return $this;
     }
 
-    public function isResetTokenValid(): bool
+    public function getUserPoints(): ?UserPoints
     {
-        return $this->resetToken !== null
-            && $this->resetTokenExpiresAt !== null
-            && $this->resetTokenExpiresAt > new \DateTime();
+        return $this->userPoints;
+    }
+
+    public function setUserPoints(?UserPoints $userPoints): self
+    {
+        $this->userPoints = $userPoints;
+
+        // set the owning side of the relation if necessary
+        if ($userPoints !== null && $userPoints->getUser() !== $this) {
+            $userPoints->setUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LessonCompletion>
+     */
+    public function getLessonCompletions(): Collection
+    {
+        return $this->lessonCompletions;
+    }
+
+    public function addLessonCompletion(LessonCompletion $lessonCompletion): self
+    {
+        if (!$this->lessonCompletions->contains($lessonCompletion)) {
+            $this->lessonCompletions->add($lessonCompletion);
+            $lessonCompletion->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLessonCompletion(LessonCompletion $lessonCompletion): self
+    {
+        if ($this->lessonCompletions->removeElement($lessonCompletion)) {
+            // set the owning side to null (unless already changed)
+            if ($lessonCompletion->getUser() === $this) {
+                $lessonCompletion->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCertificates(): Collection
+    {
+        return $this->certificates;
+    }
+
+    public function addCertificate(Certificate $certificate): self
+    {
+        if (!$this->certificates->contains($certificate)) {
+            $this->certificates->add($certificate);
+            $certificate->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCertificate(Certificate $certificate): self
+    {
+        if ($this->certificates->removeElement($certificate)) {
+            // set the owning side to null (unless already changed)
+            if ($certificate->getUser() === $this) {
+                $certificate->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIncome(): ?string
+    {
+        return $this->income;
+    }
+
+    public function setIncome(string|float $income): self
+    {
+        $this->income = (string) $income;
+
+        return $this;
+    }
+
+    public function addIncome(float $amount): self
+    {
+        $this->income = (string) ((float) $this->income + $amount);
+
+        return $this;
     }
 }

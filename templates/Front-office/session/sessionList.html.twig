@@ -1,6 +1,6 @@
 {% extends 'front_base.html.twig' %}
 
-{% block title %}Session List{% endblock %}
+{% block title %}Available Sessions - UniLearn{% endblock %}
 
 {% block content %}
 <main>
@@ -20,6 +20,86 @@
 
 <section class="py-5">
     <div class="container">
+        <!-- Search and Filter Section -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <form method="get" action="{{ path('all_sessions') }}" class="row g-3">
+                    <!-- Search -->
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="fas fa-search text-primary"></i></span>
+                            <input type="text" name="search" class="form-control" placeholder="Search sessions..." value="{{ filters.search }}">
+                        </div>
+                    </div>
+                    
+                    <!-- Category Filter -->
+                    <div class="col-md-2">
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}" {{ filters.category == cat.id ? 'selected' : '' }}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Level Filter -->
+                    <div class="col-md-2">
+                        <select name="level" class="form-select">
+                            <option value="">All Levels</option>
+                            <option value="beginner" {{ filters.level == 'beginner' ? 'selected' : '' }}>Beginner</option>
+                            <option value="intermediate" {{ filters.level == 'intermediate' ? 'selected' : '' }}>Intermediate</option>
+                            <option value="advanced" {{ filters.level == 'advanced' ? 'selected' : '' }}>Advanced</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Sort -->
+                    <div class="col-md-2">
+                        <select name="sort" class="form-select">
+                            <option value="date_asc" {{ filters.sort == 'date_asc' ? 'selected' : '' }}>Date: Earliest</option>
+                            <option value="date_desc" {{ filters.sort == 'date_desc' ? 'selected' : '' }}>Date: Latest</option>
+                            <option value="price_asc" {{ filters.sort == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="price_desc" {{ filters.sort == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
+                            <option value="name_asc" {{ filters.sort == 'name_asc' ? 'selected' : '' }}>Name: A-Z</option>
+                            <option value="duration_asc" {{ filters.sort == 'duration_asc' ? 'selected' : '' }}>Duration: Shortest</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-2"></i>Filter
+                        </button>
+                    </div>
+                    
+                    <!-- Price Range -->
+                    <div class="col-md-6">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">$</span>
+                                    <input type="number" name="minPrice" class="form-control" placeholder="Min Price" value="{{ filters.minPrice }}" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">$</span>
+                                    <input type="number" name="maxPrice" class="form-control" placeholder="Max Price" value="{{ filters.maxPrice }}" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Clear Filters -->
+                    <div class="col-md-6 text-end">
+                        <a href="{{ path('all_sessions') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Clear Filters
+                        </a>
+                        <span class="text-muted ms-3">{{ sessions|length }} session(s) found</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Tabs content START -->
         <div class="tab-content" id="course-pills-tabContent">
             <!-- Content START -->
@@ -33,6 +113,15 @@
                                 <img src="{{ asset('assets/images/courses/4by3/08.jpg') }}" class="card-img-top" alt="session image">
                                 <!-- Card body -->
                                 <div class="card-body pb-0">
+                                    <!-- Category Badge -->
+                                    {% if session.category %}
+                                        <div class="mb-2">
+                                            <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                <i class="fas fa-tag me-1"></i>{{ session.category.name }}
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                    
                                     <!-- Badge and favorite -->
                                     <div class="d-flex justify-content-between mb-2">
                                         {% if session.level == 'beginner' %}
@@ -45,9 +134,22 @@
                                             <a href="#" class="badge bg-info bg-opacity-10 text-info">{{ session.level|capitalize }}</a>
                                         {% endif %}
                                     </div>
+                                    
                                     <!-- Title -->
-                                    <h5 class="card-title fw-normal"><a href="#">{{ session.name }}</a></h5>
+                                    <h5 class="card-title fw-normal"><a href="{{ path('session_view', {'id': session.id}) }}">{{ session.name }}</a></h5>
                                     <p class="mb-2 text-truncate-2">{{ session.sessionDescription }}</p>
+                                    
+                                    <!-- Instructor -->
+                                    <div class="mb-2">
+                                        <span class="text-muted small">
+                                            <i class="fas fa-user-tie text-primary me-1"></i>
+                                            {% if session.instructor %}
+                                                {{ session.instructor.fullName }}
+                                            {% else %}
+                                                Unknown Instructor
+                                            {% endif %}
+                                        </span>
+                                    </div>
                                     
                                     <!-- Date Range Display -->
                                     <div class="mb-2">
@@ -62,20 +164,44 @@
                                             {% endif %}
                                         </div>
                                     </div>
+                                    
+                                    <!-- Available Time -->
+                                    {% if session.availableFrom and session.availableTo %}
+                                        <div class="mb-2">
+                                            <span class="text-muted small">
+                                                <i class="fas fa-clock text-warning me-1"></i>
+                                                Available: {{ session.availableFrom|date('h:i A') }} - {{ session.availableTo|date('h:i A') }}
+                                            </span>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 <!-- Card footer -->
                                 <div class="card-footer pt-0 pb-3">
                                     <hr>
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="h6 fw-light mb-0">
-                                            <i class="far fa-clock text-warning me-2"></i>{{ session.duration }} minutes
+                                            <i class="far fa-clock text-warning me-2"></i>{{ session.duration }} min
                                         </span>
+                                        {% if session.hourlyPrice %}
+                                            <span class="h5 text-success mb-0">
+                                                ${{ session.hourlyPrice }}/hr
+                                            </span>
+                                        {% endif %}
                                     </div>
                                     <!-- Book Now Button -->
-                                    <div class="mt-3">
-                                        <a href="{{ path('booking_create') }}?session_id={{ session.id }}" class="btn btn-primary w-100">
-                                            <i class="fas fa-calendar-plus me-1"></i>Book This Session
-                                        </a>
+                                    <div class="mt-2">
+                                        {% set today = 'now'|date('Y-m-d') %}
+                                        {% set isEnded = (session.endDate and session.endDate|date('Y-m-d') < today) or (not session.endDate and session.date and session.date|date('Y-m-d') < today) %}
+
+                                        {% if isEnded %}
+                                            <span class="btn btn-secondary w-100 disabled" aria-disabled="true">
+                                                <i class="fas fa-flag-checkered me-1"></i>Session Ended
+                                            </span>
+                                        {% else %}
+                                            <a href="{{ path('booking_create') }}?session_id={{ session.id }}" class="btn btn-primary w-100">
+                                                <i class="fas fa-calendar-plus me-1"></i>Book Now - ${{ session.hourlyPrice ? session.hourlyPrice : 'TBD' }}
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -99,8 +225,4 @@
 </section>
 
 </main>
-
-<!-- Footer START -->
-{{ include('components/footer.html.twig') }}
-<!-- Footer END -->
 {% endblock %}

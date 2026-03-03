@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Repository\SessionRepository;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AiAssistantService
@@ -12,6 +13,7 @@ class AiAssistantService
     public function __construct(
         private string $geminiApiKey,
         private HttpClientInterface $httpClient,
+        private SessionRepository $sessionRepository,
     ) {
     }
 
@@ -28,7 +30,7 @@ class AiAssistantService
             . "Each bio should have a different tone: 1) Professional, 2) Friendly/Casual, 3) Creative. "
             . "Return ONLY a JSON array of 3 strings, no other text. Example: [\"Bio 1\", \"Bio 2\", \"Bio 3\"]";
 
-        if ($currentName) {
+        if ($currentName !== null && $currentName !== '') {
             $systemPrompt .= "\nThe user's name is: " . $currentName;
         }
 
@@ -37,8 +39,8 @@ class AiAssistantService
 
             // Clean potential markdown wrapping
             $content = trim($content);
-            $content = preg_replace('/^```json\s*/i', '', $content);
-            $content = preg_replace('/\s*```$/', '', $content);
+            $content = preg_replace('/^```json\s*/i', '', $content) ?? '';
+            $content = preg_replace('/\s*```$/', '', $content) ?? '';
 
             $suggestions = json_decode($content, true);
 
@@ -68,6 +70,106 @@ class AiAssistantService
         } catch (\Exception $e) {
             return 'Sorry, I encountered an error. Please try again. (' . $e->getMessage() . ')';
         }
+    }
+
+    /**
+     * Query available tutoring sessions and return formatted results.
+     */
+    public function querySessions(string $query, ?string $category = null, ?float $maxPrice = null): array
+    {
+        // Determine query type
+        $queryLower = strtolower($query);
+        $findBestValue = str_contains($queryLower, 'best') || str_contains($queryLower, 'cheapest') || str_contains($queryLower, 'value');
+        $showAll = str_contains($queryLower, 'available') || str_contains($queryLower, 'sessions') || str_contains($queryLower, 'all');
+
+        if ($findBestValue) {
+            $sessions = $this->sessionRepository->findBestValueSessions(5);
+        } else {
+            $sessions = $this->sessionRepository->findAvailableSessions($category, $maxPrice);
+        }
+
+        if (empty($sessions)) {
+            return [
+                'type' => 'no_sessions',
+                'message' => 'I couldn\'t find any available tutoring sessions at the moment. Please check back later or try a different search!'
+            ];
+        }
+
+        // Format sessions for display
+        $formattedSessions = [];
+        foreach ($sessions as $session) {
+            $instructor = $session->getInstructor();
+            $categoryObj = $session->getCategory();
+
+            $formattedSessions[] = [
+                'id' => $session->getId(),
+                'title' => $session->getName(),
+                'description' => $session->getSessionDescription(),
+                'level' => $session->getLevel(),
+                'price' => $session->getHourlyPrice(),
+                'duration' => $session->getDuration(),
+                'instructor' => $instructor ? $instructor->getFullName() : 'Unknown',
+                'category' => $categoryObj ? $categoryObj->getName() : 'General',
+                'startDate' => $session->getStartDate() ? $session->getStartDate()->format('M d, Y') : 'TBD',
+                'availableFrom' => $session->getAvailableFrom() ? $session->getAvailableFrom()->format('h:i A') : null,
+                'availableTo' => $session->getAvailableTo() ? $session->getAvailableTo()->format('h:i A') : null,
+            ];
+        }
+
+        // Generate AI summary
+        $sessionCount = count($formattedSessions);
+        $priceRange = $this->calculatePriceRange($formattedSessions);
+
+        return [
+            'type' => 'sessions',
+            'query_type' => $findBestValue ? 'best_value' : 'all_available',
+            'count' => $sessionCount,
+            'price_range' => $priceRange,
+            'sessions' => $formattedSessions,
+            'summary' => $this->generateSessionSummary($formattedSessions, $findBestValue)
+        ];
+    }
+
+    /**
+     * Calculate price range from sessions.
+     */
+    private function calculatePriceRange(array $sessions): array
+    {
+        $prices = array_column($sessions, 'price');
+        $prices = array_filter($prices, fn($p) => $p !== null);
+
+        if (empty($prices)) {
+            return ['min' => 0, 'max' => 0, 'avg' => 0];
+        }
+
+        return [
+            'min' => min($prices),
+            'max' => max($prices),
+            'avg' => round(array_sum($prices) / count($prices), 2)
+        ];
+    }
+
+    /**
+     * Generate a summary of the sessions found.
+     */
+    private function generateSessionSummary(array $sessions, bool $isBestValue): string
+    {
+        $count = count($sessions);
+        if ($count === 0) {
+            return 'No sessions available.';
+        }
+
+        $firstSession = $sessions[0];
+        $price = $firstSession['price'] ?? 'N/A';
+        $instructor = $firstSession['instructor'];
+        $category = $firstSession['category'];
+
+        if ($isBestValue) {
+            return "I found {$count} great value sessions! The best deal is with **{$instructor}** teaching **{$category}** at \${$price}/hour.";
+        }
+
+        $priceRange = $this->calculatePriceRange($sessions);
+        return "I found {$count} available sessions ranging from \${$priceRange['min']} to \${$priceRange['max']} per hour, with an average of \${$priceRange['avg']}.";
     }
 
     /**

@@ -5,7 +5,7 @@
 {% block stylesheets %}
 <style>
 .profile-gradient {
-    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     position: relative;
     overflow: hidden;
 }
@@ -18,7 +18,7 @@
     opacity: 0.1;
 }
 .profile-banner {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(10px);
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
@@ -27,24 +27,25 @@
 }
 .avatar-enhanced {
     border: 4px solid white;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
     transition: all 0.3s ease;
 }
 .avatar-enhanced:hover {
     transform: scale(1.05);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
 }
 .profile-form-card {
     background: white;
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     overflow: hidden;
+    border: none;
 }
 .profile-form-card .card-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 1.5rem;
+    padding: 1.5rem 2rem;
 }
 .profile-form-card .card-body {
     padding: 2rem;
@@ -54,24 +55,32 @@
     color: #495057;
     margin-bottom: 0.5rem;
 }
-.form-control:focus {
+.form-control, .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+.form-control:focus, .form-select:focus {
     border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
 }
 .profile-image-upload {
     position: relative;
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid #dee2e6;
+    border: 4px solid #e9ecef;
     margin: 0 auto 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 .profile-image-upload:hover {
     border-color: #667eea;
     transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.3);
 }
 .profile-image-upload img {
     width: 100%;
@@ -81,7 +90,7 @@
 .profile-image-upload .upload-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.7);
+    background: rgba(102, 126, 234, 0.85);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -93,10 +102,28 @@
     opacity: 1;
 }
 .password-section {
-    background: #f8f9fa;
-    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
+    border-radius: 16px;
     padding: 1.5rem;
     margin-top: 2rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+.btn-save {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+.btn-cancel {
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-weight: 600;
 }
 
 /* AI Chat Widget */
@@ -370,6 +397,16 @@
     color: white;
     border-color: #667eea;
 }
+.section-title {
+    color: #667eea;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+}
 @media (max-width: 480px) {
     .ai-chat-box {
         right: 10px;
@@ -386,120 +423,171 @@
 {% endblock %}
 
 {% block content %}
-<main>
+<main class="bg-white">
 
-<!-- Page Banner START -->
-<section class="pt-0">
-    <div class="container-fluid px-0">
-        <div class="bg-blue h-100px h-md-200px rounded-0"
-             style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
-        </div>
-    </div>
-    <div class="container mt-n4">
-        <div class="row">
-            <div class="col-12">
-                <div class="profile-banner card-body p-4">
-                    <div class="row d-flex justify-content-between">
-                        <div class="col-auto mt-4 mt-md-0">
-                            <div class="avatar avatar-xxl mt-n3">
-                                {% if user.profileImage %}
-                                    <img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset(user.profileImage) }}" alt="avatar">
-                                {% else %}
-                                    <img class="avatar-img rounded-circle avatar-enhanced" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col d-md-flex justify-content-between align-items-center mt-4">
-                            <div>
-                                <h1 class="my-1 fs-3 fw-bold">{{ user.fullName }}</h1>
-                                <p class="text-muted mb-0">{{ user.email }}</p>
-                            </div>
+<!-- Hero Section START -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-4">
+                    <div class="mb-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                            <i class="fas fa-user-edit fa-3x text-primary"></i>
                         </div>
                     </div>
+                    <h1 class="display-5 fw-bold text-primary mb-3">Edit Your Profile</h1>
+                    <p class="lead text-muted">Update your personal information and settings</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- Page Banner END -->
+<!-- Hero Section END -->
 
-<!-- Page content START -->
-<section class="pt-0">
+<!-- Profile Content START -->
+<section class="py-5 bg-white">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-xl-9">
-
+        <div class="row g-4 justify-content-center">
+            <!-- Profile Card -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg h-100" style="border-radius: 20px;">
+                    <div class="card-body p-4 text-center">
+                        <!-- Profile Image -->
+                        <div class="profile-image-upload mb-4" onclick="document.getElementById('{{ form.profileImage.vars.id }}').click()">
+                            {% if user.profileImage %}
+                                <img id="profile-preview" src="{{ asset(user.profileImage) }}" alt="Profile Image">
+                            {% else %}
+                                <img id="profile-preview" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="Profile Image">
+                            {% endif %}
+                            <div class="upload-overlay">
+                                <div class="text-center">
+                                    <i class="fas fa-camera fa-2x mb-2"></i>
+                                    <p class="mb-0 small">Change photo</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-none">
+                            {{ form_widget(form.profileImage) }}
+                        </div>
+                        {{ form_errors(form.profileImage) }}
+                        
+                        <h4 class="fw-bold mb-1">{{ user.fullName }}</h4>
+                        <p class="text-muted mb-4">{{ user.email }}</p>
+                        
+                        <!-- Quick Stats -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-6">
+                                <div class="bg-light rounded-3 p-3">
+                                    <h5 class="fw-bold text-primary mb-0">{{ stats.totalCourses }}</h5>
+                                    <small class="text-muted">Courses</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-light rounded-3 p-3">
+                                    <h5 class="fw-bold text-primary mb-0">{{ stats.totalOrders }}</h5>
+                                    <small class="text-muted">Orders</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tips -->
+                        <div class="text-start mt-4">
+                            <h6 class="section-title"><i class="fas fa-lightbulb me-2"></i>Profile Tips</h6>
+                            <ul class="list-unstyled small text-muted">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Add a professional photo</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Write a compelling bio</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Include your location</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Add your website/portfolio</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Card -->
+            <div class="col-lg-8">
                 <!-- Flash messages -->
                 {% for type, messages in app.flashes %}
                     {% for message in messages %}
-                        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show rounded-3" role="alert">
+                            <i class="fas fa-{% if type == 'success' %}check-circle{% elseif type == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
                             {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% endfor %}
                 {% endfor %}
 
-                <!-- Profile Form START -->
-                <div class="profile-form-card">
+                <div class="card border-0 shadow-lg profile-form-card" style="border-radius: 20px;">
                     <div class="card-header">
                         <h4 class="mb-0">
-                            <i class="fas fa-user-edit me-2"></i>Edit Profile
+                            <i class="fas fa-user-edit me-2"></i>Personal Information
                         </h4>
                     </div>
                     <div class="card-body">
                         {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
 
-                            <!-- Profile Image Upload -->
-                            <div class="text-center mb-4">
-                                <div class="profile-image-upload" onclick="document.getElementById('{{ form.profileImage.vars.id }}').click()">
-                                    {% if user.profileImage %}
-                                        <img id="profile-preview" src="{{ asset(user.profileImage) }}" alt="Profile Image">
-                                    {% else %}
-                                        <img id="profile-preview" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="Profile Image">
-                                    {% endif %}
-                                    <div class="upload-overlay">
-                                        <div class="text-center">
-                                            <i class="fas fa-camera fa-2x mb-2"></i>
-                                            <p class="mb-0 small">Change photo</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-none">
-                                    {{ form_widget(form.profileImage) }}
-                                </div>
-                                {{ form_errors(form.profileImage) }}
-                            </div>
-
-                            <!-- Personal Information -->
-                            <div class="row g-4">
+                            <!-- Personal Information Section -->
+                            <h6 class="section-title"><i class="fas fa-user me-2"></i>Basic Details</h6>
+                            <div class="row g-4 mb-4">
                                 <div class="col-md-6">
-                                    {{ form_label(form.fullName) }}
-                                    {{ form_widget(form.fullName) }}
+                                    {{ form_label(form.fullName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0 rounded-pill-left" style="border-radius: 12px 0 0 12px;">
+                                            <i class="fas fa-user text-muted"></i>
+                                        </span>
+                                        {{ form_widget(form.fullName, {'attr': {'class': 'form-control', 'style': 'border-radius: 0 12px 12px 0;'}}) }}
+                                    </div>
                                     {{ form_errors(form.fullName) }}
                                 </div>
                                 <div class="col-md-6">
-                                    {{ form_label(form.email) }}
-                                    {{ form_widget(form.email) }}
+                                    {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0 rounded-pill-left" style="border-radius: 12px 0 0 12px;">
+                                            <i class="fas fa-envelope text-muted"></i>
+                                        </span>
+                                        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'style': 'border-radius: 0 12px 12px 0;'}}) }}
+                                    </div>
                                     {{ form_errors(form.email) }}
                                 </div>
                                 <div class="col-12">
-                                    {{ form_label(form.bio) }}
-                                    {{ form_widget(form.bio) }}
+                                    {{ form_label(form.bio, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.bio, {'attr': {'class': 'form-control', 'rows': 4}}) }}
                                     {{ form_errors(form.bio) }}
                                 </div>
+                            </div>
+
+                            <!-- Contact Information Section -->
+                            <h6 class="section-title"><i class="fas fa-address-card me-2"></i>Contact Information</h6>
+                            <div class="row g-4 mb-4">
                                 <div class="col-md-6">
-                                    {{ form_label(form.phone) }}
-                                    {{ form_widget(form.phone) }}
+                                    {{ form_label(form.phone, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0 rounded-pill-left" style="border-radius: 12px 0 0 12px;">
+                                            <i class="fas fa-phone text-muted"></i>
+                                        </span>
+                                        {{ form_widget(form.phone, {'attr': {'class': 'form-control', 'style': 'border-radius: 0 12px 12px 0;'}}) }}
+                                    </div>
                                     {{ form_errors(form.phone) }}
                                 </div>
                                 <div class="col-md-6">
-                                    {{ form_label(form.location) }}
-                                    {{ form_widget(form.location) }}
+                                    {{ form_label(form.location, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0 rounded-pill-left" style="border-radius: 12px 0 0 12px;">
+                                            <i class="fas fa-map-marker-alt text-muted"></i>
+                                        </span>
+                                        {{ form_widget(form.location, {'attr': {'class': 'form-control', 'style': 'border-radius: 0 12px 12px 0;'}}) }}
+                                    </div>
                                     {{ form_errors(form.location) }}
                                 </div>
                                 <div class="col-12">
-                                    {{ form_label(form.website) }}
-                                    {{ form_widget(form.website) }}
+                                    {{ form_label(form.website, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0 rounded-pill-left" style="border-radius: 12px 0 0 12px;">
+                                            <i class="fas fa-globe text-muted"></i>
+                                        </span>
+                                        {{ form_widget(form.website, {'attr': {'class': 'form-control', 'placeholder': 'https://yourwebsite.com', 'style': 'border-radius: 0 12px 12px 0;'}}) }}
+                                    </div>
                                     {{ form_errors(form.website) }}
                                 </div>
                             </div>
@@ -511,33 +599,48 @@
                                 </h5>
                                 <div class="row g-4">
                                     <div class="col-md-4">
-                                        {{ form_label(form.currentPassword) }}
-                                        {{ form_widget(form.currentPassword) }}
+                                        {{ form_label(form.currentPassword, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-0 rounded-pill-left" style="border-radius: 12px 0 0 12px;">
+                                                <i class="fas fa-key text-muted"></i>
+                                            </span>
+                                            {{ form_widget(form.currentPassword, {'attr': {'class': 'form-control', 'style': 'border-radius: 0 12px 12px 0;'}}) }}
+                                        </div>
                                         {{ form_errors(form.currentPassword) }}
                                     </div>
                                     <div class="col-md-4">
-                                        {{ form_label(form.plainPassword.first) }}
-                                        {{ form_widget(form.plainPassword.first) }}
+                                        {{ form_label(form.plainPassword.first, 'New Password', {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-0 rounded-pill-left" style="border-radius: 12px 0 0 12px;">
+                                                <i class="fas fa-lock text-muted"></i>
+                                            </span>
+                                            {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control', 'style': 'border-radius: 0 12px 12px 0;'}}) }}
+                                        </div>
                                         {{ form_errors(form.plainPassword.first) }}
                                     </div>
                                     <div class="col-md-4">
-                                        {{ form_label(form.plainPassword.second) }}
-                                        {{ form_widget(form.plainPassword.second) }}
+                                        {{ form_label(form.plainPassword.second, 'Confirm Password', {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-0 rounded-pill-left" style="border-radius: 12px 0 0 12px;">
+                                                <i class="fas fa-check-double text-muted"></i>
+                                            </span>
+                                            {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control', 'style': 'border-radius: 0 12px 12px 0;'}}) }}
+                                        </div>
                                         {{ form_errors(form.plainPassword.second) }}
                                     </div>
                                 </div>
-                                <div class="alert alert-info mt-3 mb-0">
-                                    <i class="fas fa-info-circle me-2"></i>
+                                <div class="alert alert-info mt-3 mb-0 rounded-3 border-0" style="background: rgba(102, 126, 234, 0.1);">
+                                    <i class="fas fa-info-circle me-2 text-primary"></i>
                                     <strong>Password Requirements:</strong> At least 8 characters with uppercase, lowercase, number, and special character.
                                 </div>
                             </div>
 
                             <!-- Submit Buttons -->
-                            <div class="d-flex justify-content-between mt-4">
-                                <a href="{{ path('app_home') }}" class="btn btn-secondary">
+                            <div class="d-flex justify-content-between mt-4 pt-4 border-top">
+                                <a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-cancel">
                                     <i class="fas fa-times me-2"></i>Cancel
                                 </a>
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary btn-save">
                                     <i class="fas fa-save me-2"></i>Save Changes
                                 </button>
                             </div>
@@ -545,13 +648,11 @@
                         {{ form_end(form) }}
                     </div>
                 </div>
-                <!-- Profile Form END -->
-
             </div>
         </div>
     </div>
 </section>
-<!-- Page content END -->
+<!-- Profile Content END -->
 
 <!-- AI Chat Widget START -->
 <button class="ai-chat-toggle" id="aiChatToggle" title="AI Profile Assistant">

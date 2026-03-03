@@ -10,6 +10,11 @@ window.choiceSkipInit = true;
 </script>
 
 <style>
+/* Page background */
+body, .course-creation-page {
+    background-color: #ffffff !important;
+}
+
 /* Dashboard Styles */
 .instructor-gradient {
     background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
@@ -475,12 +480,9 @@ Header START -->
                             </ul>
                         </li>
                     {% else %}
-                        <!-- Sign in button -->
-                        <li class="nav-item">
-                            <a class="btn btn-sm btn-primary me-2" href="{{ path('app_login') }}">Sign In</a>
-                        </li>
-                        <!-- Sign up button -->
-                        <li class="nav-item">
+                        <!-- Sign in and sign up buttons -->
+                        <li class="nav-item d-flex gap-2">
+                            <a class="btn btn-sm btn-primary" href="{{ path('app_login') }}">Sign In</a>
                             <a class="btn btn-sm btn-outline-primary" href="{{ path('app_register') }}">Sign Up</a>
                         </li>
                     {% endif %}
@@ -752,12 +754,7 @@ Page content START -->
                                                     <!-- Course level -->
                                                     <div class="col-md-6">
                                                         {{ form_label(courseForm.level, 'Course level', {'label_attr': {'class': 'form-label'}}) }}
-                                                        <select id="course_level" name="course[level]" class="form-select" required>
-                                                            <option value="">Select level...</option>
-                                                            <option value="Beginner" {% if courseForm.level.vars.value == 'Beginner' %}selected{% endif %}>Beginner</option>
-                                                            <option value="Intermediate" {% if courseForm.level.vars.value == 'Intermediate' %}selected{% endif %}>Intermediate</option>
-                                                            <option value="Advanced" {% if courseForm.level.vars.value == 'Advanced' %}selected{% endif %}>Advanced</option>
-                                                        </select>
+                                                        {{ form_widget(courseForm.level, {'attr': {'class': 'form-select'}}) }}
                                                         {% if courseForm.level.vars.errors|length > 0 %}
                                                             <div class="invalid-feedback d-block">
                                                                 {% for error in courseForm.level.vars.errors %}
@@ -856,15 +853,43 @@ Page content START -->
                                         <div id="step-3" role="tabpanel" class="bs-stepper-pane content fade" aria-labelledby="steppertrigger3">
                                             <!-- Title -->
                                             <h4>Curriculum</h4>
+                                            <p class="text-muted">Build your course curriculum by adding chapters and lessons. You can always edit this later.</p>
 
                                             <hr> <!-- Divider -->
 
+                                            <!-- Quick tips -->
+                                            <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+                                                <div class="d-flex align-items-start">
+                                                    <i class="fas fa-lightbulb text-info me-3 mt-1"></i>
+                                                    <div>
+                                                        <strong>Quick Tips:</strong>
+                                                        <ul class="mb-0 mt-1">
+                                                            <li>Organize your course into logical chapters</li>
+                                                            <li>Each lesson can be a video, text, quiz, or assignment</li>
+                                                            <li>You can drag and drop to reorder items</li>
+                                                            <li>Curriculum is optional - you can add it later</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                            </div>
+
                                             <!-- Chapters container -->
                                             <div class="mb-4">
-                                                <button type="button" class="btn btn-primary-soft mb-3" onclick="addChapter()">
-                                                    <i class="fas fa-plus me-2"></i>Add Chapter
-                                                </button>
-                                                <div id="chaptersContainer">
+                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                    <h5 class="mb-0"><i class="fas fa-book me-2"></i>Chapters</h5>
+                                                    <button type="button" class="btn btn-primary" onclick="addChapter()">
+                                                        <i class="fas fa-plus me-2"></i>Add Chapter
+                                                    </button>
+                                                </div>
+                                                
+                                                <div id="chaptersContainer" class="chapters-wrapper">
+                                                    <!-- Empty state -->
+                                                    <div id="emptyChaptersState" class="text-center py-5">
+                                                        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                                                        <h6 class="text-muted">No chapters yet</h6>
+                                                        <p class="text-muted small">Click "Add Chapter" to start building your curriculum</p>
+                                                    </div>
                                                     <!-- Chapters will be added here dynamically -->
                                                 </div>
                                             </div>
@@ -1041,7 +1066,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 const title = document.getElementById('course_title');
                 const shortDescription = document.getElementById('course_shortDescription');
                 const category = document.getElementById('course_category');
-                const level = document.getElementById('course_level');
                 const price = document.getElementById('course_price');
                 
                 // Validate title
@@ -1065,111 +1089,48 @@ document.addEventListener("DOMContentLoaded", function() {
                     isValid = false;
                 }
                 
-                // Validate level
-                if (!level || !level.value) {
-                    if (level) level.classList.add('is-invalid');
-                    errorMessage += 'Please select a course level. ';
-                    isValid = false;
-                }
-                
-                // Validate price
-                if (!price || !price.value || price.value <= 0) {
-                    if (price) price.classList.add('is-invalid');
-                    errorMessage += 'Please enter a valid price greater than 0. ';
+                // Validate price (optional - allow 0 for free courses)
+                if (price && price.value && parseFloat(price.value) < 0) {
+                    price.classList.add('is-invalid');
+                    errorMessage += 'Price cannot be negative. ';
                     isValid = false;
                 }
                 break;
                 
-            case 1: // Step 2: Course Media
-                const thumbnailFile = document.getElementById('course_thumbnailFile');
-                const videoFile = document.getElementById('course_videoFile');
-                
-                // Require at least one media file
-                if ((!thumbnailFile || !thumbnailFile.files || thumbnailFile.files.length === 0) && 
-                    (!videoFile || !videoFile.files || videoFile.files.length === 0)) {
-                    if (thumbnailFile) thumbnailFile.classList.add('is-invalid');
-                    if (videoFile) videoFile.classList.add('is-invalid');
-                    errorMessage += 'Please upload at least a thumbnail image or introduction video. ';
-                    isValid = false;
-                }
+            case 1: // Step 2: Course Media (Optional - no validation required)
+                // Media files are optional, teachers can add them later
                 break;
                 
-            case 2: // Step 3: Curriculum
+            case 2: // Step 3: Curriculum (Optional - teachers can add curriculum later)
+                // Only validate if chapters are added
                 const chapters = document.querySelectorAll('.chapter-item');
-                
-                // Require at least one chapter
-                if (chapters.length === 0) {
-                    errorMessage += 'Please add at least one chapter to your course. ';
-                    isValid = false;
-                } else {
+                if (chapters.length > 0) {
                     chapters.forEach((chapter, index) => {
                         const titleInput = chapter.querySelector('.chapter-title');
-                        if (!titleInput || !titleInput.value.trim()) {
-                            if (titleInput) titleInput.classList.add('is-invalid');
-                            errorMessage += `Chapter ${index + 1} title is required. `;
-                            isValid = false;
-                        }
-                        
-                        // Check if chapter has at least one lesson
-                        const lessons = chapter.querySelectorAll('.lesson-item');
-                        if (lessons.length === 0) {
-                            errorMessage += `Chapter ${index + 1} should have at least one lesson. `;
-                            isValid = false;
-                        } else {
+                        if (titleInput && titleInput.value.trim()) {
+                            // If chapter has a title, validate lessons if any
+                            const lessons = chapter.querySelectorAll('.lesson-item');
                             lessons.forEach((lesson, lessonIndex) => {
                                 const lessonTitle = lesson.querySelector('.lesson-title');
-                                if (!lessonTitle || !lessonTitle.value.trim()) {
-                                    if (lessonTitle) lessonTitle.classList.add('is-invalid');
-                                    errorMessage += `Lesson ${lessonIndex + 1} in Chapter ${index + 1} title is required. `;
-                                    isValid = false;
+                                if (lessonTitle && lessonTitle.value.trim()) {
+                                    // Valid lesson
                                 }
                             });
                         }
                     });
                 }
+                // Curriculum is optional - teachers can add it later
                 break;
                 
-            case 3: // Step 4: Additional Information
+            case 3: // Step 4: Additional Information (Optional fields)
                 const requirements = document.getElementById('course_requirements');
                 const learningOutcomes = document.getElementById('course_learningOutcomes');
                 const targetAudience = document.getElementById('course_targetAudience');
                 const language = document.getElementById('course_language');
                 const duration = document.getElementById('course_duration');
                 
-                // Validate language (required)
-                if (!language || !language.value) {
-                    if (language) language.classList.add('is-invalid');
-                    errorMessage += 'Please select a course language. ';
-                    isValid = false;
-                }
-                
-                // Validate duration (required)
-                if (!duration || !duration.value || duration.value <= 0) {
-                    if (duration) duration.classList.add('is-invalid');
-                    errorMessage += 'Please enter a valid course duration. ';
-                    isValid = false;
-                }
-                
-                // Validate requirements (optional but if filled, should be meaningful)
-                if (requirements && requirements.value && requirements.value.trim().length < 20) {
-                    requirements.classList.add('is-invalid');
-                    errorMessage += 'Requirements should be at least 20 characters if provided. ';
-                    isValid = false;
-                }
-                
-                // Validate learning outcomes (optional but if filled, should be meaningful)
-                if (learningOutcomes && learningOutcomes.value && learningOutcomes.value.trim().length < 20) {
-                    learningOutcomes.classList.add('is-invalid');
-                    errorMessage += 'Learning outcomes should be at least 20 characters if provided. ';
-                    isValid = false;
-                }
-                
-                // Validate target audience (optional but if filled, should be meaningful)
-                if (targetAudience && targetAudience.value && targetAudience.value.trim().length < 20) {
-                    targetAudience.classList.add('is-invalid');
-                    errorMessage += 'Target audience should be at least 20 characters if provided. ';
-                    isValid = false;
-                }
+                // All fields in step 4 are optional - teachers can fill them later
+                // No validation required
                 break;
         }
         
@@ -1198,7 +1159,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add real-time validation listeners
     function addValidationListeners() {
         // Step 1 fields
-        ['course_title', 'course_shortDescription', 'course_category', 'course_level', 'course_price'].forEach(fieldId => {
+        ['course_title', 'course_shortDescription', 'course_category', 'course_price'].forEach(fieldId => {
             const field = document.getElementById(fieldId);
             if (field) {
                 field.addEventListener('input', updateNextButtonState);
@@ -1258,7 +1219,6 @@ document.addEventListener("DOMContentLoaded", function() {
         const title = document.getElementById('course_title');
         const shortDescription = document.getElementById('course_shortDescription');
         const category = document.getElementById('course_category');
-        const level = document.getElementById('course_level');
         const price = document.getElementById('course_price');
         
         let isValid = true;
@@ -1269,30 +1229,30 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
         
         // Validate title
-        if (!title.value.trim()) {
-            title.classList.add('is-invalid');
+        if (!title || !title.value.trim()) {
+            if (title) title.classList.add('is-invalid');
             errorMessage += 'Course title is required.\\n';
             isValid = false;
         }
         
+        // Validate short description
+        if (!shortDescription || !shortDescription.value.trim()) {
+            if (shortDescription) shortDescription.classList.add('is-invalid');
+            errorMessage += 'Short description is required.\\n';
+            isValid = false;
+        }
+        
         // Validate category
-        if (!category.value) {
-            category.classList.add('is-invalid');
+        if (!category || !category.value) {
+            if (category) category.classList.add('is-invalid');
             errorMessage += 'Please select a category.\\n';
             isValid = false;
         }
         
-        // Validate level
-        if (!level.value) {
-            level.classList.add('is-invalid');
-            errorMessage += 'Please select a course level.\\n';
-            isValid = false;
-        }
-        
-        // Validate price
-        if (!price.value || parseFloat(price.value) < 0) {
+        // Validate price (allow 0 for free courses)
+        if (price && price.value && parseFloat(price.value) < 0) {
             price.classList.add('is-invalid');
-            errorMessage += 'Please enter a valid price.\\n';
+            errorMessage += 'Price cannot be negative.\\n';
             isValid = false;
         }
         
@@ -1306,8 +1266,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add event listeners for real-time validation
     document.getElementById('course_title')?.addEventListener('blur', validateForm);
     document.getElementById('course_category')?.addEventListener('change', validateForm);
-    document.getElementById('course_level')?.addEventListener('change', validateForm);
     document.getElementById('course_price')?.addEventListener('blur', validateForm);
+    document.getElementById('course_shortDescription')?.addEventListener('blur', validateForm);
     
     // Override form submission to validate first
     document.getElementById('courseForm').addEventListener('submit', function(e) {
@@ -1474,20 +1434,59 @@ document.addEventListener("DOMContentLoaded", function() {
 // Simple chapter management
 function addChapter() {
     const chaptersContainer = document.getElementById('chaptersContainer');
+    const emptyState = document.getElementById('emptyChaptersState');
+    
+    // Hide empty state
+    if (emptyState) {
+        emptyState.style.display = 'none';
+    }
+    
     const chapterId = 'chapter-' + Date.now();
+    const chapterCount = document.querySelectorAll('.chapter-item').length + 1;
     
     const chapterHtml = `
-        <div class="chapter-item border rounded p-3 mb-3" id="` + chapterId + `">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <input type="text" class="form-control chapter-title" placeholder="Chapter title" style="flex: 1;">
-                <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeChapter('` + chapterId + `')">
-                    <i class="fas fa-trash"></i>
-                </button>
+        <div class="chapter-item card mb-3" id="` + chapterId + `" data-chapter-index="` + chapterCount + `">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-grip-vertical text-muted me-2 cursor-move"></i>
+                    <span class="badge bg-primary me-2">Chapter ` + chapterCount + `</span>
+                    <input type="text" class="form-control form-control-sm border-0 bg-transparent chapter-title" placeholder="Enter chapter title..." style="width: 300px;">
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleChapter('` + chapterId + `')" title="Collapse/Expand">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeChapter('` + chapterId + `')" title="Delete Chapter">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             </div>
-            <div class="lessons-container">
-                <button type="button" class="btn btn-sm btn-primary-soft mb-2" onclick="addLesson('` + chapterId + `')">
-                    <i class="fas fa-plus me-1"></i>Add Lesson
-                </button>
+            <div class="card-body lessons-container" id="lessons-` + chapterId + `">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Add lessons to this chapter</small>
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-plus me-1"></i>Add Lesson
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="addLesson('` + chapterId + `', 'video'); return false;">
+                                <i class="fas fa-video text-primary me-2"></i>Video Lesson
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="addLesson('` + chapterId + `', 'text'); return false;">
+                                <i class="fas fa-file-alt text-info me-2"></i>Text Lesson
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="addLesson('` + chapterId + `', 'quiz'); return false;">
+                                <i class="fas fa-question-circle text-warning me-2"></i>Quiz
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="addLesson('` + chapterId + `', 'assignment'); return false;">
+                                <i class="fas fa-tasks text-success me-2"></i>Assignment
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="lessons-list">
+                    <!-- Lessons will be added here -->
+                </div>
             </div>
         </div>
     `;
@@ -1495,45 +1494,246 @@ function addChapter() {
     chaptersContainer.insertAdjacentHTML('beforeend', chapterHtml);
 }
 
-function removeChapter(chapterId) {
-    const chapter = document.getElementById(chapterId);
-    if (chapter) {
-        chapter.remove();
+function toggleChapter(chapterId) {
+    const lessonsContainer = document.getElementById('lessons-' + chapterId);
+    const btn = document.querySelector(`#${chapterId} .btn-outline-secondary i`);
+    if (lessonsContainer.style.display === 'none') {
+        lessonsContainer.style.display = 'block';
+        btn.classList.remove('fa-chevron-right');
+        btn.classList.add('fa-chevron-down');
+    } else {
+        lessonsContainer.style.display = 'none';
+        btn.classList.remove('fa-chevron-down');
+        btn.classList.add('fa-chevron-right');
     }
 }
 
-function addLesson(chapterId) {
-    const lessonsContainer = document.querySelector(`#${chapterId} .lessons-container`);
+function removeChapter(chapterId) {
+    if (confirm('Are you sure you want to delete this chapter and all its lessons?')) {
+        const chapter = document.getElementById(chapterId);
+        if (chapter) {
+            chapter.remove();
+        }
+        
+        // Show empty state if no chapters
+        const chapters = document.querySelectorAll('.chapter-item');
+        if (chapters.length === 0) {
+            const emptyState = document.getElementById('emptyChaptersState');
+            if (emptyState) {
+                emptyState.style.display = 'block';
+            }
+        }
+    }
+}
+
+function addLesson(chapterId, type = 'video') {
+    const lessonsList = document.querySelector(`#${chapterId} .lessons-list`);
     const lessonId = 'lesson-' + Date.now();
     
+    const typeIcons = {
+        'video': 'fa-video text-primary',
+        'text': 'fa-file-alt text-info',
+        'quiz': 'fa-question-circle text-warning',
+        'assignment': 'fa-tasks text-success'
+    };
+    
+    const typeNames = {
+        'video': 'Video',
+        'text': 'Text',
+        'quiz': 'Quiz',
+        'assignment': 'Assignment'
+    };
+    
     const lessonHtml = `
-        <div class="lesson-item border rounded p-2 mb-2" id="${lessonId}">
-            <div class="d-flex align-items-center">
-                <input type="text" class="form-control form-control-sm lesson-title" placeholder="Lesson title" style="flex: 1;">
-                <div class="me-2" style="width: 100px;">
-                    <input type="text" class="form-control form-control-sm lesson-duration" placeholder="HH:MM">
+        <div class="lesson-item border rounded p-3 mb-2 bg-white" id="${lessonId}">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <i class="fas fa-grip-vertical text-muted cursor-move"></i>
                 </div>
-                <button type="button" class="btn btn-sm btn-light me-2" data-bs-toggle="collapse" data-bs-target="#lesson-details-${lessonId}">
-                    <i class="fas fa-cog"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeLesson('${lessonId}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <div class="collapse mt-2" id="lesson-details-${lessonId}">
-                <div class="d-flex gap-2">
-                    <select class="form-select form-select-sm">
-                        <option>video</option>
-                        <option>text</option>
-                        <option>quiz</option>
-                    </select>
-                    <input type="text" class="form-control form-control-sm" placeholder="Content URL or text">
+                <div class="col-auto">
+                    <span class="badge bg-light ${typeIcons[type]}">
+                        <i class="fas ${typeIcons[type]}"></i> ${typeNames[type]}
+                    </span>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control form-control-sm lesson-title" placeholder="Lesson title...">
+                </div>
+                <div class="col-auto">
+                    <div class="input-group input-group-sm" style="width: 120px;">
+                        <input type="text" class="form-control lesson-duration" placeholder="Duration">
+                        <span class="input-group-text">min</span>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleLessonDetails('${lessonId}')" title="More options">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeLesson('${lessonId}')" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             </div>
+            <div class="lesson-details collapse mt-3" id="details-${lessonId}">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="form-label small">Content Type</label>
+                        <select class="form-select form-select-sm lesson-type" onchange="updateLessonType('${lessonId}', this.value)">
+                            <option value="video" ${type === 'video' ? 'selected' : ''}>Video</option>
+                            <option value="text" ${type === 'text' ? 'selected' : ''}>Text</option>
+                            <option value="quiz" ${type === 'quiz' ? 'selected' : ''}>Quiz</option>
+                            <option value="assignment" ${type === 'assignment' ? 'selected' : ''}>Assignment</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small">Duration (minutes)</label>
+                        <input type="number" class="form-control form-control-sm lesson-duration-mins" placeholder="e.g., 15">
+                    </div>
+                    <div class="col-12 lesson-content-video" ${type !== 'video' ? 'style="display:none"' : ''}>
+                        <label class="form-label small">Video URL (YouTube, Vimeo, or upload)</label>
+                        <input type="text" class="form-control form-control-sm lesson-video-url" placeholder="https://...">
+                    </div>
+                    <div class="col-12 lesson-content-text" ${type !== 'text' ? 'style="display:none"' : ''}>
+                        <label class="form-label small">Lesson Content</label>
+                        <textarea class="form-control form-control-sm lesson-text-content" rows="3" placeholder="Write your lesson content here..."></textarea>
+                    </div>
+                    <div class="col-12 lesson-content-quiz" ${type !== 'quiz' ? 'style="display:none"' : ''}>
+                        <label class="form-label small">Select Quiz</label>
+                        <select class="form-select form-select-sm lesson-quiz-id" onchange="updateQuizInfo(this)">
+                            <option value="">Loading quizzes...</option>
+                        </select>
+                        <div class="quiz-info mt-2 small text-muted"></div>
+                        <button type="button" class="btn btn-sm btn-link p-0 mt-1" onclick="refreshQuizzes(this)">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh quiz list
+                        </button>
+                    </div>
+                    <div class="col-12 lesson-content-assignment" ${type !== 'assignment' ? 'style="display:none"' : ''}>
+                        <label class="form-label small">Assignment Instructions</label>
+                        <textarea class="form-control form-control-sm lesson-assignment-data" rows="3" placeholder="Assignment instructions..."></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small">Description (optional)</label>
+                        <textarea class="form-control form-control-sm lesson-description" rows="2" placeholder="Brief description of this lesson..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" class="lesson-type-hidden" value="${type}">
         </div>
     `;
     
-    lessonsContainer.insertAdjacentHTML('beforeend', lessonHtml);
+    lessonsList.insertAdjacentHTML('beforeend', lessonHtml);
+    
+    // Load quizzes if this is a quiz lesson
+    if (type === 'quiz') {
+        loadQuizzesForLesson(lessonId);
+    }
+}
+
+// Store loaded quizzes globally
+let loadedQuizzes = [];
+
+// Load quizzes from API
+function loadQuizzesForLesson(lessonId) {
+    const select = document.querySelector(`#${lessonId} .lesson-quiz-id`);
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">Loading quizzes...</option>';
+    
+    fetch('/api/quizzes')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('HTTP error ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Check if data is an error object
+            if (data.error) {
+                select.innerHTML = '<option value="">Error: ' + data.message + '</option>';
+                return;
+            }
+            
+            // Check if data is an array
+            if (!Array.isArray(data)) {
+                select.innerHTML = '<option value="">Invalid response format</option>';
+                console.error('Expected array, got:', data);
+                return;
+            }
+            
+            loadedQuizzes = data;
+            select.innerHTML = '<option value="">-- Select a quiz --</option>';
+            
+            if (data.length === 0) {
+                select.innerHTML = '<option value="">No quizzes available</option>';
+                const quizInfo = document.querySelector(`#${lessonId} .quiz-info`);
+                if (quizInfo) {
+                    quizInfo.innerHTML = '<span class="text-warning"><i class="fas fa-exclamation-triangle me-1"></i>You haven\'t created any quizzes yet. <a href="/quiz/create" target="_blank">Create a quiz</a></span>';
+                }
+                return;
+            }
+            
+            data.forEach(quiz => {
+                const option = document.createElement('option');
+                option.value = quiz.id;
+                option.textContent = quiz.title + (quiz.courseTitle ? ` (${quiz.courseTitle})` : '') + ` - ${quiz.questionCount} questions`;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading quizzes:', error);
+            select.innerHTML = '<option value="">Error loading quizzes</option>';
+        });
+}
+
+function updateQuizInfo(selectElement) {
+    const quizInfo = selectElement.parentElement.querySelector('.quiz-info');
+    const selectedQuiz = loadedQuizzes.find(q => q.id == selectElement.value);
+    
+    if (quizInfo && selectedQuiz) {
+        quizInfo.innerHTML = `
+            <div class="alert alert-light py-1 px-2 mb-0">
+                <i class="fas fa-info-circle me-1"></i>
+                <strong>${selectedQuiz.title}</strong><br>
+                <small>${selectedQuiz.questionCount} questions | Created: ${selectedQuiz.createdAt || 'N/A'}</small>
+            </div>
+        `;
+    } else if (quizInfo) {
+        quizInfo.innerHTML = '';
+    }
+}
+
+function refreshQuizzes(button) {
+    const lessonItem = button.closest('.lesson-item');
+    const lessonId = lessonItem.id;
+    loadQuizzesForLesson(lessonId);
+}
+
+function toggleLessonDetails(lessonId) {
+    const details = document.getElementById('details-' + lessonId);
+    if (details) {
+        details.classList.toggle('show');
+    }
+}
+
+function updateLessonType(lessonId, newType) {
+    const lesson = document.getElementById(lessonId);
+    if (lesson) {
+        // Hide all content areas
+        lesson.querySelectorAll('[class*="lesson-content-"]').forEach(el => {
+            el.style.display = 'none';
+        });
+        // Show the relevant content area
+        const contentArea = lesson.querySelector('.lesson-content-' + newType);
+        if (contentArea) {
+            contentArea.style.display = 'block';
+        }
+        // Update hidden type
+        lesson.querySelector('.lesson-type-hidden').value = newType;
+        
+        // Load quizzes if switching to quiz type
+        if (newType === 'quiz') {
+            loadQuizzesForLesson(lessonId);
+        }
+    }
 }
 
 function removeLesson(lessonId) {
@@ -1550,22 +1750,47 @@ function submitCourse() {
     // Collect chapter data and add it to the main form
     const chapters = [];
     document.querySelectorAll('.chapter-item').forEach(chapterEl => {
+        const titleEl = chapterEl.querySelector('.chapter-title');
         const chapter = {
-            title: chapterEl.querySelector('.chapter-title').value,
+            title: titleEl ? titleEl.value.trim() : '',
             lessons: []
         };
         
         console.log('Found chapter:', chapter.title);
         
         chapterEl.querySelectorAll('.lesson-item').forEach(lessonEl => {
+            const lessonTitleEl = lessonEl.querySelector('.lesson-title');
+            const lessonDurationEl = lessonEl.querySelector('.lesson-duration');
+            const lessonTypeEl = lessonEl.querySelector('.lesson-type-hidden') || lessonEl.querySelector('.lesson-type');
+            const lessonDescEl = lessonEl.querySelector('.lesson-description');
+            
+            // Get content based on lesson type
+            const lessonType = lessonTypeEl ? lessonTypeEl.value : 'video';
+            let content = '';
+            
+            if (lessonType === 'video') {
+                const videoUrlEl = lessonEl.querySelector('.lesson-video-url');
+                content = videoUrlEl ? videoUrlEl.value : '';
+            } else if (lessonType === 'text') {
+                const textContentEl = lessonEl.querySelector('.lesson-text-content');
+                content = textContentEl ? textContentEl.value : '';
+            } else if (lessonType === 'quiz') {
+                const quizIdEl = lessonEl.querySelector('.lesson-quiz-id');
+                content = quizIdEl ? quizIdEl.value : '';
+            } else if (lessonType === 'assignment') {
+                const assignmentEl = lessonEl.querySelector('.lesson-assignment-data');
+                content = assignmentEl ? assignmentEl.value : '';
+            }
+            
             const lesson = {
-                title: lessonEl.querySelector('.lesson-title').value,
-                duration: lessonEl.querySelector('.lesson-duration').value,
-                type: lessonEl.querySelector('select').value,
-                description: lessonEl.querySelector('input[placeholder*="Content"]').value
+                title: lessonTitleEl ? lessonTitleEl.value.trim() : '',
+                duration: lessonDurationEl ? lessonDurationEl.value.trim() : '',
+                type: lessonType,
+                content: content,
+                description: lessonDescEl ? lessonDescEl.value.trim() : ''
             };
             
-            console.log('Found lesson:', lesson.title);
+            console.log('Found lesson:', lesson.title, 'type:', lesson.type);
             chapter.lessons.push(lesson);
         });
         

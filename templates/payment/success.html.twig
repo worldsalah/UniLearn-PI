@@ -1,0 +1,252 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Payment Successful - Unilearn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Success Card -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5 text-center">
+                    <!-- Success Icon -->
+                    <div class="mb-4">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Success Message -->
+                    <h2 class="mb-3">Payment Successful!</h2>
+                    <p class="text-muted mb-4">Thank you for your purchase. Your order has been confirmed and is being processed.</p>
+                    
+                    <!-- Order Details -->
+                    <div class="order-details bg-light rounded p-4 mb-4">
+                        <h5 class="mb-3">Order Details</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="text-start mb-3">
+                                    <p class="mb-1"><strong>Order ID:</strong> #{{ order.id }}</p>
+                                    <p class="mb-1"><strong>Date:</strong> {{ order.createdAt|date('M d, Y H:i') }}</p>
+                                    <p class="mb-1"><strong>Status:</strong> 
+                                        <span class="badge bg-success">{{ order.status|title }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-start mb-3">
+                                    <p class="mb-1"><strong>Product:</strong> {{ order.product.title }}</p>
+                                    <p class="mb-1"><strong>Total Amount:</strong> 
+                                        <span class="text-success fw-bold">${{ order.totalPrice|number_format(2) }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Next Steps -->
+                    <div class="next-steps mb-4">
+                        <h5 class="mb-3">What's Next?</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="step-card">
+                                    <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                                    <h6>Confirmation Email</h6>
+                                    <p class="small text-muted">Check your email for order confirmation and receipt</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="step-card">
+                                    <i class="fas fa-user-tie fa-2x text-success mb-2"></i>
+                                    <h6>Seller Notification</h6>
+                                    <p class="small text-muted">Service providers will contact you within 24 hours</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="step-card">
+                                    <i class="fas fa-headset fa-2x text-info mb-2"></i>
+                                    <h6>Support Available</h6>
+                                    <p class="small text-muted">Our team is here to help with any questions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <a href="{{ path('app_marketplace') }}" class="btn btn-outline-primary btn-lg w-100">
+                                    <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="{{ path('app_student_dashboard') }}" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-tachometer-alt me-2"></i>View Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Download Receipt -->
+                    <div class="mt-4">
+                        <button class="btn btn-outline-secondary" onclick="downloadReceipt()">
+                            <i class="fas fa-download me-2"></i>Download Receipt
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Info -->
+            <div class="card shadow mt-4">
+                <div class="card-body">
+                    <h5 class="mb-3">Important Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-shield-alt text-success me-2"></i>Payment Security</h6>
+                            <p class="small text-muted">Your payment was processed securely using industry-standard encryption.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-clock text-info me-2"></i>Service Timeline</h6>
+                            <p class="small text-muted">Most services begin within 24-48 hours after payment confirmation.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-undo text-warning me-2"></i>Refund Policy</h6>
+                            <p class="small text-muted">Refunds available within 7 days for eligible services.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-headset text-primary me-2"></i>Customer Support</h6>
+                            <p class="small text-muted">24/7 support available for any questions or concerns.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+function downloadReceipt() {
+    // Generate and download receipt
+    const receiptData = {
+        orderId: '{{ order.id }}',
+        date: '{{ order.createdAt|date('Y-m-d H:i:s') }}',
+        paymentMethod: '{{ order.paymentMethod }}',
+        paymentId: '{{ order.paymentId }}',
+        total: '{{ order.total }}',
+        status: 'Paid'
+    };
+    
+    // Create receipt content
+    const receiptContent = `
+========================================
+UNILEARN MARKETPLACE - PAYMENT RECEIPT
+========================================
+
+Order ID: #${receiptData.orderId}
+Date: ${receiptData.date}
+Payment Method: ${receiptData.paymentMethod}
+Payment ID: ${receiptData.paymentId}
+Status: ${receiptData.status}
+
+Total Amount: $${receiptData.total}
+
+========================================
+Thank you for your purchase!
+========================================
+    `;
+    
+    // Download as text file
+    const blob = new Blob([receiptContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `receipt_${receiptData.orderId}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+// Auto-redirect after 10 seconds
+setTimeout(() => {
+    const redirectUrl = '{{ path('app_student_dashboard') }}';
+    if (confirm('Would you like to view your dashboard?')) {
+        window.location.href = redirectUrl;
+    }
+}, 10000);
+</script>
+
+<style>
+.success-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: successPulse 2s ease-in-out;
+}
+
+.success-icon i {
+    color: white;
+    font-size: 3rem;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.order-details {
+    border-left: 4px solid #28a745;
+}
+
+.step-card {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e9ecef;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 2rem;
+    font-size: 1.125rem;
+    border-radius: 0.5rem;
+}
+
+.badge {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+</style>
+{% endblock %}

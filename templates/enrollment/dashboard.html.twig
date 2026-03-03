@@ -3,43 +3,148 @@
 {% block title %}Course Dashboard - {{ course.title }}{% endblock %}
 
 {% block stylesheets %}
+{{ parent() }}
 <style>
 .course-dashboard {
     padding: 2rem 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: calc(100vh - 400px);
+}
+
+.course-info-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #007bff, #0056b3, #007bff);
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.course-info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.course-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .progress-container {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 12px;
-    padding: 1.5rem;
+    border-radius: 15px;
+    padding: 2rem;
     margin-bottom: 2rem;
+    border: 1px solid rgba(0,123,255,0.1);
 }
 
 .progress-bar-custom {
-    height: 8px;
-    border-radius: 4px;
-    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-custom::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: progress-shimmer 2s infinite;
+}
+
+@keyframes progress-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.learning-path-alert {
+    border-radius: 15px;
+    border: none;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.learning-path-alert::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--bs-alert-color), var(--bs-alert-color-dark));
+}
+
+.learning-path-alert.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    --bs-alert-color: #28a745;
+    --bs-alert-color-dark: #1e7e34;
+}
+
+.learning-path-alert.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+    --bs-alert-color: #ffc107;
+    --bs-alert-color-dark: #d39e00;
+}
+
+.learning-path-alert.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    --bs-alert-color: #17a2b8;
+    --bs-alert-color-dark: #138496;
 }
 
 .lesson-list {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     overflow: hidden;
+    margin-bottom: 2rem;
 }
 
 .lesson-item {
-    padding: 1rem 1.5rem;
+    padding: 1.5rem 2rem;
     border-bottom: 1px solid #e9ecef;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 }
 
 .lesson-item:hover {
-    background-color: #f8f9fa;
-    transform: translateX(5px);
+    background: linear-gradient(90deg, #f8f9fa 0%, #e3f2fd 100%);
+    transform: translateX(10px);
 }
 
 .lesson-item:last-child {
@@ -54,11 +159,12 @@
     font-weight: 600;
     color: #2c3e50;
     margin-bottom: 0.5rem;
+    font-size: 1.1rem;
 }
 
 .lesson-meta {
     color: #6c757d;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
 }
 
 .lesson-status {
@@ -79,100 +185,346 @@
     color: #6c757d;
 }
 
+.lesson-item.completed {
+    background: linear-gradient(90deg, #d4edda 0%, #c3e6cb 100%);
+    border-left: 4px solid #28a745;
+}
+
+.lesson-item.completed .lesson-title {
+    color: #155724;
+    font-weight: 600;
+}
+
+.lesson-item.completed:hover {
+    background: linear-gradient(90deg, #c3e6cb 0%, #b8dacc 100%);
+    transform: translateX(5px);
+}
+
+.recommended-start {
+    border-left: 4px solid #007bff;
+    background: linear-gradient(90deg, #f8f9fa 0%, #e3f2fd 100%);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+    position: relative;
+}
+
+.recommended-start::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #007bff, #0056b3);
+}
+
+.recommended-start .lesson-title {
+    color: #007bff;
+    font-weight: 700;
+}
+
 .continue-btn {
     background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
     text-decoration: none;
-    font-size: 0.875rem;
+    font-weight: 600;
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.continue-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.continue-btn:hover::before {
+    left: 100%;
 }
 
 .continue-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+    box-shadow: 0 8px 20px rgba(0,123,255,0.3);
 }
 
-.course-info-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding: 2rem;
-    margin-bottom: 2rem;
+.badge-recommended {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+    .course-dashboard {
+        padding: 1rem 0;
+    }
+    
+    .course-info-card {
+        padding: 1.5rem;
+    }
+    
+    .course-title {
+        font-size: 1.5rem;
+    }
+    
+    .lesson-item {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .lesson-status {
+        width: 100%;
+        justify-content: flex-end;
+    }
 }
 </style>
 {% endblock %}
 
-{% block body %}
-<div class="container course-dashboard">
-    <div class="row">
-        <!-- Course Info -->
-        <div class="col-12">
-            <div class="course-info-card">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <h2 class="h3 mb-2">{{ course.title }}</h2>
-                        <p class="text-muted mb-0">{{ course.shortDescription|default('Learn and master this course') }}</p>
-                    </div>
-                    <div>
-                        <span class="badge bg-primary">Enrolled</span>
+{% block content %}
+<!-- Flash Messages -->
+{% for message in app.flashes('error') %}
+    <div data-flash-type="error" 
+         data-flash-title="Access Denied" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('success') %}
+    <div data-flash-type="success" 
+         data-flash-title="Success" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<div class="course-dashboard">
+    <div class="container">
+        <!-- Course Header with Progress -->
+        <div class="course-info-card">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h1 class="course-title">{{ course.title }}</h1>
+                            <p class="text-muted mb-0">{{ course.shortDescription|default('Learn and master this course') }}</p>
+                        </div>
+                        <div>
+                            <span class="badge bg-primary">Enrolled</span>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Progress -->
-                <div class="progress-container">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-semibold">Course Progress</span>
-                        <span class="fw-bold">{{ progress|round }}%</span>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-custom" style="width: {{ progress }}%"></div>
+                <div class="col-lg-4">
+                    <!-- Enhanced Progress Visualization -->
+                    <div class="progress-container">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="fw-semibold">Course Progress</span>
+                            <span class="fw-bold">{{ progress }}%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-custom" style="width: {{ progress }}%"></div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <div class="row">
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Completed</small>
+                                    <strong class="text-success">{{ completedCount }}</strong>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Total</small>
+                                    <strong>{{ totalLessons }}</strong>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Remaining</small>
+                                    <strong class="text-warning">{{ totalLessons - completedCount }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        {% if courseQuiz and quizPassed %}
+                            <div class="mt-3 text-center">
+                                <span class="badge bg-success">
+                                    <i class="fas fa-trophy me-1"></i>
+                                    Course Completed!
+                                </span>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Lessons List -->
-        <div class="col-12">
-            <h3 class="h4 mb-4">Course Content</h3>
-            <div class="lesson-list">
+        <!-- Learning Path Alert -->
+        {% if learningPath %}
+            <div class="learning-path-alert alert-{{ learningPath.recommendation == 'Continue with advanced topics' ? 'success' : (learningPath.recommendation == 'Review and retry' ? 'warning' : 'info') }}">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="fas fa-{{ learningPath.recommendation == 'Continue with advanced topics' ? 'trophy' : (learningPath.recommendation == 'Review and retry' ? 'redo' : 'lightbulb') }} fa-2x"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1">Intelligent Learning Path</h5>
+                        <p class="mb-0">{{ learningPath.reason }}</p>
+                    </div>
+                    <div>
+                        <span class="badge-recommended">
+                            {{ learningPath.recommendation }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <!-- Enhanced Lessons List -->
+        <div class="lesson-list">
+            <div class="p-4 border-bottom">
+                <h3 class="h4 mb-0">
+                    <i class="fas fa-book-open me-2"></i>
+                    Course Content
+                    <span class="badge bg-secondary ms-2">{{ totalLessons }} lessons</span>
+                </h3>
+            </div>
+            
+            {% if lessons|length > 0 %}
                 {% for lesson in lessons %}
-                    <div class="lesson-item">
+                    {% set isCompleted = lesson.id in completedLessonIds %}
+                    {% set isRecommended = learningPath.lesson and learningPath.lesson.id == lesson.id %}
+                    
+                    <div class="lesson-item {{ isCompleted ? 'completed' : (isRecommended ? 'recommended-start' : '') }}">
                         <div class="lesson-info">
-                            <div class="lesson-title">{{ lesson.title }}</div>
+                            <div class="lesson-title">
+                                {{ lesson.title }}
+                                {% if isCompleted %}
+                                    <span class="badge bg-success ms-2">
+                                        <i class="fas fa-check me-1"></i>Completed
+                                    </span>
+                                {% elseif isRecommended %}
+                                    <span class="badge-recommended ms-2">
+                                        <i class="fas fa-star me-1"></i>Recommended Start
+                                    </span>
+                                {% endif %}
+                            </div>
                             <div class="lesson-meta">
                                 <i class="fas fa-clock me-1"></i>
                                 {{ lesson.duration|default('15 min') }}
                                 {% if lesson.description %}
-                                    <span class="ms-3">• {{ lesson.description|slice(0, 50) }}...</span>
+                                    <span class="ms-3">• {{ lesson.description|slice(0, 60) }}...</span>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="lesson-status">
-                            {% if loop.index == 1 %}
-                                <span class="status-current">
-                                    <i class="fas fa-play-circle"></i> Current
+                            {% if isCompleted %}
+                                <span class="status-completed">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    Completed
                                 </span>
-                                <a href="{{ path('app_lesson_show', {'id': lesson.id}) }}" class="continue-btn">
-                                    Continue Learning
+                                <a href="{{ path('app_lesson_show', {'id': lesson.id}) }}" class="btn btn-outline-success btn-sm ms-2">
+                                    <i class="fas fa-redo me-1"></i>Review
+                                </a>
+                            {% elseif isRecommended %}
+                                <span class="status-current">
+                                    <i class="fas fa-play-circle me-1"></i>
+                                    Recommended
+                                </span>
+                                <a href="{{ path('app_lesson_show', {'id': lesson.id}) }}" class="continue-btn btn-sm ms-2">
+                                    <i class="fas fa-play me-1"></i>Start Here
                                 </a>
                             {% else %}
                                 <span class="status-locked">
-                                    <i class="fas fa-lock"></i> Locked
+                                    <i class="fas fa-lock me-1"></i>
+                                    Locked
                                 </span>
+                                <button class="btn btn-outline-secondary btn-sm ms-2" disabled>
+                                    <i class="fas fa-lock me-1"></i>Coming Soon
+                                </button>
                             {% endif %}
                         </div>
                     </div>
-                {% else %}
-                    <div class="text-center py-5">
-                        <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
-                        <p class="text-muted">No lessons available yet for this course.</p>
-                    </div>
                 {% endfor %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No lessons available yet</h5>
+                    <p class="text-muted">This course content is being prepared. Check back soon!</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Enhanced Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tachometer-alt fa-3x text-primary mb-3"></i>
+                        <h5>Progress</h5>
+                        <p class="text-muted">{{ progress }}% Complete</p>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-primary" style="width: {{ progress }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if courseQuiz %}
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            {% if quizPassed %}
+                                <i class="fas fa-certificate fa-3x text-success mb-3"></i>
+                                <h5>Quiz Passed!</h5>
+                                <p class="text-muted">You've completed the final quiz</p>
+                                <a href="{{ path('quiz_certificate', {'id': courseQuiz.id}) }}" class="btn btn-success">
+                                    <i class="fas fa-award me-2"></i>View Certificate
+                                </a>
+                            {% else %}
+                                <i class="fas fa-graduation-cap fa-3x text-warning mb-3"></i>
+                                <h5>Final Quiz</h5>
+                                <p class="text-muted">Take the quiz to complete the course</p>
+                                <a href="{{ path('quiz_take', {'id': courseQuiz.id}) }}" class="btn btn-warning">
+                                    <i class="fas fa-play me-2"></i>Take Quiz
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-book-reader fa-3x text-info mb-3"></i>
+                        <h5>Study Materials</h5>
+                        <p class="text-muted">Access all course content</p>
+                        <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn btn-info">
+                            <i class="fas fa-book-open me-2"></i>Browse Lessons
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Include Footer -->
+{% include 'components/footer.html.twig' %}
 {% endblock %}

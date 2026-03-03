@@ -5,31 +5,41 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Chapter;
 use App\Entity\Course;
+use App\Entity\CourseTest;
+use App\Entity\CourseTestAnswer;
+use App\Entity\CourseTestResult;
 use App\Entity\Lesson;
 use App\Entity\User;
 use App\Form\CourseType;
 use App\Form\EnrollmentType;
 use App\Repository\CategoryRepository;
+use App\Repository\CertificateRepository;
+use App\Repository\CourseRepository;
 use App\Repository\EnrollmentRepository;
+use App\Repository\LessonCompletionRepository;
 use App\Service\GoogleBooksService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CourseController extends AbstractController
 {
     private GoogleBooksService $googleBooksService;
+    private EnrollmentRepository $enrollmentRepository;
 
-    public function __construct(GoogleBooksService $googleBooksService)
+    public function __construct(GoogleBooksService $googleBooksService, EnrollmentRepository $enrollmentRepository)
     {
         $this->googleBooksService = $googleBooksService;
+        $this->enrollmentRepository = $enrollmentRepository;
     }
     #[Route('/course/{id}', name: 'app_course_show', requirements: ['id' => '\d+'])]
-    public function show(Course $course, EnrollmentRepository $enrollmentRepository): Response
+    public function show(Course $course, EnrollmentRepository $enrollmentRepository, LessonCompletionRepository $lessonCompletionRepository, CertificateRepository $certificateRepository): Response
     {
         // Debug: Log course details
         error_log('Course ID: '.$course->getId());
@@ -39,26 +49,117 @@ class CourseController extends AbstractController
         // Check if user is enrolled
         $user = $this->getUser();
         $isEnrolled = false;
-        if ($user) {
-            $enrollment = $enrollmentRepository->findOneByUserAndCourse($user, $course);
+        $hasCompletedAnyLesson = false;
+        $isComplete = false;
+        $hasCertificate = false;
+        $certificate = null;
+        $enrollment = null;
+        
+        if ($user instanceof \App\Entity\User) {
+            $enrollment = $enrollmentRepository->findOneBy(['user' => $user, 'course' => $course]);
             $isEnrolled = $enrollment !== null;
+
+            if ($isEnrolled) {
+                $hasCompletedAnyLesson = count($lessonCompletionRepository->findByUserAndCourse($user, $course)) > 0;
+                // Check if course is complete (progress >= 100 or status = completed)
+                $isComplete = $enrollment->getProgress() >= 100 || $enrollment->getStatus() === 'completed';
+                
+                // Check if user has certificate for this course
+                $certificate = $certificateRepository->findOneByUserAndCourse($user, $course);
+                $hasCertificate = $certificate !== null;
+            }
         }
 
         // Create enrollment form
         $enrollmentForm = null;
-        if ($user && !$isEnrolled) {
+        if ($user instanceof \App\Entity\User && !$isEnrolled) {
             $enrollmentForm = $this->createForm(EnrollmentType::class);
         }
 
         // Get book recommendations using Google Books API
-        $recommendedBooks = $this->googleBooksService->searchBooks($course->getTitle());
+        $courseTitle = $course->getTitle();
+        $recommendedBooks = $this->googleBooksService->searchBooks($courseTitle ?? '');
 
         return $this->render('course/detail-advanced.html.twig', [
             'course' => $course,
             'enrollmentForm' => $enrollmentForm,
             'isEnrolled' => $isEnrolled,
+            'hasCompletedAnyLesson' => $hasCompletedAnyLesson,
             'recommendedBooks' => $recommendedBooks,
+            'isComplete' => $isComplete,
+            'hasCertificate' => $hasCertificate,
+            'certificate' => $certificate,
+            'enrollment' => $enrollment,
         ]);
+    }
+    
+    #[Route('/course/{id}/generate-pdf', name: 'app_course_generate_pdf', methods: ['GET'])]
+    public function generatePdf(Course $course): Response
+    {
+        // Check if user is enrolled
+        $user = $this->getUser();
+        if ($user === null) {
+            return $this->redirectToRoute('app_login');
+        }
+        
+        if (!$user instanceof \App\Entity\User) {
+            return $this->redirectToRoute('app_login');
+        }
+        
+        // Check enrollment
+        $enrollment = $this->enrollmentRepository->findOneByUserAndCourse($user, $course);
+        if ($enrollment === null) {
+            $this->addFlash('error', 'You must be enrolled in this course to generate a certificate.');
+            return $this->redirectToRoute('app_course_show', ['id' => $course->getId()]);
+        }
+        
+        // Generate certificate HTML
+        $html = $this->renderView('certificate/course_certificate.html.twig', [
+            'user' => $user,
+            'course' => $course,
+            'enrollment' => $enrollment,
+            'completionDate' => $enrollment->getCompletedAt() ?? new \DateTime(),
+            'totalMaxScore' => 100,
+            'userScore' => $enrollment->getScore() ?? 85,
+            'quizCount' => count($course->getQuizzes()),
+            'completionPercentage' => ($enrollment->getScore() / 100) * 100,
+            'generatedDate' => new \DateTime()
+        ]);
+        
+        // Generate PDF
+        try {
+            $pdfOptions = new Options();
+            $pdfOptions->set('defaultFont', 'Arial');
+            $pdfOptions->set('isRemoteEnabled', true);
+            $pdfOptions->set('isHtml5ParserEnabled', true);
+            $pdfOptions->set('paper', 'A4');
+            $pdfOptions->set('orientation', 'landscape');
+            
+            $dompdf = new Dompdf($pdfOptions);
+            $dompdf->loadHtml($html);
+            $pdfContent = $dompdf->output();
+            
+            // Create response
+            $userFullName = $user->getFullName();
+            $courseTitle = $course->getTitle();
+            $filename = sprintf(
+                'course_certificate_%s_%s_%s.pdf',
+                strtolower(str_replace(' ', '_', $userFullName ?? '')),
+                strtolower(str_replace(' ', '_', $courseTitle ?? '')),
+                date('Y-m-d')
+            );
+            
+            $response = new Response($pdfContent);
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));
+            $response->headers->set('Content-Length', (string) strlen($pdfContent));
+            
+            return $response;
+            
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Failed to generate PDF: ' . $e->getMessage());
+            return $this->redirectToRoute('app_course_show', ['id' => $course->getId()]);
+        }
     }
 
     #[Route('/course/create', name: 'app_course_create', methods: ['GET', 'POST'])]
@@ -74,7 +175,7 @@ class CourseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Get the currently logged-in user
             $user = $this->getUser();
-            if (!$user) {
+            if ($user === null) {
                 return $this->redirectToRoute('app_login');
             }
 
@@ -86,8 +187,10 @@ class CourseController extends AbstractController
             $thumbnailFile = $form->get('thumbnailFile')->getData();
             if (null !== $thumbnailFile) {
                 $newFilename = uniqid().'.'.$thumbnailFile->guessExtension();
+                $projectDir = $this->getParameter('kernel.project_dir');
+                $uploadPath = (is_string($projectDir) ? $projectDir : '') . '/public/uploads/courses/thumbnails';
                 $thumbnailFile->move(
-                    $this->getParameter('kernel.project_dir').'/public/uploads/courses/thumbnails',
+                    $uploadPath,
                     $newFilename
                 );
                 $course->setThumbnailUrl('/uploads/courses/thumbnails/'.$newFilename);
@@ -96,8 +199,10 @@ class CourseController extends AbstractController
             $videoFile = $form->get('videoFile')->getData();
             if (null !== $videoFile) {
                 $newFilename = uniqid().'.'.$videoFile->guessExtension();
+                $projectDir = $this->getParameter('kernel.project_dir');
+                $uploadPath = (is_string($projectDir) ? $projectDir : '') . '/public/uploads/courses/videos';
                 $videoFile->move(
-                    $this->getParameter('kernel.project_dir').'/public/uploads/courses/videos',
+                    $uploadPath,
                     $newFilename
                 );
                 $course->setVideoUrl('/uploads/courses/videos/'.$newFilename);
@@ -111,7 +216,7 @@ class CourseController extends AbstractController
 
             if (!empty($chaptersData)) {
                 // Parse JSON string to array
-                $chaptersArray = json_decode($chaptersData, true);
+                $chaptersArray = json_decode((string) $chaptersData, true);
 
                 if (is_array($chaptersArray) && !empty($chaptersArray)) {
                     // User provided chapters/lessons manually - create only those
@@ -132,6 +237,22 @@ class CourseController extends AbstractController
         return $this->render('course/instructor-create-course.html.twig', [
             'courseForm' => $form->createView(),
             'categories' => $categoryRepository->findActiveCategories(),
+        ]);
+    }
+
+    #[Route('/course/{id}/test', name: 'app_course_test', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function test(Course $course): Response
+    {
+        // Check if user is enrolled
+        $user = $this->getUser();
+        if ($user === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // You can add test logic here
+        // For now, render a simple test page or redirect back to course
+        return $this->render('course/test.html.twig', [
+            'course' => $course,
         ]);
     }
 
@@ -208,7 +329,7 @@ class CourseController extends AbstractController
                 'level' => $course->getLevel(),
                 'price' => $course->getPrice(),
                 'status' => $course->getStatus() ?? 'pending',
-                'createdAt' => $course->getCreatedAt() ? $course->getCreatedAt()->format('d M Y') : 'Unknown',
+                'createdAt' => $course->getCreatedAt() !== null ? $course->getCreatedAt()->format('d M Y') : 'Unknown',
                 'thumbnailUrl' => $course->getThumbnailUrl(),
                 'instructor' => [
                     'name' => $course->getUser()?->getFullName() ?? 'Unknown',
@@ -329,9 +450,9 @@ class CourseController extends AbstractController
             $course->setStatus('deleted');
 
             // Update category if provided
-            if (isset($data['category']) && null !== $data['category'] && '' !== $data['category']) {
+            if (isset($data['category']) && $data['category'] !== '') {
                 $category = $entityManager->getRepository(Category::class)->find($data['category']);
-                if ($category) {
+                if ($category !== null) {
                     $course->setCategory($category);
                 } else {
                     return new JsonResponse([

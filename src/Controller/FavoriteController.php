@@ -20,9 +20,14 @@ class FavoriteController extends AbstractController
     public function toggle(Job $job, FavoriteRepository $favoriteRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         $user = $this->getUser();
+        
+        if (!$user instanceof \App\Entity\User) {
+            return new JsonResponse(['status' => 'error', 'message' => 'User not authenticated'], 401);
+        }
+        
         $existingFavorite = $favoriteRepository->findByUserAndJob($user, $job);
 
-        if ($existingFavorite) {
+        if ($existingFavorite !== null) {
             // Remove from favorites
             $entityManager->remove($existingFavorite);
             $entityManager->flush();
@@ -34,7 +39,7 @@ class FavoriteController extends AbstractController
         }
         // Add to favorites
         $favorite = new Favorite();
-        $favorite->setUser($user instanceof \App\Entity\User ? $user : null);
+        $favorite->setUser($user);
         $favorite->setJob($job);
         $entityManager->persist($favorite);
         $entityManager->flush();
@@ -49,6 +54,11 @@ class FavoriteController extends AbstractController
     public function index(FavoriteRepository $favoriteRepository): Response
     {
         $user = $this->getUser();
+        
+        if (!$user instanceof \App\Entity\User) {
+            return $this->redirectToRoute('app_login');
+        }
+        
         $favorites = $favoriteRepository->findByUser($user);
 
         $jobs = array_map(function ($favorite) {

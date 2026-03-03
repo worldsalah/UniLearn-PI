@@ -116,6 +116,11 @@ class DiscoveryRecommendationService
         if ($user === null) {
             return $this->getPopularListings($limit);
         }
+        
+        // Ensure user is the correct type
+        if (!$user instanceof \App\Entity\User) {
+            return $this->getPopularListings($limit);
+        }
 
         $recommendations = [];
 
@@ -153,7 +158,10 @@ class DiscoveryRecommendationService
         $jobCategories = [];
 
         foreach ($userJobs as $job) {
-            $jobCategories[] = $this->extractJobCategory($job->getTitle());
+            $jobTitle = $job->getTitle();
+            if ($jobTitle !== null) {
+                $jobCategories[] = $this->extractJobCategory($jobTitle);
+            }
         }
 
         if (!empty($jobCategories)) {
@@ -306,7 +314,7 @@ class DiscoveryRecommendationService
     /**
      * Get user's interests based on their activity.
      */
-    private function getUserInterests(\Symfony\Component\Security\Core\User\UserInterface $user): array
+    private function getUserInterests(User $user): array
     {
         $categories = [];
 
@@ -361,7 +369,9 @@ class DiscoveryRecommendationService
         }
 
         // Similar price range
-        $priceDiff = abs($product1->getPrice() - $product2->getPrice());
+        $price1 = $product1->getPrice() ?? 0.0;
+        $price2 = $product2->getPrice() ?? 0.0;
+        $priceDiff = abs($price1 - $price2);
         if ($priceDiff < 20) {
             $score += 30;
         } elseif ($priceDiff < 50) {
@@ -369,8 +379,8 @@ class DiscoveryRecommendationService
         }
 
         // Similar title keywords
-        $title1 = strtolower($product1->getTitle());
-        $title2 = strtolower($product2->getTitle());
+        $title1 = strtolower($product1->getTitle() ?? '');
+        $title2 = strtolower($product2->getTitle() ?? '');
         $commonWords = array_intersect(explode(' ', $title1), explode(' ', $title2));
         $score += count($commonWords) * 10;
 

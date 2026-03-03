@@ -1,0 +1,212 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Search Results for "{{ query }}" - UniLearn{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <!-- Search Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="h2 mb-3">Search Results</h1>
+                {% if query %}
+                    <p class="text-muted">Showing results for "<strong>{{ query }}</strong>" - {{ results.total }} result(s) found</p>
+                {% else %}
+                    <p class="text-muted">Enter a search term to find courses, users, products, and jobs.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Search Form -->
+        <div class="row mb-5">
+            <div class="col-lg-8">
+                <form method="GET" class="d-flex gap-2">
+                    <input type="text" name="query" value="{{ query }}" class="form-control form-control-lg" placeholder="Search courses, users, products, jobs..." autofocus>
+                    <select name="type" class="form-select form-select-lg" style="width: auto;">
+                        <option value="all" {% if type == 'all' %}selected{% endif %}>All</option>
+                        <option value="courses" {% if type == 'courses' %}selected{% endif %}>Courses</option>
+                        <option value="users" {% if type == 'users' %}selected{% endif %}>Users</option>
+                        <option value="products" {% if type == 'products' %}selected{% endif %}>Products</option>
+                        <option value="jobs" {% if type == 'jobs' %}selected{% endif %}>Jobs</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if query and results.total > 0 %}
+            <!-- Courses Results -->
+            {% if results.courses|length > 0 %}
+            <div class="mb-5">
+                <h2 class="h4 mb-4">
+                    <i class="fas fa-graduation-cap text-primary me-2"></i>
+                    Courses ({{ results.courses|length }})
+                </h2>
+                <div class="row g-4">
+                    {% for course in results.courses %}
+                    <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="card shadow h-100 hover-shadow-lg transition-300">
+                            {% set thumbnail = course.thumbnailUrl %}
+                            {% if thumbnail and (thumbnail starts with 'http' or thumbnail starts with 'https') %}
+                                <img src="{{ thumbnail }}" class="card-img-top" alt="{{ course.title }}" style="height: 180px; object-fit: cover;">
+                            {% elseif thumbnail %}
+                                <img src="{{ asset(thumbnail) }}" class="card-img-top" alt="{{ course.title }}" style="height: 180px; object-fit: cover;">
+                            {% else %}
+                                <img src="{{ asset('assets/images/courses/4by3/08.jpg') }}" class="card-img-top" alt="{{ course.title }}" style="height: 180px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <span class="badge bg-info mb-2">{{ course.level|default('All levels') }}</span>
+                                <h5 class="card-title">
+                                    <a href="{{ path('app_course_show', {'id': course.id}) }}" class="text-decoration-none text-dark">
+                                        {{ course.title }}
+                                    </a>
+                                </h5>
+                                <p class="card-text text-muted small">{{ course.shortDescription|default('')|slice(0, 80) }}...</p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-success fw-bold">${{ course.price|default('0') }}</span>
+                                    <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Users Results -->
+            {% if results.users|length > 0 %}
+            <div class="mb-5">
+                <h2 class="h4 mb-4">
+                    <i class="fas fa-users text-purple me-2"></i>
+                    Users ({{ results.users|length }})
+                </h2>
+                <div class="row g-4">
+                    {% for user in results.users %}
+                    <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="card shadow h-100 hover-shadow-lg transition-300">
+                            <div class="card-body text-center">
+                                <div class="avatar avatar-xl mb-3">
+                                    {% if user.avatar %}
+                                        <img src="{{ asset(user.avatar) }}" class="rounded-circle" alt="{{ user.fullName }}" style="width: 80px; height: 80px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center text-white" style="width: 80px; height: 80px; font-size: 2rem;">
+                                            {{ user.fullName|first|upper }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <h5 class="card-title mb-1">{{ user.fullName }}</h5>
+                                <p class="text-muted small mb-3">{{ user.email }}</p>
+                                <span class="badge bg-secondary">{{ user.role.name|default('User') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Products Results -->
+            {% if results.products|length > 0 %}
+            <div class="mb-5">
+                <h2 class="h4 mb-4">
+                    <i class="fas fa-shopping-bag text-warning me-2"></i>
+                    Products ({{ results.products|length }})
+                </h2>
+                <div class="row g-4">
+                    {% for product in results.products %}
+                    <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="card shadow h-100 hover-shadow-lg transition-300">
+                            {% if product.image %}
+                                <img src="{{ asset('uploads/products/' ~ product.image) }}" class="card-img-top" alt="{{ product.title }}" style="height: 180px; object-fit: cover;">
+                            {% else %}
+                                <img src="{{ asset('assets/images/products/default.jpg') }}" class="card-img-top" alt="{{ product.title }}" style="height: 180px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="{{ path('app_product_show', {'slug': product.slug}) }}" class="text-decoration-none text-dark">
+                                        {{ product.title }}
+                                    </a>
+                                </h5>
+                                <p class="card-text text-muted small">{{ product.description|default('')|slice(0, 80) }}...</p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-success fw-bold">${{ product.price|default('0') }}</span>
+                                    <a href="{{ path('app_product_show', {'slug': product.slug}) }}" class="btn btn-sm btn-outline-warning">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Jobs Results -->
+            {% if results.jobs|length > 0 %}
+            <div class="mb-5">
+                <h2 class="h4 mb-4">
+                    <i class="fas fa-briefcase text-success me-2"></i>
+                    Jobs ({{ results.jobs|length }})
+                </h2>
+                <div class="row g-4">
+                    {% for job in results.jobs %}
+                    <div class="col-md-6">
+                        <div class="card shadow h-100 hover-shadow-lg transition-300">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="{{ path('app_job_show', {'id': job.id}) }}" class="text-decoration-none text-dark">
+                                        {{ job.title }}
+                                    </a>
+                                </h5>
+                                <p class="card-text text-muted small">{{ job.description|default('')|slice(0, 150) }}...</p>
+                                {% if job.budget %}
+                                    <span class="badge bg-success me-2">Budget: ${{ job.budget }}</span>
+                                {% endif %}
+                                {% if job.type %}
+                                    <span class="badge bg-info">{{ job.type }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{{ path('app_job_show', {'id': job.id}) }}" class="btn btn-sm btn-outline-success">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        {% elseif query and results.total == 0 %}
+            <!-- No Results -->
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-4x text-muted mb-4"></i>
+                <h3 class="mb-3">No results found</h3>
+                <p class="text-muted mb-4">We couldn't find any results for "{{ query }}". Try different keywords or browse our categories.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ path('app_course_grid') }}" class="btn btn-primary">
+                        <i class="fas fa-graduation-cap me-2"></i>Browse Courses
+                    </a>
+                    <a href="{{ path('app_marketplace_shop') }}" class="btn btn-warning">
+                        <i class="fas fa-shopping-bag me-2"></i>Visit Marketplace
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.hover-shadow-lg:hover {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+}
+.transition-300 {
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

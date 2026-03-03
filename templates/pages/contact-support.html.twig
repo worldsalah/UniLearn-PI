@@ -1,0 +1,286 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Contact Support - UniLearn{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-white position-relative overflow-hidden">
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="mb-4">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <i class="fas fa-headset fa-3x text-primary"></i>
+                    </div>
+                </div>
+                <h1 class="display-4 fw-bold mb-3 text-primary">Contact Support</h1>
+                <p class="lead mb-4 text-muted">We're here to help you succeed. Reach out to our dedicated support team.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                        <i class="fas fa-clock me-1"></i>24/7 Support
+                    </span>
+                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
+                        <i class="fas fa-bolt me-1"></i>Fast Response
+                    </span>
+                    <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">
+                        <i class="fas fa-users me-1"></i>Expert Team
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Cards Section -->
+<section class="py-5 bg-white" style="position: relative; z-index: 10;">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-lg h-100 contact-card" style="border-radius: 20px; transition: all 0.3s ease;">
+                    <div class="card-body p-4 text-center">
+                        <div class="bg-primary bg-gradient rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; box-shadow: 0 10px 30px rgba(13, 110, 253, 0.3);">
+                            <i class="fas fa-envelope fa-2x text-white"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-3">Email Us</h3>
+                        <p class="text-primary fw-bold mb-2">support@unilearn.com</p>
+                        <p class="text-muted small mb-3">We'll respond within 24 hours</p>
+                        <a href="mailto:support@unilearn.com" class="btn btn-outline-primary btn-sm px-4">
+                            <i class="fas fa-paper-plane me-1"></i>Send Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-lg h-100 contact-card" style="border-radius: 20px; transition: all 0.3s ease;">
+                    <div class="card-body p-4 text-center">
+                        <div class="bg-success bg-gradient rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; box-shadow: 0 10px 30px rgba(25, 135, 84, 0.3);">
+                            <i class="fas fa-comments fa-2x text-white"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-3">Live Chat</h3>
+                        <p class="text-success fw-bold mb-2">Available Now</p>
+                        <p class="text-muted small mb-3">Average response: 5 mins</p>
+                        <button class="btn btn-success btn-sm px-4" onclick="startChat()">
+                            <i class="fas fa-comment-dots me-1"></i>Start Chat
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-lg h-100 contact-card" style="border-radius: 20px; transition: all 0.3s ease;">
+                    <div class="card-body p-4 text-center">
+                        <div class="bg-warning bg-gradient rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; box-shadow: 0 10px 30px rgba(255, 193, 7, 0.3);">
+                            <i class="fas fa-phone fa-2x text-white"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-3">Call Us</h3>
+                        <p class="text-warning fw-bold mb-2">+216 71 123 456</p>
+                        <p class="text-muted small mb-3">Mon-Fri 9am-6pm CET</p>
+                        <a href="tel:+21671123456" class="btn btn-warning btn-sm px-4 text-white">
+                            <i class="fas fa-phone-alt me-1"></i>Call Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-5">
+                        <h2 class="h3 fw-bold mb-4">Send us a Message</h2>
+                        <p class="text-muted mb-4">Have a question or need assistance? Fill out the form and our team will get back to you as soon as possible.</p>
+                        
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <i class="fas fa-check text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 fw-bold mb-0">Quick Response</h4>
+                                <p class="text-muted small mb-0">Average response time under 2 hours</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <i class="fas fa-shield-alt text-success"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 fw-bold mb-0">Secure & Private</h4>
+                                <p class="text-muted small mb-0">Your data is protected and confidential</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <i class="fas fa-headset text-warning"></i>
+                            </div>
+                            <div>
+                                <h4 class="h6 fw-bold mb-0">Expert Support</h4>
+                                <p class="text-muted small mb-0">Trained professionals ready to help</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-7">
+                        <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+                            <div class="card-body p-5">
+                                <form id="supportForm">
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Full Name <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
+                                                <input type="text" class="form-control border-start-0 ps-0" placeholder="John Doe" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Email Address <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                                                <input type="email" class="form-control border-start-0 ps-0" placeholder="john@example.com" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold">Subject <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-tag text-muted"></i></span>
+                                                <select class="form-select border-start-0 ps-0" required>
+                                                    <option value="">Select a topic...</option>
+                                                    <option value="technical">🔧 Technical Issue</option>
+                                                    <option value="billing">💳 Billing Question</option>
+                                                    <option value="course">📚 Course Content</option>
+                                                    <option value="account">👤 Account Settings</option>
+                                                    <option value="feedback">💡 Feedback & Suggestions</option>
+                                                    <option value="other">❓ Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold">Message <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" rows="5" placeholder="Describe your issue or question in detail..." required style="border-radius: 15px;"></textarea>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold">Attachment <span class="text-muted small">(optional)</span></label>
+                                            <div class="input-group">
+                                                <input type="file" class="form-control" id="attachmentInput" style="border-radius: 15px;">
+                                            </div>
+                                            <p class="text-muted small mt-1 mb-0"><i class="fas fa-info-circle me-1"></i>Max file size: 10MB (PDF, PNG, JPG)</p>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary btn-lg w-100" style="border-radius: 15px;">
+                                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-5">
+                    <h2 class="h3 fw-bold mb-2"><i class="fas fa-map-marker-alt text-primary me-2"></i>Visit Our Office</h2>
+                    <p class="text-muted">ESPRIT, Cebalat Ben Ammar, Tunisia</p>
+                </div>
+                <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 20px;">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3194.8876!2d10.2014!3d36.8510!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12fd33d07e0b1e0f%3A0x40d0e8f9e8b5b0!2sESPRIT%20Bloc%20E!5e0!3m2!1sen!2stn!4v1709088000000!5m2!1sen!2stn"
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="text-center mt-4">
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-auto">
+                            <a href="https://www.google.com/maps/search/?api=1&query=V5XQ%2BRWW+ESPRIT+Cebalat+Ben+Ammar" target="_blank" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-directions me-2"></i>Get Directions
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <a href="tel:+21671123456" class="btn btn-outline-primary btn-lg px-4">
+                                <i class="fas fa-phone me-2"></i>Call Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.contact-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+.input-group:focus-within .input-group-text {
+    background-color: #e7f1ff;
+    border-color: #0d6efd;
+}
+.input-group:focus-within .form-control,
+.input-group:focus-within .form-select {
+    border-color: #0d6efd;
+    box-shadow: none;
+}
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+</style>
+
+<script>
+document.getElementById('supportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Show success message
+    const btn = this.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-check me-2"></i>Message Sent!';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-success');
+        
+        // Show notification
+        if (window.showGlobalNotification) {
+            showGlobalNotification('Message Sent!', 'We\'ll get back to you within 24 hours.', 'success', 'fas fa-check-circle');
+        }
+        
+        // Reset form after delay
+        setTimeout(() => {
+            this.reset();
+            btn.innerHTML = originalText;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-primary');
+            btn.disabled = false;
+        }, 3000);
+    }, 1500);
+});
+
+function startChat() {
+    if (window.showGlobalNotification) {
+        showGlobalNotification('Chat Starting...', 'Connecting you to a support agent...', 'info', 'fas fa-comments');
+    }
+}
+</script>
+{% endblock %}

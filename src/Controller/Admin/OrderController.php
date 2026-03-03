@@ -65,7 +65,7 @@ class OrderController extends AbstractController
     {
         $order = $orderRepository->find($id);
 
-        if (!$order) {
+        if ($order === null) {
             $this->addFlash('error', 'Order not found.');
 
             return $this->redirectToRoute('app_admin_order_index', [], Response::HTTP_SEE_OTHER);
@@ -81,7 +81,7 @@ class OrderController extends AbstractController
     {
         $order = $orderRepository->find($id);
 
-        if (!$order) {
+        if ($order === null) {
             $this->addFlash('error', 'Order not found.');
 
             return $this->redirectToRoute('app_admin_order_index', [], Response::HTTP_SEE_OTHER);
@@ -107,13 +107,13 @@ class OrderController extends AbstractController
     {
         $order = $orderRepository->find($id);
 
-        if (!$order) {
+        if ($order === null) {
             $this->addFlash('error', 'Order not found.');
 
             return $this->redirectToRoute('app_admin_order_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        if ($this->isCsrfTokenValid('delete'.$order->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$order->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($order);
             $entityManager->flush();
             $this->addFlash('success', 'Order deleted successfully.');

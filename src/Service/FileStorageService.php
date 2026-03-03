@@ -10,7 +10,8 @@ class FileStorageService
 
     public function __construct(ParameterBagInterface $params)
     {
-        $this->uploadDir = $params->get('kernel.project_dir').'/public/uploads/courses';
+        $projectDir = $params->get('kernel.project_dir');
+        $this->uploadDir = (is_string($projectDir) ? $projectDir : '') . '/public/uploads/courses';
 
         if (!file_exists($this->uploadDir)) {
             mkdir($this->uploadDir, 0777, true);

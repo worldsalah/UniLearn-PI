@@ -5,12 +5,15 @@ namespace App\Controller;
 use App\Entity\Course;
 use App\Entity\QuizResult;
 use App\Entity\User;
+use App\Entity\Certificate;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -94,7 +97,7 @@ class CertificateController extends AbstractController
 
             // Fetch Course
             $course = $this->entityManager->getRepository(Course::class)->find($courseId);
-            if (!$course) {
+            if ($course === null) {
                 $this->addFlash('error', 'Course not found');
                 return $this->redirectToRoute('app_home');
             }
@@ -139,7 +142,7 @@ class CertificateController extends AbstractController
 
             // Fetch Course
             $course = $this->entityManager->getRepository(Course::class)->find($courseId);
-            if (!$course) {
+            if ($course === null) {
                 $this->addFlash('error', 'Course not found');
                 return $this->redirectToRoute('app_home');
             }
@@ -522,16 +525,18 @@ class CertificateController extends AbstractController
                 $response = new Response($pdfContent);
                 
                 // Set headers for PDF download
+                $userFullName = $user->getFullName();
+                $courseTitle = $course->getTitle();
                 $filename = sprintf(
                     'certificate_%s_%s_%s.pdf',
-                    strtolower(str_replace(' ', '_', $user->getFullName())),
-                    strtolower(str_replace(' ', '_', $course->getTitle())),
+                    strtolower(str_replace(' ', '_', $userFullName ?? '')),
+                    strtolower(str_replace(' ', '_', $courseTitle ?? '')),
                     date('Y-m-d')
                 );
                 
                 $response->headers->set('Content-Type', 'application/pdf');
                 $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));
-                $response->headers->set('Content-Length', strlen($pdfContent));
+                $response->headers->set('Content-Length', (string) strlen($pdfContent));
 
                 return $response;
 
@@ -558,39 +563,13 @@ class CertificateController extends AbstractController
     }
 
     /**
-     * List all user certificates
+     * List all user certificates (redirects to myCertificates for consistency)
      */
     #[Route('/', name: 'app_certificates', methods: ['GET'])]
     public function listCertificates(): Response
     {
-        $user = $this->getUser();
-        if (!$user instanceof User) {
-            throw $this->createAccessDeniedException('User must be logged in');
-        }
-
-        // For demo purposes, we'll create mock certificate data
-        // In a real implementation, you would fetch from database based on user's completed courses
-        $certificates = [
-            [
-                'course' => (object) ['id' => 16, 'title' => 'testttt'],
-                'completionDate' => new \DateTime('2026-02-22'),
-                'score' => 85
-            ],
-            [
-                'course' => (object) ['id' => 15, 'title' => 'Advanced Web Development'],
-                'completionDate' => new \DateTime('2026-02-20'),
-                'score' => 92
-            ],
-            [
-                'course' => (object) ['id' => 14, 'title' => 'JavaScript Fundamentals'],
-                'completionDate' => new \DateTime('2026-02-18'),
-                'score' => 88
-            ]
-        ];
-
-        return $this->render('certificate/index.html.twig', [
-            'certificates' => $certificates
-        ]);
+        // Redirect to my_certificates which has the real data logic
+        return $this->redirectToRoute('app_my_certificates');
     }
 
     /**
@@ -602,13 +581,13 @@ class CertificateController extends AbstractController
         try {
             // Fetch User
             $user = $this->entityManager->getRepository(User::class)->find($userId);
-            if (!$user) {
+            if ($user === null) {
                 return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
             }
 
             // Fetch Course
             $course = $this->entityManager->getRepository(Course::class)->find($courseId);
-            if (!$course) {
+            if ($course === null) {
                 return new JsonResponse(['error' => 'Course not found'], Response::HTTP_NOT_FOUND);
             }
 
@@ -682,16 +661,18 @@ class CertificateController extends AbstractController
             $response = new Response($pdfContent);
             
             // Set headers for PDF download
+            $userFullName = $user->getFullName();
+            $courseTitle = $course->getTitle();
             $filename = sprintf(
                 'certificate_%s_%s_%s.pdf',
-                strtolower(str_replace(' ', '_', $user->getFullName())),
-                strtolower(str_replace(' ', '_', $course->getTitle())),
+                strtolower(str_replace(' ', '_', $userFullName ?? '')),
+                strtolower(str_replace(' ', '_', $courseTitle ?? '')),
                 date('Y-m-d')
             );
             
             $response->headers->set('Content-Type', 'application/pdf');
             $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));
-            $response->headers->set('Content-Length', strlen($pdfContent));
+            $response->headers->set('Content-Length', (string) strlen($pdfContent));
 
             return $response;
 
@@ -719,13 +700,13 @@ class CertificateController extends AbstractController
         try {
             // Fetch User
             $user = $this->entityManager->getRepository(User::class)->find($userId);
-            if (!$user) {
+            if ($user === null) {
                 return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
             }
 
             // Fetch Course
             $course = $this->entityManager->getRepository(Course::class)->find($courseId);
-            if (!$course) {
+            if ($course === null) {
                 return new JsonResponse(['error' => 'Course not found'], Response::HTTP_NOT_FOUND);
             }
 
@@ -782,6 +763,81 @@ class CertificateController extends AbstractController
                 'error' => 'Internal server error during eligibility check',
                 'message' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Display user's certificates
+     */
+    #[Route('/my-certificates', name: 'app_my_certificates', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function myCertificates(): Response
+    {
+        try {
+            $user = $this->getUser();
+            
+            if ($user === null) {
+                throw $this->createAccessDeniedException('User must be logged in');
+            }
+            
+            // Debug: Log user info
+            $this->logger->info('Loading certificates for user: ' . $user->getId() . ' (' . $user->getEmail() . ')');
+            
+            // Get user's certificates from database
+            $certificates = $this->entityManager->getRepository(Certificate::class)
+                ->findByUser($user);
+            
+            // Debug: Log certificates count
+            $this->logger->info('Found ' . count($certificates) . ' certificates in database');
+
+            // Also get quiz results with 80%+ score for certificates that might not have been saved yet
+            $passedQuizResults = $this->entityManager->getRepository(QuizResult::class)
+                ->createQueryBuilder('qr')
+                ->select('qr', 'q', 'c')
+                ->join('qr.quiz', 'q')
+                ->join('q.course', 'c')
+                ->where('qr.user = :user')
+                ->andWhere('qr.score >= qr.maxScore * 0.8') // 80% or higher
+                ->orderBy('qr.takenAt', 'DESC')
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getResult();
+            
+            // Debug: Log passed quiz results count
+            $this->logger->info('Found ' . count($passedQuizResults) . ' passed quiz results');
+            
+            // Debug: Log details of each passed quiz result
+            foreach ($passedQuizResults as $result) {
+                // Handle the case where result might be a single object or an array
+                if (is_array($result)) {
+                    $quizResult = $result[0] ?? null;
+                    $quiz = $result[1] ?? null;
+                    $course = $result[2] ?? null;
+                } else {
+                    // If it's a single object, get the related entities
+                    $quizResult = $result;
+                    $quiz = $result->getQuiz();
+                    $course = $quiz ? $quiz->getCourse() : null;
+                }
+                
+                if ($quizResult && $course) {
+                    $percentage = ($quizResult->getScore() / $quizResult->getMaxScore()) * 100;
+                    $this->logger->info('Quiz Result: ID=' . $quizResult->getId() . 
+                        ', Course=' . $course->getTitle() . 
+                        ', Score=' . $quizResult->getScore() . '/' . $quizResult->getMaxScore() . 
+                        ' (' . round($percentage, 1) . '%)');
+                }
+            }
+
+            return $this->render('certificate/my_certificates.html.twig', [
+                'certificates' => $certificates,
+                'passedQuizResults' => $passedQuizResults,
+                'user' => $user
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error('Error loading user certificates: ' . $e->getMessage());
+            $this->addFlash('error', 'Unable to load certificates. Please try again later.');
+            return $this->redirectToRoute('app_home');
         }
     }
 }

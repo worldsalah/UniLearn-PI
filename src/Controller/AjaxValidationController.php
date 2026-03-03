@@ -57,7 +57,7 @@ class AjaxValidationController extends AbstractController
         if (empty($data['email'])) {
             $errors[] = ['field' => 'email', 'message' => 'L\'adresse email est obligatoire.'];
             $isValid = false;
-        } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        } elseif (filter_var($data['email'], FILTER_VALIDATE_EMAIL) === false) {
             $errors[] = ['field' => 'email', 'message' => 'L\'email n\'est pas une adresse email valide.'];
             $isValid = false;
         }

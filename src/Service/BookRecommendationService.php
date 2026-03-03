@@ -15,7 +15,7 @@ class BookRecommendationService
 
     public function getRecommendationsForCourse(Course $course): array
     {
-        $courseTitle = strtolower($course->getTitle());
+        $courseTitle = strtolower($course->getTitle() ?? '');
         $courseDescription = strtolower($course->getShortDescription() ?? '');
 
         // Find relevant books based on course content
@@ -56,7 +56,7 @@ class BookRecommendationService
         ];
 
         foreach ($keywords as $keyword) {
-            if (isset($categoryKeywords[$category]) && in_array($keyword, $categoryKeywords[$category])) {
+            if (isset($categoryKeywords[$category]) && in_array($keyword, $categoryKeywords[$category], true)) {
                 return true;
             }
         }

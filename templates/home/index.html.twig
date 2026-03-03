@@ -243,49 +243,44 @@ Popular course START -->
 
 		<!-- Tabs START -->
 		<ul class="nav nav-pills nav-pills-bg-soft justify-content-sm-center mb-4 px-3" id="course-pills-tab" role="tablist">
+			{% for index, category in categories|slice(0, 5) %}
 			<!-- Tab item -->
 			<li class="nav-item me-2 me-sm-5">
-				<button class="nav-link mb-2 mb-md-0 active" id="course-pills-tab-1" data-bs-toggle="pill" data-bs-target="#course-pills-tabs-1" type="button" role="tab" aria-controls="course-pills-tabs-1" aria-selected="false">Web Design</button>
+				<button class="nav-link mb-2 mb-md-0 {{ index == 0 ? 'active' : '' }}" id="course-pills-tab-{{ category.id }}" data-bs-toggle="pill" data-bs-target="#course-pills-tabs-{{ category.id }}" type="button" role="tab" aria-controls="course-pills-tabs-{{ category.id }}" aria-selected="{{ index == 0 ? 'true' : 'false' }}">{{ category.name }}</button>
 			</li>
-			<!-- Tab item -->
-			<li class="nav-item me-2 me-sm-5">
-				<button class="nav-link mb-2 mb-md-0" id="course-pills-tab-2" data-bs-toggle="pill" data-bs-target="#course-pills-tabs-2" type="button" role="tab" aria-controls="course-pills-tabs-2" aria-selected="false">Development</button>
-			</li>
-			<!-- Tab item -->
-			<li class="nav-item me-2 me-sm-5">
-				<button class="nav-link mb-2 mb-md-0" id="course-pills-tab-3" data-bs-toggle="pill" data-bs-target="#course-pills-tabs-3" type="button" role="tab" aria-controls="course-pills-tabs-3" aria-selected="false">Graphic Design</button>
-			</li>
-			<!-- Tab item -->
-			<li class="nav-item me-2 me-sm-5">
-				<button class="nav-link mb-2 mb-md-0" id="course-pills-tab-4" data-bs-toggle="pill" data-bs-target="#course-pills-tabs-4" type="button" role="tab" aria-controls="course-pills-tabs-4" aria-selected="false">Marketing</button>
-			</li>
-			<!-- Tab item -->
-			<li class="nav-item me-2 me-sm-5">
-				<button class="nav-link mb-2 mb-md-0" id="course-pills-tab-5" data-bs-toggle="pill" data-bs-target="#course-pills-tabs-5" type="button" role="tab" aria-controls="course-pills-tabs-5" aria-selected="false">Finance</button>
-			</li>
+			{% endfor %}
 		</ul>
 		<!-- Tabs END -->
 
 		<!-- Tabs content START -->
 		<div class="tab-content" id="course-pills-tabContent">
+			{% for index, category in categories|slice(0, 5) %}
 			<!-- Content START -->
-			<div class="tab-pane fade show active" id="course-pills-tabs-1" role="tabpanel" aria-labelledby="course-pills-tab-1">
+			<div class="tab-pane fade {{ index == 0 ? 'show active' : '' }}" id="course-pills-tabs-{{ category.id }}" role="tabpanel" aria-labelledby="course-pills-tab-{{ category.id }}">
 				<div class="row g-4">
-					<!-- Card item START -->
+					{% set categoryCourses = attribute(coursesByCategory, category.id) %}
+					{% for course in categoryCourses %}
 					<div class="col-sm-6 col-lg-4 col-xl-3">
 						<div class="card shadow h-100">
 							<!-- Image -->
-							<img src="{{ asset('assets/images/courses/4by3/08.jpg') }}" class="card-img-top" alt="course image">
+							{% set thumbnail = course.thumbnailUrl %}
+							{% if thumbnail and (thumbnail starts with 'http' or thumbnail starts with 'https') %}
+								<img src="{{ thumbnail }}" class="card-img-top" alt="{{ course.title }}" style="height: 180px; object-fit: cover;">
+							{% elseif thumbnail %}
+								<img src="{{ asset(thumbnail) }}" class="card-img-top" alt="{{ course.title }}" style="height: 180px; object-fit: cover;">
+							{% else %}
+								<img src="{{ asset('assets/images/courses/4by3/08.jpg') }}" class="card-img-top" alt="{{ course.title }}" style="height: 180px; object-fit: cover;">
+							{% endif %}
 							<!-- Card body -->
 							<div class="card-body pb-0">
 								<!-- Badge and favorite -->
 								<div class="d-flex justify-content-between mb-2">
-									<a href="#" class="badge bg-purple bg-opacity-10 text-purple">All level</a>
+									<a href="#" class="badge bg-purple bg-opacity-10 text-purple">{{ course.level|default('All level') }}</a>
 									<a href="#" class="h6 mb-0"><i class="far fa-heart"></i></a>
 								</div>
 								<!-- Title -->
-								<h5 class="card-title fw-normal"><a href="#">Sketch from A to Z: for app designer</a></h5>
-								<p class="mb-2 text-truncate-2">Proposal indulged no do sociable he throwing settling.</p>
+								<h5 class="card-title fw-normal"><a href="{{ path('app_course_show', {'id': course.id}) }}">{{ course.title }}</a></h5>
+								<p class="mb-2 text-truncate-2">{{ course.shortDescription|default('No description available')|slice(0, 100) }}</p>
 								<!-- Rating star -->
 								<ul class="list-inline mb-0">
 									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
@@ -293,195 +288,28 @@ Popular course START -->
 									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
 									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
 									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item ms-2 h6 fw-light mb-0">5.0/5.0</li>
+									<li class="list-inline-item ms-2 h6 fw-light mb-0">{{ course.rating|default('5.0') }}/5.0</li>
 								</ul>
 							</div>
 							<!-- Card footer -->
 							<div class="card-footer pt-0 pb-3">
 								<hr>
 								<div class="d-flex justify-content-between">
-									<span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>35h 20m</span>
-									<span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>89 lectures</span>
+									<span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>{{ course.duration|default('10h') }}h</span>
+									<span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>{{ course.totalLessons }} lectures</span>
 								</div>
 							</div>
 						</div>
 					</div>
-					<!-- Card item END -->
-
-					<!-- Card item START -->
-					<div class="col-sm-6 col-lg-4 col-xl-3">
-						<div class="card action-trigger-hover border bg-transparent h-100">
-							<!-- Image -->
-							<img src="{{ asset('assets/images/courses/4by3/09.jpg') }}" class="card-img-top" alt="course image">
-							<!-- Ribbon -->
-							<div class="ribbon mt-3"><span>Bestseller</span></div>
-							<div class="card-body pb-0">
-								<!-- Badge and favorite -->
-								<div class="d-flex justify-content-between mb-3">
-									<span class="hstack gap-2">
-										<a href="#" class="badge bg-success bg-opacity-10 text-success">Beginner</a>
-										<a href="#" class="badge text-bg-dark">Design</a>
-									</span>
-									<a href="#" class="h6 fw-light mb-0"><i class="far fa-bookmark"></i></a>
-								</div>
-								<!-- Title -->
-								<h5 class="card-title"><a href="#">Adobe XD for beginners</a></h5>
-								<!-- Rating -->
-								<div class="d-flex justify-content-between mb-2">
-									<div class="hstack gap-2">
-										<p class="text-warning m-0">4.5<i class="fas fa-star text-warning ms-1"></i></p>
-										<span class="small">(3541)</span>
-									</div>
-									<div class="hstack gap-2">
-										<p class="h6 fw-light mb-0 m-0">3541</p>
-										<span class="small">(Student)</span>
-									</div>
-								</div>
-								<!-- Time -->
-								<div class="hstack gap-3">
-									<span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>10h 00m</span>
-									<span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>26 lectures</span>
-								</div>
-							</div>
-							<!-- Card footer -->
-							<div class="card-footer pt-0 bg-transparent">
-								<hr>
-								<!-- Avatar and Price -->
-								<div class="d-flex justify-content-between align-items-center">
-									<!-- Avatar -->
-									<div class="d-flex align-items-center">
-										<div class="avatar avatar-sm">
-											<img class="avatar-img rounded-1" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-										</div>
-										<p class="mb-0 ms-2"><a href="#" class="h6 fw-light mb-0">Frances Guerrero</a></p>
-									</div>
-									<!-- Price -->
-									<div>
-										<h4 class="text-success mb-0 item-show">$45</h4>
-										<a href="#" class="btn btn-sm btn-success-soft item-show-hover"><i class="fas fa-shopping-cart me-2"></i>Add to cart</a>
-									</div>
-								</div>
-							</div>
-						</div>
+					{% else %}
+					<div class="col-12 text-center py-5">
+						<p class="text-muted">No courses available in this category.</p>
 					</div>
-					<!-- Card item END -->
-
-					<!-- Card item START -->
-					<div class="col-sm-6 col-lg-4 col-xl-3">
-						<div class="card shadow h-100">
-							<!-- Image -->
-							<img src="{{ asset('assets/images/courses/4by3/10.jpg') }}" class="card-img-top" alt="course image">
-							<div class="card-body pb-0">
-								<!-- Badge and favorite -->
-								<div class="d-flex justify-content-between mb-2">
-									<a href="#" class="badge bg-info bg-opacity-10 text-info">Intermediate</a>
-									<a href="#" class="h6 fw-light mb-0"><i class="far fa-heart"></i></a>
-								</div>
-								<!-- Title -->
-								<h5 class="card-title fw-normal"><a href="#">Learn Figma UI/UX Design Essential</a></h5>
-								<p class="text-truncate-2 mb-2">Rooms oh fully taken by worse do. Points afraid but may end.</p>
-								<!-- Rating star -->
-								<ul class="list-inline mb-0">
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star-half-alt text-warning"></i></li>
-									<li class="list-inline-item ms-2 h6 fw-light mb-0">4.5/5.0</li>
-								</ul>
-							</div>
-							<!-- Card footer -->
-							<div class="card-footer pt-0 pb-3">
-								<hr>
-								<div class="d-flex justify-content-between mt-2">
-									<span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>9h 32m</span>
-									<span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>42 lectures</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- Card item END -->
-
-					<!-- Card item START -->
-					<div class="col-sm-6 col-lg-4 col-xl-3">
-						<div class="card shadow">
-							<!-- Image -->
-							<img src="{{ asset('assets/images/courses/4by3/11.jpg') }}" class="card-img-top" alt="course image">
-							<div class="card-body pb-0">
-								<!-- Badge and favorite -->
-								<div class="d-flex justify-content-between mb-2">
-									<a href="#" class="badge bg-warning bg-opacity-10 text-warning">Advanced</a>
-									<a href="#" class="h6 fw-light mb-0"><i class="far fa-heart"></i></a>
-								</div>
-								<!-- Title -->
-								<h5 class="card-title fw-normal"><a href="#">Webflow for Web Design Beginners</a></h5>
-								<p class="text-truncate-2 mb-2">Was drawing natural fat respect husband.</p>
-								<!-- Rating star -->
-								<ul class="list-inline mb-0">
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star-half-alt text-warning"></i></li>
-									<li class="list-inline-item ms-2 h6 fw-light mb-0">4.5/5.0</li>
-								</ul>
-							</div>
-							<!-- Card footer -->
-							<div class="card-footer pt-0 pb-3">
-								<hr>
-								<div class="d-flex justify-content-between mt-2">
-									<span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>15h 48m</span>
-									<span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>67 lectures</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- Card item END -->
+					{% endfor %}
 				</div> <!-- Row END -->
 			</div>
 			<!-- Content END -->
-
-			<!-- Content START -->
-			<div class="tab-pane fade" id="course-pills-tabs-2" role="tabpanel" aria-labelledby="course-pills-tab-2">
-				<div class="row g-4">
-					<!-- Card item START -->
-					<div class="col-sm-6 col-lg-4 col-xl-3">
-						<div class="card shadow h-100">
-							<!-- Image -->
-							<img src="{{ asset('assets/images/courses/4by3/05.jpg') }}" class="card-img-top" alt="course image">
-							<div class="card-body pb-0">
-								<!-- Badge and favorite -->
-								<div class="d-flex justify-content-between mb-2">
-									<a href="#" class="badge bg-success bg-opacity-10 text-success">Beginner</a>
-									<a href="#" class="h6 fw-light mb-0"><i class="far fa-heart"></i></a>
-								</div>
-								<!-- Title -->
-								<h5 class="card-title fw-normal"><a href="#">The Complete Web Development in python</a></h5>
-								<p class="text-truncate-2 mb-2">Mention Mr manners opinion if garrets enabled.</p>
-								<!-- Rating star -->
-								<ul class="list-inline mb-0">
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-									<li class="list-inline-item me-0 small"><i class="fas fa-star-half-alt text-warning"></i></li>
-									<li class="list-inline-item ms-2 h6 fw-light mb-0">4.5/5.0</li>
-								</ul>
-							</div>
-							<!-- Card footer -->
-							<div class="card-footer pt-0 pb-3">
-								<hr>
-								<div class="d-flex justify-content-between mt-2">
-									<span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>10h 00m</span>
-									<span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>26 lectures</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- Card item END -->
-				</div> <!-- Row END -->
-			</div>
-			</div>
+			{% endfor %}
 		</div>
 		<!-- Tabs content END -->
 	</div>
@@ -833,6 +661,4 @@ Reviews END -->
 
 </main>
 <!-- **************** MAIN CONTENT END **************** -->
-
-{% include 'components/footer.html.twig' %}
 {% endblock %}

@@ -521,6 +521,25 @@
 {% endblock %}
 
 {% block content %}
+<!-- Flash Messages -->
+{% for message in app.flashes('error') %}
+    <div data-flash-type="error" 
+         data-flash-title="Access Denied" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('success') %}
+    <div data-flash-type="success" 
+         data-flash-title="Success" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
 <!-- Course Hero -->
 <section class="course-hero">
     <div class="container">

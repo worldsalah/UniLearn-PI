@@ -1,0 +1,597 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Dynamic Progress Bars Demo{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Progress Bars Demo START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Header -->
+            <div class="col-12">
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h1 class="mb-1">Dynamic Progress Bars Demo</h1>
+                        <p class="mb-0">Explore various types of animated and real-time progress bars</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Stats Progress -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>Your Learning Progress
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% from 'templates/components/progress_bars.html.twig' import dynamicProgressBar %}
+                        
+                        {{ dynamicProgressBar(
+                            progress.current_points, 
+                            progress.current_level.getMaxXp(), 
+                            'success', 
+                            true, 
+                            true, 
+                            true, 
+                            '30px'
+                        ) }}
+                        
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                This progress bar updates in real-time when you complete lessons
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-trophy me-2"></i>Achievement Progress
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% from 'templates/components/progress_bars.html.twig' import circularProgressBar %}
+                        
+                        <div class="text-center mb-3">
+                            {{ circularProgressBar(progress.progress, 'success', 'lg', true, true) }}
+                        </div>
+                        
+                        <div class="text-center">
+                            <h6>Level: {{ stats.current_level.name }}</h6>
+                            <p class="text-muted mb-0">{{ progress.progress|round }}% to {{ progress.next_level }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Progress Bars -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-tasks me-2"></i>Course Progress Examples
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% for item in sampleProgress %}
+                            <div class="mb-4">
+                                <h6>{{ item.title }}</h6>
+                                {% from 'templates/components/progress_bars.html.twig' import dynamicProgressBar %}
+                                
+                                {{ dynamicProgressBar(
+                                    item.current, 
+                                    item.total, 
+                                    item.color, 
+                                    item.animated, 
+                                    true, 
+                                    true, 
+                                    '20px'
+                                ) }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step Progress -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="fas fa-route me-2"></i>Learning Path Progress
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% from 'templates/components/progress_bars.html.twig' import stepProgressBar %}
+                        
+                        {{ stepProgressBar(courseSteps, currentStep, 'primary', false) }}
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-primary" onclick="simulateStepProgress()">
+                                <i class="fas fa-play me-2"></i>Simulate Progress
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="resetStepProgress()">
+                                <i class="fas fa-redo me-2"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skill Bars -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-code me-2"></i>Skill Levels
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% for skill in skills %}
+                            {% from 'templates/components/progress_bars.html.twig' import skillBar %}
+                            
+                            {{ skillBar(skill.name, skill.level, skill.maxLevel, 'primary') }}
+                        {% endfor %}
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-outline-primary" onclick="randomizeSkills()">
+                                <i class="fas fa-random me-2"></i>Randomize Skills
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Updates -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-sync me-2"></i>Real-time Updates
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Current XP</h6>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="h4 mb-0 me-3" id="real-time-xp">{{ stats.total_points }}</span>
+                                    <span class="badge bg-primary" id="xp-badge">Live</span>
+                                </div>
+                                
+                                {% from 'templates/components/progress_bars.html.twig' import loadingBar %}
+                                {{ loadingBar('primary', '6px') }}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Control Panel</h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success" onclick="addXP(10)">
+                                        <i class="fas fa-plus me-2"></i>+10 XP
+                                    </button>
+                                    <button class="btn btn-info" onclick="addXP(25)">
+                                        <i class="fas fa-plus me-2"></i>+25 XP
+                                    </button>
+                                    <button class="btn btn-warning" onclick="addXP(50)">
+                                        <i class="fas fa-plus me-2"></i>+50 XP
+                                    </button>
+                                    <button class="btn btn-danger" onclick="simulateLevelUp()">
+                                        <i class="fas fa-level-up-alt me-2"></i>Level Up
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Click buttons to see real-time progress updates
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto-updating Demo -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div="card-header bg-gradient bg-gradient-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-area me-2"></i>Auto-updating Demo
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for item in sampleProgress %}
+                                <div class="col-md-6">
+                                    <h6>{{ item.title }}</h6>
+                                    <div class="progress-item" data-type="{{ loop.index0 }}">
+                                        {% from 'templates/components/progress_bars.html.twig' import dynamicProgressBar %}
+                                        
+                                        {{ dynamicProgressBar(
+                                            item.current, 
+                                            item.total, 
+                                            item.color, 
+                                            item.animated, 
+                                            true, 
+                                            true, 
+                                            '20px'
+                                        ) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mt-3 text-center">
+                            <button class="btn btn-outline-primary" onclick="toggleAutoUpdate()">
+                                <i class="fas fa-play me-2"></i>
+                                <span id="auto-update-text">Start Auto-update</span>
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetAllProgress()">
+                                <i class="fas fa-redo me-2"></i>Reset All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Progress Bars Demo END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<script>
+// Real-time XP updates
+function addXP(points) {
+    fetch('/progress/api/simulate-progress', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ points: points })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update XP display
+            const xpElement = document.getElementById('real-time-xp');
+            const oldXP = parseInt(xpElement.textContent);
+            const newXP = data.new_stats.total_points;
+            
+            // Animate the change
+            animateValue(oldXP, newXP, xpElement);
+            
+            // Update progress bar
+            updateMainProgressBar(data.new_stats);
+            
+            // Show notification
+            showNotification(`+${data.points_added} XP earned!`, 'success');
+            
+            // Flash the badge
+            const badge = document.getElementById('xp-badge');
+            badge.classList.add('animate__animated', 'animate__pulse');
+            setTimeout(() => {
+                badge.classList.remove('animate__animated', 'animate__pulse');
+            }, 1000);
+        }
+    })
+    .catch(error => {
+        console.error('Error adding XP:', error);
+        showNotification('Failed to add XP', 'error');
+    });
+}
+
+function simulateLevelUp() {
+    // Calculate XP needed for next level
+    const currentXP = parseInt(document.getElementById('real-time-xp').textContent);
+    const currentLevel = parseInt(document.getElementById('real-time-xp').textContent) / 100;
+    const nextLevelXP = (Math.floor(currentLevel) + 1) * 100;
+    const pointsToAdd = nextLevelXP - currentXP;
+    
+    if (pointsToAdd > 0) {
+        addXP(pointsToAdd);
+    } else {
+        showNotification('Already at max level!', 'info');
+    }
+}
+
+function updateMainProgressBar(stats) {
+    // Update main progress bar if it exists
+    const mainProgressBar = document.querySelector('.progress-bar[style*="width"]');
+    if (mainProgressBar) {
+        const width = stats.progress;
+        mainProgressBar.style.width = width + '%';
+        mainProgressBar.setAttribute('aria-valuenow', Math.round(width));
+        
+        // Update percentage text
+        const percentageText = mainProgressBar.querySelector('.progress-bar-text');
+        if (percentageText) {
+            percentageText.textContent = Math.round(width) + '%';
+        }
+    }
+}
+
+function animateValue(start, end, element) {
+    const duration = 1000;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = Math.floor(start + (end - start) * progress);
+        
+        element.textContent = current;
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateTime);
+        }
+    }
+    
+    requestAnimationFrame(updateTime);
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 250px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Step progress simulation
+function simulateStepProgress() {
+    const steps = document.querySelectorAll('.step-progress-item');
+    let currentStep = 0;
+    
+    const interval = setInterval(() => {
+        if (currentStep < steps.length) {
+            // Mark current step as completed and move to next
+            const currentStepElement = steps[currentStep];
+            currentStepElement.classList.remove('active');
+            currentStepElement.classList.add('completed');
+            
+            currentStep++;
+            
+            if (currentStep < steps.length) {
+                steps[currentStep].classList.add('active');
+            }
+            
+            if (currentStep === steps.length) {
+                clearInterval(interval);
+                showNotification('Course completed!', 'success');
+            }
+        }
+    }, 1000);
+}
+
+function resetStepProgress() {
+    const steps = document.querySelectorAll('.step-progress-item');
+    steps.forEach((step, index) => {
+        step.classList.remove('active', 'completed');
+        if (index === 0) {
+            step.classList.add('active');
+        }
+    });
+}
+
+// Skills randomization
+function randomizeSkills() {
+    const skills = document.querySelectorAll('.skill-bar-container');
+    
+    skills.forEach(skillBar => {
+        const progressBar = skillBar.querySelector('.progress-bar');
+        const levelInput = skillBar.querySelector('.skill-level');
+        const maxLevel = 5;
+        
+        const newLevel = Math.floor(Math.random() * maxLevel) + 1;
+        const percentage = (newLevel / maxLevel) * 100;
+        
+        progressBar.style.width = percentage + '%';
+        levelInput.textContent = `${newLevel}/${maxLevel}`;
+        
+        // Add animation
+        progressBar.classList.add('animate__animated', 'animate__pulse');
+        setTimeout(() => {
+            progressBar.classList.remove('animate__animated', 'animate__pulse');
+        }, 1000);
+    });
+}
+
+// Auto-updating demo
+let autoUpdateInterval = null;
+
+function toggleAutoUpdate() {
+    const button = event.target;
+    const textSpan = document.getElementById('auto-update-text');
+    
+    if (autoUpdateInterval) {
+        clearInterval(autoUpdateInterval);
+        autoUpdateInterval = null;
+        textSpan.textContent = 'Start Auto-update';
+        button.innerHTML = '<i class="fas fa-play me-2"></i><span id="auto-update-text">Start Auto-update</span>';
+        showNotification('Auto-update stopped', 'info');
+    } else {
+        autoUpdateInterval = setInterval(() => {
+            updateRandomProgress();
+        }, 2000);
+        textSpan.textContent = 'Stop Auto-update';
+        button.innerHTML = '<i class="fas fa-pause me-2"></i><span id="auto-update-text">Stop Auto-update</span>';
+        showNotification('Auto-update started', 'success');
+    }
+}
+
+function updateRandomProgress() {
+    const progressItems = document.querySelectorAll('.progress-item');
+    
+    progressItems.forEach(item => {
+        const progressBar = item.querySelector('.progress-bar');
+        const currentWidth = parseFloat(progressBar.style.width);
+        const newWidth = Math.min(currentWidth + Math.random() * 10, 100);
+        
+        progressBar.style.width = newWidth + '%';
+        progressBar.setAttribute('aria-valuenow', Math.round(newWidth));
+        
+        // Update percentage text
+        const percentageText = progressBar.querySelector('.progress-bar-text');
+        if (percentageText) {
+            percentageText.textContent = Math.round(newWidth) + '%';
+        }
+        
+        // Update labels
+        const currentLabel = item.querySelector('.progress-label');
+        const percentageLabel = item.querySelector('.progress-percentage');
+        const remainingLabel = item.querySelector('.text-muted:last-child');
+        
+        if (currentLabel && percentageLabel && remainingLabel) {
+            const total = parseInt(currentLabel.textContent.split('/')[1]);
+            const current = Math.round((newWidth / 100) * total);
+            
+            currentLabel.textContent = `${current}/${total}`;
+            percentageLabel.textContent = Math.round(newWidth) + '%';
+            remainingLabel.textContent = `${total - current} remaining`;
+        }
+        
+        // Add animation
+        progressBar.classList.add('animate__animated', 'animate__pulse');
+        setTimeout(() => {
+            progressBar.classList.remove('animate__animated', 'animate__pulse');
+        }, 500);
+    });
+}
+
+function resetAllProgress() {
+    const progressBars = document.querySelectorAll('.progress-bar');
+    
+    progressBars.forEach(bar => {
+        const width = Math.random() * 30; // Random starting width
+        bar.style.width = width + '%';
+        bar.setAttribute('aria-valuenow', Math.round(width));
+        
+        // Update percentage text
+        const percentageText = bar.querySelector('.progress-bar-text');
+        if (percentageText) {
+            percentageText.textContent = Math.round(width) + '%';
+        }
+        
+        // Update labels
+        const container = bar.closest('.dynamic-progress-container');
+        if (container) {
+            const currentLabel = container.querySelector('.progress-label');
+            const percentageLabel = container.querySelector('.progress-percentage');
+            const remainingLabel = container.querySelector('.text-muted:last-child');
+            
+            if (currentLabel && percentageLabel && remainingLabel) {
+                const total = parseInt(currentLabel.textContent.split('/')[1]);
+                const current = Math.round((width / 100) * total);
+                
+                currentLabel.textContent = `${current}/${total}`;
+                percentageLabel.textContent = Math.round(width) + '%';
+                remainingLabel.textContent = `${total - current} remaining`;
+            }
+        }
+    });
+    
+    showNotification('All progress bars reset', 'info');
+}
+
+// Initialize animations
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effects to progress bars
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(bar => {
+        bar.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.02)';
+        });
+        
+        bar.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+    
+    // Start with a subtle animation
+    setTimeout(() => {
+        progressBars.forEach(bar => {
+            bar.classList.add('animate__animated', 'animate__pulse');
+            setTimeout(() => {
+                bar.classList.remove('animate__animated', 'animate__pulse');
+            }, 2000);
+        });
+    }, 500);
+});
+</script>
+
+<style>
+    .progress-item {
+        transition: all 0.3s ease;
+    }
+    
+    .progress-item:hover .progress-bar {
+        transform: scale(1.02);
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+    }
+    
+    .animate__animated.animate__pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}

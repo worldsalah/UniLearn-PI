@@ -104,8 +104,9 @@ class PricingAnalyzer
         $stdDev = sqrt($variance / count($prices));
 
         // Determine if price is reasonable
-        $deviation = abs($price - $avgPrice);
-        $deviationPercent = ($deviation / $avgPrice) * 100;
+        $priceValue = $price ?? 0.0;
+        $deviation = abs($priceValue - $avgPrice);
+        $deviationPercent = $avgPrice > 0 ? ($deviation / $avgPrice) * 100 : 0;
 
         $score = 100.0;
         $severity = 'low';
@@ -200,8 +201,9 @@ class PricingAnalyzer
         // Value = Quality of description + Seller rating vs Price
         $description = $product->getDescription();
         $descriptionLength = null !== $description ? strlen($description) : 0;
-        $sellerRating = $product->getFreelancer()->getRating();
-        $price = $product->getPrice();
+        $freelancer = $product->getFreelancer();
+        $sellerRating = $freelancer !== null ? $freelancer->getRating() : 0.0;
+        $price = $product->getPrice() ?? 0.0;
 
         // Poor description for high price
         if ($descriptionLength < 100 && $price > 50) {

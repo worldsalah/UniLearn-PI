@@ -1,0 +1,757 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ course.title }} - Test{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.test-start-container {
+    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 50%, #667eea 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background decorations */
+.bg-decoration {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+}
+
+.bg-decoration-1 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    left: -150px;
+    animation: float 20s ease-in-out infinite;
+}
+
+.bg-decoration-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    right: -100px;
+    animation: float 15s ease-in-out infinite reverse;
+}
+
+.bg-decoration-3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    left: 10%;
+    animation: float 18s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+.test-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 25px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    padding: 3.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(13, 110, 253, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.test-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #0d6efd, #0dcaf0, #667eea, #0d6efd);
+    animation: shimmer 3s infinite linear;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.test-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.test-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.test-subtitle {
+    font-size: 1.4rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.test-info {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    border: 2px solid rgba(13, 110, 253, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.info-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 15px;
+    border: 1px solid rgba(13, 110, 253, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.15);
+}
+
+.info-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.info-value i {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+.info-value.success {
+    color: #28a745;
+}
+
+.info-value.warning {
+    color: #ffc107;
+}
+
+.info-value.danger {
+    color: #dc3545;
+}
+
+.test-description {
+    background: linear-gradient(135deg, #e3f2fd, #ffffff);
+    border-left: 5px solid #0d6efd;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 10px 30px rgba(13, 110, 253, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.test-description::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+    opacity: 0.6;
+}
+
+.test-description h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.test-description h3 i {
+    color: #0d6efd;
+}
+
+.test-description p {
+    color: #495057;
+    line-height: 1.7;
+    margin-bottom: 0;
+    font-size: 1.1rem;
+}
+
+.test-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-start-test {
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+    color: white;
+    border: none;
+    padding: 1.2rem 3rem;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.3);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-start-test::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-start-test:hover::before {
+    left: 100%;
+}
+
+.btn-start-test:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 45px rgba(13, 110, 253, 0.4);
+}
+
+.btn-start-test i {
+    font-size: 1.3rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+    60% { transform: translateY(-3px); }
+}
+
+.btn-back {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    border: none;
+    padding: 1.2rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-back:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+}
+
+/* Motivational elements */
+.motivational-bird {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.bird-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+    animation: float 3s ease-in-out infinite;
+}
+
+.bird-body::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    height: 25%;
+    background: linear-gradient(135deg, #ffd93d, #ffb347);
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(255, 217, 61, 0.3);
+}
+
+.bird-wing-left,
+.bird-wing-right {
+    position: absolute;
+    top: 35%;
+    width: 35px;
+    height: 50px;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    border-radius: 50% 10% 50% 10%;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.bird-wing-left {
+    left: -15px;
+    transform: rotate(-20deg);
+    animation: flap-left 2s ease-in-out infinite;
+}
+
+.bird-wing-right {
+    right: -15px;
+    transform: rotate(20deg) scaleX(-1);
+    animation: flap-right 2s ease-in-out infinite;
+}
+
+.bird-eye-left,
+.bird-eye-right {
+    position: absolute;
+    top: 30%;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.bird-eye-left {
+    left: 25%;
+}
+
+.bird-eye-right {
+    right: 25%;
+}
+
+.bird-pupil {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #2c3e50;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.1s ease;
+}
+
+.bird-beak {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 12px solid #ff8e53;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.bird-tail {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 15px;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    border-radius: 50% 50% 50% 50% / 20% 80% 80% 20%;
+    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+    animation: wag 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes flap-left {
+    0%, 100% { transform: rotate(-20deg); }
+    50% { transform: rotate(-30deg); }
+}
+
+@keyframes flap-right {
+    0%, 100% { transform: rotate(20deg) scaleX(-1); }
+    50% { transform: rotate(30deg) scaleX(-1); }
+}
+
+@keyframes wag {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    25% { transform: translateX(-50%) rotate(-10deg); }
+    75% { transform: translateX(-50%) rotate(10deg); }
+}
+
+.motivational-bird:hover {
+    transform: scale(1.1);
+}
+
+.motivational-bird:hover .bird-wing-left {
+    animation: flap-left 0.5s ease-in-out infinite;
+}
+
+.motivational-bird:hover .bird-wing-right {
+    animation: flap-right 0.5s ease-in-out infinite;
+}
+
+.motivational-message {
+    position: fixed;
+    top: 120px;
+    right: 30px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    color: #2c3e50;
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    border-left: 4px solid #ff6b6b;
+    pointer-events: none;
+}
+
+.motivational-message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.motivational-message::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ff6b6b;
+}
+
+@media (max-width: 768px) {
+    .test-card {
+        margin: 1rem;
+        padding: 2rem;
+    }
+    
+    .test-title {
+        font-size: 2.2rem;
+    }
+    
+    .test-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .info-item {
+        padding: 1rem;
+    }
+    
+    .info-value {
+        font-size: 1.5rem;
+    }
+    
+    .test-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-start-test,
+    .btn-back {
+        width: 100%;
+        font-size: 1rem;
+    }
+    
+    .motivational-bird {
+        width: 60px;
+        height: 60px;
+        top: 20px;
+        right: 20px;
+    }
+    
+    .motivational-message {
+        top: 90px;
+        right: 20px;
+        max-width: 250px;
+        font-size: 0.8rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Flash Messages -->
+{% for message in app.flashes('error') %}
+    <div data-flash-type="error" 
+         data-flash-title="Access Denied" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('success') %}
+    <div data-flash-type="success" 
+         data-flash-title="Success" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<div class="test-start-container">
+    <!-- Background decorations -->
+    <div class="bg-decoration bg-decoration-1"></div>
+    <div class="bg-decoration bg-decoration-2"></div>
+    <div class="bg-decoration bg-decoration-3"></div>
+    
+    <div class="test-card">
+        <!-- Motivational bird -->
+        <div class="motivational-bird" id="motivational-bird">
+            <div class="bird-body">
+                <div class="bird-wing-left"></div>
+                <div class="bird-wing-right"></div>
+                <div class="bird-eye-left">
+                    <div class="bird-pupil" id="bird-pupil-left"></div>
+                </div>
+                <div class="bird-eye-right">
+                    <div class="bird-pupil" id="bird-pupil-right"></div>
+                </div>
+                <div class="bird-beak"></div>
+                <div class="bird-tail"></div>
+            </div>
+        </div>
+        
+        <div class="test-header">
+            <h1 class="test-title">{{ course.title }}</h1>
+            <p class="test-subtitle">Course Completion Test</p>
+        </div>
+
+        <div class="test-info">
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Time Limit</div>
+                    <div class="info-value">
+                        <i class="fas fa-clock"></i>
+                        {{ test.timeLimit }} min
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Passing Score</div>
+                    <div class="info-value success">
+                        <i class="fas fa-trophy"></i>
+                        {{ test.passingScore }}%
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Questions</div>
+                    <div class="info-value">
+                        <i class="fas fa-question-circle"></i>
+                        {{ test.questions|length }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-description">
+            <h3><i class="fas fa-info-circle"></i> About This Test</h3>
+            <p>{{ test.description|default('Test your knowledge and understanding of the course material. This comprehensive assessment will evaluate your grasp of key concepts and practical skills covered throughout the course. Take your time, read each question carefully, and choose the best answer. Good luck!') }}</p>
+        </div>
+
+        <div class="test-actions">
+            <a href="{{ path('app_course_test_take', {'id': course.id}) }}" class="btn-start-test">
+                <i class="fas fa-play"></i>
+                Start Test
+            </a>
+            <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Back to Course
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const motivationalBird = document.getElementById('motivational-bird');
+    const birdPupilLeft = document.getElementById('bird-pupil-left');
+    const birdPupilRight = document.getElementById('bird-pupil-right');
+    
+    // Motivational messages
+    const motivationalMessages = [
+        "You've got this! 🌟",
+        "Believe in yourself! 💪",
+        "Success is within reach! 🏆",
+        "You're amazing! 🎯",
+        "Trust your knowledge! 📚",
+        "You're a star! ⭐",
+        "Keep going! 🔥",
+        "You can do it! 💫",
+        "You're brilliant! ✨",
+        "You're unstoppable! 🚀"
+    ];
+    
+    // Eye tracking function
+    function trackMouse(event) {
+        if (!motivationalBird || !birdPupilLeft || !birdPupilRight) return;
+        
+        const birdRect = motivationalBird.getBoundingClientRect();
+        const birdCenterX = birdRect.left + birdRect.width / 2;
+        const birdCenterY = birdRect.top + birdRect.height / 2;
+        
+        // Calculate angle from bird center to mouse
+        const angle = Math.atan2(event.clientY - birdCenterY, event.clientX - birdCenterX);
+        const distance = Math.min(3, Math.sqrt(Math.pow(event.clientX - birdCenterX, 2) + Math.pow(event.clientY - birdCenterY, 2)) / 50);
+        
+        // Calculate pupil position
+        const pupilOffsetX = Math.cos(angle) * distance;
+        const pupilOffsetY = Math.sin(angle) * distance;
+        
+        // Apply to both pupils
+        birdPupilLeft.style.transform = `translate(calc(-50% + ${pupilOffsetX}px), calc(-50% + ${pupilOffsetY}px))`;
+        birdPupilRight.style.transform = `translate(calc(-50% + ${pupilOffsetX}px), calc(-50% + ${pupilOffsetY}px))`;
+    }
+    
+    // Add mouse tracking
+    document.addEventListener('mousemove', trackMouse);
+    
+    // Show motivational message function
+    function showMotivationalMessage() {
+        const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+        
+        // Remove existing message if any
+        const existingMessage = document.querySelector('.motivational-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+        
+        // Create new message
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'motivational-message';
+        messageDiv.textContent = randomMessage;
+        document.body.appendChild(messageDiv);
+        
+        // Animate in
+        setTimeout(() => {
+            messageDiv.classList.add('show');
+        }, 100);
+        
+        // Remove after 4 seconds
+        setTimeout(() => {
+            messageDiv.classList.remove('show');
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 300);
+        }, 4000);
+        
+        // Animate bird
+        motivationalBird.style.transform = 'scale(1.1) rotate(5deg)';
+        setTimeout(() => {
+            motivationalBird.style.transform = 'scale(1) rotate(0deg)';
+        }, 300);
+    }
+    
+    // Automatic messages every 30 seconds
+    let messageInterval = setInterval(showMotivationalMessage, 30000);
+    
+    // Click to show message
+    motivationalBird.addEventListener('click', function() {
+        showMotivationalMessage();
+        // Reset interval
+        clearInterval(messageInterval);
+        messageInterval = setInterval(showMotivationalMessage, 30000);
+    });
+    
+    // Show initial message after 5 seconds
+    setTimeout(showMotivationalMessage, 5000);
+    
+    // Add hover effects to info items
+    const infoItems = document.querySelectorAll('.info-item');
+    infoItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) scale(1.02)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Make bird look at center when mouse leaves window
+    document.addEventListener('mouseleave', function() {
+        if (birdPupilLeft && birdPupilRight) {
+            birdPupilLeft.style.transform = 'translate(-50%, -50%)';
+            birdPupilRight.style.transform = 'translate(-50%, -50%)';
+        }
+    });
+    
+    // Blink animation occasionally
+    setInterval(() => {
+        if (birdPupilLeft && birdPupilRight) {
+            birdPupilLeft.style.opacity = '0';
+            birdPupilRight.style.opacity = '0';
+            
+            setTimeout(() => {
+                birdPupilLeft.style.opacity = '1';
+                birdPupilRight.style.opacity = '1';
+            }, 150);
+        }
+    }, 4000);
+});
+</script>
+{% endblock %}

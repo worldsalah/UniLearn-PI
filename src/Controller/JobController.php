@@ -28,7 +28,7 @@ class JobController extends AbstractController
     #[Route('/new', name: 'app_job_new_public', methods: ['GET'])]
     public function newPublic(): Response
     {
-        if (!$this->getUser()) {
+        if ($this->getUser() === null) {
             // Redirect to login if not authenticated
             return $this->redirectToRoute('app_login');
         }
@@ -44,10 +44,10 @@ class JobController extends AbstractController
 
         // Set the client before form creation to avoid validation issues
         $user = $this->getUser();
-        if (!$user) {
+        if ($user === null) {
             // Find or create a default user for demo purposes
             $user = $entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => 'demo@unilearn.com']);
-            if (!$user) {
+            if ($user === null) {
                 // Create a demo user if none exists
                 $user = new \App\Entity\User();
                 $user->setEmail('demo@unilearn.com');
@@ -105,7 +105,7 @@ class JobController extends AbstractController
     ): JsonResponse {
         $user = $this->getUser();
 
-        if (!$user) {
+        if ($user === null) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'You must be logged in to apply for jobs.',
@@ -113,7 +113,7 @@ class JobController extends AbstractController
         }
 
         // Check if user has a student profile (freelancer)
-        if (!$user->getStudent()) {
+        if ($user->getStudent() === null) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'You must have a freelancer profile to apply for jobs.',
@@ -121,8 +121,9 @@ class JobController extends AbstractController
         }
 
         // Check if already applied
-        $existingApplication = $applicationRepository->findByJobAndFreelancer($job, $user);
-        if ($existingApplication) {
+        $userEntity = $user instanceof \App\Entity\User ? $user : null;
+        $existingApplication = $userEntity !== null ? $applicationRepository->findByJobAndFreelancer($job, $userEntity) : null;
+        if ($existingApplication !== null) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'You have already applied for this job.',
@@ -138,12 +139,16 @@ class JobController extends AbstractController
         }
 
         // Create new application
+        $coverLetter = $request->request->get('coverLetter');
+        $proposedBudget = $request->request->get('proposedBudget');
+        $timeline = $request->request->get('timeline');
+        
         $application = new Application();
         $application->setJob($job);
-        $application->setFreelancer($user instanceof \App\Entity\User ? $user : null);
-        $application->setCoverLetter($request->request->get('coverLetter'));
-        $application->setProposedBudget((float) $request->request->get('proposedBudget'));
-        $application->setTimeline($request->request->get('timeline'));
+        $application->setFreelancer($userEntity);
+        $application->setCoverLetter(is_string($coverLetter) ? $coverLetter : null);
+        $application->setProposedBudget(is_string($proposedBudget) ? $proposedBudget : null);
+        $application->setTimeline(is_string($timeline) ? $timeline : null);
         $application->setStatus('pending');
         $application->setCreatedAt(new \DateTimeImmutable());
 

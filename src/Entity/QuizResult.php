@@ -136,10 +136,12 @@ class QuizResult
 
     public function getPercentage(): float
     {
-        if (0 === $this->maxScore) {
+        $maxScore = $this->maxScore ?? 0;
+        $score = $this->score ?? 0;
+        if (0 === $maxScore) {
             return 0;
         }
 
-        return round(($this->score / $this->maxScore) * 100, 2);
+        return round(($score / $maxScore) * 100, 2);
     }
 }

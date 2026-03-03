@@ -58,4 +58,44 @@ class SessionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAvailableSessions(?string $category = null, ?float $maxPrice = null): array
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->leftJoin('s.instructor', 'i')
+            ->leftJoin('s.category', 'c')
+            ->addSelect('i', 'c')
+            ->where('s.startDate > :now')
+            ->setParameter('now', new \DateTime())
+            ->andWhere('s.hourlyPrice IS NOT NULL')
+            ->orderBy('s.hourlyPrice', 'ASC');
+
+        if ($category !== null) {
+            $qb->andWhere('c.name LIKE :category')
+               ->setParameter('category', '%' . $category . '%');
+        }
+
+        if ($maxPrice !== null) {
+            $qb->andWhere('s.hourlyPrice <= :maxPrice')
+               ->setParameter('maxPrice', $maxPrice);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findBestValueSessions(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('s')
+            ->leftJoin('s.instructor', 'i')
+            ->leftJoin('s.category', 'c')
+            ->addSelect('i', 'c')
+            ->where('s.startDate > :now')
+            ->setParameter('now', new \DateTime())
+            ->andWhere('s.hourlyPrice IS NOT NULL')
+            ->orderBy('s.hourlyPrice', 'ASC')
+            ->addOrderBy('s.startDate', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

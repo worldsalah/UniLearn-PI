@@ -58,7 +58,7 @@ class CreateCategoriesCommand extends Command
             // Check if category already exists
             $existingCategory = $this->entityManager->getRepository(Category::class)->findOneBy(['name' => $name]);
 
-            if (!$existingCategory) {
+            if ($existingCategory === null) {
                 $category = new Category();
                 $category->setName($name);
                 $category->setDescription($data['description']);

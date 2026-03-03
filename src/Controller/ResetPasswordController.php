@@ -25,51 +25,83 @@ class ResetPasswordController extends AbstractController
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
 
-            if (!$email) {
+            if ($email === null || $email === '') {
                 $this->addFlash('error', 'Veuillez entrer votre adresse email.');
                 return $this->redirectToRoute('app_forgot_password');
             }
 
             $user = $userRepository->findOneBy(['email' => $email]);
 
-            if ($user) {
-                // Generate a secure token
-                $token = bin2hex(random_bytes(32));
-                $user->setResetToken($token);
-                $user->setResetTokenExpiresAt(new \DateTime('+1 hour'));
-
-                try {
-                    $em->flush();
-                } catch (\Exception $e) {
-                    // Elasticsearch may be down — ignore
-                }
-
-                // Generate reset link
-                $resetUrl = $this->generateUrl('app_reset_password', [
-                    'token' => $token,
-                ], UrlGeneratorInterface::ABSOLUTE_URL);
-
-                // Send email
-                $emailMessage = (new Email())
-                    ->from('omarkaoubi2002@gmail.com')
-                    ->to($user->getEmail())
-                    ->subject('Réinitialisation de votre mot de passe - UniLearn')
-                    ->html($this->renderView('emails/reset_password.html.twig', [
-                        'user' => $user,
-                        'resetUrl' => $resetUrl,
-                    ]));
-
-                try {
-                    $mailer->send($emailMessage);
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur envoi email: ' . $e->getMessage());
-                    error_log('Mailer error: ' . $e->getMessage());
-                }
+            if ($user === null) {
+                $this->addFlash('error', 'Aucun compte trouvé avec cette adresse email.');
+                return $this->redirectToRoute('app_forgot_password');
             }
 
-            // Always show success message (don't reveal if email exists or not)
-            $this->addFlash('success', 'Si un compte existe avec cette adresse email, un lien de réinitialisation a été envoyé.');
-            return $this->redirectToRoute('app_forgot_password');
+            // Generate a secure token
+            $token = bin2hex(random_bytes(32));
+            $user->setResetToken($token);
+            $user->setResetTokenExpiresAt(new \DateTime('+1 hour'));
+
+            $em->flush();
+
+            // Generate reset link
+            $resetUrl = $this->generateUrl('app_reset_password', [
+                'token' => $token,
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            // Send email
+            $userEmail = $user->getEmail();
+            if ($userEmail === null) {
+                $this->addFlash('error', 'User email is not set.');
+                return $this->redirectToRoute('app_forgot_password');
+            }
+            $emailMessage = (new Email())
+                ->from('tebourbimalek0@gmail.com')
+                ->to($userEmail)
+                ->subject('Réinitialisation de votre mot de passe - UniLearn')
+                ->html($this->renderView('emails/reset_password.html.twig', [
+                    'user' => $user,
+                    'resetUrl' => $resetUrl,
+                ]));
+
+            $emailSent = false;
+            $errorMessage = '';
+            
+            try {
+                error_log('Attempting to send email to: ' . $userEmail);
+                error_log('MAILER_DSN check: ' . getenv('MAILER_DSN'));
+                $mailer->send($emailMessage);
+                $emailSent = true;
+                error_log('Password reset email sent successfully via Symfony Mailer');
+            } catch (\Exception $e) {
+                $errorMessage = $e->getMessage();
+                error_log('Symfony Mailer failed: ' . $errorMessage);
+                error_log('Exception class: ' . get_class($e));
+                
+                // Fallback to native PHP mail()
+                $subject = 'Réinitialisation de votre mot de passe - UniLearn';
+                $message = 'Cliquez sur ce lien pour réinitialiser votre mot de passe: ' . $resetUrl;
+                $headers = 'From: tebourbimalek0@gmail.com' . "\r\n" .
+                    'Reply-To: tebourbimalek0@gmail.com' . "\r\n" .
+                    'X-Mailer: PHP/' . phpversion();
+                
+                if (mail($userEmail, $subject, $message, $headers)) {
+                    $emailSent = true;
+                    error_log('Password reset email sent successfully via PHP mail()');
+                } else {
+                    error_log('PHP mail() also failed');
+                    $lastError = error_get_last();
+                    $errorMessage .= ' | PHP mail() failed: ' . ($lastError !== null ? $lastError['message'] : 'Unknown error');
+                }
+            }
+            
+            if ($emailSent) {
+                $this->addFlash('success', 'Un lien de réinitialisation a été envoyé à votre adresse email.');
+                return $this->redirectToRoute('app_login');
+            } else {
+                $this->addFlash('error', 'Erreur lors de l\'envoi de l\'email: ' . $errorMessage);
+                return $this->redirectToRoute('app_forgot_password');
+            }
         }
 
         return $this->render('auth/forgot-password.html.twig');
@@ -85,7 +117,7 @@ class ResetPasswordController extends AbstractController
     ): Response {
         $user = $userRepository->findOneBy(['resetToken' => $token]);
 
-        if (!$user || !$user->isResetTokenValid()) {
+        if ($user === null || !$user->isResetTokenValid()) {
             $this->addFlash('error', 'Ce lien de réinitialisation est invalide ou a expiré.');
             return $this->redirectToRoute('app_forgot_password');
         }
@@ -94,7 +126,7 @@ class ResetPasswordController extends AbstractController
             $password = $request->request->get('password');
             $passwordConfirm = $request->request->get('password_confirm');
 
-            if (!$password || strlen($password) < 8) {
+            if (!is_string($password) || strlen($password) < 8) {
                 $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caractères.');
                 return $this->redirectToRoute('app_reset_password', ['token' => $token]);
             }
@@ -112,11 +144,7 @@ class ResetPasswordController extends AbstractController
             $user->setResetToken(null);
             $user->setResetTokenExpiresAt(null);
 
-            try {
-                $em->flush();
-            } catch (\Exception $e) {
-                // Elasticsearch may be down — ignore
-            }
+            $em->flush();
 
             $this->addFlash('success', 'Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.');
             return $this->redirectToRoute('app_login');

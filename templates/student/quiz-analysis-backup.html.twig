@@ -1,0 +1,689 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}AI Quiz Performance Analysis{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Student Quiz Analysis START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">{{ user.name|default(user.email) }}</h5>
+                        <p class="mb-2">{{ user.email }}</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="{{ path('app_student_courses') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="{{ path('app_student_bookmarks') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-bookmark me-2"></i>Bookmarks
+                            </a>
+                            <a href="{{ path('app_student_certificates') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="{{ path('app_student_settings') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                            <a href="{{ path('app_student_quiz_analysis') }}" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-brain me-2"></i>AI Quiz Analysis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-1">
+                                    <i class="fas fa-brain me-2"></i>AI Quiz Performance Analysis
+                                </h3>
+                                <p class="mb-0 text-muted">Advanced insights powered by artificial intelligence</p>
+                            </div>
+                            <div class="text-end">
+                                <div class="badge bg-primary bg-opacity-10 text-primary p-2">
+                                    <i class="fas fa-chart-line me-1"></i>{{ analytics.performanceTrend|title }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Header END -->
+
+                <!-- AI Insights START -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4">
+                                    <i class="fas fa-brain text-primary me-2"></i>🧠 AI Learning Insights
+                                </h5>
+                                
+                                {% if aiInsights %}
+                                    <div class="ai-insights-content">
+                                        {{ aiInsights|nl2br|raw }}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        {% if quizResults|length > 0 %}
+                                            AI analysis is temporarily unavailable. Please try again later.
+                                        {% else %}
+                                            Complete quizzes to receive AI insights into your learning performance.
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- AI Insights END -->
+
+                <!-- Analytics Overview START -->
+                <div class="analytics-overview">
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <div class="analytics-card primary-card">
+                                <div class="analytics-icon">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <div class="analytics-content">
+                                    <h3 class="analytics-number">{{ analytics.totalQuizzes }}</h3>
+                                    <p class="analytics-label">Total Quizzes</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="analytics-card success-card">
+                                <div class="analytics-icon">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="analytics-content">
+                                    <h3 class="analytics-number">{{ analytics.averageScore }}%</h3>
+                                    <p class="analytics-label">Average Score</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="analytics-card warning-card">
+                                <div class="analytics-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="analytics-content">
+                                    <h3 class="analytics-number">{{ analytics.bestScore }}%</h3>
+                                    <p class="analytics-label">Best Score</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="analytics-card info-card">
+                                <div class="analytics-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="analytics-content">
+                                    <h3 class="analytics-number">{{ analytics.studyTime }}m</h3>
+                                    <p class="analytics-label">Study Time</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Analytics Overview END -->
+
+                <!-- Recent Quiz Results START -->
+                {% if quizResults|length > 0 %}
+                <div class="quiz-results-section">
+                    <div class="section-header">
+                        <h5 class="section-title">
+                            <i class="fas fa-history me-2"></i>Recent Quiz Performance
+                        </h5>
+                        <div class="section-actions">
+                            <button class="btn btn-outline-primary btn-sm">Export Results</button>
+                        </div>
+                    </div>
+                    <div class="quiz-results-grid">
+                        {% for result in quizResults|slice(0, 6) %}
+                            <div class="quiz-result-card">
+                                <div class="quiz-header">
+                                    <div class="quiz-info">
+                                        <h6 class="quiz-title">{{ result.quiz.title|default('Quiz ' ~ loop.index) }}</h6>
+                                        <span class="quiz-course">{{ result.quiz.course.title|default('Unknown Course') }}</span>
+                                        <div class="quiz-meta">
+                                            <span class="quiz-date">
+                                                <i class="fas fa-calendar-alt me-1"></i>
+                                                {{ result.takenAt|date('M d, Y') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="quiz-score-badge">
+                                        <span class="score-badge score-{{ result.score >= 80 ? 'excellent' : result.score >= 60 ? 'good' : 'needs-improvement' }}">
+                                            {{ result.score }}%
+                                        </span>
+                                        <span class="score-label">
+                                            {% if result.score >= 90 %}
+                                                Excellent
+                                            {% elseif result.score >= 80 %}
+                                                Very Good
+                                            {% elseif result.score >= 70 %}
+                                                Good
+                                            {% elseif result.score >= 60 %}
+                                                Average
+                                            {% else %}
+                                                Needs Work
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if quizResults|length > 6 %}
+                    <div class="text-center mt-4">
+                        <button class="btn btn-outline-primary">Load More Results</button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <!-- Empty State -->
+                <div class="empty-state-enhanced">
+                    <div class="empty-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4>No Quiz Data Yet</h4>
+                    <p>Start taking quizzes to get AI-powered insights into your learning performance!</p>
+                    <div class="empty-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>0 Quizzes Completed</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-percentage"></i>
+                            <span>0% Average Score</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>0 Best Score</span>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_course_grid') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play me-2"></i>Start Your First Quiz
+                    </a>
+                </div>
+                {% endif %}
+                <!-- Recent Quiz Results END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Student Quiz Analysis END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% block styles %}
+<style>
+.progress {
+    background-color: #e9ecef;
+    border-radius: 10px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.badge {
+    font-size: 0.875rem;
+}
+
+.alert-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.icon-xl {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+.ai-insights-content {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-family: 'Courier New', monospace;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: #495057;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.ai-insights-content strong {
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* Enhanced Analytics Styles */
+.analytics-overview {
+    margin-bottom: 2rem;
+}
+
+.analytics-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.analytics-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.analytics-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.analytics-content {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+}
+
+.analytics-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.analytics-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin: 0;
+    font-weight: 500;
+}
+
+.analytics-trend {
+    margin-left: 0.5rem;
+}
+
+.progress-ring-svg {
+    transform: rotate(-90deg);
+}
+
+.progress-ring-bg {
+    stroke: #e9ecef;
+    fill: none;
+}
+
+.progress-ring-fill {
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.progress-ring-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.star-rating {
+    font-size: 1rem;
+    color: #ffc107;
+}
+
+.time-breakdown {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.time-amount {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.time-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+/* Primary Card */
+.primary-card .analytics-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.primary-card .analytics-number {
+    color: #667eea;
+}
+
+/* Success Card */
+.success-card .analytics-icon {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.success-card .analytics-number {
+    color: #28a745;
+}
+
+/* Warning Card */
+.warning-card .analytics-icon {
+    background: linear-gradient(135deg, #ffc107 0%, #dc3545 100%);
+}
+
+.warning-card .analytics-number {
+    color: #ffc107;
+}
+
+/* Info Card */
+.info-card .analytics-icon {
+    background: linear-gradient(135deg, #17a2b8 0%, #6c757d 100%);
+}
+
+.info-card .analytics-number {
+    color: #17a2b8;
+}
+
+/* Quiz Results Section */
+.quiz-results-section {
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.section-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.quiz-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.quiz-result-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.quiz-result-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.quiz-info {
+    flex: 1;
+}
+
+.quiz-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.quiz-course {
+    font-size: 0.875rem;
+    color: #6c757d;
+    background: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.quiz-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.quiz-date {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.quiz-score-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.score-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+}
+
+.score-excellent {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.score-good {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.score-needs-improvement {
+    background: linear-gradient(135deg, #ffc107 0%, #dc3545 100%);
+}
+
+.score-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quiz-progress {
+    margin-bottom: 1rem;
+}
+
+.progress-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.progress-container {
+    position: relative;
+}
+
+.progress-bar-animated {
+    animation: progressPulse 2s ease-in-out infinite;
+}
+
+@keyframes progressPulse {
+    0% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+}
+
+.quiz-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Empty State */
+.empty-state-enhanced {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    margin: 2rem 0;
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: white;
+    font-size: 2rem;
+}
+
+.empty-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+}
+
+.stat-item i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-item span {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .quiz-results-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .analytics-overview .row {
+        g-2;
+    }
+    
+    .analytics-card {
+        margin-bottom: 1rem;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .section-actions {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

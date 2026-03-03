@@ -1,8 +1,8 @@
 {% extends 'front_base.html.twig' %}
 
-{% block title %}Booking List{% endblock %}
+{% block title %}Manage Bookings - Eduport{% endblock %}
 
-{% block content %}
+{% block stylesheets %}
 <style>
 /* Modern Instructor Dashboard Styles */
 .instructor-gradient {
@@ -827,10 +827,7 @@ Page content END -->
 {% endblock %}
 
 {% block javascripts %}
-<!-- Choices.js -->
-<script src="{{ asset('assets/vendor/choices/js/choices.min.js') }}"></script>
-
-<!-- Init Choices.js and Search/Sort functionality -->
+<!-- Init Choices.js (choices.js already loaded in base.html.twig) -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     // Initialize Choices.js

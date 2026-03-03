@@ -243,12 +243,9 @@
                             </ul>
                         </li>
                     {% else %}
-                        <!-- Sign in button -->
-                        <li class="nav-item">
-                            <a class="btn btn-sm btn-primary me-2" href="{{ path('app_login') }}">Sign In</a>
-                        </li>
-                        <!-- Sign up button -->
-                        <li class="nav-item">
+                        <!-- Sign in and sign up buttons -->
+                        <li class="nav-item d-flex gap-2">
+                            <a class="btn btn-sm btn-primary" href="{{ path('app_login') }}">Sign In</a>
                             <a class="btn btn-sm btn-outline-primary" href="{{ path('app_register') }}">Sign Up</a>
                         </li>
                     {% endif %}

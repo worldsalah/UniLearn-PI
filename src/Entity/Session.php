@@ -37,6 +37,15 @@ class Session
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $sessionDescription = null;
 
+    #[ORM\Column(type: 'time', nullable: true)]
+    private ?\DateTimeInterface $availableFrom = null;
+
+    #[ORM\Column(type: 'time', nullable: true)]
+    private ?\DateTimeInterface $availableTo = null;
+
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    private ?string $hourlyPrice = null;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'sessions')]
     #[ORM\JoinColumn(name: 'instructor_id', referencedColumnName: 'id')]
     private ?User $instructor = null;
@@ -73,6 +82,42 @@ class Session
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getAvailableFrom(): ?\DateTimeInterface
+    {
+        return $this->availableFrom;
+    }
+
+    public function setAvailableFrom(?\DateTimeInterface $availableFrom): self
+    {
+        $this->availableFrom = $availableFrom;
+
+        return $this;
+    }
+
+    public function getAvailableTo(): ?\DateTimeInterface
+    {
+        return $this->availableTo;
+    }
+
+    public function setAvailableTo(?\DateTimeInterface $availableTo): self
+    {
+        $this->availableTo = $availableTo;
+
+        return $this;
+    }
+
+    public function getHourlyPrice(): ?string
+    {
+        return $this->hourlyPrice;
+    }
+
+    public function setHourlyPrice(?string $hourlyPrice): self
+    {
+        $this->hourlyPrice = $hourlyPrice;
 
         return $this;
     }

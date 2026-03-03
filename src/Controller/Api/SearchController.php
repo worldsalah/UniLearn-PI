@@ -3,7 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Course;
-use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
+use App\Repository\CourseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,15 +13,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 #[Route('/api/courses')]
 class SearchController extends AbstractController
 {
-    private RepositoryManagerInterface $repositoryManager;
+    private CourseRepository $courseRepository;
 
-    public function __construct(RepositoryManagerInterface $repositoryManager)
+    public function __construct(CourseRepository $courseRepository)
     {
-        $this->repositoryManager = $repositoryManager;
+        $this->courseRepository = $courseRepository;
     }
 
     /**
-     * Search courses with full-text search and optional filters
+     * Search courses with full-text search and optional filters (database-based)
      */
     #[Route('/search', name: 'api_courses_search', methods: ['GET'])]
     public function search(Request $request): JsonResponse
@@ -36,44 +36,22 @@ class SearchController extends AbstractController
                 throw new BadRequestHttpException('Search query parameter "q" is required');
             }
 
-            // Get the finder for courses
-            $finder = $this->repositoryManager->getFinder(Course::class);
-
-            // Build Elasticsearch query
-            $searchQuery = [
-                'bool' => [
-                    'must' => [
-                        [
-                            'multi_match' => [
-                                'query' => $query,
-                                'fields' => ['title^2', 'description'],
-                                'type' => 'best_fields',
-                                'fuzziness' => 'AUTO'
-                            ]
-                        ]
-                    ],
-                    'filter' => []
-                ]
-            ];
+            // Build database query
+            $qb = $this->courseRepository->createQueryBuilder('c')
+                ->where('c.status = :status')
+                ->andWhere('c.title LIKE :query OR c.description LIKE :query')
+                ->setParameter('status', 'live')
+                ->setParameter('query', '%' . $query . '%')
+                ->setFirstResult(($page - 1) * $limit)
+                ->setMaxResults($limit);
 
             // Add level filter if provided
-            if ($level) {
-                $searchQuery['bool']['filter'][] = [
-                    'term' => [
-                        'level.keyword' => $level
-                    ]
-                ];
+            if ($level !== null && $level !== '') {
+                $qb->andWhere('c.level = :level')
+                   ->setParameter('level', $level);
             }
 
-            // Only show active courses
-            $searchQuery['bool']['filter'][] = [
-                'term' => [
-                    'status.keyword' => 'active'
-                ]
-            ];
-
-            // Execute search
-            $results = $finder->find($searchQuery, $limit);
+            $results = $qb->getQuery()->getResult();
 
             // Format results
             $courses = [];

@@ -11,12 +11,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class MockAutocompleteController extends AbstractController
 {
     /**
-     * Mock autocomplete for testing without Elasticsearch
+     * Mock autocomplete for testing
      */
     #[Route('/autocomplete/courses-mock', name: 'api_autocomplete_courses_mock', methods: ['GET'])]
     public function mockAutocompleteCourses(Request $request): JsonResponse
     {
-        $query = strtolower($request->query->get('q', ''));
+        $query = strtolower((string) $request->query->get('q', ''));
         $limit = min(10, max(1, (int) $request->query->get('limit', 5)));
 
         // Mock course data

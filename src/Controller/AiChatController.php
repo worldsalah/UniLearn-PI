@@ -27,9 +27,13 @@ class AiChatController extends AbstractController
         }
 
         $user = $this->getUser();
+        if ($user === null) {
+            return $this->json(['error' => 'Unauthorized'], 401);
+        }
+        
         $message = trim($data['message']);
         $history = $data['history'] ?? [];
-        $mode = $data['mode'] ?? 'chat'; // 'chat' or 'bio'
+        $mode = $data['mode'] ?? 'chat'; // 'chat', 'bio', or 'sessions'
 
         if ($mode === 'bio') {
             // Generate structured bio suggestions
@@ -41,6 +45,19 @@ class AiChatController extends AbstractController
             return $this->json([
                 'type' => 'suggestions',
                 'suggestions' => $suggestions,
+            ]);
+        }
+
+        if ($mode === 'sessions') {
+            // Query available tutoring sessions
+            $category = $data['category'] ?? null;
+            $maxPrice = isset($data['maxPrice']) ? (float) $data['maxPrice'] : null;
+            
+            $result = $this->aiAssistant->querySessions($message, $category, $maxPrice);
+            
+            return $this->json([
+                'type' => 'sessions',
+                'data' => $result,
             ]);
         }
 

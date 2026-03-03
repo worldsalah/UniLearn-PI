@@ -3,9 +3,8 @@
 namespace App\Controller\Api;
 
 use App\Entity\Course;
-use FOS\ElasticaBundle\Finder\TransformedFinder;
+use App\Repository\CourseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,17 +12,15 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api')]
 class AutocompleteController extends AbstractController
 {
-    private TransformedFinder $finder;
+    private CourseRepository $courseRepository;
 
-    public function __construct(
-        #[Target('courses.finder')]
-        TransformedFinder $finder
-    ) {
-        $this->finder = $finder;
+    public function __construct(CourseRepository $courseRepository)
+    {
+        $this->courseRepository = $courseRepository;
     }
 
     /**
-     * Autocomplete search for courses with category support
+     * Autocomplete search for courses with category support (database-based)
      */
     #[Route('/autocomplete/courses', name: 'api_autocomplete_courses', methods: ['GET'])]
     public function autocompleteCourses(Request $request): JsonResponse
@@ -32,53 +29,34 @@ class AutocompleteController extends AbstractController
         $category = $request->query->get('category', '');
         $limit = min(10, max(1, (int) $request->query->get('limit', 5)));
 
-        if (strlen($query) < 2) {
+        if (strlen((string) $query) < 2) {
             return new JsonResponse(['suggestions' => []]);
         }
 
         try {
-            $finder = $this->finder;
-
-            // Build search query with optional category filter
-            $searchQuery = [
-                'query' => [
-                    'prefix' => [
-                        'title' => $query
-                    ]
-                ]
-            ];
+            // Build database query
+            $qb = $this->courseRepository->createQueryBuilder('c')
+                ->where('c.title LIKE :query')
+                ->andWhere('c.status = :status')
+                ->setParameter('query', $query . '%')
+                ->setParameter('status', 'active')
+                ->setMaxResults($limit);
 
             // Add category filter if provided
-            if ($category) {
-                $searchQuery['query']['bool'] = [
-                    'must' => [
-                        [
-                            'match' => [
-                                'title' => [
-                                    'query' => $query,
-                                    'operator' => 'and'
-                                ]
-                            ]
-                        ]
-                    ],
-                    'filter' => [
-                        [
-                            'term' => [
-                                'category.keyword' => $category
-                            ]
-                        ]
-                    ]
-                ];
+            if ($category !== '' && $category !== null) {
+                $qb->join('c.category', 'cat')
+                   ->andWhere('cat.name = :category')
+                   ->setParameter('category', $category);
             }
 
-            $results = $finder->find($searchQuery, $limit);
+            $results = $qb->getQuery()->getResult();
 
             $suggestions = [];
             foreach ($results as $course) {
                 $suggestions[] = [
                     'id' => $course->getId(),
                     'title' => $course->getTitle(),
-                    'description' => substr($course->getDescription(), 0, 100) . '...',
+                    'description' => substr($course->getDescription() ?? '', 0, 100) . '...',
                     'type' => 'course',
                     'level' => $course->getLevel(),
                     'price' => $course->getPrice(),

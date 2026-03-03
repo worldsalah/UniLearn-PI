@@ -108,10 +108,10 @@ class ReputationAggregator
         }
 
         // Calculate completion rate
-        $completionRate = $totalOrders > 0 ? ($completedOrders / $totalOrders) * 100 : 0;
+        $completionRate = $totalOrders > 0 ? ((float) $completedOrders / (float) $totalOrders) * 100 : 0.0;
 
         // Bonus for volume
-        $volumeBonus = min(20, $totalOrders * 2);
+        $volumeBonus = min(20, (int) $totalOrders * 2);
 
         return min(100, $completionRate + $volumeBonus);
     }
@@ -121,7 +121,7 @@ class ReputationAggregator
         $score = 0.0;
 
         // Has bio
-        if ($seller->getBio() !== null && $seller->getBio() !== '') {
+        if ($seller->getBio() !== null) {
             $score += 25;
         }
 

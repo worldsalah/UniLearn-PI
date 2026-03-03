@@ -37,12 +37,12 @@ class GoogleAuthenticator extends AbstractAuthenticator
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): Response
     {
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         return new RedirectResponse($this->urlGenerator->generate('app_login'));
     }

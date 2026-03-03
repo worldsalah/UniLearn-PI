@@ -492,6 +492,18 @@ Page content START -->
 											{% endif %}
 										</div>
 
+										<!-- Session Category -->
+										<div class="col-md-6">
+											<label for="category_id" class="form-label fw-semibold">Category</label>
+											<select class="form-select form-select-lg" id="category_id" name="category_id">
+												<option value="">Select category</option>
+												{% for category in categories %}
+													<option value="{{ category.id }}" {{ formData.category_id is defined and formData.category_id == category.id ? 'selected' : '' }}>{{ category.name }}</option>
+												{% endfor %}
+											</select>
+											<small class="text-muted">Choose a category for this session</small>
+										</div>
+
 										<!-- Session Duration -->
 										<div class="col-md-6">
 											<label for="duration" class="form-label fw-semibold">Duration (minutes) *</label>
@@ -500,6 +512,41 @@ Page content START -->
 											{% if errors.duration is defined %}
 												<div class="invalid-feedback d-block">
 													<i class="bi bi-exclamation-circle me-1"></i>{{ errors.duration }}
+												</div>
+											{% endif %}
+										</div>
+
+										<!-- Availability Time Range -->
+										<div class="col-md-6">
+											<label for="availableFrom" class="form-label fw-semibold">Available From *</label>
+											<input type="time" class="form-control form-control-lg {{ errors.availableFrom is defined ? 'is-invalid' : '' }}" id="availableFrom" name="availableFrom" value="{{ formData.availableFrom is defined ? formData.availableFrom : '' }}">
+											<small class="text-muted">Start time (e.g. 12:00)</small>
+											{% if errors.availableFrom is defined %}
+												<div class="invalid-feedback d-block">
+													<i class="bi bi-exclamation-circle me-1"></i>{{ errors.availableFrom }}
+												</div>
+											{% endif %}
+										</div>
+
+										<div class="col-md-6">
+											<label for="availableTo" class="form-label fw-semibold">Available To *</label>
+											<input type="time" class="form-control form-control-lg {{ errors.availableTo is defined ? 'is-invalid' : '' }}" id="availableTo" name="availableTo" value="{{ formData.availableTo is defined ? formData.availableTo : '' }}">
+											<small class="text-muted">End time (e.g. 17:00)</small>
+											{% if errors.availableTo is defined %}
+												<div class="invalid-feedback d-block">
+													<i class="bi bi-exclamation-circle me-1"></i>{{ errors.availableTo }}
+												</div>
+											{% endif %}
+										</div>
+
+										<!-- Hourly Price -->
+										<div class="col-md-6">
+											<label for="hourlyPrice" class="form-label fw-semibold">Price Per Hour *</label>
+											<input type="number" step="0.01" min="0" class="form-control form-control-lg {{ errors.hourlyPrice is defined ? 'is-invalid' : '' }}" id="hourlyPrice" name="hourlyPrice" placeholder="25.00" value="{{ formData.hourlyPrice is defined ? formData.hourlyPrice : '' }}">
+											<small class="text-muted">Set your hourly rate</small>
+											{% if errors.hourlyPrice is defined %}
+												<div class="invalid-feedback d-block">
+													<i class="bi bi-exclamation-circle me-1"></i>{{ errors.hourlyPrice }}
 												</div>
 											{% endif %}
 										</div>

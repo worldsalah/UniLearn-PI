@@ -47,14 +47,14 @@ class GoogleAuthController extends AbstractController
     ): Response {
         $code = $request->query->get('code');
 
-        if (!$code) {
+        if ($code === null || $code === '') {
             $this->addFlash('error', 'Authentification Google échouée.');
             return $this->redirectToRoute('app_login');
         }
 
         try {
             // Exchange authorization code for access token
-            $token = $this->googleClient->fetchAccessTokenWithAuthCode($code);
+            $token = $this->googleClient->fetchAccessTokenWithAuthCode((string) $code);
 
             if (isset($token['error'])) {
                 throw new \Exception($token['error_description'] ?? $token['error']);
@@ -75,7 +75,7 @@ class GoogleAuthController extends AbstractController
             $user = $this->userRepository->findOneBy(['email' => $email])
                 ?? $this->userRepository->findOneBy(['googleId' => $googleId]);
 
-            if (!$user) {
+            if ($user === null) {
                 // Create new user
                 $user = new User();
                 $user->setEmail($email);
@@ -91,36 +91,31 @@ class GoogleAuthController extends AbstractController
 
                 // Assign default student role (id = 3)
                 $role = $this->em->getRepository(Role::class)->find(3);
-                if ($role) {
+                if ($role !== null) {
                     $user->setRole($role);
                 }
 
                 $this->em->persist($user);
-                try {
-                    $this->em->flush();
-                } catch (\Exception $elasticaException) {
-                    // Elasticsearch may be down — ignore, user is already saved in DB
-                }
+                $this->em->flush();
 
                 $this->addFlash('success', 'Compte créé avec succès via Google !');
             } else {
                 // Update Google ID if not already set
-                if (!$user->getGoogleId()) {
+                $existingGoogleId = $user->getGoogleId();
+                if ($existingGoogleId === null || $existingGoogleId === '') {
                     $user->setGoogleId($googleId);
-                    try {
-                        $this->em->flush();
-                    } catch (\Exception $elasticaException) {
-                        // Elasticsearch may be down — ignore
-                    }
+                    $this->em->flush();
                 }
             }
 
             // Authenticate user into Symfony session
-            return $userAuthenticator->authenticateUser(
+            $response = $userAuthenticator->authenticateUser(
                 $user,
                 $googleAuthenticator,
                 $request
             );
+            
+            return $response ?? $this->redirectToRoute('app_home');
 
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erreur Google : ' . $e->getMessage());

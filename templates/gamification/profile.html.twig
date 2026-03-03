@@ -1,0 +1,757 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}My Gamification Profile{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Gamification Profile START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="position-relative d-inline-block">
+                            {% if user.profileImage %}
+                                <img src="{{ asset('uploads/profile/' ~ user.profileImage) }}" 
+                                     class="rounded-circle" 
+                                     style="width: 120px; height: 120px; object-fit: cover;" 
+                                     alt="{{ user.fullName }}">
+                            {% else %}
+                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                                    <span class="text-white fs-2 fw-bold">{{ user.fullName|first|upper }}</span>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Niveau Badge -->
+                            {% if stats.current_level %}
+                                <div class="position-absolute bottom-0 end-0">
+                                    <span class="badge rounded-pill" style="background-color: {{ stats.current_level.color }}; color: white;">
+                                        <i class="{{ stats.current_level.icon|default('fas fa-seedling') }} me-1"></i>
+                                        {{ stats.current_level.name }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <h4 class="mt-3 mb-1">{{ user.fullName }}</h4>
+                        <p class="text-muted">{{ user.email }}</p>
+                        
+                        <!-- Stats principales -->
+                        <div class="row g-3 mt-3">
+                            <div class="col-4">
+                                <div class="text-center">
+                                    <h3 class="mb-0 text-primary" id="total-xp">{{ stats.total_points }}</h3>
+                                    <small class="text-muted">XP Total</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center">
+                                    <h3 class="mb-0 text-success" id="user-rank">#{{ stats.rank }}</h3>
+                                    <small class="text-muted">Rang</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center">
+                                    <h3 class="mb-0 text-warning" id="badges-count">{{ stats.badges_count }}</h3>
+                                    <small class="text-muted">Badges</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="{{ path('app_student_courses') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="{{ path('app_student_certificates') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="{{ path('app_student_quiz_analysis') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-brain me-2"></i>AI Quiz Analysis
+                            </a>
+                            <a href="/student-ai-roadmap" class="list-group-item list-group-item-action" onclick="console.log('AI Recommendations clicked'); window.location.href='/student-ai-roadmap'; return false;">
+                                <i class="fas fa-lightbulb me-2"></i>AI Recommendations
+                            </a>
+                            <a href="{{ path('app_gamification_profile') }}" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-trophy me-2"></i>My Gamification
+                            </a>
+                            <a href="{{ path('app_student_settings') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="mb-1">My Gamification Profile</h3>
+                        <p class="mb-0">Track your achievements, level up, and compete with other learners</p>
+                    </div>
+                </div>
+                <!-- Header END -->
+
+                <div class="container py-5">
+                    <div class="row">
+                        <!-- Progression et Badges -->
+                        <div class="col-lg-12 mb-4">
+                            <!-- Progression vers le niveau suivant -->
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-chart-line me-2"></i>Progression vers le niveau suivant
+                                        <small class="float-end text-white-50">Auto-refresh</small>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if progress.next_level != 'Max Level' %}
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="fw-bold" id="current-level-name">{{ stats.current_level.name }}</span>
+                                            <span class="text-muted" id="next-level-name">{{ progress.next_level }}</span>
+                                        </div>
+                                        
+                                        <!-- Enhanced Dynamic Progress Bar -->
+                                        <div class="dynamic-progress-wrapper" data-progress-id="main-progress">
+                                            <div class="progress position-relative" style="height: 25px; border-radius: 12px; overflow: hidden; background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);">
+                                                <div class="progress-bar bg-gradient progress-bar-animated" 
+                                                     role="progressbar" 
+                                                     id="progress-bar"
+                                                     style="width: {{ progress.progress }}%; 
+                                                            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); 
+                                                            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                                                            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);"
+                                                     aria-valuenow="{{ progress.progress }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100">
+                                                    <span class="progress-bar-text fw-bold" id="progress-percentage">{{ progress.progress|round }}%</span>
+                                                </div>
+                                                
+                                                <!-- Progress glow effect -->
+                                                <div class="progress-glow" style="width: {{ progress.progress }}%;"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <small class="text-muted" id="current-xp">
+                                                <i class="fas fa-star me-1"></i>{{ progress.current_points }} XP
+                                            </small>
+                                            <small class="text-muted" id="xp-to-next">
+                                                <i class="fas fa-flag me-1"></i>{{ progress.points_to_next }} XP restants
+                                            </small>
+                                        </div>
+                                        
+                                        <!-- Progress stats -->
+                                        <div class="row mt-3">
+                                            <div class="col-4 text-center">
+                                                <div class="progress-stat">
+                                                    <small class="text-muted d-block">Total XP</small>
+                                                    <strong class="text-primary" id="total-xp-display">{{ stats.total_points }}</strong>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 text-center">
+                                                <div class="progress-stat">
+                                                    <small class="text-muted d-block">Level</small>
+                                                    <strong class="text-success" id="rank-display">#{{ stats.rank }}</strong>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 text-center">
+                                                <div class="progress-stat">
+                                                    <small class="text-muted d-block">Badges</small>
+                                                    <strong class="text-warning" id="badges-display">{{ stats.badges_count }}</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+                                            <h5>Félicitations !</h5>
+                                            <p class="text-muted">Vous avez atteint le niveau maximum</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Badges récents -->
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-medal me-2"></i>Mes Badges
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if badges|length > 0 %}
+                                        <div class="row">
+                                            {% for userBadge in badges %}
+                                                <div class="col-md-6 col-lg-4 mb-3">
+                                                    <div class="card border-0 bg-light h-100">
+                                                        <div class="card-body text-center">
+                                                            <div class="badge-icon mb-2">
+                                                                {% if userBadge.badge.icon %}
+                                                                    <i class="{{ userBadge.badge.icon }} fa-2x" 
+                                                                       style="color: {{ userBadge.badge.color }};"></i>
+                                                                {% else %}
+                                                                    <i class="fas fa-award fa-2x" 
+                                                                       style="color: {{ userBadge.badge.color }};"></i>
+                                                                {% endif %}
+                                                            </div>
+                                                            <h6 class="card-title">{{ userBadge.badge.name }}</h6>
+                                                            <p class="card-text small text-muted">{{ userBadge.badge.description }}</p>
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-calendar me-1"></i>
+                                                                {{ userBadge.earnedAt|date('d/m/Y') }}
+                                                            </small>
+                                                            {% if userBadge.earnedReason %}
+                                                                <br><small class="text-info">{{ userBadge.earnedReason }}</small>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-lock fa-3x text-muted mb-3"></i>
+                                            <h5>Pas encore de badges</h5>
+                                            <p class="text-muted">Continuez à apprendre pour débloquer vos premiers badges</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Classement -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-crown me-2"></i>Classement (Top 10)
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if leaderboard|length > 0 %}
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Rang</th>
+                                                        <th>Utilisateur</th>
+                                                        <th>Niveau</th>
+                                                        <th>XP Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for entry in leaderboard %}
+                                                        <tr class="{% if entry.user.id == user.id %}table-primary{% endif %}">
+                                                            <td>
+                                                                {% if entry.rankPosition == 1 %}
+                                                                    <i class="fas fa-trophy text-warning"></i> 1er
+                                                                {% elseif entry.rankPosition == 2 %}
+                                                                    <i class="fas fa-medal text-secondary"></i> 2ème
+                                                                {% elseif entry.rankPosition == 3 %}
+                                                                    <i class="fas fa-medal text-warning" style="color: #cd7f32;"></i> 3ème
+                                                                {% else %}
+                                                                    #{{ entry.rankPosition }}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    {% if entry.user.profileImage %}
+                                                                        <img src="{{ asset('uploads/profile/' ~ entry.user.profileImage) }}" 
+                                                                             class="rounded-circle me-2" 
+                                                                             style="width: 30px; height: 30px; object-fit: cover;" 
+                                                                             alt="{{ entry.user.fullName }}">
+                                                                    {% else %}
+                                                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2" 
+                                                                             style="width: 30px; height: 30px;">
+                                                                            <span class="text-white fw-bold">{{ entry.user.fullName|first|upper }}</span>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                    {{ entry.user.fullName }}
+                                                                    {% if entry.user.id == user.id %}
+                                                                        <span class="badge bg-primary ms-2">Vous</span>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {% if entry.currentLevel %}
+                                                                    <span class="badge" style="background-color: {{ entry.currentLevel.color }}; color: white;">
+                                                                        {{ entry.currentLevel.name }}
+                                                                    </span>
+                                                                {% else %}
+                                                                    <span class="badge bg-secondary">Beginner</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <strong>{{ entry.totalPoints }}</strong> XP
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                            <h5>Pas encore de classement</h5>
+                                            <p class="text-muted">Soyez le premier à commencer votre progression</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main content END -->
+        </div>
+    </div>
+</section>
+<!-- =======================
+Gamification Profile END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<script>
+// Enhanced Real-time Progress Updates
+class ProgressUpdater {
+    constructor() {
+        this.updateInterval = null;
+        this.lastUpdate = null;
+        this.isUpdating = false;
+        this.init();
+    }
+
+    init() {
+        // Start real-time updates
+        this.startRealTimeUpdates();
+        
+        // Listen for lesson completion events
+        this.setupEventListeners();
+        
+        // Add visual enhancements
+        this.addVisualEffects();
+        
+        // Initial update
+        this.updateProgressData();
+    }
+
+    startRealTimeUpdates() {
+        // Update every 3 seconds for better responsiveness
+        this.updateInterval = setInterval(() => {
+            this.updateProgressData();
+        }, 3000);
+    }
+
+    updateProgressData() {
+        if (this.isUpdating) return;
+        
+        this.isUpdating = true;
+        
+        fetch('/gamification/api/stats')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error fetching stats:', data.error);
+                    this.isUpdating = false;
+                    return;
+                }
+                
+                const stats = data.stats;
+                const progress = data.progress;
+                
+                // Update XP display with animation
+                this.animateValue('total-xp', stats.total_points);
+                this.animateValue('total-xp-display', stats.total_points);
+                this.animateValue('rank-display', '#' + stats.rank);
+                this.animateValue('badges-display', stats.badges_count);
+                
+                // Update progress bar with enhanced animation
+                this.updateProgressBar(progress);
+                
+                // Update level names
+                this.updateLevelNames(stats.current_level.name, progress.next_level);
+                
+                // Update XP values
+                this.updateXPValues(progress.current_points, progress.points_to_next);
+                
+                // Add celebration effect for level ups
+                if (this.lastUpdate && stats.total_points > this.lastUpdate.total_points) {
+                    this.celebrateProgress(stats.total_points - this.lastUpdate.total_points);
+                }
+                
+                this.lastUpdate = data;
+                this.isUpdating = false;
+            })
+            .catch(error => {
+                console.error('Error updating progress:', error);
+                this.isUpdating = false;
+            });
+    }
+
+    updateProgressBar(progress) {
+        const progressBar = document.getElementById('progress-bar');
+        const progressGlow = document.querySelector('.progress-glow');
+        const progressPercentage = Math.round(progress.progress);
+        
+        if (!progressBar) return;
+        
+        // Update progress bar with smooth animation
+        progressBar.style.width = progressPercentage + '%';
+        progressBar.setAttribute('aria-valuenow', progressPercentage);
+        
+        // Update percentage text
+        const percentageText = document.getElementById('progress-percentage');
+        if (percentageText) {
+            this.animateValue('progress-percentage', progressPercentage + '%');
+        }
+        
+        // Update glow effect
+        if (progressGlow) {
+            progressGlow.style.width = progressPercentage + '%';
+        }
+        
+        // Add pulse effect for significant progress
+        if (progressPercentage > 0 && progressPercentage % 25 === 0) {
+            this.addPulseEffect(progressBar);
+        }
+    }
+
+    updateLevelNames(currentLevel, nextLevel) {
+        const currentLevelElement = document.getElementById('current-level-name');
+        const nextLevelElement = document.getElementById('next-level-name');
+        
+        if (currentLevelElement && currentLevelElement.textContent !== currentLevel) {
+            this.animateTextChange(currentLevelElement, currentLevel);
+        }
+        
+        if (nextLevelElement && nextLevelElement.textContent !== nextLevel) {
+            this.animateTextChange(nextLevelElement, nextLevel);
+        }
+    }
+
+    updateXPValues(currentXP, xpToNext) {
+        const currentXPElement = document.getElementById('current-xp');
+        const xpToNextElement = document.getElementById('xp-to-next');
+        
+        if (currentXPElement) {
+            currentXPElement.innerHTML = `<i class="fas fa-star me-1"></i>${currentXP} XP`;
+        }
+        
+        if (xpToNextElement) {
+            xpToNextElement.innerHTML = `<i class="fas fa-flag me-1"></i>${xpToNext} XP restants`;
+        }
+    }
+
+    animateValue(elementId, newValue) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        const currentValue = parseInt(element.textContent.replace(/[^0-9]/g, '')) || 0;
+        const targetValue = typeof newValue === 'string' ? parseInt(newValue.replace(/[^0-9]/g, '')) : newValue;
+        
+        if (currentValue === targetValue) return;
+        
+        const duration = 800;
+        const startTime = performance.now();
+        
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function for smooth animation
+            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+            const current = Math.floor(currentValue + (targetValue - currentValue) * easeOutQuart);
+            
+            if (typeof newValue === 'string' && newValue.includes('%')) {
+                element.textContent = current + '%';
+            } else if (typeof newValue === 'string' && newValue.includes('#')) {
+                element.textContent = '#' + current;
+            } else {
+                element.textContent = current;
+            }
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                // Final update to ensure exact value
+                element.textContent = newValue;
+            }
+        };
+        
+        requestAnimationFrame(animate);
+    }
+
+    animateTextChange(element, newText) {
+        element.style.opacity = '0';
+        element.style.transform = 'scale(0.9)';
+        
+        setTimeout(() => {
+            element.textContent = newText;
+            element.style.opacity = '1';
+            element.style.transform = 'scale(1)';
+        }, 200);
+    }
+
+    addPulseEffect(element) {
+        element.classList.add('progress-pulse');
+        setTimeout(() => {
+            element.classList.remove('progress-pulse');
+        }, 2000);
+    }
+
+    celebrateProgress(points) {
+        // Create celebration notification
+        const notification = document.createElement('div');
+        notification.className = 'progress-celebration';
+        notification.innerHTML = `
+            <div class="celebration-content">
+                <i class="fas fa-star"></i>
+                <span>+${points} XP!</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate and remove
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    setupEventListeners() {
+        // Listen for lesson completion events
+        document.addEventListener('lessonCompleted', (event) => {
+            console.log('Lesson completed, updating progress...');
+            this.updateProgressData();
+        });
+        
+        // Listen for visibility changes to pause/resume updates
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.pauseUpdates();
+            } else {
+                this.resumeUpdates();
+            }
+        });
+    }
+
+    addVisualEffects() {
+        // Add hover effects to progress bar
+        const progressBar = document.getElementById('progress-bar');
+        if (progressBar) {
+            progressBar.addEventListener('mouseenter', () => {
+                progressBar.style.transform = 'scaleY(1.1)';
+                progressBar.style.boxShadow = '0 4px 8px rgba(102, 126, 234, 0.4)';
+            });
+            
+            progressBar.addEventListener('mouseleave', () => {
+                progressBar.style.transform = 'scaleY(1)';
+                progressBar.style.boxShadow = '0 2px 4px rgba(102, 126, 234, 0.3)';
+            });
+        }
+    }
+
+    pauseUpdates() {
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+            this.updateInterval = null;
+        }
+    }
+
+    resumeUpdates() {
+        if (!this.updateInterval) {
+            this.startRealTimeUpdates();
+        }
+    }
+
+    destroy() {
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+        }
+    }
+}
+
+// Initialize the progress updater
+let progressUpdater;
+
+document.addEventListener('DOMContentLoaded', () => {
+    progressUpdater = new ProgressUpdater();
+});
+
+// Clean up on page unload
+window.addEventListener('beforeunload', () => {
+    if (progressUpdater) {
+        progressUpdater.destroy();
+    }
+});
+</script>
+
+<style>
+/* Enhanced Progress Bar Styles */
+.dynamic-progress-wrapper {
+    position: relative;
+}
+
+.progress-bar-animated {
+    background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 40px 40px;
+    animation: progress-bar-stripes 2s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+    0% {
+        background-position: 40px 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+.progress-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    opacity: 0.3;
+    filter: blur(8px);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+}
+
+.progress-pulse {
+    animation: progressPulse 2s cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes progressPulse {
+    0% {
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+    }
+    100% {
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+    }
+}
+
+.progress-stat {
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    transition: transform 0.2s ease;
+}
+
+.progress-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar-text {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Celebration Notification */
+.progress-celebration {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    transform: translateX(400px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-celebration.show {
+    transform: translateX(0);
+}
+
+.celebration-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.celebration-content i {
+    font-size: 1.2rem;
+    animation: starSpin 1s ease-in-out infinite;
+}
+
+@keyframes starSpin {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+}
+
+/* Smooth transitions for all updates */
+#current-level-name,
+#next-level-name,
+#current-xp,
+#xp-to-next,
+#progress-percentage {
+    transition: all 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .progress-stat {
+        padding: 0.25rem;
+    }
+    
+    .progress-stat small {
+        font-size: 0.75rem;
+    }
+    
+    .progress-stat strong {
+        font-size: 0.875rem;
+    }
+}
+</style>
+{% endblock %}

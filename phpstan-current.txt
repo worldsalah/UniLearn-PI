@@ -1,0 +1,1887 @@
+﻿php : Note: Using configuration file C:\xampp\htdocs\UniLearn-PI-main\phpstan.neon.
+Au caractère Ligne:1 : 1
++ php c:\xampp\htdocs\UniLearn-PI-main\vendor\bin\phpstan analyse --mem ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Note: Using con...n\phpstan.neon.:String) [], Re 
+   moteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ÔÜá´©Å  You're using a deprecated config option checkMissingIterableValueType ÔÜá´©Å´©Å
+
+It's strongly recommended to remove it from your configuration file
+and add the missing array typehints.
+
+If you want to continue ignoring missing typehints from arrays,
+add missingType.iterableValue error identifier to your ignoreErrors:
+
+parameters:
+	ignoreErrors:
+		-
+			identifier: missingType.iterableValue
+
+ÔÜá´©Å  You're using a deprecated config option checkGenericClassInNonGenericObjectType 
+ÔÜá´©Å´©Å
+
+It's strongly recommended to remove it from your configuration file
+and add the missing generic typehints.
+
+If you want to continue ignoring missing typehints from generics,
+add missingType.generics error identifier to your ignoreErrors:
+
+parameters:
+	ignoreErrors:
+		-
+			identifier: missingType.generics
+
+ ------ ----------------------------------------------------------------------------------- 
+  Line   src\Command\InitializeGamificationCommand.php                                      
+ ------ ----------------------------------------------------------------------------------- 
+  :21    Property App\Command\InitializeGamificationCommand::$gamificationService is never  
+         read, only written.                                                                
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties   
+ ------ ----------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Controller\Admin\QuizController.php                                           
+ ------ ---------------------------------------------------------------------------------- 
+  :213   Method App\Controller\Admin\QuizController::formatQuizzesForAjax() has parameter  
+         $allQuestions with no type specified.                                             
+  :213   Method App\Controller\Admin\QuizController::formatQuizzesForAjax() has parameter  
+         $quizzes with no type specified.                                                  
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Controller\Admin\RbacController.php                                              
+ ------ ------------------------------------------------------------------------------------- 
+  :44    Parameter #1 $description of method App\Entity\Role::setDescription() expects        
+         string|null, bool|float|int|string|null given.                                       
+  :61    Parameter #1 $description of method App\Entity\Role::setDescription() expects        
+         string|null, bool|float|int|string|null given.                                       
+  :115   Parameter #1 $description of method App\Entity\Permission::setDescription() expects  
+         string|null, bool|float|int|string|null given.                                       
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------ 
+  Line   src\Controller\AdvancedPdfReportController.php                                      
+ ------ ------------------------------------------------------------------------------------ 
+  :26    Property App\Controller\AdvancedPdfReportController::$entityManager is never read,  
+         only written.                                                                       
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties    
+  :37    Only booleans are allowed in a negated boolean, App\Entity\QuizResult|null given.   
+  :78    Cannot call method getFullName() on App\Entity\User|null.                           
+  :79    Cannot call method getTitle() on App\Entity\Quiz|null.                              
+  :89    Cannot call method format() on DateTimeImmutable|null.                              
+  :92    Call to static method create() on an unknown class Endroid\QrCode\Builder\Builder.  
+         ­ƒÆí Learn more at https://phpstan.org/user-guide/discovering-symbols                 
+  :94    Instantiated class Endroid\QrCode\Encoding\Encoding not found.                      
+         ­ƒÆí Learn more at https://phpstan.org/user-guide/discovering-symbols                 
+  :95    Instantiated class Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow not  
+         found.                                                                              
+         ­ƒÆí Learn more at https://phpstan.org/user-guide/discovering-symbols                 
+  :98    Instantiated class Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin not   
+         found.                                                                              
+         ­ƒÆí Learn more at https://phpstan.org/user-guide/discovering-symbols                 
+ ------ ------------------------------------------------------------------------------------ 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Controller\Api\BookingController.php                                          
+ ------ ---------------------------------------------------------------------------------- 
+  :24    Property App\Controller\Api\BookingController::$validator is never read, only     
+         written.                                                                          
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties  
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Controller\Api\PerformanceController.php                                          
+ ------ -------------------------------------------------------------------------------------- 
+  :155   Offset 'users' does not exist on array{}|array{users: non-empty-array<int<0, max>,    
+         array{id: int<0, max>, name: non-falsy-string, history: array{'data', 'data',         
+         'data', 'data', 'data', 'data', 'data', 'data', ...}}>}.                              
+  :156   Offset 'users' does not exist on array{users?: non-empty-array<int<0, max>,           
+         array{id: int<0, max>, name: non-falsy-string, history: array{'data', 'data',         
+         'data', 'data', 'data', 'data', 'data', 'data', ...}}>, backup:                       
+         non-empty-array<int<0, max>, array{id: int<0, max>, name: non-falsy-string, history:  
+         array{'data', 'data', 'data', 'data', 'data', 'data', 'data', 'data', ...}}>}.        
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Controller\Api\RecommendationApiController.php                                    
+ ------ -------------------------------------------------------------------------------------- 
+  :20    Property App\Controller\Api\RecommendationApiController::$entityManager is never      
+         read, only written.                                                                   
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties      
+  :173   Method App\Controller\Api\RecommendationApiController::getUserRecentlyViewed() has    
+         parameter $user with no type specified.                                               
+  :212   Method                                                                                
+         App\Controller\Api\RecommendationApiController::getPersonalizedRecommendations() has  
+         parameter $user with no type specified.                                               
+  :252   Method                                                                                
+         App\Controller\Api\RecommendationApiController::getAlsoBoughtProductsPrivate() has    
+         parameter $product with no type specified.                                            
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Controller\Api\ReputationApiController.php                                        
+ ------ -------------------------------------------------------------------------------------- 
+  :38    Parameter #1 $seller of method                                                        
+         App\Service\SellerReputationService::calculateReputationScore() expects               
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.            
+  :66    Parameter #1 $seller of method                                                        
+         App\Service\SellerReputationService::getPerformanceMetrics() expects                  
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.            
+  :93    Parameter #1 $seller of method App\Service\SellerReputationService::getSellerStats()  
+         expects App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.    
+  :259   Casting to string something that's already string.                                    
+  :259   Parameter #1 $string of function strtolower expects string, bool|float|int|string     
+         given.                                                                                
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Controller\BookingController.php                                                  
+ ------ -------------------------------------------------------------------------------------- 
+  :104   Parameter #2 $timestamp of function date expects int|null, int|false given.           
+  :263   Parameter #1 $user of method App\Entity\MeetingFeedback::setUser() expects            
+         App\Entity\User|null, Symfony\Component\Security\Core\User\UserInterface given.       
+  :410   Only booleans are allowed in a negated boolean, string|false given.                   
+  :417   Parameter #2 $datetime of static method DateTime::createFromFormat() expects string,  
+         float|int<min, -1>|int<1, max>|string|true given.                                     
+  :418   Only booleans are allowed in a negated boolean, DateTime|false given.                 
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Controller\CartController.php                                                    
+ ------ ------------------------------------------------------------------------------------- 
+  :20    Property App\Controller\CartController::$entityManager is never read, only written.  
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties     
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------- 
+  Line   src\Controller\CourseGridController.php                                        
+ ------ ------------------------------------------------------------------------------- 
+  :43    Call to function is_array() with array will always evaluate to true.           
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :43    Else branch is unreachable because ternary operator condition is always true.  
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :44    Call to function is_array() with array will always evaluate to true.           
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :44    Else branch is unreachable because ternary operator condition is always true.  
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :45    Call to function is_array() with array will always evaluate to true.           
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :45    Else branch is unreachable because ternary operator condition is always true.  
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :179   Call to function is_array() with array will always evaluate to true.           
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :179   Else branch is unreachable because ternary operator condition is always true.  
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :180   Call to function is_array() with array will always evaluate to true.           
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :180   Else branch is unreachable because ternary operator condition is always true.  
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :181   Call to function is_array() with array will always evaluate to true.           
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+  :181   Else branch is unreachable because ternary operator condition is always true.  
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by    
+            setting treatPhpDocTypesAsCertain: false in your                            
+            phpstan.neon.                                                               
+ ------ ------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------- 
+  Line   src\Controller\EnrollmentController.php                                         
+ ------ -------------------------------------------------------------------------------- 
+  :211   Method App\Controller\EnrollmentController::redirectToFirstLesson() is unused.  
+ ------ -------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------ 
+  Line   src\Controller\HomeController.php                                                   
+ ------ ------------------------------------------------------------------------------------ 
+  :38    Parameter #1 $categoryId of method                                                  
+         App\Repository\CourseRepository::findByCategoryId() expects int, int|null given.    
+  :40    Parameter #1 $categoryId of method                                                  
+         App\Repository\CourseRepository::findByCategoryIdAnyStatus() expects int, int|null  
+         given.                                                                              
+  :69    Only booleans are allowed in a negated boolean,                                     
+         Symfony\Component\Security\Core\User\UserInterface|null given.                      
+ ------ ------------------------------------------------------------------------------------ 
+
+ ------ ---------------------------------------------------------------------------------------- 
+  Line   src\Controller\InstructorController.php                                                 
+ ------ ---------------------------------------------------------------------------------------- 
+  :34    Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :42    Only booleans are allowed in a negated boolean, App\Entity\User|null given.             
+  :93    Only booleans are allowed in an if condition, DateTimeInterface|null given.             
+  :160   Only booleans are allowed in an if condition, DateTimeImmutable|null given.             
+  :221   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :229   Only booleans are allowed in a negated boolean, App\Entity\User|null given.             
+  :273   Only booleans are allowed in an if condition, DateTimeImmutable|null given.             
+  :316   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :324   Only booleans are allowed in a negated boolean, App\Entity\User|null given.             
+  :335   Parameter #1 $title of method App\Entity\Course::setTitle() expects string,             
+         bool|float|int|string|null given.                                                       
+  :336   Parameter #1 $shortDescription of method App\Entity\Course::setShortDescription()       
+         expects string, bool|float|int|string|null given.                                       
+  :340   Only booleans are allowed in an if condition, bool|float|int|string|null given.         
+  :342   Only booleans are allowed in an if condition, App\Entity\Category|null given.           
+  :347   Parameter #1 $level of method App\Entity\Course::setLevel() expects string,             
+         bool|float|int|string|null given.                                                       
+  :349   Parameter #1 $language of method App\Entity\Course::setLanguage() expects               
+         string|null, bool|float|int|string|null given.                                          
+  :351   Parameter #1 $requirements of method App\Entity\Course::setRequirements() expects       
+         string|null, bool|float|int|string|null given.                                          
+  :352   Parameter #1 $learningOutcomes of method App\Entity\Course::setLearningOutcomes()       
+         expects string|null, bool|float|int|string|null given.                                  
+  :353   Parameter #1 $targetAudience of method App\Entity\Course::setTargetAudience()           
+         expects string|null, bool|float|int|string|null given.                                  
+  :381   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :389   Only booleans are allowed in a negated boolean, App\Entity\User|null given.             
+  :398   If condition is always true.                                                            
+  :398   Only booleans are allowed in an if condition,                                           
+         Symfony\Component\Security\Core\User\UserInterface given.                               
+  :416   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :424   Only booleans are allowed in a negated boolean, App\Entity\User|null given.             
+  :488   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :512   Call to function in_array() requires parameter #3 to be set.                            
+  :561   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :630   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :674   Call to function method_exists() with App\Entity\QuizResult and 'getScore' will         
+         always evaluate to true.                                                                
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by             
+            setting treatPhpDocTypesAsCertain: false in your                                     
+            phpstan.neon.                                                                        
+  :713   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :757   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :773   Binary operation "." between array|bool|float|int|string|UnitEnum|null and              
+         '/public/uploadsÔÇª' results in an error.                                                 
+  :783   If condition is always true.                                                            
+  :783   Only booleans are allowed in an if condition, Symfony\Component\Form\FormInterface      
+         given.                                                                                  
+  :786   Parameter #1 $user of method                                                            
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::isPasswordValid()  
+         expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface,        
+         Symfony\Component\Security\Core\User\UserInterface given.                               
+  :788   Parameter #1 $user of method                                                            
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::hashPassword()     
+         expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface,        
+         Symfony\Component\Security\Core\User\UserInterface given.                               
+  :788   Parameter #2 $plainPassword of method                                                   
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::hashPassword()     
+         expects string, Symfony\Component\Form\FormInterface given.                             
+  :824   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :844   Only numeric types are allowed in *, float|null given on the right side.                
+  :856   Only booleans are allowed in an if condition, DateTimeInterface|null given.             
+  :907   Only booleans are allowed in a negated boolean,                                         
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :942   Parameter #1 $user of method                                                            
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::isPasswordValid()  
+         expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface,        
+         Symfony\Component\Security\Core\User\UserInterface given.                               
+  :989   Method App\Controller\InstructorController::calculateTotalEarnings() is unused.         
+ ------ ---------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Controller\JobController.php                                                      
+ ------ -------------------------------------------------------------------------------------- 
+  :31    Only booleans are allowed in a negated boolean,                                       
+         Symfony\Component\Security\Core\User\UserInterface|null given.                        
+  :47    Only booleans are allowed in a negated boolean,                                       
+         Symfony\Component\Security\Core\User\UserInterface|null given.                        
+  :50    Only booleans are allowed in a negated boolean, App\Entity\User|null given.           
+  :108   Only booleans are allowed in a negated boolean,                                       
+         Symfony\Component\Security\Core\User\UserInterface|null given.                        
+  :124   Parameter #2 $freelancer of method                                                    
+         App\Repository\ApplicationRepository::findByJobAndFreelancer() expects                
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.            
+  :125   Only booleans are allowed in an if condition, App\Entity\Application|null given.      
+  :144   Parameter #1 $coverLetter of method App\Entity\Application::setCoverLetter() expects  
+         string|null, bool|float|int|string|null given.                                        
+  :145   Parameter #1 $proposedBudget of method App\Entity\Application::setProposedBudget()    
+         expects string|null, float given.                                                     
+  :146   Parameter #1 $timeline of method App\Entity\Application::setTimeline() expects        
+         string|null, bool|float|int|string|null given.                                        
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Controller\LessonController.php                                                   
+ ------ -------------------------------------------------------------------------------------- 
+  :47    Only booleans are allowed in a ternary operator condition, App\Entity\Chapter|null    
+         given.                                                                                
+  :49    Only booleans are allowed in a negated boolean, App\Entity\Course|null given.         
+  :56    Cannot call method getId() on                                                         
+         Symfony\Component\Security\Core\User\UserInterface|null.                              
+  :56    Only booleans are allowed in &&, App\Entity\User|null given on the left side.         
+  :59    Call to function in_array() requires parameter #3 to be set.                          
+  :59    Cannot call method getRoles() on                                                      
+         Symfony\Component\Security\Core\User\UserInterface|null.                              
+  :68    Parameter #1 $user of method                                                          
+         App\Repository\EnrollmentRepository::findOneByUserAndCourse() expects                 
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.       
+  :70    Only booleans are allowed in a negated boolean, App\Entity\Enrollment|null given.     
+  :97    Parameter #2 $course of method                                                        
+         App\Controller\LessonController::isLastCompletedLesson() expects                      
+         App\Controller\Course, App\Entity\Course given.                                       
+  :98    Parameter #3 $course of method                                                        
+         App\Controller\LessonController::isLessonUpToCurrentPosition() expects                
+         App\Controller\Course, App\Entity\Course given.                                       
+  :101   Left side of || is always false.                                                      
+  :102   Parameter #2 $course of method                                                        
+         App\Controller\LessonController::isLastCompletedLesson() expects                      
+         App\Controller\Course, App\Entity\Course given.                                       
+  :102   Right side of || is always false.                                                     
+  :103   Parameter #3 $course of method                                                        
+         App\Controller\LessonController::isLessonUpToCurrentPosition() expects                
+         App\Controller\Course, App\Entity\Course given.                                       
+  :103   Right side of || is always false.                                                     
+  :138   Parameter #1 $user of method                                                          
+         App\Repository\LessonCompletionRepository::findByUserAndCourse() expects              
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.       
+  :142   Method App\Controller\LessonController::getAdjacentLesson() has parameter $course     
+         with no type specified.                                                               
+  :162   Cannot call method getId() on App\Entity\Chapter|null.                                
+  :172   Method App\Controller\LessonController::renderLesson() has parameter $chapter with    
+         no type specified.                                                                    
+  :172   Method App\Controller\LessonController::renderLesson() has parameter                  
+         $chapterRepository with no type specified.                                            
+  :172   Method App\Controller\LessonController::renderLesson() has parameter $course with no  
+         type specified.                                                                       
+  :172   Method App\Controller\LessonController::renderLesson() has parameter $enrollment      
+         with no type specified.                                                               
+  :172   Method App\Controller\LessonController::renderLesson() has parameter $user with no    
+         type specified.                                                                       
+  :208   Method App\Controller\LessonController::isLessonCompleted() has parameter $user with  
+         no type specified.                                                                    
+  :214   Method App\Controller\LessonController::isNextLessonAfterCompleted() has parameter    
+         $course with no type specified.                                                       
+  :214   Method App\Controller\LessonController::isNextLessonAfterCompleted() has parameter    
+         $user with no type specified.                                                         
+  :251   Method App\Controller\LessonController::isLastCompletedLesson() has parameter $user   
+         with no type specified.                                                               
+  :251   Parameter $course of method App\Controller\LessonController::isLastCompletedLesson()  
+         has invalid type App\Controller\Course.                                               
+  :266   Parameter #2 $course of method                                                        
+         App\Repository\LessonCompletionRepository::findByUserAndCourse() expects              
+         App\Entity\Course, App\Controller\Course given.                                       
+  :281   Method App\Controller\LessonController::isLessonUpToCurrentPosition() has parameter   
+         $user with no type specified.                                                         
+  :281   Parameter $course of method                                                           
+         App\Controller\LessonController::isLessonUpToCurrentPosition() has invalid type       
+         App\Controller\Course.                                                                
+  :316   Method App\Controller\LessonController::getLessonPosition() is unused.                
+  :318   Cannot call method getCourse() on App\Entity\Chapter|null.                            
+  :347   Only booleans are allowed in a ternary operator condition, App\Entity\Chapter|null    
+         given.                                                                                
+  :349   Only booleans are allowed in a negated boolean, App\Entity\Course|null given.         
+  :356   Cannot call method getId() on                                                         
+         Symfony\Component\Security\Core\User\UserInterface|null.                              
+  :356   Only booleans are allowed in &&, App\Entity\User|null given on the left side.         
+  :357   Call to function in_array() requires parameter #3 to be set.                          
+  :357   Cannot call method getRoles() on                                                      
+         Symfony\Component\Security\Core\User\UserInterface|null.                              
+  :362   Parameter #1 $user of method                                                          
+         App\Repository\LessonCompletionRepository::findOneByUserAndLesson() expects           
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.       
+  :364   Only booleans are allowed in a negated boolean, App\Entity\LessonCompletion|null      
+         given.                                                                                
+  :366   Parameter #1 $user of method App\Entity\LessonCompletion::setUser() expects           
+         App\Entity\User|null, Symfony\Component\Security\Core\User\UserInterface|null given.  
+  :378   Parameter #1 $user of method                                                          
+         App\Repository\EnrollmentRepository::findOneByUserAndCourse() expects                 
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.       
+  :380   Only booleans are allowed in a negated boolean, App\Entity\Enrollment|null given.     
+  :385   Parameter #1 $user of method                                                          
+         App\Repository\LessonCompletionRepository::findOneByUserAndLesson() expects           
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.       
+  :387   Only booleans are allowed in a negated boolean, App\Entity\LessonCompletion|null      
+         given.                                                                                
+  :390   Parameter #1 $user of method App\Entity\LessonCompletion::setUser() expects           
+         App\Entity\User|null, Symfony\Component\Security\Core\User\UserInterface|null given.  
+  :398   Parameter #1 $user of method                                                          
+         App\Service\GamificationService::awardLessonCompletionXP() expects App\Entity\User,   
+         Symfony\Component\Security\Core\User\UserInterface|null given.                        
+  :398   Parameter #2 $lessonId of method                                                      
+         App\Service\GamificationService::awardLessonCompletionXP() expects int, int|null      
+         given.                                                                                
+  :398   Parameter #3 $lessonTitle of method                                                   
+         App\Service\GamificationService::awardLessonCompletionXP() expects string,            
+         string|null given.                                                                    
+  :404   Parameter #1 $user of method                                                          
+         App\Repository\LessonCompletionRepository::findByUserAndCourse() expects              
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.       
+  :422   Only booleans are allowed in a negated boolean, App\Entity\LessonCompletion|null      
+         given.                                                                                
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------- 
+  Line   src\Controller\LessonVideoController.php                                       
+ ------ ------------------------------------------------------------------------------- 
+  :54    Only booleans are allowed in a negated boolean, App\Entity\Lesson|null given.  
+  :98    Only booleans are allowed in a negated boolean,                                
+         Symfony\Component\Security\Core\User\UserInterface|null given.                 
+ ------ ------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Controller\MarketplaceController.php                                             
+ ------ ------------------------------------------------------------------------------------- 
+  :97    Only booleans are allowed in an if condition,                                        
+         Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :187   Only booleans are allowed in an if condition, DateTimeImmutable|null given.          
+  :196   Only booleans are allowed in a negated boolean,                                      
+         Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :199   Only booleans are allowed in a negated boolean, App\Entity\User|null given.          
+  :214   Parameter #1 $totalPrice of method App\Entity\Order::setTotalPrice() expects float,  
+         float|null given.                                                                    
+  :235   Only booleans are allowed in a negated boolean,                                      
+         Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :250   Anonymous function should return float but returns float|null.                       
+  :267   Only booleans are allowed in an if condition, DateTimeImmutable|null given.          
+  :273   Parameter #1 $title of method App\Entity\Product::setTitle() expects string,         
+         string|null given.                                                                   
+  :274   Parameter #1 $description of method App\Entity\Product::setDescription() expects     
+         string, string|null given.                                                           
+  :275   Parameter #1 $price of method App\Entity\Product::setPrice() expects float,          
+         float|null given.                                                                    
+  :280   Only booleans are allowed in a negated boolean,                                      
+         Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :283   Only booleans are allowed in a negated boolean, App\Entity\User|null given.          
+  :303   Parameter #1 $totalPrice of method App\Entity\Order::setTotalPrice() expects float,  
+         float|null given.                                                                    
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Controller\OrderController.php                                                   
+ ------ ------------------------------------------------------------------------------------- 
+  :23    Only booleans are allowed in a negated boolean,                                      
+         Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :31    Parameter #1 $totalPrice of method App\Entity\Order::setTotalPrice() expects float,  
+         float|null given.                                                                    
+  :55    Only booleans are allowed in a negated boolean,                                      
+         Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :69    Parameter #1 $review of method App\Entity\Order::setReview() expects string|null,    
+         bool|float|int|string|null given.                                                    
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------- ------------------------------------------------------------------------------------- 
+  Line    src\Controller\PageController.php                                                    
+ ------- ------------------------------------------------------------------------------------- 
+  :26     Property App\Controller\PageController::$quizRepository is never read, only          
+          written.                                                                             
+          ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties     
+  :27     Property App\Controller\PageController::$questionRepository is never read, only      
+          written.                                                                             
+          ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties     
+  :28     Property App\Controller\PageController::$entityManager is never read, only written.  
+          ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties     
+  :29     Property App\Controller\PageController::$validator is never read, only written.      
+          ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties     
+  :140    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :146    Parameter #1 $user of method                                                         
+          App\Service\GamificationService::initializeUserGamification() expects                
+          App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.           
+  :149    Parameter #1 $user of method                                                         
+          App\Service\GamificationService::getGamificationStats() expects App\Entity\User,     
+          Symfony\Component\Security\Core\User\UserInterface given.                            
+  :150    Parameter #1 $user of method                                                         
+          App\Service\GamificationService::getProgressToNextLevel() expects App\Entity\User,   
+          Symfony\Component\Security\Core\User\UserInterface given.                            
+  :166    Cannot call method getId() on App\Entity\Course|null.                                
+  :167    Cannot call method getTitle() on App\Entity\Course|null.                             
+  :168    Cannot call method getThumbnailUrl() on App\Entity\Course|null.                      
+  :169    Cannot call method getUser() on App\Entity\Course|null.                              
+  :177    Loose comparison via "==" is not allowed.                                            
+          ­ƒÆí Use strict comparison via "===" instead.                                          
+  :178    Loose comparison via "==" is not allowed.                                            
+          ­ƒÆí Use strict comparison via "===" instead.                                          
+  :186    Call to function in_array() requires parameter #3 to be set.                         
+  :229    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :267    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :281    Cannot call method getTitle() on App\Entity\Course|null.                             
+  :282    Cannot call method getShortDescription() on App\Entity\Course|null.                  
+  :296    Cannot call method getChapters() on App\Entity\Course|null.                          
+  :302    Cannot call method getTitle() on App\Entity\Course|null.                             
+  :329    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :349    Cannot call method getDuration() on App\Entity\Course|null.                          
+  :374    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :388    Cannot call method getId() on App\Entity\Course|null.                                
+  :395    Call to function in_array() requires parameter #3 to be set.                         
+  :413    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :443    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :470    Only numeric types are allowed in /, int|null given on the left side.                
+  :493    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :505    Only booleans are allowed in a ternary operator condition, App\Entity\Quiz|null      
+          given.                                                                               
+  :508    Only booleans are allowed in a ternary operator condition, App\Entity\Quiz|null      
+          given.                                                                               
+  :509    Only booleans are allowed in a ternary operator condition, App\Entity\Course|null    
+          given.                                                                               
+  :512    Only numeric types are allowed in /, int|null given on the left side.                
+  :513    Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null    
+          given.                                                                               
+  :514    Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null    
+          given.                                                                               
+  :569    Parameter #3 $length of function array_slice expects int|null, float given.          
+  :570    Parameter #2 $offset of function array_slice expects int, float given.               
+  :703    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :713    Only booleans are allowed in a ternary operator condition, App\Entity\Quiz|null      
+          given.                                                                               
+  :717    Only booleans are allowed in a ternary operator condition, App\Entity\Quiz|null      
+          given.                                                                               
+  :718    Only booleans are allowed in a ternary operator condition, App\Entity\Course|null    
+          given.                                                                               
+  :721    Only numeric types are allowed in /, int|null given on the left side.                
+  :722    Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null    
+          given.                                                                               
+  :723    Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null    
+          given.                                                                               
+  :740    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :797    Parameter #1 $string of function strtolower expects string,                          
+          bool|float|int|string|null given.                                                    
+  :800    Parameter #1 $string of function strtolower expects string, string|null given.       
+  :801    Parameter #1 $string of function strtolower expects string, string|null given.       
+  :802    Parameter #1 $string of function strtolower expects string, string|null given.       
+  :846    Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :868    Cannot call method getTitle() on App\Entity\Course|null.                             
+  :869    Cannot call method getCategory() on App\Entity\Course|null.                          
+  :870    Cannot call method getLevel() on App\Entity\Course|null.                             
+  :879    Cannot call method getTitle() on App\Entity\Quiz|null.                               
+  :880    Cannot call method getCourse() on App\Entity\Quiz|null.                              
+  :883    Only numeric types are allowed in /, int|null given on the left side.                
+  :916    Only numeric types are allowed in /, int|null given on the left side.                
+  :973    Undefined variable: $goal                                                            
+  :974    Undefined variable: $goal                                                            
+  :1129   Call to function in_array() requires parameter #3 to be set.                         
+  :1131   Call to function in_array() requires parameter #3 to be set.                         
+  :1213   Call to function in_array() requires parameter #3 to be set.                         
+  :1217   Call to function in_array() requires parameter #3 to be set.                         
+  :1241   Method App\Controller\PageController::calculateEstimatedHours() should return int    
+          but returns float|int.                                                               
+  :1316   Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :1330   Parameter #1 $user of method App\Entity\LearningRoadmap::setUser() expects           
+          App\Entity\User|null, Symfony\Component\Security\Core\User\UserInterface given.      
+  :1376   Call to function in_array() requires parameter #3 to be set.                         
+  :1376   Call to function in_array() requires parameter #3 to be set.                         
+  :1382   Comparison operation ">" between int<1, max> and 0 is always true.                   
+          ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by          
+             setting treatPhpDocTypesAsCertain: false in your                                  
+             phpstan.neon.                                                                     
+  :1382   Else branch is unreachable because ternary operator condition is always true.        
+          ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by          
+             setting treatPhpDocTypesAsCertain: false in your                                  
+             phpstan.neon.                                                                     
+  :1387   Method App\Controller\PageController::calculateSemanticSimilarity() is unused.       
+  :1396   Variable $allWords in empty() always exists and is not falsy.                        
+  :1400   Call to function in_array() requires parameter #3 to be set.                         
+  :1405   Comparison operation ">" between int<1, max> and 0 is always true.                   
+          ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by          
+             setting treatPhpDocTypesAsCertain: false in your                                  
+             phpstan.neon.                                                                     
+  :1405   Else branch is unreachable because ternary operator condition is always true.        
+          ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by          
+             setting treatPhpDocTypesAsCertain: false in your                                  
+             phpstan.neon.                                                                     
+  :1408   Method App\Controller\PageController::analyzeLearningObjectiveAlignment() is         
+          unused.                                                                              
+  :1414   Method App\Controller\PageController::analyzeSkillProgression() is unused.           
+  :1420   Method App\Controller\PageController::analyzePrerequisiteDependencies() is unused.   
+  :1426   Method App\Controller\PageController::analyzeCareerRelevance() is unused.            
+  :1432   Method App\Controller\PageController::createConceptVector() is unused.               
+  :1439   Method App\Controller\PageController::calculateCosineSimilarity() is unused.         
+ ------- ------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Controller\PlacementTestController.php                                            
+ ------ -------------------------------------------------------------------------------------- 
+  :27    Property App\Controller\PlacementTestController::$testRepository is never read, only  
+         written.                                                                              
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties      
+  :56    Cannot call method getId() on                                                         
+         Symfony\Component\Security\Core\User\UserInterface|null.                              
+  :56    Only booleans are allowed in &&, App\Entity\User|null given on the left side.         
+  :57    Call to function in_array() requires parameter #3 to be set.                          
+  :57    Cannot call method getRoles() on                                                      
+         Symfony\Component\Security\Core\User\UserInterface|null.                              
+  :62    Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.           
+  :64    Only booleans are allowed in a negated boolean, App\Entity\CourseTest|null given.     
+  :82    Only booleans are allowed in a negated boolean, App\Entity\Enrollment|null given.     
+  :93    Only booleans are allowed in an if condition, App\Entity\Lesson|null given.           
+  :103   Only booleans are allowed in an if condition, App\Entity\Quiz|null given.             
+  :108   Only booleans are allowed in a negated boolean, App\Entity\CourseTest|null given.     
+  :127   Cannot call method getId() on                                                         
+         Symfony\Component\Security\Core\User\UserInterface|null.                              
+  :127   Only booleans are allowed in &&, App\Entity\User|null given on the left side.         
+  :128   Call to function in_array() requires parameter #3 to be set.                          
+  :128   Cannot call method getRoles() on                                                      
+         Symfony\Component\Security\Core\User\UserInterface|null.                              
+  :133   Only booleans are allowed in a negated boolean, App\Entity\CourseTest|null given.     
+  :155   Parameter #1 $user of method App\Entity\CourseTestResult::setUser() expects           
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.       
+  :179   Only booleans are allowed in a negated boolean, App\Entity\Enrollment|null given.     
+  :188   Only booleans are allowed in a negated boolean, App\Entity\CourseTest|null given.     
+  :212   Parameter #1 $user of method App\Entity\CourseTestResult::setUser() expects           
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface|null given.       
+  :245   Only booleans are allowed in a negated boolean, App\Entity\Enrollment|null given.     
+  :268   Only booleans are allowed in a negated boolean, App\Entity\Enrollment|null given.     
+  :285   Only booleans are allowed in an if condition, App\Entity\Lesson|null given.           
+  :391   Only booleans are allowed in a negated boolean, App\Entity\LessonCompletion|null      
+         given.                                                                                
+  :402   Parameter #1 $user of method                                                          
+         App\Service\GamificationService::awardCourseCompletionXP() expects App\Entity\User,   
+         App\Entity\User|null given.                                                           
+  :402   Parameter #2 $courseId of method                                                      
+         App\Service\GamificationService::awardCourseCompletionXP() expects int, int|null      
+         given.                                                                                
+  :402   Parameter #3 $courseTitle of method                                                   
+         App\Service\GamificationService::awardCourseCompletionXP() expects string,            
+         string|null given.                                                                    
+  :415   Only booleans are allowed in a negated boolean, App\Entity\LessonCompletion|null      
+         given.                                                                                
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Controller\ProductController.php                                              
+ ------ ---------------------------------------------------------------------------------- 
+  :19    Only booleans are allowed in a negated boolean,                                   
+         Symfony\Component\Security\Core\User\UserInterface|null given.                    
+  :35    Only booleans are allowed in a negated boolean,                                   
+         Symfony\Component\Security\Core\User\UserInterface|null given.                    
+  :38    Only booleans are allowed in a negated boolean, App\Entity\User|null given.       
+  :84    Only booleans are allowed in a negated boolean, App\Entity\Product|null given.    
+  :88    Only booleans are allowed in a negated boolean, App\Entity\Product|null given.    
+  :88    Only booleans are allowed in ||, DateTimeImmutable|null given on the right side.  
+  :92    Only booleans are allowed in a negated boolean, App\Entity\Product|null given.    
+  :108   Only booleans are allowed in an if condition, DateTimeImmutable|null given.       
+  :118   Only booleans are allowed in a negated boolean,                                   
+         Symfony\Component\Security\Core\User\UserInterface|null given.                    
+  :121   Only booleans are allowed in a negated boolean, App\Entity\User|null given.       
+  :136   Only booleans are allowed in a negated boolean, App\Entity\User|null given.       
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------------- 
+  Line   src\Controller\ProfileController.php                                                    
+ ------ ---------------------------------------------------------------------------------------- 
+  :50    Binary operation "." between array|bool|float|int|string|UnitEnum|null and              
+         '/public/uploadsÔÇª' results in an error.                                                 
+  :54    Cannot call method setProfileImage() on                                                 
+         Symfony\Component\Security\Core\User\UserInterface|null.                                
+  :59    Only booleans are allowed in an if condition, mixed given.                              
+  :61    Only booleans are allowed in &&, mixed given on the left side.                          
+  :61    Parameter #1 $user of method                                                            
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::isPasswordValid()  
+         expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface,        
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :62    Cannot call method setPassword() on                                                     
+         Symfony\Component\Security\Core\User\UserInterface|null.                                
+  :62    Parameter #1 $user of method                                                            
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::hashPassword()     
+         expects Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface,        
+         Symfony\Component\Security\Core\User\UserInterface|null given.                          
+  :74    Parameter #1 $object of method Doctrine\Persistence\ObjectManager::persist() expects    
+         object, Symfony\Component\Security\Core\User\UserInterface|null given.                  
+ ------ ---------------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------- 
+  Line   src\Controller\ProgressBarController.php                                     
+ ------ ----------------------------------------------------------------------------- 
+  :29    Negated boolean expression is always false.                                  
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by  
+            setting treatPhpDocTypesAsCertain: false in your                          
+            phpstan.neon.                                                             
+  :29    Only booleans are allowed in a negated boolean, App\Entity\User given.       
+  :145   Negated boolean expression is always false.                                  
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by  
+            setting treatPhpDocTypesAsCertain: false in your                          
+            phpstan.neon.                                                             
+  :145   Only booleans are allowed in a negated boolean, App\Entity\User given.       
+  :175   Negated boolean expression is always false.                                  
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by  
+            setting treatPhpDocTypesAsCertain: false in your                          
+            phpstan.neon.                                                             
+  :175   Only booleans are allowed in a negated boolean, App\Entity\User given.       
+ ------ ----------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------------- 
+  Line   src\Controller\QuizAttemptController.php                                           
+ ------ ----------------------------------------------------------------------------------- 
+  :33    Only booleans are allowed in a negated boolean,                                    
+         Symfony\Component\Security\Core\User\UserInterface|null given.                     
+  :38    Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.        
+  :64    Only booleans are allowed in a negated boolean,                                    
+         Symfony\Component\Security\Core\User\UserInterface|null given.                     
+  :69    Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.        
+  :107   Only booleans are allowed in a negated boolean,                                    
+         Symfony\Component\Security\Core\User\UserInterface|null given.                     
+  :112   Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.        
+  :159   Parameter #1 $user of method App\Entity\QuizResult::setUser() expects              
+         App\Entity\User|null, Symfony\Component\Security\Core\User\UserInterface given.    
+  :161   Parameter #1 $score of method App\Entity\QuizResult::setScore() expects int,       
+         float|int given.                                                                   
+  :181   Cannot call method format() on DateTimeImmutable|null.                             
+  :190   Only booleans are allowed in a negated boolean,                                    
+         Symfony\Component\Security\Core\User\UserInterface|null given.                     
+  :195   Only booleans are allowed in a negated boolean, App\Entity\QuizResult|null given.  
+  :213   Only booleans are allowed in a negated boolean,                                    
+         Symfony\Component\Security\Core\User\UserInterface|null given.                     
+ ------ ----------------------------------------------------------------------------------- 
+
+ ------- ------------------------------------------------------------------------------------- 
+  Line    src\Controller\QuizController.php                                                    
+ ------- ------------------------------------------------------------------------------------- 
+  :61     Only booleans are allowed in a negated boolean, App\Entity\Course|null given.        
+  :82     Only booleans are allowed in a ternary operator condition, App\Entity\Course|null    
+          given.                                                                               
+  :148    Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.          
+  :213    Only booleans are allowed in a negated boolean, App\Entity\Question|null given.      
+  :228    Cannot call method getId() on App\Entity\Quiz|null.                                  
+  :229    Cannot call method getTitle() on App\Entity\Quiz|null.                               
+  :249    Only booleans are allowed in a negated boolean, App\Entity\Question|null given.      
+  :330    Only booleans are allowed in a negated boolean, App\Entity\Question|null given.      
+  :395    Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.          
+  :403    Only booleans are allowed in an if condition, App\Entity\Course|null given.          
+  :438    Cannot call method format() on DateTimeImmutable|null.                               
+  :458    Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.          
+  :471    Strict comparison using !== between null and mixed will always evaluate to true.     
+          ­ƒÆí Type null has already been eliminated from mixed.                                 
+  :473    Only booleans are allowed in an if condition, App\Entity\Course|null given.          
+  :508    Only booleans are allowed in a ternary operator condition, App\Entity\Course|null    
+          given.                                                                               
+  :527    Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.          
+  :559    Only booleans are allowed in a ternary operator condition, App\Entity\Course|null    
+          given.                                                                               
+  :561    Cannot call method format() on DateTimeImmutable|null.                               
+  :562    Only booleans are allowed in a ternary operator condition, DateTimeImmutable|null    
+          given.                                                                               
+  :565    Parameter #3 $subject of function str_replace expects array|string, string|null      
+          given.                                                                               
+  :566    Parameter #3 $subject of function str_replace expects array|string, string|null      
+          given.                                                                               
+  :577    Parameter #3 $subject of function str_replace expects array|string, string|null      
+          given.                                                                               
+  :578    Parameter #3 $subject of function str_replace expects array|string, string|null      
+          given.                                                                               
+  :579    Parameter #3 $subject of function str_replace expects array|string, string|null      
+          given.                                                                               
+  :580    Parameter #3 $subject of function str_replace expects array|string, string|null      
+          given.                                                                               
+  :581    Parameter #3 $subject of function str_replace expects array|string, string|null      
+          given.                                                                               
+  :582    Cannot call method format() on DateTimeImmutable|null.                               
+  :618    Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.          
+  :629    Only booleans are allowed in an elseif condition, App\Entity\Course|null given.      
+  :633    Only booleans are allowed in a negated boolean, App\Entity\Course|null given.        
+  :640    Only booleans are allowed in a ternary operator condition, App\Entity\Course|null    
+          given.                                                                               
+  :641    Only booleans are allowed in a ternary operator condition, App\Entity\Course|null    
+          given.                                                                               
+  :713    Method App\Controller\QuizController::generatePDFContent() has parameter $quizzes    
+          with no type specified.                                                              
+  :713    Method App\Controller\QuizController::generatePDFContent() is unused.                
+  :1292   Only booleans are allowed in a negated boolean, App\Entity\Question|null given.      
+  :1376   Only booleans are allowed in a negated boolean, App\Entity\Question|null given.      
+  :1426   Expression on left side of ?? is not nullable.                                       
+  :1430   Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.          
+  :1437   Only booleans are allowed in a ternary operator condition,                           
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :1438   Only booleans are allowed in a ternary operator condition,                           
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :1440   Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :1446   Only booleans are allowed in a negated boolean, App\Entity\Course|null given.        
+  :1455   Only booleans are allowed in a negated boolean, App\Entity\Enrollment|null given.    
+  :1499   Cannot call method getId() on App\Entity\Course|null.                                
+  :1499   Variable $course might not be defined.                                               
+  :1508   Only booleans are allowed in a negated boolean, App\Entity\Quiz|null given.          
+  :1513   Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :1518   Only booleans are allowed in a negated boolean, App\Entity\Course|null given.        
+  :1525   Only booleans are allowed in a negated boolean, array given.                         
+  :1568   Parameter #1 $user of method App\Entity\QuizResult::setUser() expects                
+          App\Entity\User|null, Symfony\Component\Security\Core\User\UserInterface given.      
+  :1588   Only booleans are allowed in an if condition, App\Entity\Enrollment|null given.      
+  :1613   Cannot call method getId() on App\Entity\Course|null.                                
+  :1613   Variable $course might not be defined.                                               
+  :1622   Only booleans are allowed in a negated boolean, App\Entity\QuizResult|null given.    
+  :1627   Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :1635   Cannot call method getCourse() on App\Entity\Quiz|null.                              
+  :1635   Cannot call method getId() on App\Entity\Course|null.                                
+  :1639   Cannot call method getCourse() on App\Entity\Quiz|null.                              
+  :1641   Only booleans are allowed in a negated boolean, App\Entity\Course|null given.        
+  :1662   Only booleans are allowed in a negated boolean, App\Entity\QuizResult|null given.    
+  :1667   Only booleans are allowed in a negated boolean,                                      
+          Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :1675   Cannot call method getCourse() on App\Entity\Quiz|null.                              
+  :1675   Cannot call method getId() on App\Entity\Course|null.                                
+  :1679   Cannot call method getCourse() on App\Entity\Quiz|null.                              
+  :1681   Only booleans are allowed in a negated boolean, App\Entity\Course|null given.        
+  :1716   Binary operation "." between array|bool|float|int|string|UnitEnum|null and           
+          '/publicÔÇª' results in an error.                                                      
+  :1739   Parameter #1 $filename of method App\Entity\Certificate::setFilename() expects       
+          string, string|null given.                                                           
+  :1741   Parameter #1 $fileSize of method App\Entity\Certificate::setFileSize() expects int,  
+          int<0, max>|false given.                                                             
+  :1831   Method App\Controller\QuizController::shuffleQuestionAnswers() has parameter         
+          $question with no type specified.                                                    
+ ------- ------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Controller\QuizSettingsController.php                                            
+ ------ ------------------------------------------------------------------------------------- 
+  :23    Only booleans are allowed in a negated boolean, App\Entity\QuizSettings|null given.  
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------- 
+  Line   src\Controller\RegistrationController.php                                    
+ ------ ----------------------------------------------------------------------------- 
+  :73    Only booleans are allowed in a negated boolean, App\Entity\Role|null given.  
+  :94    Only booleans are allowed in a ternary operator condition, mixed given.      
+  :97    Only booleans are allowed in &&, mixed given on the left side.               
+  :108   Only booleans are allowed in a ternary operator condition, mixed given.      
+ ------ ----------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Controller\ResetPasswordController.php                                           
+ ------ ------------------------------------------------------------------------------------- 
+  :28    Only booleans are allowed in a negated boolean, bool|float|int|string|null given.    
+  :35    Only booleans are allowed in a negated boolean, App\Entity\User|null given.          
+  :55    Parameter #1 ...$addresses of method Symfony\Component\Mime\Email::to() expects      
+         string|Symfony\Component\Mime\Address, string|null given.                            
+  :83    Parameter #1 $to of function mail expects string, string|null given.                 
+  :88    Expression on left side of ?? is not nullable.                                       
+  :88    Offset 'message' does not exist on array{type: int, message: string, file: string,   
+         line: int}|null.                                                                     
+  :114   Only booleans are allowed in a negated boolean, App\Entity\User|null given.          
+  :123   Only booleans are allowed in a negated boolean, bool|float|int|string|null given.    
+  :123   Parameter #1 $string of function strlen expects string, float|int<min, -1>|int<1,    
+         max>|string|true given.                                                              
+  :134   Parameter #2 $plainPassword of method                                                
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::hashPassword()  
+         expects string, float|int<min, -1>|int<1, max>|string|true given.                    
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Controller\SessionController.php                                                 
+ ------ ------------------------------------------------------------------------------------- 
+  :43    Parameter #1 $name of method App\Entity\Session::setName() expects string,           
+         bool|float|int|string|null given.                                                    
+  :47    Only booleans are allowed in an if condition, bool|float|int|string|null given.      
+  :48    Parameter #1 $datetime of class DateTime constructor expects string, float|int<min,  
+         -1>|int<1, max>|string|true given.                                                   
+  :51    Parameter #1 $duration of method App\Entity\Session::setDuration() expects int,      
+         bool|float|int|string|null given.                                                    
+  :52    Parameter #1 $sessionDescription of method                                           
+         App\Entity\Session::setSessionDescription() expects string|null,                     
+         bool|float|int|string|null given.                                                    
+  :53    Parameter #1 $level of method App\Entity\Session::setLevel() expects string,         
+         bool|float|int|string|null given.                                                    
+  :88    Parameter #1 $string of function trim expects string, bool|float|int|string given.   
+  :89    Strict comparison using !== between null and string will always evaluate to true.    
+  :132   Parameter #1 $datetime of class DateTimeImmutable constructor expects string,        
+         bool|float|int|string|null given.                                                    
+  :133   Parameter #1 $datetime of class DateTimeImmutable constructor expects string,        
+         bool|float|int|string|null given.                                                    
+  :161   Parameter #1 $datetime of class DateTime constructor expects string, float|int<min,  
+         -1>|int<1, max>|string|true given.                                                   
+  :174   Parameter #1 $datetime of class DateTime constructor expects string, float|int<min,  
+         -1>|int<1, max>|string|true given.                                                   
+  :182   Parameter #1 $datetime of class DateTime constructor expects string,                 
+         bool|float|int|string|null given.                                                    
+  :183   Parameter #1 $datetime of class DateTime constructor expects string,                 
+         bool|float|int|string|null given.                                                    
+  :196   Parameter #1 $string of function trim expects string, bool|float|int|string given.   
+  :197   Strict comparison using !== between null and string will always evaluate to true.    
+  :228   Parameter #1 $level of method App\Entity\Session::setLevel() expects string,         
+         bool|float|int|string|null given.                                                    
+  :238   Parameter #1 $datetime of class DateTime constructor expects string,                 
+         bool|float|int|string|null given.                                                    
+  :239   Parameter #1 $datetime of class DateTime constructor expects string,                 
+         bool|float|int|string|null given.                                                    
+  :246   Offset 'availableFrom' on array{} in isset() does not exist.                         
+  :246   Offset 'availableTo' on array{} in isset() does not exist.                           
+  :246   Result of && is always true.                                                         
+  :247   Parameter #1 $datetime of class DateTimeImmutable constructor expects string,        
+         bool|float|int|string|null given.                                                    
+  :248   Parameter #1 $datetime of class DateTimeImmutable constructor expects string,        
+         bool|float|int|string|null given.                                                    
+  :251   Offset 'hourlyPrice' on array{} in isset() does not exist.                           
+  :257   Only booleans are allowed in an if condition, bool|float|int|string|null given.      
+  :259   Only booleans are allowed in an if condition, App\Entity\Category|null given.        
+  :309   Only booleans are allowed in a negated boolean, object|null given.                   
+  :319   Parameter #1 $string of function trim expects string, bool|float|int|string given.   
+  :320   Strict comparison using !== between null and string will always evaluate to true.    
+  :357   Parameter #1 $datetime of class DateTime constructor expects string, float|int<min,  
+         -1>|int<1, max>|string|true given.                                                   
+  :370   Parameter #1 $datetime of class DateTime constructor expects string, float|int<min,  
+         -1>|int<1, max>|string|true given.                                                   
+  :378   Parameter #1 $datetime of class DateTime constructor expects string,                 
+         bool|float|int|string|null given.                                                    
+  :379   Parameter #1 $datetime of class DateTime constructor expects string,                 
+         bool|float|int|string|null given.                                                    
+  :392   Parameter #1 $string of function trim expects string, bool|float|int|string given.   
+  :393   Strict comparison using !== between null and string will always evaluate to true.    
+  :424   Parameter #1 $datetime of class DateTime constructor expects string,                 
+         bool|float|int|string|null given.                                                    
+  :425   Parameter #1 $datetime of class DateTime constructor expects string,                 
+         bool|float|int|string|null given.                                                    
+  :432   Offset 'availableFrom' on array{} in isset() does not exist.                         
+  :432   Offset 'availableTo' on array{} in isset() does not exist.                           
+  :432   Result of && is always true.                                                         
+  :433   Undefined variable: $availableFromString                                             
+  :434   Undefined variable: $availableToString                                               
+  :437   Offset 'hourlyPrice' on array{} in isset() does not exist.                           
+  :438   Undefined variable: $hourlyPrice                                                     
+  :441   Parameter #1 $session of method App\Repository\SessionRepository::save() expects     
+         App\Entity\Session, object given.                                                    
+  :482   Only booleans are allowed in a negated boolean, object|null given.                   
+  :523   Only booleans are allowed in a negated boolean, object|null given.                   
+  :546   Only booleans are allowed in a negated boolean,                                      
+         Symfony\Component\Security\Core\User\UserInterface|null given.                       
+  :678   Only booleans are allowed in a negated boolean, object|null given.                   
+  :706   Only booleans are allowed in a negated boolean, object|null given.                   
+  :713   Only booleans are allowed in an if condition, bool|float|int|string|null given.      
+  :714   Parameter #1 $datetime of class DateTimeImmutable constructor expects string,        
+         float|int<min, -1>|int<1, max>|string|true given.                                    
+  :719   Parameter #1 $session of method App\Repository\SessionRepository::save() expects     
+         App\Entity\Session, object given.                                                    
+  :731   Only booleans are allowed in a negated boolean, object|null given.                   
+  :742   Only booleans are allowed in an if condition, DateTime|null given.                   
+  :766   Only booleans are allowed in a negated boolean, object|null given.                   
+  :770   Parameter #2 $token of method                                                        
+         Symfony\Bundle\FrameworkBundle\Controller\AbstractController::isCsrfTokenValid()     
+         expects string|null, bool|float|int|string|null given.                               
+  :787   Only booleans are allowed in a negated boolean, object|null given.                   
+  :818   Only booleans are allowed in a negated boolean, App\Entity\Role|null given.          
+  :822   Only booleans are allowed in a negated boolean, App\Entity\Role|null given.          
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------------- 
+  Line   src\Controller\StudentController.php                                       
+ ------ --------------------------------------------------------------------------- 
+  :31    Only booleans are allowed in a negated boolean,                            
+         Symfony\Component\Security\Core\User\UserInterface|null given.             
+  :46    Only booleans are allowed in an if condition, App\Entity\Role|null given.  
+ ------ --------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Controller\TranslationController.php                                          
+ ------ ---------------------------------------------------------------------------------- 
+  :201   Binary operation "." between array|bool|float|int|string|UnitEnum|null and        
+         '/config/serviceÔÇª' results in an error.                                           
+  :212   Instantiated class Google\Cloud\DocumentAI\V1\DocumentProcessorServiceClient not  
+         found.                                                                            
+         ­ƒÆí Learn more at https://phpstan.org/user-guide/discovering-symbols               
+  :225   Instantiated class Google\Cloud\DocumentAI\V1\RawDocument not found.              
+         ­ƒÆí Learn more at https://phpstan.org/user-guide/discovering-symbols               
+  :231   Instantiated class Google\Cloud\DocumentAI\V1\ProcessRequest not found.           
+         ­ƒÆí Learn more at https://phpstan.org/user-guide/discovering-symbols               
+  :235   Instantiated class Google\Cloud\DocumentAI\V1\ProcessOptions not found.           
+         ­ƒÆí Learn more at https://phpstan.org/user-guide/discovering-symbols               
+  :241   Call to method processDocument() on an unknown class                              
+         Google\Cloud\DocumentAI\V1\DocumentProcessorServiceClient.                        
+         ­ƒÆí Learn more at https://phpstan.org/user-guide/discovering-symbols               
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Controller\TutoringController.php                                                
+ ------ ------------------------------------------------------------------------------------- 
+  :40    Only booleans are allowed in an if condition, bool|float|int|string|null given.      
+  :88    Only booleans are allowed in a negated boolean, App\Entity\TeacherProfile|null       
+         given.                                                                               
+  :186   Only booleans are allowed in a negated boolean, App\Entity\TeacherProfile|null       
+         given.                                                                               
+  :255   Only booleans are allowed in an if condition, App\Entity\TeacherProfile|null given.  
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Controller\UserController.php                                                     
+ ------ -------------------------------------------------------------------------------------- 
+  :29    Only booleans are allowed in an if condition, bool|float|int|string|null given.       
+  :35    Only booleans are allowed in an if condition, bool|float|int|string|null given.       
+  :42    Only booleans are allowed in an if condition, bool|float|int|string|null given.       
+  :83    Parameter #1 $userId of method App\Repository\UserRepository::countCoursesByUser()    
+         expects int, int|null given.                                                          
+  :84    Parameter #1 $userId of method                                                        
+         App\Repository\UserRepository::countQuizResultsByUser() expects int, int|null given.  
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Controller\YouTubeController.php                                                 
+ ------ ------------------------------------------------------------------------------------- 
+  :96    Parameter #1 $query of method App\Service\YouTubeService::searchEducationalVideos()  
+         expects string, float|int<min, -1>|int<1, max>|string|true given.                    
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------- 
+  Line   src\Entity\Availability.php                    
+ ------ ----------------------------------------------- 
+  :161   Cannot call method format() on DateTime|null.  
+  :162   Cannot call method format() on DateTime|null.  
+  :187   Cannot call method format() on DateTime|null.  
+  :188   Cannot call method format() on DateTime|null.  
+  :189   Cannot call method format() on DateTime|null.  
+  :190   Cannot call method format() on DateTime|null.  
+ ------ ----------------------------------------------- 
+
+ ------ --------------------------------------------------------------------------------- 
+  Line   src\Entity\Bundle.php                                                            
+ ------ --------------------------------------------------------------------------------- 
+  :140   Only numeric types are allowed in -, int|null given on the left side.            
+  :140   Only numeric types are allowed in -, int|null given on the right side.           
+  :145   Only numeric types are allowed in post-increment, int|null given.                
+  :199   Call to function in_array() requires parameter #3 to be set.                     
+  :252   Only booleans are allowed in &&, DateTime|null given on the left side.           
+  :265   Only booleans are allowed in &&, DateTime|null given on the left side.           
+  :292   Only numeric types are allowed in /, int<min, -1>|int<1, max>|null given on the  
+         right side.                                                                      
+  :292   Only numeric types are allowed in /, int|null given on the left side.            
+ ------ --------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------- 
+  Line   src\Entity\Category.php                                                   
+ ------ -------------------------------------------------------------------------- 
+  :86    Parameter #1 $string of function trim expects string, string|null given.  
+ ------ -------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   src\Entity\Certificate.php                                         
+ ------ ------------------------------------------------------------------- 
+  :183   Only numeric types are allowed in post-increment, int|null given.  
+ ------ ------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Entity\CourseTest.php                                                             
+ ------ -------------------------------------------------------------------------------------- 
+  :16    Class App\Entity\CourseTest has an uninitialized property $id. Give it default value  
+         or assign it in the constructor.                                                      
+  :23    Class App\Entity\CourseTest has an uninitialized property $title. Give it default     
+         value or assign it in the constructor.                                                
+  :140   Parameter #1 $courseTest of method App\Entity\CourseTestQuestion::setCourseTest()     
+         expects App\Entity\CourseTest, null given.                                            
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Entity\CourseTestQuestion.php                                                     
+ ------ -------------------------------------------------------------------------------------- 
+  :15    Class App\Entity\CourseTestQuestion has an uninitialized property $id. Give it        
+         default value or assign it in the constructor.                                        
+  :19    Class App\Entity\CourseTestQuestion has an uninitialized property $courseTest. Give   
+         it default value or assign it in the constructor.                                     
+  :22    Class App\Entity\CourseTestQuestion has an uninitialized property $question. Give it  
+         default value or assign it in the constructor.                                        
+  :28    Class App\Entity\CourseTestQuestion has an uninitialized property $correctAnswer.     
+         Give it default value or assign it in the constructor.                                
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Entity\CourseTestResult.php                                                       
+ ------ -------------------------------------------------------------------------------------- 
+  :15    Class App\Entity\CourseTestResult has an uninitialized property $id. Give it default  
+         value or assign it in the constructor.                                                
+  :19    Class App\Entity\CourseTestResult has an uninitialized property $user. Give it        
+         default value or assign it in the constructor.                                        
+  :23    Class App\Entity\CourseTestResult has an uninitialized property $courseTest. Give it  
+         default value or assign it in the constructor.                                        
+  :38    Class App\Entity\CourseTestResult has an uninitialized property $timeTaken. Give it   
+         default value or assign it in the constructor.                                        
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Entity\LearningRoadmap.php                                                    
+ ------ ---------------------------------------------------------------------------------- 
+  :205   Parameter #1 $targetObject of method DateTime::diff() expects DateTimeInterface,  
+         DateTime|null given.                                                              
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------ 
+  Line   src\Entity\MeetingFeedback.php                                          
+ ------ ------------------------------------------------------------------------ 
+  :146   Only numeric types are allowed in +, int|null given on the left side.   
+  :146   Only numeric types are allowed in +, int|null given on the right side.  
+  :146   Only numeric types are allowed in +, int|null given on the right side.  
+ ------ ------------------------------------------------------------------------ 
+
+ ------ -------------------------------------------------------------- 
+  Line   src\Entity\Quiz.php                                           
+ ------ -------------------------------------------------------------- 
+  :218   Call to function in_array() requires parameter #3 to be set.  
+ ------ -------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Entity\QuizResult.php                                                         
+ ------ ---------------------------------------------------------------------------------- 
+  :41    Property App\Entity\QuizResult::$scoreValidation is never read, only written.     
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties  
+  :143   Only numeric types are allowed in /, int<min, -1>|int<1, max>|null given on the   
+         right side.                                                                       
+  :143   Only numeric types are allowed in /, int|null given on the left side.             
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------- 
+  Line   src\Entity\Review.php                                                    
+ ------ ------------------------------------------------------------------------- 
+  :171   Only numeric types are allowed in -, int|null given on the right side.   
+  :171   Parameter #2 $times of function str_repeat expects int, int|null given.  
+  :180   Cannot call method getTimestamp() on DateTime|null.                      
+ ------ ------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------ 
+  Line   src\Entity\TeacherProfile.php                                           
+ ------ ------------------------------------------------------------------------ 
+  :111   Call to function in_array() requires parameter #3 to be set.            
+  :201   Only numeric types are allowed in post-increment, int|null given.       
+  :253   Only numeric types are allowed in *, int|null given on the right side.  
+  :254   Only numeric types are allowed in +, int|null given on the left side.   
+  :271   Only numeric types are allowed in *, int|null given on the right side.  
+  :272   Only numeric types are allowed in /, int|null given on the right side.  
+  :284   Call to function in_array() requires parameter #3 to be set.            
+ ------ ------------------------------------------------------------------------ 
+
+ ------ ----------------------------------------------------------------------------------- 
+  Line   src\Entity\TimeSlot.php                                                            
+ ------ ----------------------------------------------------------------------------------- 
+  :114   Call to function in_array() requires parameter #3 to be set.                       
+  :138   Cannot clone DateTime|null.                                                        
+  :139   Cannot call method format() on DateTime|null.                                      
+  :140   Cannot call method setTime() on DateTime|null.                                     
+  :141   Method App\Entity\TimeSlot::getStartDateTime() should return DateTime but returns  
+         DateTime|null.                                                                     
+  :149   Cannot clone DateTime|null.                                                        
+  :150   Cannot call method format() on DateTime|null.                                      
+  :151   Cannot call method setTime() on DateTime|null.                                     
+  :152   Method App\Entity\TimeSlot::getEndDateTime() should return DateTime but returns    
+         DateTime|null.                                                                     
+  :185   Cannot call method format() on DateTime|null.                                      
+  :186   Cannot call method format() on DateTime|null.                                      
+ ------ ----------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------- 
+  Line   src\Entity\TutoringSession.php                                           
+ ------ ------------------------------------------------------------------------- 
+  :101   Only booleans are allowed in &&, DateTime|null given on the left side.   
+  :101   Only booleans are allowed in &&, DateTime|null given on the right side.  
+  :120   Call to function in_array() requires parameter #3 to be set.             
+  :181   Call to function in_array() requires parameter #3 to be set.             
+  :188   Only booleans are allowed in an if condition, DateTime|null given.       
+ ------ ------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Entity\User.php                                                                  
+ ------ ------------------------------------------------------------------------------------- 
+  :315   Only booleans are allowed in a negated boolean, DateTimeInterface|null given.        
+  :315   Only booleans are allowed in a negated boolean, string|null given.                   
+  :332   Only booleans are allowed in an if condition, App\Entity\Role|null given.            
+  :333   Parameter #1 $string of function strtoupper expects string, string|null given.       
+  :595   Method App\Entity\User::setAgreeTerms() has parameter $agreeTerms with no type       
+         specified.                                                                           
+  :743   Only booleans are allowed in &&, App\Entity\UserPoints|null given on the left side.  
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Entity\UserBadge.php                                                          
+ ------ ---------------------------------------------------------------------------------- 
+  :106   Method App\Entity\UserBadge::__toString() should return string but returns        
+         string|null.                                                                      
+  :106   Only booleans are allowed in a ternary operator condition, App\Entity\Badge|null  
+         given.                                                                            
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Entity\UserPoints.php                                                         
+ ------ ---------------------------------------------------------------------------------- 
+  :130   Only booleans are allowed in a negated boolean, App\Entity\UserLevel|null given.  
+  :136   Only numeric types are allowed in -, int|null given on the left side.             
+  :136   Only numeric types are allowed in -, int|null given on the right side.            
+  :142   Only numeric types are allowed in -, int|null given on the right side.            
+  :150   Only booleans are allowed in a negated boolean, App\Entity\UserLevel|null given.  
+  :155   Only numeric types are allowed in -, int|null given on the left side.             
+  :160   Only booleans are allowed in a ternary operator condition, App\Entity\User|null   
+         given.                                                                            
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------- 
+  Line   src\Enum\BookingStatus.php                                    
+ ------ -------------------------------------------------------------- 
+  :73    Call to function in_array() requires parameter #3 to be set.  
+  :81    Call to function in_array() requires parameter #3 to be set.  
+  :89    Call to function in_array() requires parameter #3 to be set.  
+  :109   Call to function in_array() requires parameter #3 to be set.  
+ ------ -------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Repository\CertificateRepository.php                                          
+ ------ ---------------------------------------------------------------------------------- 
+  :79    Method App\Repository\CertificateRepository::countByUser() should return int but  
+         returns bool|float|int|string|null.                                               
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Repository\CourseRepository.php                                               
+ ------ ---------------------------------------------------------------------------------- 
+  :22    Method App\Repository\CourseRepository::findByUser() has parameter $user with no  
+         type specified.                                                                   
+  :121   Only booleans are allowed in an if condition, string|null given.                  
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Repository\CourseTestRepository.php                                               
+ ------ -------------------------------------------------------------------------------------- 
+  :19    Parameter $course of method App\Repository\CourseTestRepository::findByCourse() has   
+         invalid type App\Repository\Course.                                                   
+  :28    Parameter $course of method App\Repository\CourseTestRepository::findWithQuestions()  
+         has invalid type App\Repository\Course.                                               
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Repository\LearningRoadmapRepository.php                                         
+ ------ ------------------------------------------------------------------------------------- 
+  :22    Method App\Repository\LearningRoadmapRepository::findByUser() has parameter $limit   
+         with no type specified.                                                              
+  :22    Method App\Repository\LearningRoadmapRepository::findByUser() has parameter $user    
+         with no type specified.                                                              
+  :41    Method App\Repository\LearningRoadmapRepository::findMostRecentByUser() has          
+         parameter $user with no type specified.                                              
+  :57    Method App\Repository\LearningRoadmapRepository::findByLearningGoal() has parameter  
+         $limit with no type specified.                                                       
+  :73    Method App\Repository\LearningRoadmapRepository::getUserStats() has parameter $user  
+         with no type specified.                                                              
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------- 
+  Line   src\Repository\ReviewRepository.php                                      
+ ------ ------------------------------------------------------------------------- 
+  :32    Only booleans are allowed in a ternary operator condition, mixed given.  
+  :33    Only booleans are allowed in a ternary operator condition, mixed given.  
+ ------ ------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------ 
+  Line   src\Repository\SessionRepository.php                              
+ ------ ------------------------------------------------------------------ 
+  :73    Only booleans are allowed in an if condition, string|null given.  
+  :78    Only booleans are allowed in an if condition, float|null given.   
+ ------ ------------------------------------------------------------------ 
+
+ ------ ------------------------------------------------------------------------------------ 
+  Line   src\Repository\UserBadgeRepository.php                                              
+ ------ ------------------------------------------------------------------------------------ 
+  :46    Method App\Repository\UserBadgeRepository::countUserBadges() should return int but  
+         returns bool|float|int|string|null.                                                 
+ ------ ------------------------------------------------------------------------------------ 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src\Repository\UserLevelRepository.php                                 
+ ------ ----------------------------------------------------------------------- 
+  :41    Only numeric types are allowed in +, int|null given on the left side.  
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------ 
+  Line   src\Repository\UserPointsRepository.php                                             
+ ------ ------------------------------------------------------------------------------------ 
+  :72    Method App\Repository\UserPointsRepository::getUserTotalPoints() should return int  
+         but returns bool|float|int|string.                                                  
+ ------ ------------------------------------------------------------------------------------ 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Security\GoogleAuthenticator.php                                              
+ ------ ---------------------------------------------------------------------------------- 
+  :21    Property App\Security\GoogleAuthenticator::$userRepository is never read, only    
+         written.                                                                          
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties  
+  :40    Method App\Security\GoogleAuthenticator::onAuthenticationSuccess() never returns  
+         null so it can be removed from the return type.                                   
+  :45    Method App\Security\GoogleAuthenticator::onAuthenticationFailure() never returns  
+         null so it can be removed from the return type.                                   
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------------- 
+  Line   src\Security\LoginFormAuthenticator.php                                                 
+ ------ ---------------------------------------------------------------------------------------- 
+  :34    Property App\Security\LoginFormAuthenticator::$csrfTokenManager is never read, only     
+         written.                                                                                
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties        
+  :35    Property App\Security\LoginFormAuthenticator::$passwordHasher is never read, only       
+         written.                                                                                
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties        
+  :68    Only booleans are allowed in an if condition, bool|float|int|string|null given.         
+  :69    Parameter #1 $response of method ReCaptcha\ReCaptcha::verify() expects string,          
+         float|int<min, -1>|int<1, max>|string|true given.                                       
+  :76    Parameter #1 $userIdentifier of class                                                   
+         Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge constructor      
+         expects string, bool|float|int|string|null given.                                       
+  :85    Parameter #1 $password of class                                                         
+         Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials  
+         constructor expects string, bool|float|int|string|null given.                           
+  :86    Parameter #2 $csrfToken of class                                                        
+         Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge             
+         constructor expects string|null, bool|float|int|string|null given.                      
+ ------ ---------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------- 
+  Line   src\Security\Voter\BookingVoter.php                           
+ ------ -------------------------------------------------------------- 
+  :21    Call to function in_array() requires parameter #3 to be set.  
+  :81    Cannot call method canConfirm() on string|null.               
+  :89    Cannot call method canCancel() on string|null.                
+ ------ -------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------ 
+  Line   src\Service\AIAnalystService.php                                        
+ ------ ------------------------------------------------------------------------ 
+  :108   Only booleans are allowed in an if condition, int|false given.          
+  :112   Only booleans are allowed in an if condition, int|false given.          
+  :116   Only booleans are allowed in an if condition, int|false given.          
+  :120   Only booleans are allowed in an if condition, int|false given.          
+  :125   Only booleans are allowed in an if condition, int<0, max>|false given.  
+  :273   Only booleans are allowed in an if condition, int|false given.          
+  :277   Only booleans are allowed in an if condition, int|false given.          
+  :281   Only booleans are allowed in an if condition, int|false given.          
+  :285   Only booleans are allowed in an if condition, int|false given.          
+  :290   Only booleans are allowed in an if condition, int<0, max>|false given.  
+ ------ ------------------------------------------------------------------------ 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Service\AI\ContentValidationService.php                                          
+ ------ ------------------------------------------------------------------------------------- 
+  :11    Property App\Service\AI\ContentValidationService::$httpClient is never read, only    
+         written.                                                                             
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties     
+  :12    Property App\Service\AI\ContentValidationService::$openaiApiKey is never read, only  
+         written.                                                                             
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties     
+  :13    Property App\Service\AI\ContentValidationService::$googleVisionKey is never read,    
+         only written.                                                                        
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties     
+  :53    Only booleans are allowed in an if condition, string|null given.                     
+  :170   Only booleans are allowed in an if condition, int|false given.                       
+  :183   Only booleans are allowed in a negated boolean, string|null given.                   
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------- 
+  Line   src\Service\AI\PricingAnalyzer.php                                       
+ ------ ------------------------------------------------------------------------- 
+  :107   Only numeric types are allowed in -, float|null given on the left side.  
+  :203   Cannot call method getRating() on App\Entity\User|null.                  
+ ------ ------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------ 
+  Line   src\Service\AI\ReputationAggregator.php                                             
+ ------ ------------------------------------------------------------------------------------ 
+  :111   Binary operation "/" between bool|float|int|string|null and float|int<1,            
+         max>|string|true results in an error.                                               
+  :114   Binary operation "*" between bool|float|int<min, -1>|int<1, max>|string|null and 2  
+         results in an error.                                                                
+  :124   Only booleans are allowed in an if condition, string|null given.                    
+ ------ ------------------------------------------------------------------------------------ 
+
+ ------ ------------------------------------------------------------------------------------ 
+  Line   src\Service\AI\SellerBehaviorAnalyzer.php                                           
+ ------ ------------------------------------------------------------------------------------ 
+  :13    Property App\Service\AI\SellerBehaviorAnalyzer::$entityManager is never read, only  
+         written.                                                                            
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties    
+  :15    Property App\Service\AI\SellerBehaviorAnalyzer::$productRepository is never read,   
+         only written.                                                                       
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties    
+  :139   Binary operation "/" between float|int<1, max>|string|true and 4 results in an      
+         error.                                                                              
+  :201   Binary operation "/" between bool|float|int|string|null and float|int<1,            
+         max>|string|true results in an error.                                               
+  :252   Only numeric types are allowed in -, float|null given on the left side.             
+ ------ ------------------------------------------------------------------------------------ 
+
+ ------ --------------------------------------------------------------------------------- 
+  Line   src\Service\AI\TransactionPredictor.php                                          
+ ------ --------------------------------------------------------------------------------- 
+  :29    Only booleans are allowed in an if condition, App\Entity\User|null given.        
+  :85    Only booleans are allowed in a ternary operator condition, App\Entity\User|null  
+         given.                                                                           
+  :141   Only booleans are allowed in a negated boolean, string|null given.               
+ ------ --------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Service\AiAssistantService.php                                                
+ ------ ---------------------------------------------------------------------------------- 
+  :33    Only booleans are allowed in an if condition, string|null given.                  
+  :43    Parameter #3 $subject of function preg_replace expects array|string, string|null  
+         given.                                                                            
+  :45    Parameter #1 $json of function json_decode expects string, string|null given.     
+  :51    Method App\Service\AiAssistantService::generateBioSuggestions() should return     
+         array<string> but returns array<int, string|null>.                                
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------------- 
+  Line   src\Service\ApplicationNotificationService.php                                     
+ ------ ----------------------------------------------------------------------------------- 
+  :33    Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects  
+         string, string|null given.                                                         
+  :61    Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects  
+         string, string|null given.                                                         
+  :84    Cannot call method getEmail() on App\Entity\User|null.                             
+  :84    Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects  
+         string, string|null given.                                                         
+  :107   Cannot call method getEmail() on App\Entity\User|null.                             
+  :107   Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects  
+         string, string|null given.                                                         
+  :108   Cannot call method getTitle() on App\Entity\Job|null.                              
+ ------ ----------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Service\Availability\AvailabilityService.php                                     
+ ------ ------------------------------------------------------------------------------------- 
+  :112   Parameter #1 $teacherProfileId of method                                             
+         App\Repository\TimeSlotRepository::findAvailableByTeacher() expects string,          
+         string|null given.                                                                   
+  :158   Method App\Service\Availability\AvailabilityService::validateNoOverlap() is unused.  
+  :168   Only booleans are allowed in &&, string|null given on the left side.                 
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Service\Availability\SlotGenerator.php                                           
+ ------ ------------------------------------------------------------------------------------- 
+  :69    Cannot clone DateTime|null.                                                          
+  :70    Cannot clone DateTime|null.                                                          
+  :73    Cannot clone non-object variable $startTime of type DateTime|null.                   
+  :74    Cannot call method modify() on DateTime|null.                                        
+  :88    Only booleans are allowed in a negated boolean, App\Entity\TimeSlot|null given.      
+  :92    Cannot clone non-object variable $startTime of type DateTime|null.                   
+  :92    Parameter #1 $startTime of method App\Entity\TimeSlot::setStartTime() expects        
+         DateTime, DateTime|null given.                                                       
+  :93    Cannot clone non-object variable $slotEnd of type DateTime|null.                     
+  :93    Parameter #1 $endTime of method App\Entity\TimeSlot::setEndTime() expects DateTime,  
+         DateTime|null given.                                                                 
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------- 
+  Line   src\Service\BookRecommendationService.php                                       
+ ------ -------------------------------------------------------------------------------- 
+  :18    Parameter #1 $string of function strtolower expects string, string|null given.  
+  :59    Call to function in_array() requires parameter #3 to be set.                    
+ ------ -------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------------- 
+  Line   src\Service\BookingNotificationService.php                                         
+ ------ ----------------------------------------------------------------------------------- 
+  :30    Only booleans are allowed in a negated boolean, App\Entity\Session|null given.     
+  :30    Only booleans are allowed in a negated boolean, string|null given.                 
+  :41    Only booleans are allowed in a ternary operator condition, App\Entity\User|null    
+         given.                                                                             
+  :70    Only booleans are allowed in a negated boolean, App\Entity\Session|null given.     
+  :70    Only booleans are allowed in a negated boolean, string|null given.                 
+  :74    Only booleans are allowed in a ternary operator condition, App\Entity\User|null    
+         given.                                                                             
+  :101   Only booleans are allowed in a negated boolean, App\Entity\Session|null given.     
+  :101   Only booleans are allowed in a negated boolean, App\Entity\User|null given.        
+  :110   Parameter #1 $address of class Symfony\Component\Mime\Address constructor expects  
+         string, string|null given.                                                         
+  :110   Parameter #2 $name of class Symfony\Component\Mime\Address constructor expects     
+         string, string|null given.                                                         
+ ------ ----------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Service\Booking\BookingService.php                                                
+ ------ -------------------------------------------------------------------------------------- 
+  :25    Property App\Service\Booking\BookingService::$eventDispatcher is never read, only     
+         written.                                                                              
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties      
+  :46    Parameter #1 $id of method App\Repository\TimeSlotRepository::findWithLock() expects  
+         string, string|null given.                                                            
+  :48    Cannot call method isAvailable() on App\Entity\TimeSlot|null.                         
+  :65    Only booleans are allowed in an if condition, App\Entity\Bundle|null given.           
+  :80    Cannot call method book() on App\Entity\TimeSlot|null.                                
+  :109   Cannot call method canConfirm() on string|null.                                       
+  :128   Cannot call method canCancel() on string|null.                                        
+  :156   Strict comparison using !== between string|null and                                   
+         App\Enum\BookingStatus::CONFIRMED will always evaluate to true.                       
+  :161   Unreachable statement - code above always terminates.                                 
+  :179   Strict comparison using !== between string|null and                                   
+         App\Enum\BookingStatus::CONFIRMED will always evaluate to true.                       
+  :184   Unreachable statement - code above always terminates.                                 
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------- 
+  Line   src\Service\Booking\BookingValidator.php                                     
+ ------ ----------------------------------------------------------------------------- 
+  :34    Only booleans are allowed in an if condition, App\Entity\Bundle|null given.  
+  :72    Only booleans are allowed in a negated boolean, App\Entity\User|null given.  
+  :93    Cannot call method getId() on App\Entity\User|null.                          
+  :132   Cannot call method canCancel() on string|null.                               
+  :145   Cannot call method canConfirm() on string|null.                              
+  :157   Cannot call method canTransitionTo() on string|null.                         
+ ------ ----------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------ 
+  Line   src\Service\Bundle\BundleService.php                        
+ ------ ------------------------------------------------------------ 
+  :29    Only booleans are allowed in a ternary operator condition,  
+         App\Entity\TeacherProfile|null given.                       
+ ------ ------------------------------------------------------------ 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Service\ChatbotActionExecutor.php                                                 
+ ------ -------------------------------------------------------------------------------------- 
+  :16    Property App\Service\ChatbotActionExecutor::$security is never read, only written.    
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties      
+  :127   Only booleans are allowed in a negated boolean, App\Entity\User|null given.           
+  :148   Parameter #2 $user of method                                                          
+         App\Service\ChatbotActionExecutor::executeUpdateProfile() expects App\Entity\User,    
+         App\Entity\User|null given.                                                           
+  :149   Parameter #2 $user of method                                                          
+         App\Service\ChatbotActionExecutor::executeChangePassword() expects App\Entity\User,   
+         App\Entity\User|null given.                                                           
+  :150   Parameter #2 $user of method                                                          
+         App\Service\ChatbotActionExecutor::executeEnrollCourse() expects App\Entity\User,     
+         App\Entity\User|null given.                                                           
+  :151   Parameter #2 $user of method                                                          
+         App\Service\ChatbotActionExecutor::executeUnenrollCourse() expects App\Entity\User,   
+         App\Entity\User|null given.                                                           
+  :152   Parameter #2 $user of method App\Service\ChatbotActionExecutor::executeAddFavorite()  
+         expects App\Entity\User, App\Entity\User|null given.                                  
+  :153   Parameter #2 $user of method                                                          
+         App\Service\ChatbotActionExecutor::executeRemoveFavorite() expects App\Entity\User,   
+         App\Entity\User|null given.                                                           
+  :154   Parameter #2 $user of method                                                          
+         App\Service\ChatbotActionExecutor::executeUpdatePreferences() expects                 
+         App\Entity\User, App\Entity\User|null given.                                          
+  :195   Call to function in_array() requires parameter #3 to be set.                          
+  :228   Only booleans are allowed in &&, App\Entity\User|null given on the left side.         
+  :248   Cannot cast Symfony\Component\Validator\ConstraintViolationListInterface to string.   
+  :288   Only booleans are allowed in a negated boolean, App\Entity\Course|null given.         
+  :299   Only booleans are allowed in an if condition, App\Entity\Enrollment|null given.       
+  :341   Only booleans are allowed in a negated boolean, App\Entity\Enrollment|null given.     
+  :348   Cannot call method getTitle() on App\Entity\Course|null.                              
+  :369   Only booleans are allowed in a negated boolean, App\Entity\Course|null given.         
+  :403   Only booleans are allowed in a negated boolean, App\Entity\Course|null given.         
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Service\DiscoveryRecommendationService.php                                    
+ ------ ---------------------------------------------------------------------------------- 
+  :116   Only booleans are allowed in a negated boolean,                                   
+         Symfony\Component\Security\Core\User\UserInterface|null given.                    
+  :123   Parameter #1 $user of method                                                      
+         App\Service\DiscoveryRecommendationService::getUserInterests() expects            
+         App\Entity\User, Symfony\Component\Security\Core\User\UserInterface given.        
+  :156   Parameter #1 $title of method                                                     
+         App\Service\DiscoveryRecommendationService::extractJobCategory() expects string,  
+         string|null given.                                                                
+  :364   Only numeric types are allowed in -, float|null given on the left side.           
+  :364   Only numeric types are allowed in -, float|null given on the right side.          
+  :372   Parameter #1 $string of function strtolower expects string, string|null given.    
+  :373   Parameter #1 $string of function strtolower expects string, string|null given.    
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Service\FaceAuthService.php                                                      
+ ------ ------------------------------------------------------------------------------------- 
+  :20    Binary operation "." between array|bool|float|int|string|UnitEnum|null and           
+         '/scripts/face_auth' results in an error.                                            
+  :21    Binary operation "." between array|bool|float|int|string|UnitEnum|null and           
+         '/var/face_data' results in an error.                                                
+  :40    Call to function base64_decode() requires parameter #2 to be set.                    
+  :40    Parameter #1 $string of function base64_decode expects string, string|null given.    
+  :64    Parameter #1 $json of function json_decode expects string, string|false|null given.  
+  :66    Only booleans are allowed in a negated boolean, mixed given.                         
+  :66    Only booleans are allowed in a negated boolean, mixed given.                         
+  :82    Only booleans are allowed in a negated boolean, array|null given.                    
+  :87    Parameter #1 $faceEncoding of method App\Entity\User::setFaceEncoding() expects      
+         string|null, string|false given.                                                     
+  :104   Only booleans are allowed in a negated boolean, string|null given.                   
+  :111   Only booleans are allowed in a negated boolean, array|null given.                    
+  :146   Parameter #1 $json of function json_decode expects string, string|false|null given.  
+  :148   Only booleans are allowed in a negated boolean, mixed given.                         
+  :148   Only booleans are allowed in a negated boolean, mixed given.                         
+  :169   Only booleans are allowed in a negated boolean, array|null given.                    
+  :189   Parameter #1 $json of function json_decode expects string, string|null given.        
+  :190   Only booleans are allowed in a negated boolean, mixed given.                         
+  :214   Parameter #1 $json of function json_decode expects string, string|false|null given.  
+  :219   Only booleans are allowed in &&, mixed given on the left side.                       
+  :219   Only booleans are allowed in &&, mixed given on the right side.                      
+  :230   Only booleans are allowed in &&, App\Entity\User|null given on the left side.        
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------- 
+  Line   src\Service\FileStorageService.php                                          
+ ------ ---------------------------------------------------------------------------- 
+  :13    Binary operation "." between array|bool|float|int|string|UnitEnum|null and  
+         '/public/uploadsÔÇª' results in an error.                                     
+ ------ ---------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   src\Service\GamificationService.php                                                   
+ ------ -------------------------------------------------------------------------------------- 
+  :40    Parameter #1 $userId of method App\Repository\UserPointsRepository::findByUser()      
+         expects int, int|null given.                                                          
+  :42    Only booleans are allowed in a negated boolean, App\Entity\UserPoints|null given.     
+  :46    Only booleans are allowed in a negated boolean, App\Entity\UserLevel|null given.      
+  :84    Only booleans are allowed in a ternary operator condition, App\Entity\UserLevel|null  
+         given.                                                                                
+  :93    Parameter #1 $xp of method App\Repository\UserLevelRepository::findByXpRange()        
+         expects int, int|null given.                                                          
+  :94    Only booleans are allowed in &&, App\Entity\UserLevel|null given on the left side.    
+  :98    Parameter #1 $currentLevelPoints of method                                            
+         App\Entity\UserPoints::setCurrentLevelPoints() expects int, int|null given.           
+  :105   Parameter #2 $totalPoints of method                                                   
+         App\Service\GamificationService::checkXpMilestoneBadges() expects int, int|null       
+         given.                                                                                
+  :111   Parameter #2 $totalPoints of method App\Service\GamificationService::checkBadges()    
+         expects int, int|null given.                                                          
+  :121   Parameter #1 $userId of method App\Repository\UserPointsRepository::findByUser()      
+         expects int, int|null given.                                                          
+  :123   Only booleans are allowed in a negated boolean, App\Entity\UserPoints|null given.     
+  :125   Parameter #1 $userId of method App\Repository\UserPointsRepository::findByUser()      
+         expects int, int|null given.                                                          
+  :128   Method App\Service\GamificationService::getUserPoints() should return                 
+         App\Entity\UserPoints but returns App\Entity\UserPoints|null.                         
+  :139   Parameter #1 $userId of method App\Repository\UserBadgeRepository::findByUser()       
+         expects int, int|null given.                                                          
+  :149   Parameter #1 $userId of method App\Repository\UserPointsRepository::getUserRank()     
+         expects int, int|null given.                                                          
+  :155   Parameter #1 $userId of method App\Repository\UserBadgeRepository::findByUser()       
+         expects int, int|null given.                                                          
+  :162   Call to function in_array() requires parameter #3 to be set.                          
+  :173   Only booleans are allowed in &&, App\Entity\Badge|null given on the left side.        
+  :173   Only booleans are allowed in a negated boolean, App\Entity\UserBadge|null given.      
+  :173   Parameter #1 $userId of method                                                        
+         App\Repository\UserBadgeRepository::findByUserAndBadge() expects int, int|null        
+         given.                                                                                
+  :173   Parameter #2 $badgeId of method                                                       
+         App\Repository\UserBadgeRepository::findByUserAndBadge() expects int, int|null        
+         given.                                                                                
+  :180   Parameter #1 $userId of method                                                        
+         App\Repository\UserBadgeRepository::findByUserAndBadge() expects int, int|null        
+         given.                                                                                
+  :180   Parameter #2 $badgeId of method                                                       
+         App\Repository\UserBadgeRepository::findByUserAndBadge() expects int, int|null        
+         given.                                                                                
+  :182   Only booleans are allowed in an if condition, App\Entity\UserBadge|null given.        
+  :209   Only booleans are allowed in &&, App\Entity\Badge|null given on the left side.        
+  :209   Only booleans are allowed in a negated boolean, App\Entity\UserBadge|null given.      
+  :209   Parameter #1 $userId of method                                                        
+         App\Repository\UserBadgeRepository::findByUserAndBadge() expects int, int|null        
+         given.                                                                                
+  :209   Parameter #2 $badgeId of method                                                       
+         App\Repository\UserBadgeRepository::findByUserAndBadge() expects int, int|null        
+         given.                                                                                
+  :221   Only booleans are allowed in a negated boolean, App\Entity\UserLevel|null given.      
+  :235   Only numeric types are allowed in -, int|null given on the left side.                 
+  :235   Only numeric types are allowed in -, int|null given on the right side.                
+  :247   Only numeric types are allowed in -, int|null given on the left side.                 
+  :247   Only numeric types are allowed in -, int|null given on the right side.                
+  :252   Only numeric types are allowed in -, int|null given on the left side.                 
+  :252   Only numeric types are allowed in -, int|null given on the right side.                
+  :254   Only booleans are allowed in a ternary operator condition, App\Entity\UserLevel|null  
+         given.                                                                                
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------- ---------------------------------------------------------------------------------- 
+  Line    src\Service\GeminiAiService.php                                                   
+ ------- ---------------------------------------------------------------------------------- 
+  :15     Constructor of class App\Service\GeminiAiService has an unused parameter          
+          $parameterBag.                                                                    
+  :50     Only booleans are allowed in a negated boolean, mixed given.                      
+  :83     Only booleans are allowed in a negated boolean, mixed given.                      
+  :212    Only booleans are allowed in &&, mixed given on the left side.                    
+  :558    Comparison operation ">" between int<1, max> and 0 is always true.                
+          ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by       
+             setting treatPhpDocTypesAsCertain: false in your                               
+             phpstan.neon.                                                                  
+  :558    Else branch is unreachable because ternary operator condition is always true.     
+          ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by       
+             setting treatPhpDocTypesAsCertain: false in your                               
+             phpstan.neon.                                                                  
+  :643    Only booleans are allowed in a negated boolean, mixed given.                      
+  :703    Offset int<0, 3> on array{mixed, mixed, mixed, mixed} on left side of ?? always   
+          exists and is not nullable.                                                       
+  :710    Call to function array_search() requires parameter #3 to be set.                  
+  :711    Only numeric types are allowed in +, int|false given on the right side.           
+  :748    Only booleans are allowed in a negated boolean, mixed given.                      
+  :887    Parameter #3 $subject of function preg_replace expects array|string, string|null  
+          given.                                                                            
+  :890    Parameter #3 $subject of function preg_replace expects array|string, string|null  
+          given.                                                                            
+  :894    Parameter #1 $string of function trim expects string, string|null given.          
+  :899    Only booleans are allowed in &&, mixed given on the left side.                    
+  :914    Only booleans are allowed in &&, mixed given on the left side.                    
+  :936    Parameter #3 $subject of function preg_replace expects array|string, string|null  
+          given.                                                                            
+  :939    Parameter #3 $subject of function preg_replace expects array|string, string|null  
+          given.                                                                            
+  :943    Parameter #1 $string of function trim expects string, string|null given.          
+  :953    Only booleans are allowed in &&, mixed given on the left side.                    
+  :991    Only booleans are allowed in an if condition, int|false given.                    
+  :999    Only booleans are allowed in an if condition, int|false given.                    
+  :1005   Only booleans are allowed in an if condition, int|false given.                    
+ ------- ---------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------- 
+  Line   src\Service\GeminiChatbotService.php                                           
+ ------ ------------------------------------------------------------------------------- 
+  :27    Only booleans are allowed in an if condition, array|null given.                
+  :113   Only booleans are allowed in a negated boolean,                                
+         Doctrine\ORM\EntityManagerInterface|null given.                                
+  :120   Only booleans are allowed in ||, int|false given on the left side.             
+  :120   Only booleans are allowed in ||, int|false given on the right side.            
+  :120   Only booleans are allowed in ||, int|false given on the right side.            
+  :126   Only booleans are allowed in an if condition, int|false given.                 
+  :128   Only booleans are allowed in an elseif condition, int|false given.             
+  :136   Only booleans are allowed in a ternary operator condition, string|null given.  
+  :149   Only booleans are allowed in ||, int|false given on the left side.             
+  :149   Only booleans are allowed in ||, int|false given on the right side.            
+  :167   Only booleans are allowed in ||, int|false given on the left side.             
+  :167   Only booleans are allowed in ||, int|false given on the right side.            
+  :167   Only booleans are allowed in ||, int|false given on the right side.            
+  :174   Only booleans are allowed in a ternary operator condition, int|false given.    
+  :209   Only booleans are allowed in a negated boolean,                                
+         Doctrine\ORM\EntityManagerInterface|null given.                                
+  :222   Only booleans are allowed in an if condition, string|null given.               
+  :254   Only booleans are allowed in a negated boolean,                                
+         Doctrine\ORM\EntityManagerInterface|null given.                                
+  :292   Only booleans are allowed in a negated boolean,                                
+         Doctrine\ORM\EntityManagerInterface|null given.                                
+  :310   Only booleans are allowed in an if condition, int|false given.                 
+  :354   Only booleans are allowed in a negated boolean,                                
+         Doctrine\ORM\EntityManagerInterface|null given.                                
+  :360   Only booleans are allowed in a negated boolean, App\Entity\User|null given.    
+  :515   Only booleans are allowed in an if condition, int|false given.                 
+  :573   Only booleans are allowed in an if condition, int|null given.                  
+  :577   Only booleans are allowed in an if condition, string given.                    
+ ------ ------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------------- 
+  Line   src\Service\GoogleBooksService.php                                                 
+ ------ ----------------------------------------------------------------------------------- 
+  :8     Attribute class Symfony\Component\DependencyInjection\Attribute\Autowire does not  
+         have the class target.                                                             
+ ------ ----------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Service\LearningPathService.php                                               
+ ------ ---------------------------------------------------------------------------------- 
+  :15    Property App\Service\LearningPathService::$entityManager is never read, only      
+         written.                                                                          
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties  
+  :17    Property App\Service\LearningPathService::$lessonRepository is never read, only   
+         written.                                                                          
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties  
+  :36    Only booleans are allowed in a negated boolean, App\Entity\CourseTestResult|null  
+         given.                                                                            
+  :99    Only booleans are allowed in an if condition, App\Entity\Chapter|null given.      
+  :130   Only booleans are allowed in an if condition, App\Entity\Chapter|null given.      
+  :143   Only booleans are allowed in an if condition, App\Entity\Chapter|null given.      
+  :156   Method App\Service\LearningPathService::getChapterByDifficulty() is unused.       
+  :175   Only booleans are allowed in a negated boolean, App\Entity\CourseTestResult|null  
+         given.                                                                            
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------- 
+  Line   src\Service\PermissionChecker.php                                            
+ ------ ----------------------------------------------------------------------------- 
+  :25    Only booleans are allowed in a negated boolean, App\Entity\User|null given.  
+  :35    Only booleans are allowed in a negated boolean, App\Entity\Role|null given.  
+  :76    Only booleans are allowed in a negated boolean, App\Entity\User|null given.  
+  :81    Only booleans are allowed in a negated boolean, App\Entity\Role|null given.  
+ ------ ----------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------- 
+  Line   src\Service\PriceIntelligenceService.php                                             
+ ------ ------------------------------------------------------------------------------------- 
+  :27    Parameter #1 $category of method                                                     
+         App\Service\PriceIntelligenceService::getMarketData() expects string,                
+         App\Entity\Category|null given.                                                      
+  :30    Parameter #1 $price of method                                                        
+         App\Service\PriceIntelligenceService::calculatePricePosition() expects float,        
+         float|null given.                                                                    
+  :33    Parameter #1 $currentPrice of method                                                 
+         App\Service\PriceIntelligenceService::getPriceRecommendations() expects float,       
+         float|null given.                                                                    
+  :36    Parameter #1 $price of method App\Service\PriceIntelligenceService::getPriceLabel()  
+         expects float, float|null given.                                                     
+  :48    Parameter #1 $currentPrice of method                                                 
+         App\Service\PriceIntelligenceService::calculateOptimizationPotential() expects       
+         float, float|null given.                                                             
+  :360   Comparison operation "<=" between 5|6 and 6 is always true.                          
+         ­ƒÆí Because the type is coming from a PHPDoc, you can turn off this check by          
+            setting treatPhpDocTypesAsCertain: false in your                                  
+            phpstan.neon.                                                                     
+  :366   Only numeric types are allowed in *, float|null given on the left side.              
+ ------ ------------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src\Service\QuizAnalysisService.php                                               
+ ------ ---------------------------------------------------------------------------------- 
+  :13    Property App\Service\QuizAnalysisService::$entityManager is never read, only      
+         written.                                                                          
+         ­ƒÆí See: https://phpstan.org/developing-extensions/always-read-written-properties  
+  :133   Method App\Service\QuizAnalysisService::getClassComparison() has parameter $quiz  
+         with no type specified.                                                           
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------ 
+  Line   src\Service\SpeechRecognitionService.php                                            
+ ------ ------------------------------------------------------------------------------------ 
+  :24    Strict comparison using === between non-empty-string and null will always evaluate  
+         to false.                                                                           
+ ------ ------------------------------------------------------------------------------------ 
+
+ ------ --------------------------------------------------------------------------- 
+  Line   src\Service\VertexApiService.php                                           
+ ------ --------------------------------------------------------------------------- 
+  :15    Constructor of class App\Service\VertexApiService has an unused parameter  
+         $vertexLocation.                                                           
+  :15    Constructor of class App\Service\VertexApiService has an unused parameter  
+         $vertexProjectId.                                                          
+ ------ --------------------------------------------------------------------------- 
+
+ -- ----------------------------------------------------------------------------------------- 
+     Error                                                                                    
+ -- ----------------------------------------------------------------------------------------- 
+     Ignored error pattern #Call to an undefined method                                       
+     Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder# was not matched in         
+     reported errors.                                                                         
+     Ignored error pattern #Method .* should return .* but returns mixed# was not matched in  
+     reported errors.                                                                         
+ -- ----------------------------------------------------------------------------------------- 
+
+ [ERROR] Found 832 errors                                                                     
+

@@ -3,9 +3,8 @@
 namespace App\Controller\Api;
 
 use App\Entity\Job;
-use FOS\ElasticaBundle\Finder\TransformedFinder;
+use App\Repository\JobRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,17 +12,15 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api')]
 class JobAutocompleteController extends AbstractController
 {
-    private TransformedFinder $finder;
+    private JobRepository $jobRepository;
 
-    public function __construct(
-        #[Target('jobs.finder')]
-        TransformedFinder $finder
-    ) {
-        $this->finder = $finder;
+    public function __construct(JobRepository $jobRepository)
+    {
+        $this->jobRepository = $jobRepository;
     }
 
     /**
-     * Autocomplete search for jobs
+     * Autocomplete search for jobs (database fallback)
      */
     #[Route('/autocomplete/jobs', name: 'api_autocomplete_jobs', methods: ['GET'])]
     public function autocompleteJobs(Request $request): JsonResponse
@@ -31,27 +28,25 @@ class JobAutocompleteController extends AbstractController
         $query = $request->query->get('q', '');
         $limit = min(10, max(1, (int) $request->query->get('limit', 5)));
 
-        if (strlen($query) < 2) {
+        if (strlen((string) $query) < 2) {
             return new JsonResponse(['suggestions' => []]);
         }
 
         try {
-            // Use prefix query with proper Elasticsearch syntax
-            $searchQuery = [
-                'query' => [
-                    'prefix' => [
-                        'title' => $query
-                    ]
-                ]
-            ];
-            $results = $this->finder->find($searchQuery, $limit);
+            // Database fallback search
+            $jobs = $this->jobRepository->createQueryBuilder('j')
+                ->where('j.title LIKE :query')
+                ->setParameter('query', $query . '%')
+                ->setMaxResults($limit)
+                ->getQuery()
+                ->getResult();
 
             $suggestions = [];
-            foreach ($results as $job) {
+            foreach ($jobs as $job) {
                 $suggestions[] = [
                     'id' => $job->getId(),
                     'title' => $job->getTitle(),
-                    'description' => substr($job->getDescription(), 0, 100) . '...',
+                    'description' => substr($job->getDescription() ?? '', 0, 100) . '...',
                     'url' => $this->generateUrl('app_job_show', ['id' => $job->getId()])
                 ];
             }

@@ -1,9 +1,14 @@
-{% extends 'base.html.twig' %}
+{% extends 'front_base.html.twig' %}
 
-{% block title %}{{ lesson.title }} - testttt{% endblock %}
+{% block title %}{{ lesson.title }} - {{ course.title }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
+    <style>
+        html, body {
+            background-color: #ffffff !important;
+        }
+    </style>
     <meta name="turbo-visit-control" content="reload">
     <script>
         // Disable Turbo completely for this page
@@ -43,23 +48,192 @@
             return true; // Allow navigation to proceed
         }
         
-        // Clean up breadcrumb on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            cleanBreadcrumb();
-        });
-        
-        // Also clean breadcrumb after a short delay to catch any dynamic content
-        setTimeout(cleanBreadcrumb, 100);
-        setTimeout(cleanBreadcrumb, 500);
-        
-        function cleanBreadcrumb() {
-            // Clean up any breadcrumb items containing file paths
-            const breadcrumbItems = document.querySelectorAll('.breadcrumb-item');
-            breadcrumbItems.forEach(item => {
-                const text = item.textContent;
-                if (text && text.includes('../../index-12.html')) {
-                    item.textContent = text.replace('../../index-12.html', 'testttt');
+        // Mark lesson as complete function
+        function markLessonComplete(nextLessonId) {
+            // Call backend API to complete lesson
+            fetch(`/lesson/{{ lesson.id }}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show completion message
+                    const completionMessage = document.createElement('div');
+                    completionMessage.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                    completionMessage.style.zIndex = '9999';
+                    completionMessage.style.minWidth = '300px';
+                    completionMessage.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>${data.message}</strong>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.body.appendChild(completionMessage);
+                    
+                    // Store lesson completion in localStorage
+                    const lessonId = {{ lesson.id }};
+                    localStorage.setItem(`lesson_${lessonId}_completed`, 'true');
+                    
+                    // Auto-remove message and redirect after 2 seconds
+                    setTimeout(() => {
+                        if (completionMessage.parentNode) {
+                            completionMessage.parentNode.removeChild(completionMessage);
+                        }
+                        // Force redirect to next lesson
+                        window.location.href = `/lesson/${nextLessonId}`;
+                    }, 2000);
+                } else {
+                    // Show error message
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                    errorMessage.style.zIndex = '9999';
+                    errorMessage.style.minWidth = '300px';
+                    errorMessage.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Error:</strong> ${data.message}
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.body.appendChild(errorMessage);
+                    
+                    // Auto-remove error message after 3 seconds
+                    setTimeout(() => {
+                        if (errorMessage.parentNode) {
+                            errorMessage.parentNode.removeChild(errorMessage);
+                        }
+                    }, 3000);
                 }
+            })
+            .catch(error => {
+                // Show error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                errorMessage.style.zIndex = '9999';
+                errorMessage.style.minWidth = '300px';
+                errorMessage.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Error:</strong> Failed to complete lesson. Please try again.
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(errorMessage);
+                
+                // Auto-remove error message after 3 seconds
+                setTimeout(() => {
+                    if (errorMessage.parentNode) {
+                        errorMessage.parentNode.removeChild(errorMessage);
+                    }
+                }, 3000);
+            });
+        }
+        
+        // Mark lesson as complete and take quiz function
+        function markLessonCompleteAndTakeQuiz(quizId) {
+            const button = event.target;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Completing...';
+            
+            fetch(`/lesson/{{ lesson.id }}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Lesson completed successfully, redirect to quiz
+                    window.location.href = `/quiz/${quizId}/take`;
+                } else {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-graduation-cap me-2"></i>Take Final Quiz';
+                    alert('Failed to complete lesson. Please try again.');
+                }
+            })
+            .catch(error => {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-graduation-cap me-2"></i>Take Final Quiz';
+                alert('An error occurred. Please try again.');
+            });
+        }
+        
+        // Mark lesson as complete and redirect to course test function
+        function markLessonCompleteAndRedirectToTest() {
+            const button = event.target;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Completing...';
+            
+            fetch(`/lesson/{{ lesson.id }}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show completion message
+                    const completionMessage = document.createElement('div');
+                    completionMessage.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                    completionMessage.style.zIndex = '9999';
+                    completionMessage.style.minWidth = '300px';
+                    completionMessage.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Course Completed!</strong> Redirecting to test...
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.body.appendChild(completionMessage);
+                    
+                    // Auto-remove message and redirect after 2 seconds
+                    setTimeout(() => {
+                        if (completionMessage.parentNode) {
+                            completionMessage.parentNode.removeChild(completionMessage);
+                        }
+                        // Redirect to course test
+                        window.location.href = "{{ path('app_course_test', {'id': course.id}) }}";
+                    }, 2000);
+                } else {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-check-circle me-2"></i>Complete Course & Take Test';
+                    alert('Failed to complete lesson. Please try again.');
+                }
+            })
+            .catch(error => {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-check-circle me-2"></i>Complete Course & Take Test';
+                alert('An error occurred. Please try again.');
+            });
+        }
+        
+        // Mark lesson as complete and redirect function
+        function markLessonCompleteAndRedirect(nextLessonId) {
+            fetch(`/lesson/${nextLessonId - 1}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = `/lesson/${nextLessonId}`;
+                }
+            })
+            .catch(error => {
+                // Silent error handling
             });
         }
         
@@ -67,7 +241,7 @@
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'childList') {
-                    cleanBreadcrumb();
+                    // Breadcrumb cleanup no longer needed
                 }
             });
         });
@@ -82,6 +256,177 @@
         }
     </script>
     <style>
+        html, body {
+            background-color: #ffffff !important;
+        }
+        
+        /* Modern Card Design */
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        /* Enhanced Breadcrumb */
+        .breadcrumb {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumb-item a:hover {
+            color: #764ba2;
+        }
+        
+        .breadcrumb-item.active {
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        /* Modern Lesson Title */
+        h1.h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            line-height: 1.3;
+        }
+        
+        /* Enhanced Badges */
+        .badge {
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Modern Sidebar */
+        .lesson-sidebar .card {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .lesson-sidebar .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            border: none;
+        }
+        
+        .lesson-sidebar .card-header h5 {
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        /* Enhanced List Group Items */
+        .list-group-item {
+            border: none;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        
+        .active-lesson {
+            background: linear-gradient(135deg, #f0f4ff, #e8ecff);
+            border-left: 4px solid #667eea;
+        }
+        
+        /* Modern Buttons */
+        .btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid #667eea;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+        
+        /* Info Cards */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+        
+        /* Learning Objectives Card */
+        .card.border-0.bg-light {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+        }
+        
+        /* Chapter Headers in Sidebar */
+        .list-group-item h6 {
+            color: #1a202c;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        
+        /* Video Container Enhancement */
+        .ratio {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+        
         .lesson-sidebar {
             position: sticky;
             top: 20px;
@@ -154,172 +499,164 @@
         .alert-success {
             animation: slideInDown 0.3s ease-out;
         }
+
+        /* Enhanced Video Styles */
+        .video-container-wrapper {
+            position: relative;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .video-container-wrapper:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .video-container-wrapper video {
+            border-radius: 16px;
+            background: #000;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .video-container-wrapper:hover .video-overlay {
+            opacity: 1;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .video-container-wrapper:hover .play-button {
+            transform: scale(1);
+        }
+
+        .play-button i {
+            color: #e74c3c;
+            font-size: 24px;
+            margin-left: 4px;
+        }
+
+        /* Enhanced Document Styles */
+        .document-preview {
+            position: relative;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .document-icon {
+            position: absolute;
+            width: 120px;
+            height: 140px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 35px rgba(231, 76, 60, 0.3);
+            transform: rotate(-5deg);
+            z-index: 2;
+        }
+
+        .document-icon i {
+            color: white;
+            font-size: 48px;
+        }
+
+        .document-pages {
+            position: absolute;
+            display: flex;
+            gap: -10px;
+            z-index: 1;
+        }
+
+        .document-pages i {
+            width: 100px;
+            height: 130px;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ddd;
+            font-size: 36px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: rotate(0deg);
+            transition: transform 0.3s ease;
+        }
+
+        .document-pages i:nth-child(2) {
+            transform: rotate(-2deg);
+            z-index: 0;
+        }
+
+        .document-pages i:nth-child(3) {
+            transform: rotate(-4deg);
+            z-index: -1;
+        }
+
+        .document-preview:hover .document-pages i:nth-child(2) {
+            transform: rotate(-5deg) translateX(-5px);
+        }
+
+        .document-preview:hover .document-pages i:nth-child(3) {
+            transform: rotate(-8deg) translateX(-10px);
+        }
+
+        .bg-gradient {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px dashed #dee2e6;
+        }
     </style>
 {% endblock %}
 
-{% block body %}
-<!-- =======================
-Header START -->
-<header class="navbar-light navbar-sticky header-static">
-    <!-- Logo Nav START -->
-    <nav class="navbar navbar-expand-xl">
-        <div class="container">
-            <!-- Logo START -->
-            <a class="navbar-brand" href="{{ path('app_home') }}">
-                <img class="navbar-brand-item" src="{{ asset('assets/images/logo.svg') }}" alt="logo">
-            </a>
-            <!-- Logo END -->
+{% block content %}
+<!-- Flash Messages -->
+{% for message in app.flashes('error') %}
+    <div data-flash-type="error" 
+         data-flash-title="Access Denied" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
 
-            <!-- Responsive navbar toggler -->
-            <button class="navbar-toggler ms-auto icon-md btn btn-outline-secondary p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Main navbar START -->
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav navbar-nav-scroll me-auto">
-                    <!-- Nav item Home -->
-                    <li class="nav-item">
-                        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" href="{{ path('app_home') }}">
-                            Home
-                        </a>
-                    </li>
-
-                    <!-- Nav item Courses -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_course_grid' %}active{% endif %}" href="#" id="courseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Courses
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="courseDropdown">
-                            <li><h6 class="dropdown-header">Learning</h6></li>
-                            <li><a class="dropdown-item" href="{{ path('app_course_grid') }}">Browse Courses</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_categories') }}">Course Categories</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">Student</h6></li>
-                            <li><a class="dropdown-item" href="#">My Certificates</a></li>
-                            <li><a class="dropdown-item" href="#">My Bookmarks</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Nav item Sessions -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'session' %}active{% endif %}" href="#" id="sessionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Sessions
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="sessionDropdown">
-                            <li><h6 class="dropdown-header">Schedule</h6></li>
-                            <li><a class="dropdown-item" href="{{ path('session_data_display') }}">All Sessions</a></li>
-                            <li><a class="dropdown-item" href="{{ path('booking_create') }}">Book a Session</a></li>
-                            <li><a class="dropdown-item" href="{{ path('all_bookings') }}">My Bookings</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Nav item Marketplace -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') starts with 'app_marketplace' or app.request.attributes.get('_route') starts with 'app_product' or app.request.attributes.get('_route') starts with 'app_job' %}active{% endif %}" href="#" id="marketplaceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Marketplace
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="marketplaceDropdown">
-                            <li><h6 class="dropdown-header">Services</h6></li>
-                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_marketplace_shop' %}active{% endif %}" href="{{ path('app_marketplace_shop') }}">Browse Marketplace</a></li>
-                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_product_new_public' %}active{% endif %}" href="{{ path('app_product_new_public') }}">Offer Service</a></li>
-                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') starts with 'app_job' %}active{% endif %}" href="#">Job Requests</a></li>
-                        </ul>
-                    </li>
-
-
-                    <!-- Nav item Support -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Support
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="supportDropdown">
-                            <li><h6 class="dropdown-header">Help</h6></li>
-                            <li><a class="dropdown-item" href="#">Help Center</a></li>
-                            <li><a class="dropdown-item" href="#">Contact Support</a></li>
-                            <li><a class="dropdown-item" href="#">FAQ</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">About</h6></li>
-                            <li><a class="dropdown-item" href="#">About Us</a></li>
-                            <li><a class="dropdown-item" href="#">Contact</a></li>
-                            <li><a class="dropdown-item" href="#">Privacy Policy</a></li>
-                            <li><a class="dropdown-item" href="#">Terms of Service</a></li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <!-- Search bar START -->
-                <div class="nav-item mx-3">
-                    <form class="position-relative" method="get" action="{{ path('app_course_grid') }}">
-                        <input class="form-control pe-5" type="search" name="search" placeholder="Search courses, topics..." aria-label="Search">
-                        <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
-                            <i class="fas fa-search fs-6"></i>
-                        </button>
-                    </form>
-                </div>
-                <!-- Search bar END -->
-
-                <!-- Nav right side START -->
-                <ul class="nav flex-row align-items-center list-unstyled ms-xl-auto">
-                    <!-- Authentication START -->
-                    {% if app.user %}
-                        <!-- Profile dropdown START -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-                            </a>
-                            <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
-                                <!-- Profile info -->
-                                <li class="px-3 mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar me-3">
-                                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
-                                        </div>
-                                        <div>
-                                            <a class="h6 mt-2 mt-sm-0" href="#">{{ app.user.name|default(app.user.email) }}</a>
-                                            <p class="small m-0">{{ app.user.email }}</p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <!-- Links -->
-                                {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="fas fa-chalkboard-teacher fa-fw me-2"></i>Dashboard</a></li>
-                                {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_student_dashboard') }}"><i class="fas fa-graduation-cap fa-fw me-2"></i>Dashboard</a></li>
-                                {% else %}
-                                    <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="fas fa-tachometer-alt fa-fw me-2"></i>Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <!-- Sign in button -->
-                        <li class="nav-item">
-                            <a class="btn btn-sm btn-primary me-2" href="{{ path('app_login') }}">Sign In</a>
-                        </li>
-                        <!-- Sign up button -->
-                        <li class="nav-item">
-                            <a class="btn btn-sm btn-outline-primary" href="{{ path('app_register') }}">Sign Up</a>
-                        </li>
-                    {% endif %}
-                    <!-- Authentication END -->
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- Logo Nav END -->
-</header>
-<!-- =======================
-Header END -->
+{% for message in app.flashes('success') %}
+    <div data-flash-type="success" 
+         data-flash-title="Success" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
 
 <div class="container py-4" data-turbo="false">
     <div class="row">
@@ -328,48 +665,260 @@ Header END -->
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ path('app_home') }}" data-turbo="false">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{{ path('app_instructor_course_detail', {'id': course.id}) }}" data-turbo="false">testttt</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_course_show', {'id': course.id}) }}" data-turbo="false">{{ course.title }}</a></li>
                     <li class="breadcrumb-item active" aria-current="page">{{ lesson.title }}</li>
                 </ol>
             </nav>
 
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h1 class="h2 mb-4">{{ lesson.title }}</h1>
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <h1 class="h2 mb-2">{{ lesson.title }}</h1>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                {% if lesson.difficulty %}
+                                    <span class="badge bg-{{ lesson.difficulty == 'Beginner' ? 'success' : lesson.difficulty == 'Intermediate' ? 'warning' : 'danger' }}">
+                                        {{ lesson.difficulty }}
+                                    </span>
+                                {% endif %}
+                                <span class="badge bg-info">
+                                    <i class="far fa-clock me-1"></i> {{ lesson.duration }} min
+                                </span>
+                                {% if lesson.estimatedTime %}
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-hourglass-half me-1"></i> {{ lesson.estimatedTime }} min
+                                    </span>
+                                {% endif %}
+                                {% if lesson.views %}
+                                    <span class="badge bg-light text-dark">
+                                        <i class="fas fa-eye me-1"></i> {{ lesson.views }} views
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if lesson.thumbnailUrl %}
+                            <img src="{{ lesson.thumbnailUrl }}" alt="{{ lesson.title }}" class="img-fluid rounded" style="max-width: 200px;">
+                        {% endif %}
+                    </div>
                     
-                    {% if lesson.type == 'video' and lesson.content %}
-                        {% if lesson.content starts with 'http' %}
-                            <div class="ratio ratio-16x9 mb-4">
+                    <!-- Learning Path Alert -->
+                    {% if learningPath and isRecommendedLesson %}
+                        <div class="alert alert-success mb-4">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-star me-3"></i>
+                                <div>
+                                    <strong>Recommended Starting Point</strong>
+                                    <p class="mb-0">This lesson is recommended based on your test performance: {{ learningPath.reason }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Learning Progress Badge -->
+                    {% if enrollment %}
+                        <div class="mb-4">
+                            <span class="badge bg-primary">
+                                <i class="fas fa-graduation-cap me-2"></i>
+                                Course Progress: {{ enrollment.progress|round }}%
+                            </span>
+                        </div>
+                    {% endif %}
+
+                    <!-- Video Content -->
+                    {% if lesson.type == 'video' and lesson.videoUrl %}
+                        <div class="ratio ratio-16x9 mb-4">
+                            <div class="video-container-wrapper rounded overflow-hidden shadow-lg">
+                                <video controls class="w-100" poster="{{ lesson.thumbnailUrl ?: 'https://images.unsplash.com/photo-1573164713619-24e632586365?w=1200&h=675&fit=crop' }}" preload="metadata">
+                                    <source src="{{ lesson.videoUrl }}" type="video/mp4">
+                                    <source src="{{ lesson.videoUrl }}" type="video/webm">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-overlay">
+                                    <div class="play-button">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif lesson.type == 'video' and lesson.content and lesson.content starts with 'http' %}
+                        <div class="ratio ratio-16x9 mb-4">
+                            <div class="video-container-wrapper rounded overflow-hidden shadow-lg">
                                 <iframe 
-                                    src="{{ lesson.content|replace({'youtube.com': 'youtube-nocookie.com'}) }}" 
+                                    src="{{ lesson.content|replace({'youtube.com': 'youtube-nocookie.com'}) }}?rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1" 
                                     title="{{ lesson.title }}"
                                     allowfullscreen
-                                    class="rounded"
+                                    class="w-100 rounded"
                                     loading="lazy"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowtransparency="true"
                                     referrerpolicy="no-referrer-when-downgrade"
-                                    sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
-                                ></iframe>
+                                    sandbox="allow-same-origin allow-scripts allow-popups allow-presentation">
+                                </iframe>
                             </div>
-                        {% else %}
-                            <div class="alert alert-warning mb-4">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Invalid Video URL:</strong> This lesson has an invalid video URL configured. Please contact the instructor.
+                        </div>
+                    {% elseif lesson.type == 'video' %}
+                        <!-- Sample video content for demonstration -->
+                        <div class="ratio ratio-16x9 mb-4">
+                            <div class="video-container-wrapper rounded overflow-hidden shadow-lg">
+                                {% set videoCategory = 'programming' %}
+                                {% if 'design' in lesson.title|lower %}
+                                    {% set videoCategory = 'design' %}
+                                {% elseif 'business' in lesson.title|lower %}
+                                    {% set videoCategory = 'business' %}
+                                {% elseif 'data' in lesson.title|lower %}
+                                    {% set videoCategory = 'data' %}
+                                {% endif %}
+                                
+                                {% if videoCategory == 'programming' %}
+                                    <video controls class="w-100" poster="https://images.unsplash.com/photo-1573164713619-24e632586365?w=1200&h=675&fit=crop" preload="metadata">
+                                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                                    </video>
+                                {% elseif videoCategory == 'design' %}
+                                    <video controls class="w-100" poster="https://images.unsplash.com/photo-1559028006-848865316f3c?w=1200&h=675&fit=crop" preload="metadata">
+                                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+                                    </video>
+                                {% elseif videoCategory == 'business' %}
+                                    <video controls class="w-100" poster="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=675&fit=crop" preload="metadata">
+                                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4">
+                                    </video>
+                                {% else %}
+                                    <video controls class="w-100" poster="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=675&fit=crop" preload="metadata">
+                                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" type="video/mp4">
+                                    </video>
+                                {% endif %}
+                                
+                                Your browser does not support the video tag.
+                                <div class="video-overlay">
+                                    <div class="play-button">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
                             </div>
-                        {% endif %}
+                        </div>
                     {% elseif lesson.type == 'document' and lesson.attachmentUrl %}
-                        <div class="text-center p-5 border rounded mb-4">
-                            <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
-                            <h5>Document Lesson</h5>
-                            <p>Download the lesson material to view it properly.</p>
-                            <a href="{{ asset(lesson.attachmentUrl) }}" class="btn btn-primary" download>
+                        <div class="text-center p-5 border rounded mb-4 bg-gradient">
+                            <div class="document-preview mb-4">
+                                <div class="document-icon">
+                                    <i class="fas fa-file-pdf"></i>
+                                </div>
+                                <div class="document-pages">
+                                    <i class="fas fa-file-alt"></i>
+                                    <i class="fas fa-file-alt"></i>
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                            </div>
+                            <h5 class="mb-3">Document Lesson</h5>
+                            <p class="text-muted mb-4">Download the lesson material to view it properly.</p>
+                            <a href="{{ asset(lesson.attachmentUrl) }}" class="btn btn-primary btn-lg">
                                 <i class="fas fa-download me-2"></i>Download Document
                             </a>
                         </div>
                     {% endif %}
 
-                    {% if lesson.description %}
+                    <!-- Learning Objectives -->
+                    {% if lesson.learningObjectives %}
+                        <div class="card border-0 bg-light mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-bullseye me-2 text-primary"></i>Learning Objectives
+                                </h5>
+                                <div class="lesson-content">
+                                    {{ lesson.learningObjectives|nl2br }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Prerequisites -->
+                    {% if lesson.prerequisites %}
+                        <div class="card border-0 bg-warning bg-opacity-10 mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-exclamation-triangle me-2 text-warning"></i>Prerequisites
+                                </h5>
+                                <div class="lesson-content">
+                                    {{ lesson.prerequisites|nl2br }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Main Content -->
+                    {% if lesson.content %}
+                        <div class="lesson-content mb-4">
+                            {{ lesson.content|raw }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Materials -->
+                    {% if lesson.materials %}
+                        <div class="card border-0 bg-info bg-opacity-10 mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-book-open me-2 text-info"></i>Course Materials
+                                </h5>
+                                <div class="row">
+                                    {% for materialName, materialDescription in lesson.materials %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-file-alt me-3 mt-1 text-info"></i>
+                                                <div>
+                                                    <strong>{{ materialName }}</strong>
+                                                    <br>
+                                                    <small class="text-muted">{{ materialDescription }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Resources -->
+                    {% if lesson.resources %}
+                        <div class="card border-0 bg-success bg-opacity-10 mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-link me-2 text-success"></i>Additional Resources
+                                </h5>
+                                <div class="lesson-content">
+                                    {{ lesson.resources|raw }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Assessment -->
+                    {% if lesson.assessment %}
+                        <div class="card border-0 bg-danger bg-opacity-10 mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-clipboard-check me-2 text-danger"></i>Assessment
+                                </h5>
+                                <div class="lesson-content">
+                                    {{ lesson.assessment|raw }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Transcript -->
+                    {% if lesson.transcript %}
+                        <div class="card border-0 bg-secondary bg-opacity-10 mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-closed-captioning me-2 text-secondary"></i>Transcript
+                                </h5>
+                                <div class="lesson-content">
+                                    <pre class="bg-light p-3 rounded">{{ lesson.transcript }}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Original Description (fallback) -->
+                    {% if lesson.description and not lesson.content %}
                         <div class="lesson-content">
                             {{ lesson.description|raw }}
                         </div>
@@ -395,7 +944,6 @@ Header END -->
             <div class="d-flex justify-content-between align-items-center mb-5">
                 {% if previousLesson %}
                     <a href="{{ path('app_lesson_show', {'id': previousLesson.id}) }}" 
-                       data-turbo="false"
                        class="btn btn-outline-primary">
                         <i class="fas fa-arrow-left me-2"></i>Previous Lesson
                     </a>
@@ -404,31 +952,40 @@ Header END -->
                 {% endif %}
 
                 <div class="d-flex gap-2">
-                    <a href="{{ path('app_instructor_course_detail', {'id': course.id}) }}" 
-                       data-turbo="false"
+                    <a href="{{ path('app_my_courses') }}" 
                        class="btn btn-outline-secondary"
-                       title="Return to course overview">
-                        <i class="fas fa-list me-2"></i>Back to Course
+                       title="Return to my courses">
+                        <i class="fas fa-list me-2"></i>Back to Courses
                     </a>
 
                     {% if not nextLesson %}
-                        <form method="get" action="{{ path('app_certificate_preview', {'courseId': course.id}) }}" style="display: inline;">
-                            <button type="submit" 
-                                    class="btn btn-success"
-                                    onclick="markCourseComplete(); return true;"
-                                    title="Complete course and view certificate">
-                                Complete Course <i class="fas fa-certificate ms-2"></i>
+                        {% set courseQuiz = null %}
+                        {% for quiz in course.quizzes %}
+                            {% set courseQuiz = quiz %}
+                        {% endfor %}
+                        
+                        {% if courseQuiz %}
+                            <button class="btn btn-success btn-lg" 
+                                    onclick="markLessonCompleteAndTakeQuiz({{ courseQuiz.id }})"
+                                    title="Complete this lesson and take final quiz">
+                                <i class="fas fa-graduation-cap me-2"></i>Complete Course & Take Final Quiz
                             </button>
-                        </form>
+                        {% else %}
+                            <button class="btn btn-success btn-lg" 
+                                    onclick="markLessonCompleteAndRedirectToTest()"
+                                    title="Complete course and take test">
+                                <i class="fas fa-check-circle me-2"></i>Complete Course & Take Test
+                            </button>
+                        {% endif %}
                     {% endif %}
                 </div>
 
                 {% if nextLesson %}
-                    <a href="{{ path('app_lesson_show', {'id': nextLesson.id}) }}" 
-                       data-turbo="false"
-                       class="btn btn-primary">
+                    <button class="btn btn-primary" 
+                            onclick="markLessonCompleteAndRedirect({{ nextLesson.id }})"
+                            title="Complete this lesson and continue to next">
                         Next Lesson <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
+                    </button>
                 {% else %}
                     <div></div> <!-- Empty div to maintain layout when no next lesson -->
                 {% endif %}
@@ -451,21 +1008,88 @@ Header END -->
                                     <h6 class="mb-2 fw-bold px-3">{{ chapter.title }}</h6>
                                     <div class="list-group list-group-flush">
                                         {% for chapLesson in chapter.lessons|sort((a, b) => a.sortOrder <=> b.sortOrder) %}
-                                            <a href="{{ path('app_lesson_show', {'id': chapLesson.id}) }}" 
-                                               data-turbo="false"
-                                               class="list-group-item list-group-item-action border-0 py-2 px-3 
-                                                      {{ chapLesson.id == lesson.id ? 'active-lesson fw-bold' : '' }}">
-                                                <div class="d-flex align-items-center">
-                                                    <i class="fas fa-{{ 
-                                                        chapLesson.type == 'video' ? 'play-circle' : 
-                                                        (chapLesson.type == 'quiz' ? 'question-circle' : 'file-alt') 
-                                                    }} me-2 {{ chapLesson.id == lesson.id ? 'text-primary' : 'text-muted' }}"></i>
-                                                    <span>{{ chapLesson.title }}</span>
-                                                    {% if chapLesson.isPreview %}
-                                                        <span class="badge bg-warning text-dark ms-auto">Preview</span>
-                                                    {% endif %}
+                                            {% set isRecommendedLesson = learningPath.lesson and learningPath.lesson.id == chapLesson.id %}
+                                            {% set isCurrentLesson = chapLesson.id == lesson.id %}
+                                            
+                                            {% set isCompleted = false %}
+                                            {% for completion in completedLessons %}
+                                                {% if completion.lesson.id == chapLesson.id %}
+                                                    {% set isCompleted = true %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            
+                                            {% set isLastCompleted = false %}
+                                            {% if completedLessons|length > 0 %}
+                                                {% set lastCompleted = completedLessons|last %}
+                                                {% if lastCompleted.lesson.id == chapLesson.id %}
+                                                    {% set isLastCompleted = true %}
+                                                {% endif %}
+                                            {% endif %}
+                                            
+                                            {% if isCompleted or isLastCompleted %}
+                                                <a href="{{ path('app_lesson_show', {'id': chapLesson.id}) }}" 
+                                                   data-turbo="false"
+                                                   class="list-group-item list-group-item-action border-0 py-2 px-3 
+                                                          {{ isCurrentLesson ? 'active-lesson fw-bold' : '' }}
+                                                          {{ isLastCompleted ? 'border-success' : 'bg-success bg-opacity-10' }}">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-{{ 
+                                                            chapLesson.type == 'video' ? 'check-circle' : 
+                                                            (chapLesson.type == 'quiz' ? 'check-circle' : 'check-circle') 
+                                                        }} me-2 {{ isCurrentLesson ? 'text-primary' : 'text-success' }}"></i>
+                                                        <span class="{{ isCurrentLesson ? '' : 'text-success' }}">{{ chapLesson.title }}</span>
+                                                        {% if isCurrentLesson %}
+                                                            <span class="badge bg-primary ms-auto">Current</span>
+                                                        {% elseif isLastCompleted %}
+                                                            <span class="badge bg-warning ms-auto">Last Completed</span>
+                                                        {% else %}
+                                                            <span class="badge bg-success ms-auto">Completed</span>
+                                                        {% endif %}
+                                                        {% if chapLesson.isPreview %}
+                                                            <span class="badge bg-warning text-dark ms-2">Preview</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </a>
+                                            {% elseif isRecommendedLesson or isCurrentLesson %}
+                                                <a href="{{ path('app_lesson_show', {'id': chapLesson.id}) }}" 
+                                                   data-turbo="false"
+                                                   class="list-group-item list-group-item-action border-0 py-2 px-3 
+                                                          {{ isCurrentLesson ? 'active-lesson fw-bold' : '' }}">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-{{ 
+                                                            chapLesson.type == 'video' ? 'play-circle' : 
+                                                            (chapLesson.type == 'quiz' ? 'question-circle' : 'file-alt') 
+                                                        }} me-2 {{ isCurrentLesson ? 'text-primary' : 'text-muted' }}"></i>
+                                                        <span>{{ chapLesson.title }}</span>
+                                                        {% if isCurrentLesson %}
+                                                            <span class="badge bg-primary ms-auto">Current</span>
+                                                        {% elseif isRecommendedLesson %}
+                                                            <span class="badge bg-success ms-auto">Recommended</span>
+                                                        {% endif %}
+                                                        {% if chapLesson.isPreview %}
+                                                            <span class="badge bg-warning text-dark ms-2">Preview</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </a>
+                                            {% else %}
+                                                <!-- Check if this is the next lesson after current lesson -->
+                                                {% set isNextLesson = false %}
+                                                {% if nextLesson and nextLesson.id == chapLesson.id %}
+                                                    {% set isNextLesson = true %}
+                                                {% endif %}
+                                                
+                                                <div class="list-group-item border-0 py-2 px-3 opacity-50">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-lock me-2 text-muted"></i>
+                                                        <span class="text-muted">{{ chapLesson.title }}</span>
+                                                        {% if isNextLesson %}
+                                                            <span class="badge bg-info ms-auto">Next</span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary ms-auto">Locked</span>
+                                                        {% endif %}
+                                                    </div>
                                                 </div>
-                                            </a>
+                                            {% endif %}
                                         {% endfor %}
                                     </div>
                                 </div>

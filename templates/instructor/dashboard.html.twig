@@ -3,7 +3,7 @@
 {% block title %}Instructor Dashboard - Eduport{% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/apexcharts/css/apexcharts.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
 <style>
 /* Modern Instructor Dashboard Styles */
 .instructor-gradient {
@@ -316,53 +316,64 @@ Page content START -->
 
 				<!-- Counter boxes START -->
 				<div class="row g-4">
-					<!-- Counter item -->
+					<!-- Counter item - Total Courses -->
 					<div class="col-sm-6 col-lg-4">
 						<div class="stat-card-instructor">
 							<div class="d-flex justify-content-center align-items-center">
 								<span class="display-6 stat-icon-courses mb-0"><i class="fas fa-tv fa-fw"></i></span>
 								<div class="ms-4">
 									<div class="d-flex">
-										<h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="{{ totalCourses }}" data-purecounter-delay="200">{{ totalCourses }}</h5>
+										<h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="{{ courseStats.total }}" data-purecounter-delay="200">{{ courseStats.total }}</h5>
 									</div>
 									<span class="mb-0 h6 fw-light text-muted">Total Courses</span>
 									<div class="mt-2">
-										<small class="text-success"><i class="bi bi-arrow-up"></i> +2 this month</small>
+										{% if courseStats.percentChange >= 0 %}
+											<small class="text-success"><i class="bi bi-arrow-up"></i> +{{ courseStats.percentChange|number_format(0) }}% this month</small>
+										{% else %}
+											<small class="text-danger"><i class="bi bi-arrow-down"></i> {{ courseStats.percentChange|number_format(0) }}% this month</small>
+										{% endif %}
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<!-- Counter item -->
+					<!-- Counter item - Total Students -->
 					<div class="col-sm-6 col-lg-4">
 						<div class="stat-card-instructor">
 							<div class="d-flex justify-content-center align-items-center">
 								<span class="display-6 stat-icon-students mb-0"><i class="fas fa-user-graduate fa-fw"></i></span>
 								<div class="ms-4">
 									<div class="d-flex">
-										<h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="{{ totalStudents }}" data-purecounter-delay="200">{{ totalStudents }}</h5>
-										<span class="mb-0 h5">K+</span>
+										<h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="{{ studentStats.total }}" data-purecounter-delay="200">{{ studentStats.total }}</h5>
 									</div>
 									<span class="mb-0 h6 fw-light text-muted">Total Students</span>
 									<div class="mt-2">
-										<small class="text-success"><i class="bi bi-arrow-up"></i> +0.5K this month</small>
+										{% if studentStats.percentChange >= 0 %}
+											<small class="text-success"><i class="bi bi-arrow-up"></i> +{{ studentStats.percentChange|number_format(0) }}% this month</small>
+										{% else %}
+											<small class="text-danger"><i class="bi bi-arrow-down"></i> {{ studentStats.percentChange|number_format(0) }}% this month</small>
+										{% endif %}
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<!-- Counter item -->
+					<!-- Counter item - Total Earnings -->
 					<div class="col-sm-6 col-lg-4">
 						<div class="stat-card-instructor">
 							<div class="d-flex justify-content-center align-items-center">
 								<span class="display-6 stat-icon-earnings mb-0"><i class="fas fa-gem fa-fw"></i></span>
 								<div class="ms-4">
 									<div class="d-flex">
-										<h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="{{ totalEarnings|number_format(0, '.', ',') }}" data-purecounter-delay="200">${{ totalEarnings|number_format(0, '.', ',') }}</h5>
+										<h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="{{ totalEarnings|number_format(0, '', '') }}" data-purecounter-delay="200">${{ totalEarnings|number_format(2) }}</h5>
 									</div>
 									<span class="mb-0 h6 fw-light text-muted">Total Earnings</span>
 									<div class="mt-2">
-										<small class="text-success"><i class="bi bi-arrow-up"></i> +12% this month</small>
+										{% if earningsData.percentChange >= 0 %}
+											<small class="text-success"><i class="bi bi-arrow-up"></i> +{{ earningsData.percentChange|number_format(0) }}% this month</small>
+										{% else %}
+											<small class="text-danger"><i class="bi bi-arrow-down"></i> {{ earningsData.percentChange|number_format(0) }}% this month</small>
+										{% endif %}
 									</div>
 								</div>
 							</div>
@@ -371,66 +382,12 @@ Page content START -->
 				</div>
 				<!-- Counter boxes END -->
 
-				<!-- Recent Courses START -->
-				{% if recentCourses|length > 0 %}
-				<div class="row mt-5">
-					<div class="col-12">
-						<div class="card card-body bg-transparent border p-4">
-							<div class="d-flex justify-content-between align-items-center mb-4">
-								<h5 class="mb-0 fw-bold">Recent Courses</h5>
-								<a href="{{ path('app_instructor_manage_courses') }}" class="btn btn-sm btn-primary">View All</a>
-							</div>
-							<div class="row g-4">
-								{% for course in recentCourses %}
-								<div class="col-md-6 col-lg-4">
-									<div class="course-card-modern h-100">
-										{% if course.thumbnailUrl %}
-										<img src="{{ course.thumbnailUrl }}" class="card-img-top" alt="{{ course.title }}">
-										{% else %}
-										<div class="card-img-top bg-light d-flex align-items-center justify-content-center">
-											<i class="fas fa-tv fa-3x text-muted"></i>
-										</div>
-										{% endif %}
-										<div class="card-body">
-											<h6 class="card-title fw-bold">{{ course.title|length > 50 ? course.title|slice(0, 50) ~ '...' : course.title }}</h6>
-											<p class="card-text text-muted small">{{ course.shortDescription|length > 80 ? course.shortDescription|slice(0, 80) ~ '...' : course.shortDescription }}</p>
-											<div class="d-flex justify-content-between align-items-center mb-3">
-												<span class="badge bg-primary bg-opacity-10 text-primary">{{ course.category }}</span>
-												<span class="text-primary fw-bold">${{ course.price }}</span>
-											</div>
-											<div class="d-flex justify-content-between align-items-center">
-												<div class="small text-muted">
-													<i class="fas fa-users me-1"></i>
-													<span>{{ random(100, 500) }} students</span>
-												</div>
-												<div class="small text-muted">
-													<i class="fas fa-star me-1 text-warning"></i>
-													<span>{{ (random(35, 50) / 10)|number_format(1) }}</span>
-												</div>
-											</div>
-										</div>
-										<div class="card-footer bg-transparent border-0">
-											<div class="d-flex gap-2">
-												<a href="{{ path('app_instructor_course_detail', {'id': course.id}) }}" class="btn btn-outline-primary btn-sm flex-fill">View Details</a>
-												<a href="{{ path('app_instructor_edit_course', {'id': course.id}) }}" class="btn btn-primary btn-sm flex-fill">Edit</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								{% endfor %}
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- Recent Courses END -->
-				{% endif %}
-
-				<!-- Chart START -->
+<!-- Chart START -->
 				<div class="row mt-5">
 					<div class="col-12">
 						<div class="earnings-card p-4">
 							<div class="d-flex justify-content-between align-items-center mb-4">
-								<h5 class="mb-0 fw-bold">Earnings Overview</h5>
+								<h5 class="mb-0 fw-bold">Earnings & Students Overview</h5>
 								<div class="btn-group" role="group">
 									<button type="button" class="btn btn-sm btn-outline-primary active">Monthly</button>
 									<button type="button" class="btn btn-sm btn-outline-primary">Weekly</button>
@@ -442,24 +399,31 @@ Page content START -->
 								<div class="col-sm-6 col-md-4">
 									<div class="metric-card">
 										<span class="badge text-bg-dark">Current Month</span>
-										<h4 class="text-primary my-2">${{ earningsData.currentMonth|number_format(0, '.', ',') }}</h4>
-										<p class="mb-0"><span class="text-success me-1">0.20%<i class="bi bi-arrow-up"></i></span>vs last month</p>
+										<h4 class="text-primary my-2">${{ earningsData.currentMonth|number_format(2) }}</h4>
+										<p class="mb-0">
+											{% if earningsData.percentChange >= 0 %}
+												<span class="text-success me-1">{{ earningsData.percentChange|number_format(1) }}%<i class="bi bi-arrow-up"></i></span>
+											{% else %}
+												<span class="text-danger me-1">{{ earningsData.percentChange|abs|number_format(1) }}%<i class="bi bi-arrow-down"></i></span>
+											{% endif %}
+											vs last month
+										</p>
 									</div>
 								</div>
 								<!-- Content -->
 								<div class="col-sm-6 col-md-4">
 									<div class="metric-card">
 										<span class="badge text-bg-dark">Last Month</span>
-										<h4 class="my-2">${{ earningsData.lastMonth|number_format(0, '.', ',') }}</h4>
-										<p class="mb-0"><span class="text-danger me-1">0.10%<i class="bi bi-arrow-down"></i></span>Then last month</p>
+										<h4 class="my-2">${{ earningsData.lastMonth|number_format(2) }}</h4>
+										<p class="mb-0 text-muted">Previous month earnings</p>
 									</div>
 								</div>
 								<!-- Content -->
 								<div class="col-sm-6 col-md-4">
 									<div class="metric-card">
 										<span class="badge text-bg-dark">Average</span>
-										<h4 class="my-2">${{ earningsData.average|number_format(0, '.', ',') }}</h4>
-										<p class="mb-0"><span class="text-success me-1">0.05%<i class="bi bi-arrow-up"></i></span>vs last month</p>
+										<h4 class="my-2">${{ earningsData.average|number_format(2) }}</h4>
+										<p class="mb-0 text-muted">Monthly average earnings</p>
 									</div>
 								</div>
 							</div>
@@ -488,43 +452,163 @@ Page content END -->
 {% endblock %}
 
 {% block javascripts %}
-<!-- ApexCharts -->
-<script src="{{ asset('assets/vendor/apexcharts/js/apexcharts.min.js') }}"></script>
+<script type="module">
+import ApexCharts from 'apexcharts';
 
-<!-- Chart -->
-<script>
-// Chart
+// Chart data from backend
+const chartData = {{ earningsData.chartData|json_encode()|raw }};
+const chartLabels = {{ earningsData.chartLabels|json_encode()|raw }};
+const studentChartData = {{ earningsData.studentChartData|json_encode()|raw }};
+
 document.addEventListener("DOMContentLoaded", function() {
     var options = {
         series: [{
-            name: 'Earnings',
-            data: {{ earningsData.chartData|json_encode() }}
+            name: 'Earnings ($)',
+            type: 'area',
+            data: chartData
+        }, {
+            name: 'Students',
+            type: 'line',
+            data: studentChartData
         }],
         chart: {
             height: 350,
-            type: 'area',
+            type: 'line',
             toolbar: {
                 show: false
             },
+            stacked: false,
+        },
+        stroke: {
+            curve: 'smooth',
+            width: [0, 3],
+        },
+        fill: {
+            type: ['gradient', 'solid'],
+            gradient: {
+                shade: 'dark',
+                type: 'vertical',
+                shadeIntensity: 0.5,
+                opacityFrom: 0.7,
+                opacityTo: 0.1,
+            }
         },
         dataLabels: {
             enabled: false
         },
-        stroke: {
-            curve: 'smooth'
+        markers: {
+            size: [0, 5],
+            colors: ['#4CAF50', '#2196F3'],
+            strokeColors: '#fff',
+            strokeWidth: 2,
         },
+        colors: ['#4CAF50', '#2196F3'],
         xaxis: {
-            categories: {{ earningsData.chartLabels|json_encode() }}
+            categories: chartLabels,
+            labels: {
+                style: {
+                    fontSize: '12px'
+                }
+            }
         },
-        tooltip: {
-            x: {
-                format: 'dd/MM/yy'
+        yaxis: [{
+            title: {
+                text: 'Earnings ($)',
+                style: {
+                    color: '#4CAF50',
+                }
             },
+            labels: {
+                style: {
+                    colors: '#4CAF50',
+                },
+                formatter: function(value) {
+                    return '$' + value;
+                }
+            }
+        }, {
+            opposite: true,
+            title: {
+                text: 'Students',
+                style: {
+                    color: '#2196F3',
+                }
+            },
+            labels: {
+                style: {
+                    colors: '#2196F3',
+                }
+            }
+        }],
+        tooltip: {
+            shared: true,
+            intersect: false,
+            y: {
+                formatter: function(y, { seriesIndex }) {
+                    if (seriesIndex === 0) {
+                        return '$' + y.toFixed(2);
+                    }
+                    return y + ' students';
+                }
+            }
         },
+        legend: {
+            position: 'top',
+            horizontalAlign: 'right'
+        },
+        grid: {
+            borderColor: '#f1f1f1',
+        }
     };
 
     var chart = new ApexCharts(document.querySelector("#ChartEarning"), options);
     chart.render();
 });
 </script>
+
+<style>
+.progress-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: conic-gradient(#28a745 var(--progress), #e9ecef var(--progress));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    --progress: 0%;
+}
+
+.progress-circle-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.metric-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-card-instructor {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card-instructor:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.earnings-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+</style>
 {% endblock %}

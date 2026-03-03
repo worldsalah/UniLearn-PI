@@ -3,9 +3,15 @@
 {% block title %}My Courses - UniLearn{% endblock %}
 
 {% block stylesheets %}
+{{ parent() }}
 <style>
+html, body {
+    background-color: #ffffff !important;
+}
+
 .my-courses {
     padding: 2rem 0;
+    background-color: #ffffff;
 }
 
 .course-card {
@@ -89,6 +95,26 @@
     box-shadow: 0 4px 8px rgba(0,123,255,0.3);
 }
 
+.certificate-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.certificate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40,167,69,0.3);
+}
+
+.quiz-btn {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    color: #212529;
+}
+
+.quiz-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255,193,7,0.3);
+}
+
 .dashboard-btn {
     background: transparent;
     color: #007bff;
@@ -118,15 +144,40 @@
 </style>
 {% endblock %}
 
-{% block body %}
+{% block content %}
+<!-- Flash Messages -->
+{% for message in app.flashes('error') %}
+    <div data-flash-type="error" 
+         data-flash-title="Access Denied" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('success') %}
+    <div data-flash-type="success" 
+         data-flash-title="Success" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
 <div class="container my-courses">
     <div class="row">
         <div class="col-12">
             <h1 class="h2 mb-4">My Courses</h1>
             
-            {% if enrollments|length > 0 %}
+            {% if enrollmentData|length > 0 %}
                 <div class="row">
-                    {% for enrollment in enrollments %}
+                    {% for data in enrollmentData %}
+                        {% set enrollment = data.enrollment %}
+                        {% set isComplete = data.isComplete %}
+                        {% set hasCertificate = data.hasCertificate %}
+                        {% set canTakeQuiz = data.canTakeQuiz %}
+                        {% set firstQuiz = data.firstQuiz %}
+                        {% set certificate = data.certificate %}
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="course-card">
                                 <!-- Course Image/Placeholder -->
@@ -162,9 +213,27 @@
                                     
                                     <!-- Actions -->
                                     <div class="course-actions">
-                                        <a href="{{ path('app_course_dashboard', {'id': enrollment.course.id}) }}" class="action-btn continue-btn">
-                                            <i class="fas fa-play me-1"></i>Continue
-                                        </a>
+                                        {% if isComplete and hasCertificate %}
+                                            {# Course complete and has certificate - show View Certificate #}
+                                            <a href="{{ path('quiz_certificate', {'id': certificate.quizResult.id}) }}" class="action-btn certificate-btn">
+                                                <i class="fas fa-certificate me-1"></i>View Certificate
+                                            </a>
+                                        {% elseif (isComplete or enrollment.progress >= 100) and canTakeQuiz and not hasCertificate %}
+                                            {# Course complete/progress 100%, has quiz but no certificate - show Take Quiz #}
+                                            <a href="{{ path('app_quiz_take', {'id': firstQuiz.id}) }}" class="action-btn quiz-btn">
+                                                <i class="fas fa-question-circle me-1"></i>Take Quiz
+                                            </a>
+                                        {% elseif isComplete and enrollment.progress >= 100 and not hasCertificate %}
+                                            {# Course complete and progress 100%, no quiz - show Take Test #}
+                                            <a href="{{ path('app_course_test', {'id': enrollment.course.id}) }}" class="action-btn quiz-btn">
+                                                <i class="fas fa-clipboard-check me-1"></i>Take Test
+                                            </a>
+                                        {% else %}
+                                            {# Course not complete - show Continue #}
+                                            <a href="{{ path('app_course_dashboard', {'id': enrollment.course.id}) }}" class="action-btn continue-btn">
+                                                <i class="fas fa-play me-1"></i>Continue
+                                            </a>
+                                        {% endif %}
                                         <a href="{{ path('app_course_show', {'id': enrollment.course.id}) }}" class="action-btn dashboard-btn">
                                             <i class="fas fa-info-circle me-1"></i>Details
                                         </a>
@@ -193,4 +262,7 @@
         </div>
     </div>
 </div>
+
+<!-- Include Footer -->
+{% include 'components/footer.html.twig' %}
 {% endblock %}

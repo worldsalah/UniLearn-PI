@@ -26,6 +26,7 @@ class EnrollmentRepository extends ServiceEntityRepository
             ->where('e.user = :user')
             ->setParameter('user', $user)
             ->orderBy('e.enrolledAt', 'DESC')
+            ->setMaxResults(100)
             ->getQuery()
             ->getResult();
     }
@@ -61,5 +62,46 @@ class EnrollmentRepository extends ServiceEntityRepository
             ->setParameter('id', $enrollment->getId())
             ->getQuery()
             ->execute();
+    }
+
+    public function getEnrollmentsByMonth(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('COUNT(e.id) as enrollmentCount', 'MONTH(e.enrolledAt) as month', 'YEAR(e.enrolledAt) as year')
+            ->where('e.enrolledAt >= :startDate')
+            ->setParameter('startDate', new \DateTime('-1 year'))
+            ->groupBy('MONTH(e.enrolledAt)', 'YEAR(e.enrolledAt)')
+            ->orderBy('YEAR(e.enrolledAt)', 'DESC')
+            ->addOrderBy('MONTH(e.enrolledAt)', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getEnrollmentsByCourse(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('c.title as courseTitle', 'COUNT(e.id) as enrollmentCount')
+            ->leftJoin('e.course', 'c')
+            ->groupBy('c.id')
+            ->orderBy('enrollmentCount', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getRecentEnrollments(int $days = 30): array
+    {
+        $startDate = new \DateTime("-{$days} days");
+        
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.user', 'u')
+            ->leftJoin('e.course', 'c')
+            ->select('e', 'u', 'c')
+            ->where('e.enrolledAt >= :startDate')
+            ->setParameter('startDate', $startDate)
+            ->orderBy('e.enrolledAt', 'DESC')
+            ->setMaxResults(50)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Completion Certificate - {{ course.title }}</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif;
+            background: #f8fafc;
+        }
+        
+        .certificate {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 8px solid #4f46e5;
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .certificate::before {
+            content: "";
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+        
+        .certificate-header {
+            margin-bottom: 2rem;
+        }
+        
+        .certificate-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .certificate-subtitle {
+            font-size: 1.25rem;
+            color: #64748b;
+            font-style: italic;
+        }
+        
+        .certificate-body {
+            margin: 3rem 0;
+        }
+        
+        .recipient-name {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #4f46e5;
+            margin-bottom: 1rem;
+            text-decoration: underline;
+            text-decoration-color: #4f46e5;
+            text-decoration-thickness: 3px;
+        }
+        
+        .certificate-text {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #374151;
+            margin-bottom: 2rem;
+        }
+        
+        .course-info {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .course-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .course-details {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .detail-item {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .detail-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .certificate-footer {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .certificate-date {
+            font-size: 1rem;
+            color: #64748b;
+        }
+        
+        .certificate-seal {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <div class="certificate-header">
+            <div class="certificate-title">Certificate of Completion</div>
+            <div class="certificate-subtitle">This is to certify that</div>
+        </div>
+        
+        <div class="certificate-body">
+            <div class="recipient-name">{{ user.fullName }}</div>
+            <div class="certificate-text">
+                has successfully completed the course<br>
+                <strong>{{ course.title }}</strong><br>
+                with a final score of <strong>{{ quizResult.percentage }}%</strong>
+            </div>
+            
+            <div class="course-info">
+                <div class="course-title">{{ course.title }}</div>
+                <div class="course-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Score Achieved</div>
+                        <div class="detail-value">{{ quizResult.percentage }}%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Questions Correct</div>
+                        <div class="detail-value">{{ quizResult.score }}/{{ quizResult.maxScore }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Completion Date</div>
+                        <div class="detail-value">{{ completionDate|date('M d, Y') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="certificate-footer">
+            <div class="certificate-date">
+                Issued on {{ completionDate|date('F j, Y') }}
+            </div>
+            <div class="certificate-seal">
+                <i class="fas fa-award"></i>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

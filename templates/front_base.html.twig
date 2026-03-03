@@ -42,11 +42,10 @@ Header START -->
                             <li><h6 class="dropdown-header">Learning</h6></li>
                             <li><a class="dropdown-item" href="{{ path('app_course_grid') }}">Browse Courses</a></li>
                             <li><a class="dropdown-item" href="{{ path('app_categories') }}">Course Categories</a></li>
-                            <li><a class="dropdown-item" href="/certificate/browse-certificates">Browse Certificates</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Student</h6></li>
-                            <li><a class="dropdown-item" href="#">My Certificates</a></li>
-                            <li><a class="dropdown-item" href="#">My Bookmarks</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_my_certificates') }}">My Certificates</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_my_courses') }}">My Courses</a></li>
                         </ul>
                     </li>
 
@@ -58,7 +57,11 @@ Header START -->
                         <ul class="dropdown-menu" aria-labelledby="sessionDropdown">
                             <li><h6 class="dropdown-header">Schedule</h6></li>
                             <li><a class="dropdown-item" href="{{ path('all_sessions') }}">All Sessions</a></li>
-                            <li><a class="dropdown-item" href="{{ path('all_sessions') }}">Book a Session</a></li>
+                            {% if app.user and 'instructor' == app.user.role.name %}
+                                <li><a class="dropdown-item" href="{{ path('teacher_calendar') }}">Calendar</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{{ path('booking_create') }}">Calendar</a></li>
+                            {% endif %}
                             <li><a class="dropdown-item" href="{{ path('all_bookings') }}">My Bookings</a></li>
                         </ul>
                     </li>
@@ -69,6 +72,9 @@ Header START -->
                             Marketplace
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="marketplaceDropdown">
+                            <li><h6 class="dropdown-header">Marketplace</h6></li>
+                            <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_marketplace_index' %}active{% endif %}" href="{{ path('app_marketplace_index') }}">Marketplace Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Services</h6></li>
                             <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_marketplace_shop' %}active{% endif %}" href="{{ path('app_marketplace_shop') }}">Browse Marketplace</a></li>
                             <li><a class="dropdown-item {% if app.request.attributes.get('_route') == 'app_product_new_public' %}active{% endif %}" href="{{ path('app_product_new_public') }}">Offer Service</a></li>
@@ -84,15 +90,14 @@ Header START -->
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="supportDropdown">
                             <li><h6 class="dropdown-header">Help</h6></li>
-                            <li><a class="dropdown-item" href="#">Help Center</a></li>
-                            <li><a class="dropdown-item" href="#">Contact Support</a></li>
-                            <li><a class="dropdown-item" href="#">FAQ</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_help_center') }}">Help Center</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_contact_support') }}">Contact Support</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_faq') }}">FAQ</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">About</h6></li>
-                            <li><a class="dropdown-item" href="#">About Us</a></li>
-                            <li><a class="dropdown-item" href="#">Contact</a></li>
-                            <li><a class="dropdown-item" href="#">Privacy Policy</a></li>
-                            <li><a class="dropdown-item" href="#">Terms of Service</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_about') }}">About Us</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_privacy_policy') }}">Privacy Policy</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_terms_of_service') }}">Terms of Service</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -123,30 +128,26 @@ Header START -->
                                 <li><hr class="dropdown-divider"></li>
                                 <!-- Links -->
                                 {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
-                                    <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
                                     <li><a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="fas fa-chalkboard-teacher fa-fw me-2"></i>Dashboard</a></li>
                                 {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
-                                    <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
                                     <li><a class="dropdown-item" href="{{ path('app_student_dashboard') }}"><i class="fas fa-graduation-cap fa-fw me-2"></i>Dashboard</a></li>
                                 {% else %}
                                     <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="fas fa-tachometer-alt fa-fw me-2"></i>Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
                                 {% endif %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a></li>
                             </ul>
                         </li>
                     {% else %}
-                        <!-- Sign in button -->
-                        <li class="nav-item">
-                            <a class="btn btn-sm btn-primary me-2" href="{{ path('app_login') }}">Sign In</a>
-                        </li>
-                        <!-- Sign up button -->
-                        <li class="nav-item">
+                        <!-- Sign in and sign up buttons -->
+                        <li class="nav-item d-flex gap-2">
+                            <a class="btn btn-sm btn-primary" href="{{ path('app_login') }}">Sign In</a>
                             <a class="btn btn-sm btn-outline-primary" href="{{ path('app_register') }}">Sign Up</a>
                         </li>
                     {% endif %}
@@ -160,7 +161,36 @@ Header START -->
 <!-- =======================
 Header END -->
 
+<style>
+/* Navbar consistency styles */
+.navbar-nav .nav-link {
+    border: none !important;
+    border-radius: 0;
+    background: transparent;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus,
+.navbar-nav .nav-link.active {
+    border: none !important;
+    background: transparent;
+}
+
+.navbar-nav .dropdown-toggle {
+    border: none !important;
+    background: transparent;
+}
+
+.navbar-nav .dropdown-toggle:hover,
+.navbar-nav .dropdown-toggle:focus {
+    border: none !important;
+    background: transparent;
+}
+</style>
+
 {% block content %}{% endblock %}
+
+{% include 'components/footer.html.twig' %}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -400,6 +430,188 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Global breadcrumb cleanup function - run immediately
+cleanAllBreadcrumbs();
+
+document.addEventListener('DOMContentLoaded', function() {
+    cleanAllBreadcrumbs();
+});
+
+// Also clean breadcrumb after short delays to catch any dynamic content
+setTimeout(cleanAllBreadcrumbs, 50);
+setTimeout(cleanAllBreadcrumbs, 100);
+setTimeout(cleanAllBreadcrumbs, 500);
+setTimeout(cleanAllBreadcrumbs, 1000);
+setTimeout(cleanAllBreadcrumbs, 2000);
+
+// Also clean on any click or navigation
+document.addEventListener('click', function() {
+    setTimeout(cleanAllBreadcrumbs, 100);
+});
+
+// Also clean on Turbo navigation if available
+if (window.Turbo) {
+    document.addEventListener('turbo:load', function() {
+        cleanAllBreadcrumbs();
+        setTimeout(cleanAllBreadcrumbs, 500);
+    });
+}
+
+// Continuous monitoring - check every 2 seconds for any breadcrumb issues
+setInterval(cleanAllBreadcrumbs, 2000);
+
+// Also monitor for any DOM changes more aggressively - use the existing observer
+if (!window.__breadcrumbDomObserver) {
+    window.__breadcrumbDomObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                cleanAllBreadcrumbs();
+            }
+        });
+    });
+
+    // Start observing the entire document for changes
+    window.__breadcrumbDomObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+    });
+}
+
+function cleanAllBreadcrumbs() {
+    // Clean up any breadcrumb items containing file paths or unwanted text
+    const breadcrumbItems = document.querySelectorAll('.breadcrumb-item');
+    breadcrumbItems.forEach(item => {
+        const text = item.textContent.trim();
+        if (text) {
+            // Check if the item contains only path patterns (should be removed entirely)
+            const isOnlyPath = /^(\.\.\/)+.*\.html$/i.test(text) || 
+                              /^index-\d+\.html$/i.test(text) ||
+                              /^(\.\.\/)+$/i.test(text) ||
+                              /^(\.\.\/)+(\.\.\/)+.*\.html$/i.test(text);
+            
+            if (isOnlyPath) {
+                // Remove this breadcrumb item entirely
+                item.style.display = 'none';
+                return;
+            }
+            
+            // Replace various file path patterns within mixed text
+            let cleanedText = text
+                .replace(/\.\.\/\.\.\/index-12\.html/gi, '')
+                .replace(/\.\.\/index-12\.html/gi, '')
+                .replace(/index-12\.html/gi, '')
+                .replace(/\.\.\/\.\.\//g, '')
+                .replace(/\.\.\/\./g, '')
+                .replace(/\.\.\/(\.\.\/)+.*\.html/gi, '')
+                .replace(/(\.\.\/)+.*\.html$/i, '')
+                .trim();
+            
+            // Only update if text was changed and is not empty
+            if (cleanedText !== text && cleanedText) {
+                item.textContent = cleanedText;
+            } else if (!cleanedText) {
+                // If text is now empty, hide the item
+                item.style.display = 'none';
+            }
+        }
+    });
+    
+    // Also check for any breadcrumb links with bad hrefs and update their text
+    const breadcrumbLinks = document.querySelectorAll('.breadcrumb-item a');
+    breadcrumbLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        const text = link.textContent.trim();
+        if (href && (href.includes('index-12.html') || href.includes('../../index-12.html'))) {
+            link.textContent = 'TypeScript';
+        }
+        // Also hide links that only contain path patterns
+        if (/^(\.\.\/)+.*\.html$/i.test(text) || /^index-\d+\.html$/i.test(text)) {
+            link.closest('.breadcrumb-item').style.display = 'none';
+        }
+    });
+    
+    // Clean up any empty breadcrumb separators that may have been left behind
+    const breadcrumbs = document.querySelectorAll('.breadcrumb');
+    breadcrumbs.forEach(crumb => {
+        // Remove consecutive separators or empty items
+        const items = crumb.querySelectorAll('.breadcrumb-item');
+        items.forEach((item, index) => {
+            if (item.style.display === 'none') {
+                // Also hide the separator before this item if it exists
+                const prevSeparator = item.previousElementSibling;
+                if (prevSeparator && (prevSeparator.classList.contains('breadcrumb-separator') || prevSeparator.textContent === '/')) {
+                    prevSeparator.style.display = 'none';
+                }
+            }
+        });
+    });
+    
+    // Additional cleanup: remove any remaining text nodes with path patterns
+    const allTextNodes = [];
+    const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+    
+    let node;
+    while (node = walker.nextNode()) {
+        if (node.nodeValue && (
+            node.nodeValue.includes('../../index-12.html') ||
+            node.nodeValue.includes('.././index-12.html') ||
+            node.nodeValue.includes('./index-12.html')
+        )) {
+            allTextNodes.push(node);
+        }
+    }
+    
+    allTextNodes.forEach(textNode => {
+        textNode.nodeValue = textNode.nodeValue
+            .replace(/\.\.\/\.\.\/index-12\.html/gi, '')
+            .replace(/\.\.\/index-12\.html/gi, '')
+            .replace(/index-12\.html/gi, '')
+            .replace(/\.\.\/\.\.\//g, '')
+            .replace(/\.\.\/\./g, '')
+            .replace(/\.\.\/(\.\.\/)+.*\.html/gi, '')
+            .replace(/(\.\.\/)+.*\.html$/i, '')
+            .trim();
+        
+        // If the parent is now empty, hide it
+        if (!textNode.nodeValue.trim() && textNode.parentElement) {
+            textNode.parentElement.style.display = 'none';
+        }
+    });
+}
+
+// Set up MutationObserver to catch dynamic changes
+if (!window.__breadcrumbObserverSingleton) {
+    window.__breadcrumbObserverSingleton = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                cleanAllBreadcrumbs();
+            }
+        });
+    });
+}
+
+// Start observing all breadcrumb containers
+document.addEventListener('DOMContentLoaded', function() {
+    const breadcrumbContainers = document.querySelectorAll('.breadcrumb');
+    breadcrumbContainers.forEach(container => {
+        window.__breadcrumbObserverSingleton.observe(container, {
+            childList: true,
+            subtree: true
+        });
+    });
+});
 </script>
+
+{# Chatbot Widget - Only for logged in users, exclude from marketplace dashboard #}
+{% if app.user and app.request.attributes.get('_route') != 'app_marketplace_index' %}
+    {% include 'components/chatbot.html.twig' %}
+{% endif %}
 
 {% endblock %}

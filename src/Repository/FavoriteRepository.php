@@ -37,6 +37,7 @@ class FavoriteRepository extends ServiceEntityRepository
             ->where('f.user = :user')
             ->orderBy('f.createdAt', 'DESC')
             ->setParameter('user', $user)
+            ->setMaxResults(50)
             ->getQuery()
             ->getResult();
     }

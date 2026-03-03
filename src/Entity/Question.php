@@ -73,7 +73,7 @@ class Question
     private ?string $correctOption = null;
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotNull(message: 'Quiz is required')]
     private ?Quiz $quiz = null;
 

@@ -3,9 +3,8 @@
 namespace App\Controller\Api;
 
 use App\Entity\User;
-use FOS\ElasticaBundle\Finder\TransformedFinder;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,17 +12,15 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api')]
 class UserAutocompleteController extends AbstractController
 {
-    private TransformedFinder $finder;
+    private UserRepository $userRepository;
 
-    public function __construct(
-        #[Target('users.finder')]
-        TransformedFinder $finder
-    ) {
-        $this->finder = $finder;
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
     }
 
     /**
-     * Autocomplete search for users
+     * Autocomplete search for users (database-based)
      */
     #[Route('/autocomplete/users', name: 'api_autocomplete_users', methods: ['GET'])]
     public function autocompleteUsers(Request $request): JsonResponse
@@ -31,24 +28,21 @@ class UserAutocompleteController extends AbstractController
         $query = $request->query->get('q', '');
         $limit = min(10, max(1, (int) $request->query->get('limit', 5)));
 
-        if (strlen($query) < 2) {
+        if (strlen((string) $query) < 2) {
             return new JsonResponse(['suggestions' => []]);
         }
 
         try {
-            // Use prefix query with proper Elasticsearch syntax
-            $searchQuery = [
-                'query' => [
-                    'prefix' => [
-                        'fullName' => $query,
-                        'email' => $query
-                    ]
-                ]
-            ];
-            $results = $this->finder->find($searchQuery, $limit);
+            // Database search
+            $users = $this->userRepository->createQueryBuilder('u')
+                ->where('u.fullName LIKE :query OR u.email LIKE :query')
+                ->setParameter('query', $query . '%')
+                ->setMaxResults($limit)
+                ->getQuery()
+                ->getResult();
 
             $suggestions = [];
-            foreach ($results as $user) {
+            foreach ($users as $user) {
                 $suggestions[] = [
                     'id' => $user->getId(),
                     'title' => $user->getFullName(),

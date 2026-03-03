@@ -3,7 +3,6 @@
 {% block title %}Earnings - Eduport{% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/apexcharts/css/apexcharts.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -49,8 +48,8 @@
 						<ul class="dropdown-menu" aria-labelledby="pagesMenu">
 							<li> <a class="dropdown-item" href="{{ path('app_about') }}">About Us</a></li>
 							<li> <a class="dropdown-item" href="{{ path('app_contact') }}">Contact Us</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_courses') }}">Courses</a></li>
-							<li> <a class="dropdown-item" href="{{ path('app_instructor_list') }}">Instructors</a></li>
+							<li> <a class="dropdown-item" href="{{ path('app_course_grid') }}">Courses</a></li>
+							<li> <a class="dropdown-item" href="{{ path('app_home') }}">Instructors</a></li>
 						</ul>
 					</li>
 
@@ -226,6 +225,4 @@ Page content END -->
 {% endblock %}
 
 {% block javascripts %}
-<!-- ApexCharts -->
-<script src="{{ asset('assets/vendor/apexcharts/js/apexcharts.min.js') }}"></script>
 {% endblock %}

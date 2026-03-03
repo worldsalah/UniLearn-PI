@@ -1,0 +1,1883 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ course.title }} - Taking Test{% endblock %}
+
+{% block head %}
+<meta name="turbo-visit-control" content="reload">
+<script>
+    // Disable Turbo immediately - before any other scripts load
+    window.Turbo = undefined;
+    delete window.Turbo;
+    
+    // Prevent Turbo from ever starting
+    document.addEventListener('turbo:before-start', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+    
+    // Disable Turbo drive if it exists
+    if (typeof Turbo !== 'undefined') {
+        Turbo.session.drive = false;
+        Turbo.navigator.delegate = null;
+    }
+    
+    // Override Turbo methods
+    window.addEventListener('DOMContentLoaded', function() {
+        if (window.Turbo) {
+            window.Turbo.session = { drive: false };
+            window.Turbo.navigator = { delegate: null };
+        }
+    });
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<!-- Disable Turbo completely for this page -->
+<script>
+    // Disable Turbo before it initializes
+    window.Turbo = {
+        session: { drive: false },
+        navigator: { delegate: null }
+    };
+    
+    // Prevent Turbo from starting
+    document.addEventListener('turbo:before-start', () => {
+        event.preventDefault();
+    });
+    
+    // Disable Turbo drive
+    if (typeof Turbo !== 'undefined') {
+        Turbo.session.drive = false;
+    }
+</script>
+<style>
+.test-take-container {
+    background: #ffffff !important;
+    min-height: 100vh;
+    padding: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ensure body background is white for this page */
+body {
+    background-color: #ffffff !important;
+}
+
+/* Override any potential blue backgrounds */
+html {
+    background-color: #ffffff !important;
+}
+
+/* Ensure all containers have white background */
+.test-take-container,
+.test-wrapper,
+.test-header,
+.test-progress,
+.test-content {
+    background-color: #ffffff !important;
+}
+
+/* Question cards need their original background styling */
+.question-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+}
+
+.test-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+    background: #ffffff !important;
+    border-radius: 30px;
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(13, 110, 253, 0.05);
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+/* Motivational Bird */
+.motivational-bird {
+    position: fixed;
+    top: 200px;
+    right: 30px;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 1000;
+    opacity: 1;
+    visibility: visible;
+}
+
+.motivational-bird.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.bird-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+    animation: float 3s ease-in-out infinite;
+}
+
+.bird-body::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    height: 25%;
+    background: linear-gradient(135deg, #ffd93d, #ffb347);
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(255, 217, 61, 0.3);
+}
+
+.bird-wing-left,
+.bird-wing-right {
+    position: absolute;
+    top: 35%;
+    width: 35px;
+    height: 50px;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    border-radius: 50% 10% 50% 10%;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.bird-wing-left {
+    left: -15px;
+    transform: rotate(-20deg);
+    animation: flap-left 2s ease-in-out infinite;
+}
+
+.bird-wing-right {
+    right: -15px;
+    transform: rotate(20deg) scaleX(-1);
+    animation: flap-right 2s ease-in-out infinite;
+}
+
+.bird-eye-left,
+.bird-eye-right {
+    position: absolute;
+    top: 30%;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.bird-eye-left {
+    left: 25%;
+}
+
+.bird-eye-right {
+    right: 25%;
+}
+
+.bird-pupil {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #2c3e50;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.1s ease;
+}
+
+.bird-beak {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 12px solid #ff8e53;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.bird-tail {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 15px;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    border-radius: 50% 50% 50% 50% / 20% 80% 80% 20%;
+    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+    animation: wag 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes flap-left {
+    0%, 100% { transform: rotate(-20deg); }
+    50% { transform: rotate(-30deg); }
+}
+
+@keyframes flap-right {
+    0%, 100% { transform: rotate(20deg) scaleX(-1); }
+    50% { transform: rotate(30deg) scaleX(-1); }
+}
+
+@keyframes wag {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    25% { transform: translateX(-50%) rotate(-10deg); }
+    75% { transform: translateX(-50%) rotate(10deg); }
+}
+
+.motivational-bird:hover {
+    transform: scale(1.1);
+}
+
+.motivational-bird:hover .bird-wing-left {
+    animation: flap-left 0.5s ease-in-out infinite;
+}
+
+.motivational-bird:hover .bird-wing-right {
+    animation: flap-right 0.5s ease-in-out infinite;
+}
+
+/* Motivational Message */
+.motivational-message {
+    position: fixed;
+    top: 290px;
+    right: 30px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    color: #2c3e50;
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    border-left: 4px solid #ff6b6b;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.motivational-message.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    visibility: visible;
+    animation: bounce 0.5s ease-in-out;
+}
+
+.motational-message.hide {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+    visibility: hidden;
+}
+
+@keyframes slideOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        visibility: visible;
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(-10px) scale(0.9);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.8);
+        visibility: hidden;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    10% {
+        transform: translateY(-3px) scale(1.05);
+    }
+    30% {
+        transform: translateY(3px) scale(0.95);
+    }
+    40% {
+        transform: translateY(-2px) scale(1.02);
+    }
+    60% {
+        transform: translateY(2px) scale(0.98);
+    }
+    70% {
+        transform: translateY(-1px) scale(1.01);
+    }
+    90% {
+        transform: translateY(1px) scale(0.99);
+    }
+}
+
+.motivational-message::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ff6b6b;
+}
+
+.motivational-message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.motivational-message.helping {
+    border-left-color: #28a745;
+    background: linear-gradient(135deg, #d4edda, #f8f9fa);
+}
+
+/* Test Header */
+.test-header {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 25px 25px 0 0;
+    padding: 3rem;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    margin-bottom: 0;
+    position: relative;
+    border: 2px solid rgba(13, 110, 253, 0.08);
+    backdrop-filter: blur(10px);
+}
+
+.test-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0d6efd, #0dcaf0, #667eea, #764ba2);
+    border-radius: 25px 25px 0 0;
+}
+
+.test-header h1 {
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.test-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+/* Timer */
+.timer-display {
+    position: absolute;
+    top: 3rem;
+    right: 3rem;
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1.4rem;
+    box-shadow: 
+        0 20px 40px rgba(13, 110, 253, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: pulse 2s infinite;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.timer-display i {
+    font-size: 1.2rem;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(13, 110, 253, 0.3); }
+    50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(13, 110, 253, 0.4); }
+}
+
+.timer-display.warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    animation: pulse 1s infinite;
+}
+
+.timer-display.danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    animation: pulse 0.5s infinite;
+}
+
+/* Progress Section */
+.test-progress {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 0 0 25px 25px;
+    padding: 2.5rem 3rem;
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    margin-bottom: 0;
+    border: 2px solid rgba(13, 110, 253, 0.08);
+    border-top: none;
+    backdrop-filter: blur(10px);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.question-counter {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.progress-bar-container {
+    flex: 1;
+    height: 16px;
+    background: rgba(13, 110, 253, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0 2rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0d6efd, #0dcaf0, #667eea, #764ba2);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    box-shadow: 
+        0 0 25px rgba(13, 110, 253, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-fill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Question Filter */
+.question-filter {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.filter-btn {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    color: #6c757d;
+    border: 2px solid rgba(13, 110, 253, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-btn:hover {
+    background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
+    border-color: #0d6efd;
+    color: #0d6efd;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+    color: white;
+    border-color: #0d6efd;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+}
+
+.filter-btn i {
+    font-size: 0.8rem;
+}
+
+/* Test Content */
+.test-content {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 25px;
+    padding: 3rem;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(13, 110, 253, 0.1);
+    margin-bottom: 2rem;
+    border: 2px solid rgba(13, 110, 253, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.test-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0d6efd, #0dcaf0, #667eea, #764ba2);
+    border-radius: 25px 25px 0 0;
+}
+
+.question-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 30px;
+    padding: 3rem;
+    margin-bottom: 0; /* Remove margin to prevent stacking */
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(13, 110, 253, 0.05);
+    border: 2px solid rgba(13, 110, 253, 0.1);
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: none !important; /* Force hide all questions */
+    transform: translateY(20px);
+    opacity: 0;
+    visibility: hidden; /* Additional hide */
+    height: 0; /* Collapse height when hidden */
+    overflow: hidden; /* Prevent content spill */
+}
+
+.question-card.active {
+    display: block !important; /* Force show only active */
+    visibility: visible; /* Make visible */
+    height: auto; /* Restore height */
+    overflow: visible; /* Show content */
+    border-color: rgba(13, 110, 253, 0.3);
+    box-shadow: 
+        0 25px 60px rgba(13, 110, 253, 0.15),
+        0 0 0 2px rgba(13, 110, 253, 0.1);
+    transform: translateY(0);
+    opacity: 1;
+    animation: slideIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(13, 110, 253, 0.1);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.question-number {
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.4rem;
+    box-shadow: 
+        0 10px 30px rgba(13, 110, 253, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.question-number::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.question-navigation {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.nav-btn {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #5a6268, #495057);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(90, 103, 125, 0.3);
+}
+
+.nav-btn:disabled {
+    background: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.nav-btn i {
+    font-size: 0.8rem;
+}
+
+.question-indicator {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.indicator-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e9ecef;
+    border: 2px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.indicator-dot.completed {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border-color: #1e7e34;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+.indicator-dot.current {
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+    border-color: #0a58ca;
+    box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
+    transform: scale(1.2);
+}
+
+.question-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-btn:hover {
+    background: linear-gradient(135deg, #138496, #17a2b8);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(19, 124, 75, 0.3);
+}
+
+.action-btn i {
+    font-size: 0.75rem;
+}
+
+.question-text {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.question-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+    border-radius: 2px;
+}
+
+.options-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.option-item {
+    margin-bottom: 1.8rem;
+    transform: translateX(0);
+    transition: all 0.3s ease;
+}
+
+.option-item:hover {
+    transform: translateX(5px);
+}
+
+.option-label {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.8rem;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border: 2px solid rgba(13, 110, 253, 0.1);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.option-label::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 20px;
+}
+
+.option-label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(13, 110, 253, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.option-label:hover::before {
+    left: 100%;
+}
+
+.option-label:hover {
+    background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
+    border-color: #0d6efd;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+        0 15px 35px rgba(13, 110, 253, 0.15),
+        0 0 0 1px rgba(13, 110, 253, 0.1);
+}
+
+.option-label:hover::after {
+    opacity: 1;
+}
+
+.option-label input[type="radio"]:checked + .option-text {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.option-label:has(input[type="radio"]:checked) {
+    background: linear-gradient(135deg, #e3f2fd, #ffffff);
+    border-color: #0d6efd;
+    box-shadow: 
+        0 8px 25px rgba(13, 110, 253, 0.2),
+        0 0 0 1px rgba(13, 110, 253, 0.1);
+}
+
+.option-label input[type="radio"] {
+    margin-right: 1.5rem;
+    margin-top: 0.25rem;
+    transform: scale(1.3);
+    accent-color: #0d6efd;
+}
+
+.option-text {
+    flex: 1;
+    font-size: 1.1rem;
+    color: #495057;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Test Actions */
+.test-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 2rem 0 0 0;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(13, 110, 253, 0.1);
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(13, 110, 253, 0.3);
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.4);
+}
+
+.btn-submit:disabled {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(40, 167, 69, 0.4);
+}
+
+.btn-draft {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-draft:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(108, 117, 125, 0.4);
+}
+
+/* Background decorations */
+.bg-decoration {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+}
+
+.bg-decoration-1 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    left: -150px;
+    animation: float 20s ease-in-out infinite;
+}
+
+.bg-decoration-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    right: -100px;
+    animation: float 15s ease-in-out infinite reverse;
+}
+
+.bg-decoration-3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    left: 10%;
+    animation: float 18s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+    .test-wrapper {
+        margin: 1rem;
+    }
+    
+    .test-header,
+    .test-content,
+    .test-progress {
+        padding: 1.5rem;
+    }
+    
+    .timer-display {
+        position: static;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+    
+    .question-card {
+        padding: 1.5rem;
+    }
+    
+    .option-label {
+        padding: 1rem;
+    }
+    
+    .test-actions {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem 0 0 0;
+        align-items: flex-end;
+    }
+    
+    .btn-submit,
+    .btn-draft {
+        width: auto;
+        font-size: 0.9rem;
+        padding: 0.7rem 1.5rem;
+    }
+    
+    .motivational-bird {
+        width: 60px;
+        height: 60px;
+        top: 10px;
+        right: 10px;
+    }
+    
+    .motivational-bird::before {
+        font-size: 30px;
+    }
+    
+    .motivational-message {
+        right: 10px;
+        top: 80px;
+        max-width: 250px;
+        font-size: 0.8rem;
+    }
+    
+    .question-filter {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .filter-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Flash Messages -->
+{% for message in app.flashes('error') %}
+    <div data-flash-type="error" 
+         data-flash-title="Access Denied" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('success') %}
+    <div data-flash-type="success" 
+         data-flash-title="Success" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<div class="test-take-container">
+    <!-- Background decorations -->
+    <div class="bg-decoration bg-decoration-1"></div>
+    <div class="bg-decoration bg-decoration-2"></div>
+    <div class="bg-decoration bg-decoration-3"></div>
+    
+    <!-- Motivational Bird -->
+    <div class="motivational-bird" id="motivational-bird">
+        <div class="bird-body">
+            <div class="bird-wing-left"></div>
+            <div class="bird-wing-right"></div>
+            <div class="bird-eye-left">
+                <div class="bird-pupil" id="bird-pupil-left"></div>
+            </div>
+            <div class="bird-eye-right">
+                <div class="bird-pupil" id="bird-pupil-right"></div>
+            </div>
+            <div class="bird-beak"></div>
+            <div class="bird-tail"></div>
+        </div>
+    </div>
+    
+    <!-- Motivational Message -->
+    <div class="motivational-message" id="motivational-message">
+        You're a star! Shine bright! ⭐
+    </div>
+    
+    <div class="test-wrapper">
+        <div class="test-header">
+            <h1>{{ test.title }}</h1>
+            <p>{{ course.title }} - Test your knowledge!</p>
+            <div class="timer-display" id="timer">
+                <i class="fas fa-clock"></i>
+                <span id="time-display">20:00</span>
+            </div>
+        </div>
+
+        <div class="test-progress">
+            <div class="progress-info">
+                <span class="question-counter">Question <span id="current-question">1</span> of {{ test.questions|length }}</span>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Question Filter -->
+            <div class="question-filter">
+                <span class="filter-label">Filter:</span>
+                <button type="button" class="filter-btn active" data-filter="all" onclick="filterQuestions('all')">
+                    <i class="fas fa-list"></i>
+                    All Questions
+                </button>
+                <button type="button" class="filter-btn" data-filter="answered" onclick="filterQuestions('answered')">
+                    <i class="fas fa-check-circle"></i>
+                    Answered
+                </button>
+                <button type="button" class="filter-btn" data-filter="unanswered" onclick="filterQuestions('unanswered')">
+                    <i class="fas fa-circle"></i>
+                    Unanswered
+                </button>
+            </div>
+        </div>
+
+        <form method="post" action="{{ path('app_course_test_take', {'id': course.id}) }}" id="test-form">
+            <div class="test-content">
+                {% for question in test.questions %}
+                    <div class="question-card" data-question="{{ loop.index }}" data-difficulty="{{ question.difficulty|default('medium') }}" {% if loop.index == 1 %}active{% endif %}">
+                        <div class="question-header">
+                            <div class="question-number">{{ loop.index }}</div>
+                            <div class="question-navigation">
+                                <button type="button" class="nav-btn prev-btn" {% if loop.index == 1 %}disabled{% endif %}" onclick="navigateToQuestion({{ loop.index - 1 }})">
+                                    <i class="fas fa-chevron-left"></i>
+                                    Previous
+                                </button>
+                                <span class="question-indicator">
+                                    {% for q in test.questions %}
+                                        <span class="indicator-dot {% if loop.index == loop.parent.loop.index %}current{% endif %}" data-question="{{ loop.index }}" data-id="{{ q.id }}"></span>
+                                    {% endfor %}
+                                </span>
+                                <button type="button" class="nav-btn next-btn" {% if loop.index == test.questions|length %}disabled{% endif %}" onclick="navigateToQuestion({{ loop.index + 1 }})">
+                                    Next
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="question-actions">
+                                <button type="button" class="action-btn review-btn" onclick="markForReview({{ question.id }})">
+                                    <i class="fas fa-bookmark"></i>
+                                    Mark for Review
+                                </button>
+                                <button type="button" class="action-btn clear-btn" onclick="clearAnswer({{ question.id }})">
+                                    <i class="fas fa-times"></i>
+                                    Clear Answer
+                                </button>
+                            </div>
+                        </div>
+                        <div class="question-text">{{ question.question }}</div>
+                        
+                        <ul class="options-list">
+                            {% for option in question.options %}
+                                <li class="option-item">
+                                    <label class="option-label">
+                                        <input type="radio" 
+                                               name="answers[{{ question.id }}]" 
+                                               value="{{ option }}" 
+                                               required
+                                               onchange="selectAnswer({{ question.id }}, this)">
+                                        <span class="option-text">{{ option }}</span>
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+
+                <div class="test-actions">
+                    <button type="button" class="btn-submit" id="submit-btn" disabled>
+                        <i class="fas fa-check"></i>
+                        Submit Test
+                    </button>
+                    <button type="button" class="btn-draft" id="draft-btn" onclick="saveAsDraft()">
+                        <i class="fas fa-file-alt"></i>
+                        Save as Draft
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// Disable Turbo completely for this page to prevent conflicts
+if (window.Turbo) {
+    Turbo.session.drive = false;
+    Turbo.navigator.delegate = null;
+}
+
+// Global variables and functions
+let timeLeft = 20 * 60; // 20 minutes in seconds
+let totalQuestions = 0;
+let currentQuestion = 1;
+let userAnswers = {}; // Store user answers
+let questionStartTime = Date.now();
+
+// Navigation functions (global scope)
+function navigateToQuestion(questionNumber) {
+    console.log('Navigating to question:', questionNumber);
+    console.log('Total questions:', totalQuestions);
+    
+    // Validate question number
+    if (questionNumber < 1 || questionNumber > totalQuestions) {
+        console.log('Invalid question number:', questionNumber);
+        return;
+    }
+    
+    // Hide all questions first
+    document.querySelectorAll('.question-card').forEach((card, index) => {
+        card.classList.remove('active');
+        console.log(`Hiding question ${index + 1}:`, card.classList.contains('active'));
+    });
+    
+    // Show selected question
+    const targetCard = document.querySelector(`.question-card[data-question="${questionNumber}"]`);
+    console.log('Target card found:', targetCard);
+    
+    if (targetCard) {
+        targetCard.classList.add('active');
+        console.log(`Showing question ${questionNumber}:`, targetCard.classList.contains('active'));
+        currentQuestion = questionNumber;
+        questionStartTime = Date.now();
+        updateNavigationButtons();
+        updateSubmitButton();
+        updateFilterButtons();
+        console.log('Successfully navigated to question:', questionNumber);
+    } else {
+        console.error('Target card not found for question:', questionNumber);
+    }
+}
+
+function updateNavigationButtons() {
+    // Update all navigation buttons in the current active question
+    const activeCard = document.querySelector('.question-card.active');
+    if (!activeCard) return;
+    
+    const currentQuestionNum = parseInt(activeCard.getAttribute('data-question'));
+    const prevBtn = activeCard.querySelector('.prev-btn');
+    const nextBtn = activeCard.querySelector('.next-btn');
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentQuestionNum === 1;
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentQuestionNum === totalQuestions;
+    }
+}
+
+function filterQuestions(filterType) {
+    // Update filter button states
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const activeFilterBtn = document.querySelector(`[data-filter="${filterType}"]`);
+    if (activeFilterBtn) {
+        activeFilterBtn.classList.add('active');
+    }
+    
+    // Filter questions based on answer status
+    const allQuestions = document.querySelectorAll('.question-card');
+    const answeredQuestions = Object.keys(userAnswers);
+    
+    allQuestions.forEach((card, index) => {
+        const questionNumber = index + 1;
+        const questionId = card.querySelector('.review-btn').getAttribute('onclick').match(/\d+/)[0];
+        const isAnswered = answeredQuestions.includes(questionId);
+        
+        // Hide all questions first
+        card.style.display = 'none';
+        
+        // Show questions based on filter
+        if (filterType === 'all') {
+            card.style.display = 'block';
+        } else if (filterType === 'answered' && isAnswered) {
+            card.style.display = 'block';
+        } else if (filterType === 'unanswered' && !isAnswered) {
+            card.style.display = 'block';
+        }
+    });
+    
+    // Navigate to first visible question
+    const firstVisible = Array.from(allQuestions).find(card => card.style.display === 'block');
+    if (firstVisible) {
+        const questionNumber = parseInt(firstVisible.getAttribute('data-question'));
+        navigateToQuestion(questionNumber);
+    }
+}
+
+function updateFilterButtons() {
+    // Update filter button counts if needed
+    const answeredCount = Object.keys(userAnswers).length;
+    const unansweredCount = totalQuestions - answeredCount;
+    
+    // You could add counts to buttons here if desired
+    // document.querySelector('[data-filter="answered"]').innerHTML = `<i class="fas fa-check-circle"></i> Answered (${answeredCount})`;
+    // document.querySelector('[data-filter="unanswered"]').innerHTML = `<i class="fas fa-circle"></i> Unanswered (${unansweredCount})`;
+}
+
+function updateSubmitButton() {
+    const submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) {
+        submitBtn.disabled = Object.keys(userAnswers).length !== totalQuestions;
+    }
+}
+
+function selectAnswer(questionId, element) {
+    userAnswers[questionId] = element.value;
+    updateSubmitButton();
+    
+    // Update progress indicators - find the dot for this question
+    document.querySelectorAll(`.indicator-dot[data-id="${questionId}"]`).forEach(dot => {
+        dot.classList.add('completed');
+    });
+    
+    // Update filter buttons
+    updateFilterButtons();
+}
+
+function markForReview(questionId) {
+    // Toggle review status
+    const activeCard = document.querySelector('.question-card.active');
+    if (!activeCard) return;
+    
+    const reviewBtn = activeCard.querySelector('.review-btn');
+    if (reviewBtn) {
+        // Toggle review state
+        if (reviewBtn.classList.contains('reviewing')) {
+            reviewBtn.classList.remove('reviewing');
+            reviewBtn.innerHTML = '<i class="fas fa-bookmark"></i> Mark for Review';
+            reviewBtn.style.background = 'linear-gradient(135deg, #17a2b8, #138496)';
+        } else {
+            reviewBtn.classList.add('reviewing');
+            reviewBtn.innerHTML = '<i class="fas fa-bookmark"></i> Reviewing';
+            reviewBtn.style.background = 'linear-gradient(135deg, #ffc107, #fd7e14)';
+        }
+    }
+    
+    console.log('Mark for review:', questionId);
+}
+
+function clearAnswer(questionId) {
+    delete userAnswers[questionId];
+    
+    // Clear radio button selection
+    const radioButtons = document.querySelectorAll(`input[name="answers[${questionId}]"]`);
+    radioButtons.forEach(radio => radio.checked = false);
+    
+    updateSubmitButton();
+    
+    // Update progress indicators
+    document.querySelectorAll(`.indicator-dot[data-id="${questionId}"]`).forEach(dot => {
+        dot.classList.remove('completed');
+    });
+    
+    // Update filter buttons
+    updateFilterButtons();
+}
+
+function saveProgress() {
+    localStorage.setItem('testProgress_' + {{ course.id }}, JSON.stringify({
+        answers: userAnswers,
+        currentQuestion: currentQuestion,
+        timeLeft: timeLeft,
+        timestamp: new Date().toISOString()
+    }));
+    
+    // Show brief confirmation (save button was removed, so just log)
+    console.log('Progress saved automatically');
+}
+
+function saveAsDraft() {
+    saveProgress();
+    // Show brief confirmation
+    const draftBtn = document.getElementById('draft-btn');
+    if (draftBtn) {
+        const originalText = draftBtn.innerHTML;
+        draftBtn.innerHTML = '<i class="fas fa-check"></i> Draft Saved!';
+        setTimeout(() => {
+            draftBtn.innerHTML = originalText;
+        }, 2000);
+    }
+}
+
+function initCourseTestTakePage() {
+    if (window.__courseTestTakeInitialized) {
+        return;
+    }
+
+    window.__courseTestTakeInitialized = true;
+
+    // Set global variables
+    totalQuestions = {{ test.questions|length }};
+    
+    const timerDisplay = document.getElementById('time-display');
+    const progressFill = document.getElementById('progress-fill');
+    const currentQuestionSpan = document.getElementById('current-question');
+    const submitBtn = document.getElementById('submit-btn');
+    const motivationalBird = document.getElementById('motivational-bird');
+    const motivationalMessage = document.getElementById('motivational-message');
+    const birdPupilLeft = document.getElementById('bird-pupil-left');
+    const birdPupilRight = document.getElementById('bird-pupil-right');
+    
+    // Motivational messages
+    const motivationalMessages = [
+        "You're doing great! Keep going! 🌟",
+        "Believe in yourself! You've got this! 💪",
+        "Every question is a step closer to success! 🚀",
+        "You're amazing! Stay focused! 🎯",
+        "Trust your knowledge! You're prepared! 📚",
+        "Keep calm and carry on! You're doing fine! 😊",
+        "Success is within reach! Don't give up! 🏆",
+        "You're a star! Shine bright! ⭐",
+        "Keep going! 🔥",
+        "You can do it! 💫",
+        "You're brilliant! ✨",
+        "You're unstoppable! �"
+    ];
+    
+    const helpingMessages = [
+        "Take a deep breath! You can do this! 🌸",
+        "Remember what you learned! You know this! 💡",
+        "Read carefully! The answer is there! 🔍",
+        "Trust your instincts! Your first thought is often right! ✨",
+        "Stay focused! You're almost there! 🎪",
+        "You're doing amazing! Keep that energy! ⚡",
+        "Break it down! Think step by step! 🧩",
+        "You're prepared! Show what you know! 🎓",
+        "Stay positive! You're doing great! ☀️",
+        "You're capable! Believe in yourself! 🌈"
+    ];
+    
+    // Eye tracking function
+    function trackMouse(event) {
+        if (!motivationalBird || !birdPupilLeft || !birdPupilRight) {
+            return;
+        }
+        
+        const birdRect = motivationalBird.getBoundingClientRect();
+        const birdCenterX = birdRect.left + birdRect.width / 2;
+        const birdCenterY = birdRect.top + birdRect.height / 2;
+        
+        // Calculate angle from bird center to mouse
+        const angle = Math.atan2(event.clientY - birdCenterY, event.clientX - birdCenterX);
+        const distance = Math.min(3, Math.sqrt(Math.pow(event.clientX - birdCenterX, 2) + Math.pow(event.clientY - birdCenterY, 2)) / 50);
+        
+        // Calculate pupil position
+        const pupilOffsetX = Math.cos(angle) * distance;
+        const pupilOffsetY = Math.sin(angle) * distance;
+        
+        // Apply to both pupils
+        birdPupilLeft.style.transform = `translate(calc(-50% + ${pupilOffsetX}px), calc(-50% + ${pupilOffsetY}px))`;
+        birdPupilRight.style.transform = `translate(calc(-50% + ${pupilOffsetX}px), calc(-50% + ${pupilOffsetY}px))`;
+    }
+    
+    // Add mouse tracking
+    document.addEventListener('mousemove', trackMouse);
+    
+    // Show motivational message function
+    function showMotivationalMessage(isHelping = false) {
+        const messages = isHelping ? helpingMessages : motivationalMessages;
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        
+        motivationalMessage.textContent = randomMessage;
+        motivationalMessage.classList.add('show');
+        motivationalMessage.classList.remove('hide');
+        
+        if (isHelping) {
+            motivationalMessage.classList.add('helping');
+        } else {
+            motivationalMessage.classList.remove('helping');
+        }
+        
+        // Hide message after 8 minutes with animation
+        setTimeout(() => {
+            motivationalMessage.classList.remove('show');
+            motivationalMessage.classList.add('hide');
+            
+            // Remove the element after animation completes
+            setTimeout(() => {
+                motivationalMessage.classList.remove('hide');
+            }, 500);
+        }, 480000); // 8 minutes = 480 seconds
+        
+        // Animate bird
+        motivationalBird.style.transform = 'scale(1.1) rotate(5deg)';
+        setTimeout(() => {
+            motivationalBird.style.transform = 'scale(1) rotate(0deg)';
+        }, 300);
+    }
+    
+    // Bird click interaction
+    motivationalBird.addEventListener('click', function() {
+        showMotivationalMessage(true);
+    });
+    
+    // Show random motivational messages periodically
+    setInterval(() => {
+        if (Math.random() > 0.7) { // 30% chance
+            showMotivationalMessage(false);
+        }
+    }, 600000); // Every 10 minutes (600 seconds)
+    
+    // Show initial message after 5 seconds
+    setTimeout(() => {
+        showMotivationalMessage(false);
+        // Hide initial message after 8 minutes
+        setTimeout(() => {
+            motivationalMessage.classList.remove('show');
+        }, 4000); // 8 minutes = 480 seconds
+    }, 5000);
+    
+    // Show helping message when user spends too long on a question
+    function checkQuestionTime() {
+        const timeSpent = Date.now() - questionStartTime;
+        if (timeSpent > 45000) { // 45 seconds (longer since messages are less frequent)
+            showMotivationalMessage(true);
+            questionStartTime = Date.now(); // Reset timer
+        }
+    }
+    
+    // Check question time every 10 seconds (less frequent)
+    setInterval(checkQuestionTime, 10000);
+    
+    // Make bird look at center when mouse leaves window
+    document.addEventListener('mouseleave', function() {
+        if (birdPupilLeft && birdPupilRight) {
+            birdPupilLeft.style.transform = 'translate(-50%, -50%)';
+            birdPupilRight.style.transform = 'translate(-50%, -50%)';
+        }
+    });
+    
+    // Blink animation occasionally
+    setInterval(() => {
+        if (birdPupilLeft && birdPupilRight) {
+            birdPupilLeft.style.opacity = '0';
+            birdPupilRight.style.opacity = '0';
+            
+            setTimeout(() => {
+                birdPupilLeft.style.opacity = '1';
+                birdPupilRight.style.opacity = '1';
+            }, 150);
+        }
+    }, 4000);
+    
+    // Timer function
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Update progress
+        const progress = ((currentQuestion - 1) / totalQuestions) * 100;
+        progressFill.style.width = `${progress}%`;
+        currentQuestionSpan.textContent = currentQuestion;
+        
+        // Timer warnings
+        if (timeLeft <= 60) {
+            timerDisplay.classList.add('danger');
+        } else if (timeLeft <= 300) {
+            timerDisplay.classList.add('warning');
+        }
+        
+        if (timeLeft <= 0) {
+            // Auto submit when time is up - user gets 0
+            handleTimeUp();
+            return;
+        }
+        
+        timeLeft--;
+    }
+    
+    // Handle time up - user gets 0 score
+    function handleTimeUp() {
+        // Save as failed attempt
+        localStorage.setItem('testFailed_' + {{ course.id }}, JSON.stringify({
+            reason: 'time_up',
+            answers: userAnswers,
+            timestamp: new Date().toISOString()
+        }));
+        
+        // Redirect to course overview with failure message
+        window.location.href = "{{ path('app_course_show', {'id': course.id}) }}?failed=true";
+    }
+    
+    // Submit test
+    submitBtn.addEventListener('click', function() {
+        if (!this.disabled) {
+            // Validate all questions are answered
+            if (Object.keys(userAnswers).length === totalQuestions) {
+                // Submit the form
+                document.getElementById('test-form').submit();
+            } else {
+                // Show warning message
+                showMotivationalMessage(true);
+            }
+        }
+    });
+    
+    // Auto-save progress every 30 seconds
+    setInterval(() => {
+        saveProgress();
+    }, 30000);
+    
+    // Auto-save on page unload
+    window.addEventListener('beforeunload', function(e) {
+        if (Object.keys(userAnswers).length > 0 && timeLeft > 0) {
+            saveProgress();
+            e.preventDefault();
+            e.returnValue = 'Your progress will be saved. Are you sure you want to leave?';
+        }
+    });
+    
+    // Start timer
+    setInterval(updateTimer, 1000);
+    updateTimer();
+    
+    // Navigation functions
+    function navigateToQuestion(questionNumber) {
+        // Validate question number
+        if (questionNumber < 1 || questionNumber > totalQuestions) {
+            return;
+        }
+        
+        // Hide all questions
+        document.querySelectorAll('.question-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        
+        // Show selected question
+        const targetCard = document.querySelector(`[data-question="${questionNumber}"]`);
+        if (targetCard) {
+            targetCard.classList.add('active');
+            currentQuestion = questionNumber;
+            questionStartTime = Date.now();
+            updateNavigationButtons();
+            updateSubmitButton();
+            updateFilterButtons();
+        }
+    }
+    
+    function updateNavigationButtons() {
+        // Update all navigation buttons in the current active question
+        const activeCard = document.querySelector('.question-card.active');
+        if (!activeCard) return;
+        
+        const currentQuestionNum = parseInt(activeCard.getAttribute('data-question'));
+        const prevBtn = activeCard.querySelector('.prev-btn');
+        const nextBtn = activeCard.querySelector('.next-btn');
+        
+        if (prevBtn) {
+            prevBtn.disabled = currentQuestionNum === 1;
+        }
+        
+        if (nextBtn) {
+            nextBtn.disabled = currentQuestionNum === totalQuestions;
+        }
+    }
+    
+    function filterQuestions(filterType) {
+        // Update filter button states
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeFilterBtn = document.querySelector(`[data-filter="${filterType}"]`);
+        if (activeFilterBtn) {
+            activeFilterBtn.classList.add('active');
+        }
+        
+        // Filter questions based on answer status
+        const allQuestions = document.querySelectorAll('.question-card');
+        const answeredQuestions = Object.keys(userAnswers);
+        
+        allQuestions.forEach((card, index) => {
+            const questionNumber = index + 1;
+            const questionId = card.querySelector('.review-btn').getAttribute('onclick').match(/\d+/)[0];
+            const isAnswered = answeredQuestions.includes(questionId);
+            
+            // Hide all questions first
+            card.style.display = 'none';
+            
+            // Show questions based on filter
+            if (filterType === 'all') {
+                card.style.display = 'block';
+            } else if (filterType === 'answered' && isAnswered) {
+                card.style.display = 'block';
+            } else if (filterType === 'unanswered' && !isAnswered) {
+                card.style.display = 'block';
+            }
+        });
+        
+        // Navigate to first visible question
+        const firstVisible = Array.from(allQuestions).find(card => card.style.display === 'block');
+        if (firstVisible) {
+            const questionNumber = parseInt(firstVisible.getAttribute('data-question'));
+            navigateToQuestion(questionNumber);
+        }
+    }
+    
+    function updateFilterButtons() {
+        // Update filter button counts if needed
+        const answeredCount = Object.keys(userAnswers).length;
+        const unansweredCount = totalQuestions - answeredCount;
+        
+        // You could add counts to buttons here if desired
+        // document.querySelector('[data-filter="answered"]').innerHTML = `<i class="fas fa-check-circle"></i> Answered (${answeredCount})`;
+        // document.querySelector('[data-filter="unanswered"]').innerHTML = `<i class="fas fa-circle"></i> Unanswered (${unansweredCount})`;
+    }
+    
+    function updateSubmitButton() {
+        submitBtn.disabled = Object.keys(userAnswers).length !== totalQuestions;
+    }
+    
+    function selectAnswer(questionId, element) {
+        userAnswers[questionId] = element.value;
+        updateSubmitButton();
+        
+        // Update progress indicators - find the dot for this question
+        document.querySelectorAll(`.indicator-dot[data-id="${questionId}"]`).forEach(dot => {
+            dot.classList.add('completed');
+        });
+        
+        // Update filter buttons
+        updateFilterButtons();
+    }
+    
+    function markForReview(questionId) {
+        // Toggle review status
+        const activeCard = document.querySelector('.question-card.active');
+        if (!activeCard) return;
+        
+        const reviewBtn = activeCard.querySelector('.review-btn');
+        if (reviewBtn) {
+            // Toggle review state
+            if (reviewBtn.classList.contains('reviewing')) {
+                reviewBtn.classList.remove('reviewing');
+                reviewBtn.innerHTML = '<i class="fas fa-bookmark"></i> Mark for Review';
+                reviewBtn.style.background = 'linear-gradient(135deg, #17a2b8, #138496)';
+            } else {
+                reviewBtn.classList.add('reviewing');
+                reviewBtn.innerHTML = '<i class="fas fa-bookmark"></i> Reviewing';
+                reviewBtn.style.background = 'linear-gradient(135deg, #ffc107, #fd7e14)';
+            }
+        }
+        
+        console.log('Mark for review:', questionId);
+    }
+    
+    function clearAnswer(questionId) {
+        delete userAnswers[questionId];
+        
+        // Clear radio button selection
+        const radioButtons = document.querySelectorAll(`input[name="answers[${questionId}]"]`);
+        radioButtons.forEach(radio => radio.checked = false);
+        
+        updateSubmitButton();
+        
+        // Update progress indicators
+        document.querySelectorAll(`.indicator-dot[data-id="${questionId}"]`).forEach(dot => {
+            dot.classList.remove('completed');
+        });
+        
+        // Update filter buttons
+        updateFilterButtons();
+    }
+    
+    function saveProgress() {
+        localStorage.setItem('testProgress_' + {{ course.id }}, JSON.stringify({
+            answers: userAnswers,
+            currentQuestion: currentQuestion,
+            timeLeft: timeLeft,
+            timestamp: new Date().toISOString()
+        }));
+        
+        // Show brief confirmation
+        const saveBtn = document.getElementById('save-btn');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+        setTimeout(() => {
+            saveBtn.innerHTML = originalText;
+        }, 2000);
+    }
+    
+    function saveAsDraft() {
+        saveProgress();
+        // Show brief confirmation
+        const draftBtn = document.getElementById('draft-btn');
+        const originalText = draftBtn.innerHTML;
+        draftBtn.innerHTML = '<i class="fas fa-check"></i> Draft Saved!';
+        setTimeout(() => {
+            draftBtn.innerHTML = originalText;
+        }, 2000);
+    }
+    
+    // Initialize the page
+    navigateToQuestion(1);
+    updateNavigationButtons();
+    updateSubmitButton();
+    updateFilterButtons();
+    
+    // Load saved progress if exists
+    const savedProgress = localStorage.getItem('testProgress_' + {{ course.id }});
+    if (savedProgress) {
+        const progress = JSON.parse(savedProgress);
+        userAnswers = progress.answers || {};
+        currentQuestion = progress.currentQuestion || 1;
+        timeLeft = progress.timeLeft || (20 * 60);
+        
+        // Restore answers
+        Object.keys(userAnswers).forEach(questionId => {
+            const radioButton = document.querySelector(`input[name="answers[${questionId}]"][value="${userAnswers[questionId]}"]`);
+            if (radioButton) {
+                radioButton.checked = true;
+            }
+            // Update progress indicators for restored answers
+            document.querySelectorAll(`.indicator-dot[data-id="${questionId}"]`).forEach(dot => {
+                dot.classList.add('completed');
+            });
+        });
+        
+        // Navigate to current question
+        navigateToQuestion(currentQuestion);
+        
+        // Update all indicators and filters
+        updateFilterButtons();
+    }
+    
+}
+
+// Initialize when DOM is ready (normal navigation)
+document.addEventListener('DOMContentLoaded', initCourseTestTakePage);
+
+// Initialize on Turbo navigation as well
+document.addEventListener('turbo:load', initCourseTestTakePage);
+
+// Allow re-init if Turbo caches the page
+document.addEventListener('turbo:before-cache', function() {
+    window.__courseTestTakeInitialized = false;
+});
+</script>
+{% endblock %}

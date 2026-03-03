@@ -1,0 +1,169 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Placement Test - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="page-wrapper" style="background-color: white;">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <div class="mb-4">
+                    <span class="badge bg-primary fs-6 px-3 py-2">
+                        <i class="fas fa-clipboard-check me-2"></i>Placement Test
+                    </span>
+                </div>
+                <h1 class="display-5 fw-bold mb-3">Test Your Knowledge</h1>
+                <p class="lead text-muted mb-4">
+                    Before starting <strong>{{ course.title }}</strong>, take this placement test to determine your optimal starting point.
+                </p>
+            </div>
+
+            <!-- Test Info Card -->
+            <div class="card border-0 shadow-lg mb-4">
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="icon-lg bg-light-primary rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-question-circle text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0 fw-semibold">Questions</h6>
+                                    <p class="mb-0 text-muted small">{{ test.questions|length }} questions</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="icon-lg bg-light-warning rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-clock text-warning"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0 fw-semibold">Time Limit</h6>
+                                    <p class="mb-0 text-muted small">{{ test.timeLimit }} minutes</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="icon-lg bg-light-success rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0 fw-semibold">Passing Score</h6>
+                                    <p class="mb-0 text-muted small">{{ test.passingScore }}%</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="icon-lg bg-light-info rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-redo text-info"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0 fw-semibold">Attempts</h6>
+                                    <p class="mb-0 text-muted small">One attempt allowed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Score Guide -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent border-bottom py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="fas fa-info-circle text-primary me-2"></i>How Your Score Determines Your Starting Point
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 text-center h-100">
+                                <div class="mb-2">
+                                    <span class="badge bg-danger fs-5 px-3 py-2">0-69%</span>
+                                </div>
+                                <h6 class="fw-semibold">Start from Beginning</h6>
+                                <p class="small text-muted mb-0">You'll start from lesson 1 and learn all the fundamentals.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 text-center h-100 border-primary">
+                                <div class="mb-2">
+                                    <span class="badge bg-primary fs-5 px-3 py-2">70-99%</span>
+                                </div>
+                                <h6 class="fw-semibold">Start from Middle</h6>
+                                <p class="small text-muted mb-0">Skip the basics and start from the intermediate section.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 text-center h-100">
+                                <div class="mb-2">
+                                    <span class="badge bg-success fs-5 px-3 py-2">100%</span>
+                                </div>
+                                <h6 class="fw-semibold">Course Complete!</h6>
+                                <p class="small text-muted mb-0">You already know this content. Take the certification test!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            {% if test.description %}
+            <div class="alert alert-info d-flex align-items-start" role="alert">
+                <i class="fas fa-lightbulb fs-5 me-3 mt-1"></i>
+                <div>
+                    <strong>About this test:</strong>
+                    <p class="mb-0 mt-1">{{ test.description }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div class="d-flex flex-column flex-md-row gap-3 justify-content-center mt-4">
+                <a href="{{ path('app_placement_test_take', {'id': course.id}) }}" class="btn btn-primary btn-lg px-5">
+                    <i class="fas fa-play me-2"></i>Start Test
+                </a>
+                <form action="{{ path('app_placement_test_skip', {'id': course.id}) }}" method="post" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('skip_placement_test' ~ course.id) }}">
+                    <button type="submit" class="btn btn-outline-secondary btn-lg px-5">
+                        <i class="fas fa-forward me-2"></i>Skip Test
+                    </button>
+                </form>
+            </div>
+
+            <p class="text-center text-muted small mt-3">
+                <i class="fas fa-exclamation-triangle me-1"></i>
+                Skipping the test means you'll start from the beginning of the course.
+            </p>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<style>
+.icon-lg {
+    width: 48px;
+    height: 48px;
+}
+.bg-light-primary { background-color: rgba(13, 110, 253, 0.1); }
+.bg-light-warning { background-color: rgba(255, 193, 7, 0.1); }
+.bg-light-success { background-color: rgba(25, 135, 84, 0.1); }
+.bg-light-info { background-color: rgba(13, 202, 240, 0.1); }
+</style>
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

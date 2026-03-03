@@ -81,7 +81,8 @@ class CategoryController extends AbstractController
     public function delete(Category $category, CategoryRepository $categoryRepository, EntityManagerInterface $entityManager, Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         // Validate CSRF token
-        $token = new CsrfToken('delete'.$category->getId(), $request->request->get('_token'));
+        $tokenValue = $request->request->get('_token');
+        $token = new CsrfToken('delete'.$category->getId(), $tokenValue !== null ? (string) $tokenValue : null);
         if (!$csrfTokenManager->isTokenValid($token)) {
             $this->addFlash('error', 'Invalid CSRF token. Please try again.');
 
@@ -98,7 +99,7 @@ class CategoryController extends AbstractController
                 $defaultCategory = $categoryRepository->findOneBy(['name' => 'General']);
 
                 // If no default category exists, create one
-                if (!$defaultCategory) {
+                if ($defaultCategory === null) {
                     $defaultCategory = new Category();
                     $defaultCategory->setName('General');
                     $defaultCategory->setDescription('Default category for uncategorized courses');

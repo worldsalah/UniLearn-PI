@@ -1,0 +1,205 @@
+﻿PHPUnit 10.5.63 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\xampp\htdocs\UniLearn-PI-main\phpunit.xml
+
+Time: 00:01.206, Memory: 50.00 MB
+
+There were 5 failures:
+
+1) App\Tests\FunctionalTest::testAdminStudents
+Failed asserting that the Response is redirected.
+HTTP/1.1 404 Not Found
+Cache-Control: no-cache, private
+Content-Type:  text/html; charset=UTF-8
+Date:          Tue, 03 Mar 2026 07:18:57 GMT
+Vary:          Accept
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>An Error Occurred: Not Found</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>ÔØî</text></svg>" />
+    <style>body { background-color: #fff; color: #222; font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; }
+.container { margin: 30px; max-width: 600px; }
+h1 { color: #dc3545; font-size: 24px; }
+h2 { font-size: 18px; }</style>
+</head>
+<body>
+<div class="container">
+    <h1>Oops! An Error Occurred</h1>
+    <h2>The server returned a "404 Not Found".</h2>
+
+    <p>
+        Something is broken. Please let us know what you were doing when this error occurred.
+        We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+</div>
+</body>
+</html>
+
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:148
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:62
+C:\xampp\htdocs\UniLearn-PI-main\tests\FunctionalTest.php:309
+
+2) App\Tests\FunctionalTest::testAdminProducts
+Failed asserting that the Response is redirected.
+HTTP/1.1 404 Not Found
+Cache-Control: no-cache, private
+Content-Type:  text/html; charset=UTF-8
+Date:          Tue, 03 Mar 2026 07:18:57 GMT
+Vary:          Accept
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>An Error Occurred: Not Found</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>ÔØî</text></svg>" />
+    <style>body { background-color: #fff; color: #222; font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; }
+.container { margin: 30px; max-width: 600px; }
+h1 { color: #dc3545; font-size: 24px; }
+h2 { font-size: 18px; }</style>
+</head>
+<body>
+<div class="container">
+    <h1>Oops! An Error Occurred</h1>
+    <h2>The server returned a "404 Not Found".</h2>
+
+    <p>
+        Something is broken. Please let us know what you were doing when this error occurred.
+        We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+</div>
+</body>
+</html>
+
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:148
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:62
+C:\xampp\htdocs\UniLearn-PI-main\tests\FunctionalTest.php:323
+
+3) App\Tests\FunctionalTest::testAdminOrders
+Failed asserting that the Response is redirected.
+HTTP/1.1 404 Not Found
+Cache-Control: no-cache, private
+Content-Type:  text/html; charset=UTF-8
+Date:          Tue, 03 Mar 2026 07:18:57 GMT
+Vary:          Accept
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>An Error Occurred: Not Found</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>ÔØî</text></svg>" />
+    <style>body { background-color: #fff; color: #222; font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; }
+.container { margin: 30px; max-width: 600px; }
+h1 { color: #dc3545; font-size: 24px; }
+h2 { font-size: 18px; }</style>
+</head>
+<body>
+<div class="container">
+    <h1>Oops! An Error Occurred</h1>
+    <h2>The server returned a "404 Not Found".</h2>
+
+    <p>
+        Something is broken. Please let us know what you were doing when this error occurred.
+        We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+</div>
+</body>
+</html>
+
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:148
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:62
+C:\xampp\htdocs\UniLearn-PI-main\tests\FunctionalTest.php:330
+
+4) App\Tests\FunctionalTest::testAdminQuizzes
+Failed asserting that the Response is redirected.
+HTTP/1.1 500 Internal Server Error
+Cache-Control: no-cache, private
+Content-Type:  text/html; charset=UTF-8
+Date:          Tue, 03 Mar 2026 07:18:57 GMT
+Vary:          Accept
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>An Error Occurred: Internal Server Error</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>ÔØî</text></svg>" />
+    <style>body { background-color: #fff; color: #222; font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; }
+.container { margin: 30px; max-width: 600px; }
+h1 { color: #dc3545; font-size: 24px; }
+h2 { font-size: 18px; }</style>
+</head>
+<body>
+<div class="container">
+    <h1>Oops! An Error Occurred</h1>
+    <h2>The server returned a "500 Internal Server Error".</h2>
+
+    <p>
+        Something is broken. Please let us know what you were doing when this error occurred.
+        We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+</div>
+</body>
+</html>
+
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:148
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:62
+C:\xampp\htdocs\UniLearn-PI-main\tests\FunctionalTest.php:337
+
+5) App\Tests\FunctionalTest::testAdminJobs
+Failed asserting that the Response is redirected.
+HTTP/1.1 404 Not Found
+Cache-Control: no-cache, private
+Content-Type:  text/html; charset=UTF-8
+Date:          Tue, 03 Mar 2026 07:18:57 GMT
+Vary:          Accept
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>An Error Occurred: Not Found</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>ÔØî</text></svg>" />
+    <style>body { background-color: #fff; color: #222; font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; }
+.container { margin: 30px; max-width: 600px; }
+h1 { color: #dc3545; font-size: 24px; }
+h2 { font-size: 18px; }</style>
+</head>
+<body>
+<div class="container">
+    <h1>Oops! An Error Occurred</h1>
+    <h2>The server returned a "404 Not Found".</h2>
+
+    <p>
+        Something is broken. Please let us know what you were doing when this error occurred.
+        We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+</div>
+</body>
+</html>
+
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:148
+C:\xampp\htdocs\UniLearn-PI-main\vendor\symfony\framework-bundle\Test\BrowserKitAssertionsTrait.php:62
+C:\xampp\htdocs\UniLearn-PI-main\tests\FunctionalTest.php:344
+
+FAILURES!
+Tests: 48, Assertions: 48, Failures: 5.
+
+Remaining indirect deprecation notices (4)
+
+  4x: Version detection logic for MySQL will change in DBAL 4. Please specify the version as the server reports it, e.g. "8.0.31" instead of "8". (AbstractMySQLDriver.php:94 called by Connection.php:421, https://github.com/doctrine/dbal/pull/5779, package doctrine/orm)
+    1x in FunctionalTest::testHomePage from App\Tests
+    1x in FunctionalTest::testBookingPage from App\Tests
+    1x in FunctionalTest::testApiTeachers from App\Tests
+    1x in FunctionalTest::testAdminQuizzes from App\Tests
+

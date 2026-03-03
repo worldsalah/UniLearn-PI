@@ -28,9 +28,16 @@ class ApplicationNotificationService
             return;
         }
 
+        $client = $job->getClient();
+        $clientEmail = $client->getEmail();
+        
+        if ($clientEmail === null) {
+            return;
+        }
+
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
-            ->to(new Address($job->getClient()->getEmail()))
+            ->to(new Address($clientEmail))
             ->subject('New Application Received: '.($job->getTitle() ?? 'Untitled Job'))
             ->htmlTemplate('emails/new_application.html.twig')
             ->context([
@@ -56,9 +63,15 @@ class ApplicationNotificationService
             return;
         }
 
+        $freelancerEmail = $freelancer->getEmail();
+        
+        if ($freelancerEmail === null) {
+            return;
+        }
+
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
-            ->to(new Address($freelancer->getEmail()))
+            ->to(new Address($freelancerEmail))
             ->subject('Application Confirmed: '.($job->getTitle() ?? 'Untitled Job'))
             ->htmlTemplate('emails/application_confirmation.html.twig')
             ->context([
@@ -79,9 +92,19 @@ class ApplicationNotificationService
         $job = $application->getJob();
         $freelancer = $application->getFreelancer();
 
+        if ($freelancer === null) {
+            return;
+        }
+
+        $freelancerEmail = $freelancer->getEmail();
+        
+        if ($freelancerEmail === null) {
+            return;
+        }
+
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
-            ->to(new Address($freelancer->getEmail()))
+            ->to(new Address($freelancerEmail))
             ->subject('Congratulations! Your Application Was Accepted')
             ->htmlTemplate('emails/application_accepted.html.twig')
             ->context([
@@ -102,10 +125,21 @@ class ApplicationNotificationService
         $job = $application->getJob();
         $freelancer = $application->getFreelancer();
 
+        if ($freelancer === null || $job === null) {
+            return;
+        }
+
+        $freelancerEmail = $freelancer->getEmail();
+        $jobTitle = $job->getTitle();
+        
+        if ($freelancerEmail === null) {
+            return;
+        }
+
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@unilearn.com', 'Unilearn Marketplace'))
-            ->to(new Address($freelancer->getEmail()))
-            ->subject('Application Update: '.$job->getTitle())
+            ->to(new Address($freelancerEmail))
+            ->subject('Application Update: '.($jobTitle ?? 'Untitled Job'))
             ->htmlTemplate('emails/application_rejected.html.twig')
             ->context([
                 'job' => $job,

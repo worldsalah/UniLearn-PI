@@ -11,6 +11,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: QuizRepository::class)]
 class Quiz
 {
+    // Quiz type constants
+    public const TYPE_LESSON = 'lesson';
+    public const TYPE_PLACEMENT = 'placement';
+    public const TYPE_FINAL = 'final';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -26,11 +31,15 @@ class Quiz
     )]
     private ?string $title = null;
 
-    #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: 'quizzes')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Course $course = null;
+    #[ORM\Column(length: 20)]
+    #[Assert\NotBlank(message: 'Quiz type is required')]
+    private string $quizType = self::TYPE_LESSON;
 
-    #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: Question::class, cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: 'quizzes')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private Course $course;
+
+    #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: Question::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $questions;
 
     #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: QuizResult::class)]
@@ -72,12 +81,12 @@ class Quiz
         return $this;
     }
 
-    public function getCourse(): ?Course
+    public function getCourse(): Course
     {
         return $this->course;
     }
 
-    public function setCourse(?Course $course): static
+    public function setCourse(Course $course): static
     {
         $this->course = $course;
         $this->updatedAt = new \DateTimeImmutable();
@@ -197,5 +206,35 @@ class Quiz
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    public function getQuizType(): string
+    {
+        return $this->quizType;
+    }
+
+    public function setQuizType(string $quizType): static
+    {
+        if (!in_array($quizType, [self::TYPE_LESSON, self::TYPE_PLACEMENT, self::TYPE_FINAL], true)) {
+            throw new \InvalidArgumentException('Invalid quiz type');
+        }
+        $this->quizType = $quizType;
+
+        return $this;
+    }
+
+    public function isPlacementQuiz(): bool
+    {
+        return $this->quizType === self::TYPE_PLACEMENT;
+    }
+
+    public function isFinalQuiz(): bool
+    {
+        return $this->quizType === self::TYPE_FINAL;
+    }
+
+    public function isLessonQuiz(): bool
+    {
+        return $this->quizType === self::TYPE_LESSON;
     }
 }

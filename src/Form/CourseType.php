@@ -48,13 +48,14 @@ class CourseType extends AbstractType
             ])
             ->add('level', ChoiceType::class, [
                 'label' => 'Course level',
+                'required' => false,
                 'choices' => [
                     'All level' => 'All level',
                     'Beginner' => 'Beginner',
                     'Intermediate' => 'Intermediate',
-                    'Advance' => 'Advance',
+                    'Advanced' => 'Advanced',
                 ],
-                'placeholder' => 'Select course level',
+                'placeholder' => 'Select course level (optional)',
                 'attr' => [
                     'class' => 'form-select',
                 ],

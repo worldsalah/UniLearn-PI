@@ -56,7 +56,7 @@ class ProductController extends AbstractController
 
         // Set the freelancer before form creation to avoid validation issues
         $user = $this->getUser();
-        if (!$user) {
+        if ($user === null) {
             // For admin, you might want to set a default user or handle differently
             $product->setFreelancer(null);
         } else {
@@ -85,7 +85,7 @@ class ProductController extends AbstractController
     {
         $product = $productRepository->find($id);
 
-        if (!$product) {
+        if ($product === null) {
             $this->addFlash('error', 'Product not found.');
 
             return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);
@@ -112,13 +112,13 @@ class ProductController extends AbstractController
     {
         $product = $productRepository->find($id);
 
-        if (!$product) {
+        if ($product === null) {
             $this->addFlash('error', 'Product not found.');
 
             return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$product->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($product);
             $entityManager->flush();
             $this->addFlash('success', 'Product deleted successfully.');
@@ -132,7 +132,7 @@ class ProductController extends AbstractController
     {
         $product = $productRepository->find($id);
 
-        if (!$product) {
+        if ($product === null) {
             $this->addFlash('error', 'Product not found.');
 
             return $this->redirectToRoute('app_admin_product_index', [], Response::HTTP_SEE_OTHER);

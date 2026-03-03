@@ -3,10 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\LessonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LessonRepository::class)]
+#[ORM\Index(name: 'idx_lesson_chapter', columns: ['chapter_id'])]
+#[ORM\Index(name: 'idx_lesson_sort', columns: ['chapter_id', 'sort_order'])]
 class Lesson
 {
     #[ORM\Id]
@@ -33,6 +37,45 @@ class Lesson
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $attachmentUrl = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $videoUrl = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $difficulty = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $learningObjectives = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $prerequisites = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $materials = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $estimatedTime = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $transcript = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $thumbnailUrl = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $resources = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $assessment = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isCompleted = false;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $views = 0;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $publishedAt = null;
+
     #[ORM\Column]
     private bool $isPreview = false;
 
@@ -46,8 +89,16 @@ class Lesson
     private int $sortOrder = 0;
 
     #[ORM\ManyToOne(inversedBy: 'lessons')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Chapter $chapter = null;
+
+    #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: LessonCompletion::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $lessonCompletions;
+
+    public function __construct()
+    {
+        $this->lessonCompletions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -88,6 +139,11 @@ class Lesson
         $this->chapter = $chapter;
 
         return $this;
+    }
+
+    public function getCourse(): ?Course
+    {
+        return $this->chapter?->getCourse();
     }
 
     public function getType(): ?string
@@ -170,6 +226,162 @@ class Lesson
     public function setSortOrder(int $sortOrder): static
     {
         $this->sortOrder = $sortOrder;
+
+        return $this;
+    }
+
+    public function getVideoUrl(): ?string
+    {
+        return $this->videoUrl;
+    }
+
+    public function setVideoUrl(?string $videoUrl): static
+    {
+        $this->videoUrl = $videoUrl;
+
+        return $this;
+    }
+
+    public function getDifficulty(): ?string
+    {
+        return $this->difficulty;
+    }
+
+    public function setDifficulty(?string $difficulty): static
+    {
+        $this->difficulty = $difficulty;
+
+        return $this;
+    }
+
+    public function getLearningObjectives(): ?string
+    {
+        return $this->learningObjectives;
+    }
+
+    public function setLearningObjectives(?string $learningObjectives): static
+    {
+        $this->learningObjectives = $learningObjectives;
+
+        return $this;
+    }
+
+    public function getPrerequisites(): ?string
+    {
+        return $this->prerequisites;
+    }
+
+    public function setPrerequisites(?string $prerequisites): static
+    {
+        $this->prerequisites = $prerequisites;
+
+        return $this;
+    }
+
+    public function getMaterials(): ?array
+    {
+        return $this->materials;
+    }
+
+    public function setMaterials(?array $materials): static
+    {
+        $this->materials = $materials;
+
+        return $this;
+    }
+
+    public function getEstimatedTime(): ?int
+    {
+        return $this->estimatedTime;
+    }
+
+    public function setEstimatedTime(?int $estimatedTime): static
+    {
+        $this->estimatedTime = $estimatedTime;
+
+        return $this;
+    }
+
+    public function getTranscript(): ?string
+    {
+        return $this->transcript;
+    }
+
+    public function setTranscript(?string $transcript): static
+    {
+        $this->transcript = $transcript;
+
+        return $this;
+    }
+
+    public function getThumbnailUrl(): ?string
+    {
+        return $this->thumbnailUrl;
+    }
+
+    public function setThumbnailUrl(?string $thumbnailUrl): static
+    {
+        $this->thumbnailUrl = $thumbnailUrl;
+
+        return $this;
+    }
+
+    public function getResources(): ?string
+    {
+        return $this->resources;
+    }
+
+    public function setResources(?string $resources): static
+    {
+        $this->resources = $resources;
+
+        return $this;
+    }
+
+    public function getAssessment(): ?string
+    {
+        return $this->assessment;
+    }
+
+    public function setAssessment(?string $assessment): static
+    {
+        $this->assessment = $assessment;
+
+        return $this;
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->isCompleted;
+    }
+
+    public function setIsCompleted(bool $isCompleted): static
+    {
+        $this->isCompleted = $isCompleted;
+
+        return $this;
+    }
+
+    public function getViews(): ?int
+    {
+        return $this->views;
+    }
+
+    public function setViews(?int $views): static
+    {
+        $this->views = $views;
+
+        return $this;
+    }
+
+    public function getPublishedAt(): ?\DateTimeInterface
+    {
+        return $this->publishedAt;
+    }
+
+    public function setPublishedAt(?\DateTimeInterface $publishedAt): static
+    {
+        $this->publishedAt = $publishedAt;
 
         return $this;
     }

@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Repository\OrderRepository;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class SellerReputationService
 {
@@ -20,7 +19,7 @@ class SellerReputationService
     /**
      * Calculate comprehensive seller reputation score.
      */
-    public function calculateReputationScore(\Symfony\Component\Security\Core\User\UserInterface $seller): array
+    public function calculateReputationScore(User $seller): array
     {
         $stats = $this->getSellerStats($seller);
 
@@ -139,7 +138,7 @@ class SellerReputationService
     /**
      * Get comprehensive seller statistics.
      */
-    public function getSellerStats(\Symfony\Component\Security\Core\User\UserInterface $seller): array
+    public function getSellerStats(User $seller): array
     {
         // Total orders
         $totalOrders = $this->orderRepository->count(['freelancer' => $seller]);
@@ -168,7 +167,7 @@ class SellerReputationService
 
         // Account age
         $accountAge = $seller->getCreatedAt();
-        $accountAgeDays = $accountAge ? (new \DateTime())->diff($accountAge)->days : 0;
+        $accountAgeDays = $accountAge !== null ? (new \DateTime())->diff($accountAge)->days : 0;
 
         // Verification status
         $isVerified = $seller->isVerified() ?? false;
@@ -183,14 +182,14 @@ class SellerReputationService
             'total_reviews' => $reviewStats['total_reviews'],
             'account_age_days' => $accountAgeDays,
             'is_verified' => $isVerified,
-            'dispute_rate' => $totalOrders > 0 ? round(($failedOrders / $totalOrders) * 100, 1) : 0,
+            'dispute_rate' => $totalOrders > 0 ? round((float) $failedOrders / $totalOrders * 100, 1) : 0,
         ];
     }
 
     /**
      * Get seller performance metrics for dashboard.
      */
-    public function getPerformanceMetrics(\Symfony\Component\Security\Core\User\UserInterface $seller): array
+    public function getPerformanceMetrics(User $seller): array
     {
         $stats = $this->getSellerStats($seller);
         $reputation = $this->calculateReputationScore($seller);
@@ -262,7 +261,8 @@ class SellerReputationService
             return 50;
         } // Neutral score for no reviews
 
-        $ratingScore = ($avgRating / 5) * 100;
+        $avgRatingFloat = $avgRating;
+        $ratingScore = ($avgRatingFloat / 5) * 100;
 
         // Bonus for having more reviews
         $reviewBonus = min($totalReviews * 2, 20); // Max 20 points bonus
@@ -273,12 +273,13 @@ class SellerReputationService
     /**
      * Calculate account score based on age and verification.
      */
-    private function calculateAccountScore(UserInterface $seller): float
+    private function calculateAccountScore(User $seller): float
     {
         $score = 0;
 
         // Account age score
-        $ageDays = $seller->getCreatedAt() !== null ? (new \DateTime())->diff($seller->getCreatedAt())->days : 0;
+        $createdAt = $seller->getCreatedAt();
+        $ageDays = $createdAt !== null ? (new \DateTime())->diff($createdAt)->days : 0;
         if ($ageDays >= 365) {
             $score += 50;
         } elseif ($ageDays >= 180) {
@@ -302,7 +303,7 @@ class SellerReputationService
     /**
      * Calculate average response time.
      */
-    private function calculateAverageResponseTime(UserInterface $seller): float
+    private function calculateAverageResponseTime(User $seller): float
     {
         // This would typically calculate from message timestamps
         // For demo, return a realistic value
@@ -312,7 +313,7 @@ class SellerReputationService
     /**
      * Get review statistics (calculated from completed orders).
      */
-    private function getReviewStats(UserInterface $seller): array
+    private function getReviewStats(User $seller): array
     {
         // Get completed orders as a proxy for reviews
         $completedOrders = $this->orderRepository->findBy([
@@ -351,7 +352,7 @@ class SellerReputationService
     /**
      * Get completion trend.
      */
-    private function getCompletionTrend(UserInterface $seller): string
+    private function getCompletionTrend(User $seller): string
     {
         // This would calculate from historical data
         // For demo, return random trend
@@ -363,7 +364,7 @@ class SellerReputationService
     /**
      * Get response trend.
      */
-    private function getResponseTrend(UserInterface $seller): string
+    private function getResponseTrend(User $seller): string
     {
         $trends = ['up', 'down', 'stable'];
 
@@ -373,7 +374,7 @@ class SellerReputationService
     /**
      * Get rating trend.
      */
-    private function getRatingTrend(UserInterface $seller): string
+    private function getRatingTrend(User $seller): string
     {
         $trends = ['up', 'down', 'stable'];
 
@@ -383,7 +384,7 @@ class SellerReputationService
     /**
      * Get dispute trend.
      */
-    private function getDisputeTrend(UserInterface $seller): string
+    private function getDisputeTrend(User $seller): string
     {
         $trends = ['up', 'down', 'stable'];
 
@@ -393,7 +394,7 @@ class SellerReputationService
     /**
      * Get recent achievements.
      */
-    private function getRecentAchievements(UserInterface $seller, array $reputation): array
+    private function getRecentAchievements(User $seller, array $reputation): array
     {
         $achievements = [];
 

@@ -82,8 +82,9 @@ class Category
     private function generateSlug(): void
     {
         $name = $this->name;
-        if (null !== $name) {
-            $this->slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
+        if ($name !== null) {
+            $slug = preg_replace('/[^A-Za-z0-9-]+/', '-', $name);
+            $this->slug = strtolower(trim($slug ?? ''));
         }
     }
 

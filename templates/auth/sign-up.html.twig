@@ -150,12 +150,33 @@
 									</div>
 									{{ form_errors(registrationForm.agreeTerms) }}
 								</div>
+
+								<!-- Face Registration (Optional) -->
+								<div class="mb-4">
+									<div class="card border-info">
+										<div class="card-header bg-info bg-opacity-10 text-info py-2">
+											<i class="fas fa-fingerprint me-2"></i>Face Recognition (Optional)
+										</div>
+										<div class="card-body p-3">
+											<p class="small text-muted mb-2">Enable face recognition for faster, password-free login.</p>
+											<button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#faceRegistrationModal">
+												<i class="fas fa-camera me-2"></i>Register Face
+											</button>
+											{{ form_widget(registrationForm.faceImage, {'attr': {'id': 'faceImageInput'}}) }}
+											<div id="faceRegistrationStatus" class="mt-2 small d-none text-success">
+												<i class="fas fa-check-circle me-1"></i>Face registered!
+											</div>
+										</div>
+									</div>
+								</div>
+
 								<!-- Button -->
 								<div class="align-items-center mt-0">
 									<div class="d-grid">
 										<button class="btn btn-primary mb-0" type="submit">Sign Up</button>
 									</div>
 								</div>
+								<!-- Hidden input moved inside form -->
 							{{ form_end(registrationForm) }}
 							<!-- Form END -->
 
@@ -189,4 +210,214 @@
 </main>
 <!-- **************** MAIN CONTENT END **************** -->
 
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<!-- Face Registration Modal -->
+<div class="modal fade" id="faceRegistrationModal" tabindex="-1" aria-labelledby="faceRegistrationModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header bg-info text-white">
+				<h5 class="modal-title" id="faceRegistrationModalLabel">
+					<i class="fas fa-camera me-2"></i>Register Your Face
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-info">
+					<i class="fas fa-info-circle me-2"></i>
+					Position your face within the frame and ensure good lighting.
+				</div>
+				<div class="position-relative mb-3">
+					<video id="faceVideo" width="100%" height="400" autoplay playsinline 
+						   style="border-radius: 8px; background: #000;"></video>
+					<canvas id="faceCanvas" width="640" height="480" 
+							style="border-radius: 8px; background: #f8f9fa; width: 100%; height: 400px; display: none;"></canvas>
+				</div>
+				<div class="text-center">
+					<button type="button" id="startCameraBtn" class="btn btn-secondary mb-2 d-none">
+						<i class="fas fa-video me-2"></i>Start Camera
+					</button>
+					<button type="button" id="captureFaceBtn" class="btn btn-primary btn-lg" disabled>
+						<i class="fas fa-spinner fa-spin me-2"></i>Loading...
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+/**
+ * Face Authentication JavaScript Module - Inline for sign-up page
+ */
+if (typeof FaceAuth === 'undefined') {
+    class FaceAuth {
+        constructor() {
+            this.video = null;
+            this.canvas = null;
+            this.stream = null;
+            this.isInitialized = false;
+        }
+
+        async initWebcam(videoElementId, canvasElementId) {
+            this.video = document.getElementById(videoElementId);
+            this.canvas = document.getElementById(canvasElementId);
+
+            if (!this.video || !this.canvas) {
+                console.error('Video or canvas element not found');
+                return false;
+            }
+
+            try {
+                console.log('Requesting camera access...');
+                this.stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+                    audio: false
+                });
+
+                this.video.srcObject = this.stream;
+                this.video.style.display = 'block';
+                this.canvas.style.display = 'none';
+
+                return new Promise((resolve) => {
+                    const timeout = setTimeout(() => {
+                        console.warn('Video metadata timeout, trying anyway...');
+                        this.isInitialized = true;
+                        resolve(true);
+                    }, 3000);
+
+                    this.video.onloadedmetadata = () => {
+                        clearTimeout(timeout);
+                        this.video.play().then(() => {
+                            this.isInitialized = true;
+                            console.log('Webcam initialized');
+                            resolve(true);
+                        }).catch(() => resolve(false));
+                    };
+                });
+            } catch (error) {
+                console.error('Error accessing webcam:', error);
+                this.isInitialized = false;
+                return false;
+            }
+        }
+
+        captureImage() {
+            console.log('Capture attempt - isInitialized:', this.isInitialized, 'video:', !!this.video, 'canvas:', !!this.canvas);
+            
+            if (!this.isInitialized) {
+                alert('Camera not initialized. Please wait or click "Start Camera".');
+                return null;
+            }
+            
+            if (!this.video || !this.canvas) {
+                alert('Video or canvas element not found.');
+                return null;
+            }
+
+            const context = this.canvas.getContext('2d');
+            this.canvas.width = this.video.videoWidth || 640;
+            this.canvas.height = this.video.videoHeight || 480;
+            context.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+            
+            this.video.style.display = 'none';
+            this.canvas.style.display = 'block';
+
+            return this.canvas.toDataURL('image/jpeg', 0.9);
+        }
+
+        stopWebcam() {
+            if (this.stream) {
+                this.stream.getTracks().forEach(track => track.stop());
+                this.stream = null;
+            }
+            if (this.video) {
+                this.video.srcObject = null;
+            }
+            this.isInitialized = false;
+        }
+    }
+
+    window.FaceAuth = FaceAuth;
+}
+
+// Initialize FaceAuth for this page
+const faceAuth = new FaceAuth();
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('faceRegistrationModal');
+    const captureBtn = document.getElementById('captureFaceBtn');
+    const startCameraBtn = document.getElementById('startCameraBtn');
+    // Find the faceImage input by name attribute since Symfony generates dynamic IDs
+    const faceInput = document.querySelector('input[name$="[faceImage]"]');
+    const statusDiv = document.getElementById('faceRegistrationStatus');
+    
+    if (!modal || !captureBtn) return;
+
+    let cameraStarted = false;
+
+    async function startCamera() {
+        if (cameraStarted) return true;
+        
+        captureBtn.disabled = true;
+        captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Starting...';
+        
+        const success = await faceAuth.initWebcam('faceVideo', 'faceCanvas');
+        if (success) {
+            cameraStarted = true;
+            captureBtn.disabled = false;
+            captureBtn.innerHTML = '<i class="fas fa-camera me-2"></i>Capture Face';
+            if (startCameraBtn) startCameraBtn.classList.add('d-none');
+            return true;
+        } else {
+            captureBtn.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Camera Error';
+            if (startCameraBtn) {
+                startCameraBtn.classList.remove('d-none');
+                startCameraBtn.onclick = startCamera;
+            }
+            return false;
+        }
+    }
+
+    modal.addEventListener('shown.bs.modal', function() {
+        setTimeout(startCamera, 300);
+    });
+
+    modal.addEventListener('hidden.bs.modal', function() {
+        faceAuth.stopWebcam();
+        cameraStarted = false;
+        captureBtn.disabled = true;
+        captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+    });
+
+    captureBtn.addEventListener('click', function() {
+        if (!cameraStarted) {
+            alert('Camera not ready. Please wait or click "Start Camera".');
+            return;
+        }
+        
+        const imageData = faceAuth.captureImage();
+        console.log('Captured image data length:', imageData ? imageData.length : 0);
+        console.log('Image data preview:', imageData ? imageData.substring(0, 50) + '...' : 'null');
+        if (imageData) {
+            if (faceInput) {
+                faceInput.value = imageData;
+                console.log('Face image saved to input');
+            } else {
+                console.error('Face input not found');
+            }
+            if (statusDiv) {
+                statusDiv.classList.remove('d-none');
+                console.log('Status shown');
+            }
+            bootstrap.Modal.getInstance(modal).hide();
+            faceAuth.stopWebcam();
+            cameraStarted = false;
+        }
+    });
+});
+</script>
 {% endblock %}

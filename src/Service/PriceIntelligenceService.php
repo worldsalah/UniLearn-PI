@@ -24,16 +24,16 @@ class PriceIntelligenceService
         $currentPrice = $product->getPrice();
 
         // Get market data for this category
-        $marketData = $this->getMarketData($category);
+        $marketData = $this->getMarketData($category !== null ? $category->getName() ?? '' : '');
 
         // Calculate price position
-        $pricePosition = $this->calculatePricePosition($currentPrice, $marketData);
+        $pricePosition = $this->calculatePricePosition($currentPrice ?? 0.0, $marketData);
 
         // Get price recommendations
-        $recommendations = $this->getPriceRecommendations($currentPrice, $marketData, $product);
+        $recommendations = $this->getPriceRecommendations($currentPrice ?? 0.0, $marketData, $product);
 
         // Determine price label
-        $priceLabel = $this->getPriceLabel($currentPrice, $marketData);
+        $priceLabel = $this->getPriceLabel($currentPrice ?? 0.0, $marketData);
 
         return [
             'current_price' => $currentPrice,
@@ -45,7 +45,7 @@ class PriceIntelligenceService
                 'is_competitive' => $pricePosition['percentile'] >= 25 && $pricePosition['percentile'] <= 75,
                 'is_underpriced' => $pricePosition['percentile'] < 25,
                 'is_overpriced' => $pricePosition['percentile'] > 75,
-                'optimization_potential' => $this->calculateOptimizationPotential($currentPrice, $marketData),
+                'optimization_potential' => $this->calculateOptimizationPotential($currentPrice ?? 0.0, $marketData),
             ],
         ];
     }
@@ -356,14 +356,14 @@ class PriceIntelligenceService
         $hour = (int) date('H');
         $dayOfWeek = (int) date('w');
 
-        // Weekend pricing boost (Saturday=6, Sunday=0)
-        if ($dayOfWeek === 0 || $dayOfWeek === 6) {
+        // Weekend pricing boost
+        if ($dayOfWeek >= 5 && $dayOfWeek <= 6) {
             return [
                 'type' => 'dynamic_pricing',
                 'priority' => 'low',
                 'title' => 'Weekend Demand',
                 'description' => 'Consider increasing prices by 10-15% during weekends when demand is higher.',
-                'suggested_price' => $product->getPrice() * 1.1,
+                'suggested_price' => ($product->getPrice() ?? 0.0) * 1.1,
                 'valid_until' => 'Monday 9:00 AM',
                 'confidence' => 65,
             ];

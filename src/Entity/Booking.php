@@ -40,14 +40,41 @@ class Booking
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTime $preferredDate = null;
 
-    #[ORM\Column(name: 'created_at', type: 'datetime', nullable: true)]
-    private ?\DateTime $createdAt = null;
+    #[ORM\Column(name: 'created_at', type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: true)]
-    private ?\DateTime $updatedAt = null;
+    #[ORM\Column(name: 'updated_at', type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private ?string $status = 'pending';
+
+    #[ORM\Column(type: 'time', nullable: true)]
+    private ?\DateTimeInterface $startTime = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $durationMinutes = null;
+
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    private ?string $totalPrice = null;
+
+    #[ORM\ManyToOne(targetEntity: Bundle::class, inversedBy: 'bookings')]
+    #[ORM\JoinColumn(name: 'bundle_id', referencedColumnName: 'id', nullable: true)]
+    private ?Bundle $bundle = null;
+
+    #[ORM\OneToOne(targetEntity: BundleUsage::class, mappedBy: 'booking')]
+    private ?BundleUsage $bundleUsage = null;
+
+    #[ORM\ManyToOne(targetEntity: TeacherProfile::class, inversedBy: 'bookings')]
+    #[ORM\JoinColumn(name: 'teacher_id', referencedColumnName: 'id', nullable: true)]
+    private ?TeacherProfile $teacher = null;
+
+    #[ORM\OneToOne(targetEntity: TimeSlot::class, inversedBy: 'booking')]
+    #[ORM\JoinColumn(name: 'time_slot_id', referencedColumnName: 'id', nullable: true)]
+    private ?TimeSlot $timeSlot = null;
+
+    #[ORM\OneToOne(targetEntity: TutoringSession::class, mappedBy: 'booking')]
+    private ?TutoringSession $tutoringSession = null;
 
     public function getSession(): ?Session
     {
@@ -117,6 +144,42 @@ class Booking
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStartTime(): ?\DateTimeInterface
+    {
+        return $this->startTime;
+    }
+
+    public function setStartTime(?\DateTimeInterface $startTime): self
+    {
+        $this->startTime = $startTime;
+
+        return $this;
+    }
+
+    public function getDurationMinutes(): ?int
+    {
+        return $this->durationMinutes;
+    }
+
+    public function setDurationMinutes(?int $durationMinutes): self
+    {
+        $this->durationMinutes = $durationMinutes;
+
+        return $this;
+    }
+
+    public function getTotalPrice(): ?string
+    {
+        return $this->totalPrice;
+    }
+
+    public function setTotalPrice(?string $totalPrice): self
+    {
+        $this->totalPrice = $totalPrice;
 
         return $this;
     }

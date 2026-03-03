@@ -3,7 +3,6 @@
 {% block title %}Video Search - Unilearn{% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/apexcharts/css/apexcharts.css') }}">
 <style>
 /* Modern Instructor Dashboard Styles */
 .instructor-gradient {
@@ -279,23 +278,6 @@
     font-weight: 500 !important;
 }
 
-/* Custom select styling */
-#lessonSelect {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2366777'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg>");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 20px;
-    padding-right: 32px;
-}
-
-#lessonSelect:focus {
-    border-color: #2196f3 !important;
-    box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25) !important;
-}
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: bold;
-}
 .create-course-btn {
     background: #198754;
     color: white;
@@ -326,6 +308,189 @@
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     margin-bottom: 40px;
+}
+
+/* Course/Lesson Selector Styles */
+.course-lesson-selector {
+    position: relative;
+}
+
+.selector-header {
+    background: white;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.selector-header:hover {
+    border-color: #0d6efd;
+    background: #f8f9fa;
+}
+
+.selector-header i.fa-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+.selector-header[aria-expanded="true"] i.fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+#courseLessonDropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    border: 2px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.selector-search {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+}
+
+.selector-search input {
+    border-radius: 6px;
+}
+
+.selector-body {
+    padding: 8px 0;
+}
+
+.selector-course {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.selector-course-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f8f9fa;
+}
+
+.selector-course-header:hover {
+    background: #e9ecef;
+}
+
+.selector-course-header i {
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.selector-course-header.expanded i.fa-chevron-right {
+    transform: rotate(90deg);
+}
+
+.selector-course-title {
+    font-weight: 600;
+    color: #212529;
+    flex: 1;
+}
+
+.selector-course-count {
+    font-size: 0.75rem;
+    color: #6c757d;
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.selector-chapters {
+    display: none;
+    background: #ffffff;
+}
+
+.selector-chapters.show {
+    display: block;
+}
+
+.selector-chapter-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px 8px 32px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fafafa;
+    border-left: 3px solid transparent;
+}
+
+.selector-chapter-header:hover {
+    background: #f0f0f0;
+    border-left-color: #0d6efd;
+}
+
+.selector-chapter-header i {
+    margin-right: 8px;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.selector-chapter-title {
+    font-weight: 500;
+    color: #495057;
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.selector-lessons {
+    display: none;
+    background: #ffffff;
+}
+
+.selector-lessons.show {
+    display: block;
+}
+
+.selector-lesson-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px 10px 56px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.selector-lesson-item:hover {
+    background: #e3f2fd;
+    border-left-color: #2196f3;
+}
+
+.selector-lesson-item.selected {
+    background: #bbdefb;
+    border-left-color: #1976d2;
+}
+
+.selector-lesson-item i {
+    margin-right: 8px;
+    font-size: 0.875rem;
+    color: #2196f3;
+}
+
+.selector-lesson-title {
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.selector-lesson-item.selected .selector-lesson-title {
+    color: #1976d2;
+    font-weight: 500;
 }
 
 .video-grid {
@@ -665,7 +830,7 @@ Page content START -->
                         {% if hasCourses %}
                             <!-- Search Box -->
                             <div class="search-box">
-                                <div class="row">
+                                <div class="row g-3">
                                     <div class="col-md-8">
                                         <div class="input-group">
                                             <input type="text" 
@@ -681,28 +846,26 @@ Page content START -->
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <select id="lessonSelect" class="form-select form-select-lg">
-                                            <option value="">Choose a course and lesson...</option>
-                                        </select>
+                                        <!-- Course/Lesson Selector with Search -->
+                                        <div class="course-lesson-selector">
+                                            <div class="selector-header" data-bs-toggle="collapse" data-bs-target="#courseLessonDropdown">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-book me-2 text-primary"></i>
+                                                    <span id="selectedLessonText">Select Course & Lesson</span>
+                                                </div>
+                                                <i class="fas fa-chevron-down"></i>
+                                            </div>
+                                            <div class="collapse" id="courseLessonDropdown">
+                                                <div class="selector-search">
+                                                    <input type="text" id="courseSearchInput" class="form-control" placeholder="Search courses...">
+                                                </div>
+                                                <div class="selector-body" id="courseLessonList">
+                                                    <!-- Courses and lessons will be populated here -->
+                                                </div>
+                                            </div>
+                                            <input type="hidden" id="selectedLessonId" value="">
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Debug Section -->
-                            <div class="debug-section mt-3">
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-outline-info btn-sm" onclick="debugCourses()">
-                                        <i class="fas fa-bug me-2"></i>
-                                        Debug Courses
-                                    </button>
-                                    <button class="btn btn-outline-warning btn-sm" onclick="debugLessons()">
-                                        <i class="fas fa-bug me-2"></i>
-                                        Debug Lessons
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm" onclick="debugTemplate()">
-                                        <i class="fas fa-bug me-2"></i>
-                                        Debug Template
-                                    </button>
                                 </div>
                             </div>
                             
@@ -808,26 +971,17 @@ Page content END -->
             loadCourses();
             getWebDevVideos(); // Auto-load web development videos
             
-            // Handle lesson selection change
-            const lessonSelect = document.getElementById('lessonSelect');
-            if (lessonSelect) {
-                lessonSelect.addEventListener('change', function() {
-                    if (this.value) {
-                        selectedLessonId = this.value;
-                        selectedLessonTitle = this.options[this.selectedIndex].text;
-                    } else {
-                        selectedLessonId = null;
-                        selectedLessonTitle = null;
-                    }
+            // Course search filter
+            const courseSearchInput = document.getElementById('courseSearchInput');
+            if (courseSearchInput) {
+                courseSearchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    document.querySelectorAll('.selector-course').forEach(courseEl => {
+                        const title = courseEl.querySelector('.selector-course-title').textContent.toLowerCase();
+                        courseEl.style.display = title.includes(searchTerm) ? 'block' : 'none';
+                    });
                 });
             }
-            
-            // Auto-run debug on page load
-            setTimeout(() => {
-                debugCourses();
-                debugLessons();
-                debugTemplate();
-            }, 1000);
         });
         
         // Load courses with hierarchical structure
@@ -841,102 +995,119 @@ Page content END -->
                     .then(data => {
                         if (data.success) {
                             courses = data.courses;
-                            populateLessonDropdown();
+                            populateCourseSelector();
                         } else {
-                            // Show error message in dropdown
-                            const lessonSelect = document.getElementById('lessonSelect');
-                            lessonSelect.innerHTML = `<option value="">Error: ${data.error}</option>`;
+                            const list = document.getElementById('courseLessonList');
+                            list.innerHTML = `<div class="p-3 text-danger">Error: ${data.error}</div>`;
                         }
                     })
                     .catch(error => {
-                        // Show error message in dropdown
-                        const lessonSelect = document.getElementById('lessonSelect');
-                        lessonSelect.innerHTML = `<option value="">Network error: ${error.message}</option>`;
+                        const list = document.getElementById('courseLessonList');
+                        list.innerHTML = `<div class="p-3 text-danger">Network error: ${error.message}</div>`;
                     });
             {% endif %}
         }
         
-        // Create beautiful hierarchical dropdown
-        function populateLessonDropdown() {
-            const lessonSelect = document.getElementById('lessonSelect');
+        // Create collapsible course/lesson selector
+        function populateCourseSelector() {
+            const list = document.getElementById('courseLessonList');
             
             if (!courses || courses.length === 0) {
-                lessonSelect.innerHTML = '<option value="">No courses available</option>';
+                list.innerHTML = '<div class="p-3 text-muted">No courses available</div>';
                 return;
             }
             
-            let html = '<option value="">📚 Select a course and lesson...</option>';
+            let html = '';
             
-            courses.forEach(course => {
-                // Add course as a disabled option (for visual separation)
-                html += `<option value="" disabled class="course-header">📚 ${course.title}</option>`;
+            courses.forEach((course, courseIndex) => {
+                const lessonCount = course.chapters ? Object.values(course.chapters).reduce((sum, ch) => sum + (ch.lessons ? ch.lessons.length : 0), 0) : 0;
+                
+                html += `
+                    <div class="selector-course" data-course-title="${course.title.toLowerCase()}">
+                        <div class="selector-course-header" onclick="toggleCourseSelector(${courseIndex})">
+                            <i class="fas fa-chevron-right text-primary"></i>
+                            <span class="selector-course-title">${course.title}</span>
+                            <span class="selector-course-count">${lessonCount} lessons</span>
+                        </div>
+                        <div class="selector-chapters" id="course-chapters-${courseIndex}">
+                `;
                 
                 if (course.chapters && Object.keys(course.chapters).length > 0) {
-                    Object.values(course.chapters).forEach(chapter => {
-                        // Add chapter as a disabled option (for visual separation)
-                        html += `<option value="" disabled class="chapter-header">📁 ${chapter.title}</option>`;
+                    Object.values(course.chapters).forEach((chapter, chapterIndex) => {
+                        html += `
+                            <div class="selector-chapter">
+                                <div class="selector-chapter-header" onclick="toggleChapterSelector(${courseIndex}, ${chapterIndex})">
+                                    <i class="fas fa-folder"></i>
+                                    <span class="selector-chapter-title">${chapter.title}</span>
+                                </div>
+                                <div class="selector-lessons" id="chapter-lessons-${courseIndex}-${chapterIndex}">
+                        `;
                         
                         if (chapter.lessons && chapter.lessons.length > 0) {
                             chapter.lessons.forEach(lesson => {
-                                // Add lessons as selectable options
-                                html += `<option value="${lesson.id}" class="lesson-option">📹 ${lesson.title}</option>`;
+                                html += `
+                                    <div class="selector-lesson-item" onclick="selectLesson(${lesson.id}, '${lesson.title.replace(/'/g, "\\'")}', ${courseIndex}, ${chapterIndex})">
+                                        <i class="fas fa-video"></i>
+                                        <span class="selector-lesson-title">${lesson.title}</span>
+                                    </div>
+                                `;
                             });
                         }
+                        
+                        html += `
+                                </div>
+                            </div>
+                        `;
                     });
                 }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
             });
             
-            lessonSelect.innerHTML = html;
+            list.innerHTML = html;
         }
         
-        function toggleCourse(courseId) {
-            const courseLessons = document.getElementById('course-' + courseId);
-            const allCourseLessons = document.querySelectorAll('.course-lessons');
+        function toggleCourseSelector(courseIndex) {
+            const chapters = document.getElementById(`course-chapters-${courseIndex}`);
+            const header = chapters.previousElementSibling;
             
-            // Close all other course dropdowns
-            allCourseLessons.forEach(el => {
-                if (el.id !== 'course-' + courseId) {
-                    el.style.display = 'none';
+            chapters.classList.toggle('show');
+            header.classList.toggle('expanded');
+        }
+        
+        function toggleChapterSelector(courseIndex, chapterIndex) {
+            const lessons = document.getElementById(`chapter-lessons-${courseIndex}-${chapterIndex}`);
+            lessons.classList.toggle('show');
+            
+            // Close other chapters in same course
+            const parent = lessons.parentElement.parentElement;
+            parent.querySelectorAll('.selector-lessons.show').forEach(el => {
+                if (el !== lessons) {
+                    el.classList.remove('show');
                 }
             });
-            
-            // Toggle current course
-            courseLessons.style.display = courseLessons.style.display === 'none' ? 'block' : 'none';
         }
         
-        function toggleChapter(courseId, chapterId) {
-            const chapterLessons = document.getElementById('chapter-' + courseId + '-' + chapterId);
-            const allChapterLessons = document.querySelectorAll('.chapter-lessons');
-            
-            // Close all other chapter dropdowns
-            allChapterLessons.forEach(el => {
-                if (el.id !== 'chapter-' + courseId + '-' + chapterId) {
-                    el.style.display = 'none';
-                }
-            });
-            
-            // Toggle current chapter
-            chapterLessons.style.display = chapterLessons.style.display === 'none' ? 'block' : 'none';
-        }
-        
-        function selectLesson(lessonId, lessonTitle) {
-            // Remove previous selection
-            document.querySelectorAll('.lesson-item').forEach(el => {
-                el.classList.remove('selected');
-            });
-            
-            // Add selection to current lesson
-            event.currentTarget.classList.add('selected');
+        function selectLesson(lessonId, lessonTitle, courseIndex, chapterIndex) {
             selectedLessonId = lessonId;
+            selectedLessonTitle = lessonTitle;
             
-            // Show notification
-            showNotification(`Selected: ${lessonTitle}`, 'success');
-        }
-        
-        function closeAllDropdowns() {
-            document.querySelectorAll('.course-lessons').forEach(el => {
-                el.style.display = 'none';
-            });
+            document.getElementById('selectedLessonId').value = lessonId;
+            document.getElementById('selectedLessonText').textContent = lessonTitle;
+            
+            // Update selected state
+            document.querySelectorAll('.selector-lesson-item').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.selector-lesson-item').classList.add('selected');
+            
+            // Close dropdown
+            const dropdown = document.getElementById('courseLessonDropdown');
+            const bsCollapse = bootstrap.Collapse.getInstance(dropdown);
+            if (bsCollapse) {
+                bsCollapse.hide();
+            }
         }
         
         function searchVideos() {
@@ -1018,10 +1189,8 @@ Page content END -->
         
         function selectVideo(videoId, videoTitle, embedUrl) {
             // Check if a lesson is selected
-            const lessonSelect = document.getElementById('lessonSelect');
-            if (!lessonSelect.value || lessonSelect.value === '') {
+            if (!selectedLessonId) {
                 showNotification('Please select a course and lesson first', 'warning');
-                lessonSelect.focus();
                 return;
             }
             

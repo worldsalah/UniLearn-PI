@@ -1,0 +1,157 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}FAQ - UniLearn{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h1 class="display-5 fw-bold text-primary mb-3">
+                        <i class="fas fa-question-circle me-2"></i>Frequently Asked Questions
+                    </h1>
+                    <p class="lead text-muted">Find quick answers to common questions</p>
+                </div>
+                
+                <div class="accordion" id="faqAccordion">
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-white p-0" id="heading1">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link w-100 text-start d-flex justify-content-between align-items-center p-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                    <span class="fw-bold"><i class="fas fa-user-plus text-primary me-2"></i>How do I create an account?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse1" class="collapse show" data-bs-parent="#faqAccordion">
+                            <div class="card-body">
+                                Creating an account is easy! Click the "Sign Up" button in the top right corner of the homepage. Fill in your email address, create a password, and provide your basic information. You'll receive a confirmation email to verify your account. Once verified, you can start exploring and enrolling in courses immediately.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-white p-0" id="heading2">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link w-100 text-start d-flex justify-content-between align-items-center p-4 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                    <span class="fw-bold"><i class="fas fa-credit-card text-primary me-2"></i>What payment methods do you accept?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse2" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="card-body">
+                                We accept all major credit cards (Visa, MasterCard, American Express, Discover), PayPal, and bank transfers. All payments are processed securely through our encrypted payment system. We also offer installment plans for courses above $100.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-white p-0" id="heading3">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link w-100 text-start d-flex justify-content-between align-items-center p-4 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                    <span class="fw-bold"><i class="fas fa-undo text-primary me-2"></i>What is your refund policy?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse3" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="card-body">
+                                We offer a 30-day money-back guarantee for all courses. If you're not satisfied with a course, you can request a full refund within 30 days of purchase, provided you've completed less than 50% of the course content. Refunds are processed within 5-7 business days.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-white p-0" id="heading4">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link w-100 text-start d-flex justify-content-between align-items-center p-4 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                                    <span class="fw-bold"><i class="fas fa-certificate text-primary me-2"></i>How do I get a certificate?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse4" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="card-body">
+                                Certificates are automatically generated when you complete a course with all required assignments and quizzes. You can download your certificate from your dashboard. Our certificates are verifiable and can be shared on LinkedIn or included in your resume.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-white p-0" id="heading5">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link w-100 text-start d-flex justify-content-between align-items-center p-4 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5">
+                                    <span class="fw-bold"><i class="fas fa-infinity text-primary me-2"></i>Do courses expire?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse5" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="card-body">
+                                No! Once you purchase a course, you have lifetime access to all course materials. This includes any future updates the instructor makes to the course. You can learn at your own pace without any time restrictions.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-white p-0" id="heading6">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link w-100 text-start d-flex justify-content-between align-items-center p-4 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6">
+                                    <span class="fw-bold"><i class="fas fa-chalkboard-teacher text-primary me-2"></i>How can I become an instructor?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse6" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="card-body">
+                                We welcome passionate educators! To become an instructor, navigate to your profile settings and click "Become an Instructor." Complete the instructor application form with your qualifications and expertise. Our team will review your application within 3-5 business days. Once approved, you can start creating and publishing courses.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-white p-0" id="heading7">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link w-100 text-start d-flex justify-content-between align-items-center p-4 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7">
+                                    <span class="fw-bold"><i class="fas fa-mobile-alt text-primary me-2"></i>Is there a mobile app?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse7" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="card-body">
+                                Yes! UniLearn is available on both iOS and Android devices. Download our app from the App Store or Google Play Store. The mobile app allows you to download courses for offline viewing, track your progress, and learn on the go.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-white p-0" id="heading8">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link w-100 text-start d-flex justify-content-between align-items-center p-4 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8">
+                                    <span class="fw-bold"><i class="fas fa-download text-primary me-2"></i>Can I download courses for offline viewing?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapse8" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="card-body">
+                                Yes, with our mobile app, you can download course videos and materials for offline viewing. This feature is available on the mobile app only. Downloaded content remains available for 30 days, after which you'll need to reconnect to refresh the content.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-5">
+                    <p class="text-muted mb-3">Still have questions?</p>
+                    <a href="{{ path('app_contact_support') }}" class="btn btn-primary">
+                        <i class="fas fa-envelope me-2"></i>Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

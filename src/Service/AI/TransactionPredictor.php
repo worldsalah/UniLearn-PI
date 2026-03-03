@@ -138,7 +138,7 @@ class TransactionPredictor
         }
 
         // Has image
-        if ($product->getImage() === null || $product->getImage() === '') {
+        if ($product->getImage() === null) {
             $score -= 15;
         }
 

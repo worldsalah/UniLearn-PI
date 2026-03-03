@@ -28,7 +28,7 @@ class ReputationApiController extends AbstractController
         // For demo, we'll return mock data
         $seller = $this->getUser(); // Simplified for demo
 
-        if (!$seller) {
+        if (!$seller instanceof \App\Entity\User) {
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Seller not found',
@@ -56,7 +56,7 @@ class ReputationApiController extends AbstractController
     {
         $seller = $this->getUser(); // Simplified for demo
 
-        if (!$seller) {
+        if (!$seller instanceof \App\Entity\User) {
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Seller not found',
@@ -83,7 +83,7 @@ class ReputationApiController extends AbstractController
     {
         $seller = $this->getUser(); // Simplified for demo
 
-        if (!$seller) {
+        if (!$seller instanceof \App\Entity\User) {
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Seller not found',
@@ -254,9 +254,9 @@ class ReputationApiController extends AbstractController
         ];
 
         // Filter by category if specified
-        if ($category) {
+        if ($category !== null && $category !== '') {
             $topSellers = array_filter($topSellers, function ($seller) use ($category) {
-                return strtolower($seller['category']) === strtolower($category);
+                return $seller['category'] === $category;
             });
         }
 

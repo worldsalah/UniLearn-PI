@@ -20,7 +20,7 @@ class QuizSettingsController extends AbstractController
         // Check if quiz settings already exist
         $quizSettings = $entityManager->getRepository(QuizSettings::class)->findOneBy(['quiz' => $quiz]);
 
-        if (!$quizSettings) {
+        if ($quizSettings === null) {
             $quizSettings = new QuizSettings();
             $quizSettings->setQuiz($quiz);
         }

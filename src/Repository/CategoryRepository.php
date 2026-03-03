@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,38 +26,64 @@ class CategoryRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
             ->where('c.isActive = :isActive')
-            ->setParameter('isActive', 1)  // Use integer 1 instead of boolean true
+            ->setParameter('isActive', 1)
+            ->orderBy('c.name', 'ASC')
+            ->setMaxResults(99)
+            ->getQuery()
+            ->useResultCache(false)
+            ->getArrayResult();
+    }
+
+    /**
+     * Find categories with course count in single query (fixes N+1).
+     */
+    public function findCategoriesWithCourseCount(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c', 'COUNT(co.id) as courseCount')
+            ->leftJoin('c.courses', 'co', 'WITH', 'co.status = :status')
+            ->where('c.isActive = :isActive')
+            ->setParameter('status', 'live')
+            ->setParameter('isActive', true)
+            ->groupBy('c.id')
             ->orderBy('c.name', 'ASC')
             ->getQuery()
+            ->useResultCache(false)
             ->getResult();
     }
 
-    public function findCategoriesWithCourseCount(): array
+    /**
+     * Find active categories ordered by name with caching.
+     */
+    public function findActiveOrderedByName(): array
     {
-        // First get all active categories
-        $categories = $this->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->where('c.isActive = :isActive')
             ->setParameter('isActive', true)
             ->orderBy('c.name', 'ASC')
+            ->setMaxResults(99)
             ->getQuery()
-            ->getResult();
+            ->useResultCache(false)
+            ->getArrayResult();
+    }
 
-        // Then get course counts for each category
-        foreach ($categories as $category) {
-            $count = $this->getEntityManager()->createQueryBuilder()
-                ->select('COUNT(c.id)')
-                ->from('App\Entity\Course', 'c')
-                ->where('c.category = :category')
-                ->andWhere('c.status = :status')
-                ->setParameter('category', $category->getId())
-                ->setParameter('status', 'live')
-                ->getQuery()
-                ->getSingleScalarResult();
-
-            // Add course count as a dynamic property
-            $category->courseCount = (int) $count;
-        }
-
-        return $categories;
+    /**
+     * Find active categories that have live courses (for homepage).
+     */
+    public function findCategoriesWithCourses(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id, c.name')
+            ->join('c.courses', 'co')
+            ->where('c.isActive = :isActive')
+            ->andWhere('co.status = :status')
+            ->setParameter('isActive', true)
+            ->setParameter('status', 'live')
+            ->groupBy('c.id')
+            ->orderBy('COUNT(co.id)', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->useResultCache(false)
+            ->getArrayResult();
     }
 }

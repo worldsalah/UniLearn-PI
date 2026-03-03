@@ -16,18 +16,18 @@ class Order
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     #[Assert\NotBlank(message: 'Le prix total est obligatoire.')]
     #[Assert\Positive(message: 'Le prix total doit être un nombre positif.')]
     #[Assert\Range(min: 0.01, minMessage: 'Le prix total doit être supérieur à 0.')]
-    private ?float $totalPrice = null;
+    private ?string $totalPrice = null;
 
     #[ORM\Column(length: 20)]
     #[Assert\Choice(choices: ['pending', 'paid', 'completed', 'cancelled'], message: 'Le statut doit être l\'une des valeurs suivantes : pending, paid, completed, cancelled.')]
     private ?string $status = 'pending';
 
     #[ORM\Column(nullable: true)]
-    #[Assert\Range(min: 1, max: 5, minMessage: 'La note doit être au moins {{ limit }}.', maxMessage: 'La note ne peut pas dépasser {{ limit }}.')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'La note doit être entre {{ min }} et {{ max }}.')]
     private ?int $rating = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

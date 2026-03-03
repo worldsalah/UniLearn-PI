@@ -1,0 +1,325 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Quiz Results - {{ quiz.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .result-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 15px;
+        }
+        
+        .result-header.passed {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .result-header.failed {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .score-display {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .score-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 10px;
+            min-width: 150px;
+        }
+        
+        .score-card.your-score {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+        
+        .score-card.passing-score {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .score-card.total-questions {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+        
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .score-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        .question-result {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .question-result.correct {
+            border-left: 4px solid #10b981;
+        }
+        
+        .question-result.incorrect {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .answer-grid {
+            display: grid;
+            gap: 0.5rem;
+        }
+        
+        .answer-option {
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .answer-option.user-answer {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+        
+        .answer-option.correct-answer {
+            background: #d1fae5;
+            border-color: #10b981;
+        }
+        
+        .answer-option.user-answer.correct-answer {
+            background: #d1fae5;
+            border-color: #10b981;
+        }
+        
+        .recommendations {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .recommendation-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .recommendation-icon {
+            margin-right: 1rem;
+            font-size: 1.25rem;
+        }
+        
+        .recommendation-content h6 {
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+        
+        .recommendation-content p {
+            margin-bottom: 0;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        
+        .priority-high {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .priority-medium {
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .action-buttons {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+        
+        .btn-retake {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-retake:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 1rem;
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(107, 114, 128, 0.3);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="result-header {{ passed ? 'passed' : 'failed' }}">
+        {% if passed %}
+            <i class="fas fa-trophy fa-3x mb-3"></i>
+            <h1>Congratulations! 🎉</h1>
+            <p class="mb-0">You passed the quiz and completed the course!</p>
+        {% else %}
+            <i class="fas fa-times-circle fa-3x mb-3"></i>
+            <h1>Not Quite There Yet</h1>
+            <p class="mb-0">You need 80% or higher to pass. Keep studying!</p>
+        {% endif %}
+    </div>
+
+    <div class="score-display">
+        <div class="score-card your-score">
+            <div class="score-number">{{ percentage }}%</div>
+            <div class="score-label">Your Score</div>
+        </div>
+        <div class="score-card passing-score">
+            <div class="score-number">80%</div>
+            <div class="score-label">Passing Score</div>
+        </div>
+        <div class="score-card total-questions">
+            <div class="score-number">{{ score }}/{{ maxScore }}</div>
+            <div class="score-label">Correct Answers</div>
+        </div>
+    </div>
+
+    {% if not passed %}
+    <div class="recommendations">
+        <h5 class="mb-3">
+            <i class="fas fa-lightbulb me-2"></i>
+            Study Recommendations
+        </h5>
+        
+        {% for recommendation in recommendations %}
+        <div class="recommendation-item priority-{{ recommendation.priority }}">
+            <div class="recommendation-icon">
+                {% if recommendation.priority == 'high' %}
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                {% else %}
+                    <i class="fas fa-info-circle text-info"></i>
+                {% endif %}
+            </div>
+            <div class="recommendation-content">
+                {% if recommendation.lesson %}
+                    <h6>{{ recommendation.lesson.title }}</h6>
+                {% else %}
+                    <h6>General Recommendation</h6>
+                {% endif %}
+                <p>{{ recommendation.reason }}</p>
+                {% if recommendation.lesson %}
+                    <a href="{{ path('app_lesson_show', {'id': recommendation.lesson.id}) }}" class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="fas fa-book-open me-1"></i>Review Lesson
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if passed %}
+    <div class="mt-4">
+        <h5 class="mb-3">
+            <i class="fas fa-list-check me-2"></i>
+            Question Review
+        </h5>
+        
+        {% for result in questionResults %}
+        <div class="question-result {{ result.isCorrect ? 'correct' : 'incorrect' }}">
+            <div class="question-text">
+                <span class="badge {{ result.isCorrect ? 'bg-success' : 'bg-danger' }} me-2">
+                    {{ result.isCorrect ? 'Correct' : 'Incorrect' }}
+                </span>
+                {{ result.question }}
+            </div>
+            
+            <div class="answer-grid">
+                {% for option, text in result.options %}
+                <div class="answer-option 
+                    {% if option == result.userAnswer %}user-answer{% endif %}
+                    {% if option == result.correctAnswer %}correct-answer{% endif %}">
+                    <strong>{{ option }}.</strong> {{ text }}
+                    {% if option == result.userAnswer and option != result.correctAnswer %}
+                        <span class="badge bg-danger ms-2">Your Answer</span>
+                    {% endif %}
+                    {% if option == result.correctAnswer %}
+                        <span class="badge bg-success ms-2">Correct Answer</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="action-buttons">
+        {% if passed %}
+            <a href="{{ path('quiz_certificate', {'id': quizResult.id}) }}" class="btn-retake">
+                <i class="fas fa-certificate me-2"></i>View Certificate
+            </a>
+            <a href="{{ path('quiz_download_pdf', {'id': quizResult.id}) }}" class="btn-back">
+                <i class="fas fa-download me-2"></i>Download PDF
+            </a>
+        {% else %}
+            <a href="{{ path('quiz_take', {'id': quiz.id}) }}" class="btn-retake">
+                <i class="fas fa-redo me-2"></i>Retake Quiz
+            </a>
+            <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i>Back to Course
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

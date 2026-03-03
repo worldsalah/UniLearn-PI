@@ -110,22 +110,22 @@ Page Banner START -->
 						<!-- Avatar -->
 						<div class="col-auto mt-4 mt-md-0">
 							<div class="avatar avatar-xxl mt-n3">
-								<img class="avatar-img rounded-circle border border-white border-3 shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
+								<img class="avatar-img rounded-circle border border-white border-3 shadow" src="{{ asset(teacher.avatar) }}" alt="">
 							</div>
 						</div>
 						<!-- Profile info -->
 						<div class="col d-md-flex justify-content-between align-items-center mt-4">
 							<div>
-								<h1 class="my-1 fs-4">Lori Stevens <i class="bi bi-patch-check-fill text-info small"></i></h1>
+								<h1 class="my-1 fs-4">{{ teacher.name }} <i class="bi bi-patch-check-fill text-info small"></i></h1>
 								<ul class="list-inline mb-0">
-									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-star text-warning me-2"></i>4.5/5.0</li>
-									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-user-graduate text-orange me-2"></i>12k Enrolled Students</li>
-									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-book text-purple me-2"></i>25 Courses</li>
+									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-star text-warning me-2"></i>{{ averageRating }}/5.0</li>
+									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-user-graduate text-orange me-2"></i>{{ totalEnrollments }} Enrolled Students</li>
+									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-book text-purple me-2"></i>{{ totalCourses }} Courses</li>
 								</ul>
 							</div>
 							<!-- Button -->
 							<div class="d-flex align-items-center mt-2 mt-md-0">
-								<a href="#" class="btn btn-success mb-0">Create a course</a>
+								<a href="{{ path('app_course_create') }}" class="btn btn-success mb-0">Create a course</a>
 							</div>
 						</div>
 					</div>
@@ -174,12 +174,112 @@ Page content START -->
 
 			<!-- Main content START -->
 			<div class="col-xl-9">
-				<div class="card bg-transparent border">
+				<!-- Statistics Cards -->
+				<div class="row g-4 mb-4">
+					<div class="col-md-4">
+						<div class="card bg-primary text-white">
+							<div class="card-body">
+								<div class="d-flex justify-content-between">
+									<div>
+										<h6 class="mb-0">Total Reviews</h6>
+										<h2 class="mb-0">{{ totalReviews }}</h2>
+									</div>
+									<div class="display-6"><i class="bi bi-chat-quote"></i></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card bg-warning text-dark">
+							<div class="card-body">
+								<div class="d-flex justify-content-between">
+									<div>
+										<h6 class="mb-0">Average Rating</h6>
+										<h2 class="mb-0">{{ averageRating }}/5</h2>
+									</div>
+									<div class="display-6"><i class="bi bi-star-fill"></i></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card bg-success text-white">
+							<div class="card-body">
+								<div class="d-flex justify-content-between">
+									<div>
+										<h6 class="mb-0">Total Courses</h6>
+										<h2 class="mb-0">{{ totalCourses }}</h2>
+									</div>
+									<div class="display-6"><i class="bi bi-book"></i></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Rating Distribution -->
+				<div class="card bg-transparent border mb-4">
 					<div class="card-header bg-light border-bottom">
-						<h5 class="mb-0">Review Management</h5>
+						<h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Rating Distribution</h5>
 					</div>
 					<div class="card-body">
-						<p>Review management functionality will be implemented here.</p>
+						{% for i in 5..1 %}
+							{% set percentage = totalReviews > 0 ? (ratingDistribution[i] / totalReviews * 100)|round : 0 %}
+							<div class="d-flex align-items-center mb-2">
+								<span class="me-2">{{ i }} <i class="fas fa-star text-warning"></i></span>
+								<div class="progress flex-grow-1" style="height: 10px;">
+									<div class="progress-bar bg-warning" role="progressbar" style="width: {{ percentage }}%"></div>
+								</div>
+								<span class="ms-2 text-muted">{{ ratingDistribution[i] }} ({{ percentage }}%)</span>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+
+				<!-- Reviews List -->
+				<div class="card bg-transparent border">
+					<div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
+						<h5 class="mb-0"><i class="bi bi-chat-quote me-2"></i>Course Reviews</h5>
+						<span class="badge bg-primary">{{ totalReviews }} reviews</span>
+					</div>
+					<div class="card-body">
+						{% if reviews|length > 0 %}
+							{% for review in reviews %}
+								<div class="card mb-3">
+									<div class="card-body">
+										<div class="d-flex justify-content-between">
+											<div class="d-flex">
+												<div class="avatar me-3">
+													<img class="avatar-img rounded-circle" src="{{ review.user.profileImage ? asset(review.user.profileImage) : asset('assets/images/avatar/01.jpg') }}" alt="">
+												</div>
+												<div>
+													<h6 class="mb-0">{{ review.user.fullName }}</h6>
+													<small class="text-muted">{{ review.createdAt|date('M d, Y') }}</small>
+												</div>
+											</div>
+											<div>
+												{% for i in 1..5 %}
+													{% if i <= review.rating %}
+														<i class="fas fa-star text-warning"></i>
+													{% else %}
+														<i class="far fa-star text-warning"></i>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+										<div class="mt-3">
+											<span class="badge bg-info mb-2">{{ review.course.title }}</span>
+											<p class="mb-0">{{ review.comment|default('No comment provided') }}</p>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						{% else %}
+							<div class="text-center py-5">
+								<i class="bi bi-chat-quote display-4 text-muted"></i>
+								<p class="text-muted mt-3">No reviews yet. Students will see reviews here after they complete your courses.</p>
+							</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>

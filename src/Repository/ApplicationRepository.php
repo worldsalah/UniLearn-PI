@@ -25,6 +25,7 @@ class ApplicationRepository extends ServiceEntityRepository
             ->andWhere('a.deletedAt IS NULL')
             ->setParameter('job', $job)
             ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults(50)
             ->getQuery()
             ->getResult();
     }
@@ -36,6 +37,7 @@ class ApplicationRepository extends ServiceEntityRepository
             ->andWhere('a.deletedAt IS NULL')
             ->setParameter('freelancer', $freelancer)
             ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults(50)
             ->getQuery()
             ->getResult();
     }
@@ -69,6 +71,7 @@ class ApplicationRepository extends ServiceEntityRepository
             ->andWhere('a.deletedAt IS NULL')
             ->setParameter('status', $status)
             ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults(100)
             ->getQuery()
             ->getResult();
     }

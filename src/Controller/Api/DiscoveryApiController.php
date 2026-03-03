@@ -27,7 +27,7 @@ class DiscoveryApiController extends AbstractController
         $query = $request->query->get('q', '');
         $type = $request->query->get('type', 'all'); // all, products, jobs
 
-        $suggestions = $this->discoveryService->getAutocompleteSuggestions($query, $type);
+        $suggestions = $this->discoveryService->getAutocompleteSuggestions((string) $query, (string) $type);
 
         return new JsonResponse([
             'success' => true,
@@ -54,7 +54,7 @@ class DiscoveryApiController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'data' => [
-                'user_id' => $user ? $user->getId() : null,
+                'user_id' => $user !== null ? $user->getId() : null,
                 'recommendations' => $recommendations,
                 'count' => count($recommendations),
                 'personalized' => null !== $user,
@@ -74,9 +74,9 @@ class DiscoveryApiController extends AbstractController
         $trending = $this->discoveryService->getTrendingServices($limit);
 
         // Filter by category if specified
-        if ($category) {
+        if ($category !== '' && $category !== null) {
             $trending = array_filter($trending, function ($item) use ($category) {
-                return strtolower($item['category']) === strtolower($category);
+                return strtolower((string) $item['category']) === strtolower((string) $category);
             });
         }
 
@@ -124,17 +124,17 @@ class DiscoveryApiController extends AbstractController
         $page = max($request->query->getInt('page', 1), 1);
         $limit = min($request->query->getInt('limit', 20), 100);
 
-        if (strlen($query) < 2) {
+        if (strlen((string) $query) < 2) {
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Query too short. Minimum 2 characters required.',
             ], 400);
         }
 
-        $suggestions = $this->discoveryService->getAutocompleteSuggestions($query, $type);
+        $suggestions = $this->discoveryService->getAutocompleteSuggestions((string) $query, (string) $type);
 
         // Apply sorting
-        $suggestions = $this->applySorting($suggestions, $sort);
+        $suggestions = $this->applySorting($suggestions, (string) $sort);
 
         // Apply pagination
         $offset = ($page - 1) * $limit;

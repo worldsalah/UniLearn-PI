@@ -45,8 +45,8 @@ class Application
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTime $deletedAt = null;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $deletedAt = null;
 
     public function getId(): ?int
     {
@@ -154,10 +154,24 @@ class Application
         return $this->deletedAt;
     }
 
-    public function setDeletedAt(?\DateTime $deletedAt): static
+    public function delete(): void
     {
-        $this->deletedAt = $deletedAt;
+        if ($this->isDeleted()) {
+            throw new \LogicException('Application is already deleted.');
+        }
+        $this->deletedAt = new \DateTime();
+    }
 
-        return $this;
+    public function restore(): void
+    {
+        if (!$this->isDeleted()) {
+            throw new \LogicException('Application is not deleted.');
+        }
+        $this->deletedAt = null;
+    }
+
+    public function isDeleted(): bool
+    {
+        return null !== $this->deletedAt;
     }
 }

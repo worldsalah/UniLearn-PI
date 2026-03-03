@@ -1,0 +1,571 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}My Bookmarks - Student Dashboard{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Student Bookmarks START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">{{ user.name|default(user.email) }}</h5>
+                        <p class="mb-2">{{ user.email }}</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="{{ path('app_student_courses') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="{{ path('app_student_bookmarks') }}" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-bookmark me-2"></i>Bookmarks
+                            </a>
+                            <a href="{{ path('app_student_certificates') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="{{ path('app_student_settings') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                            <a href="{{ path('app_student_quiz_analysis') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-brain me-2"></i>AI Quiz Analysis
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action" onclick="showAiRecommendationsModal(); return false;">
+                                <i class="fas fa-lightbulb me-2"></i>AI Recommendations
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-1">My Bookmarks</h3>
+                                <p class="mb-0 text-muted">Save and organize your favorite courses and content</p>
+                            </div>
+                            <div class="text-end">
+                                <h4 class="mb-0">{{ bookmarks|length }}</h4>
+                                <p class="mb-0 small text-muted">Total Bookmarks</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Header END -->
+
+                <!-- Empty State START -->
+                {% if bookmarks|length == 0 %}
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center py-4">
+                            <i class="fas fa-bookmark fa-4x text-muted mb-4"></i>
+                            <h4 class="text-muted mb-3">No bookmarks yet</h4>
+                            <p class="text-muted mb-4">Start bookmarking courses and lessons you want to save for later!</p>
+                            <a href="{{ path('app_course_grid') }}" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Browse Courses
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!-- AI Generated Roadmap Section -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle me-3">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Your AI Generated Learning Roadmap</h5>
+                                <p class="mb-0 text-muted">Personalized learning path based on your AI recommendations</p>
+                            </div>
+                        </div>
+                        
+                        <div class="roadmap-timeline">
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <div class="timeline-week">Week 1</div>
+                                    <div class="timeline-title">Foundation Basics</div>
+                                    <div class="timeline-description">Learn fundamental concepts and terminology</div>
+                                    <div class="timeline-resources">
+                                        <span class="resource-badge primary">Documentation</span>
+                                        <span class="resource-badge success">Videos</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <div class="timeline-week">Week 2</div>
+                                    <div class="timeline-title">Core Concepts</div>
+                                    <div class="timeline-description">Understand main principles and theories</div>
+                                    <div class="timeline-resources">
+                                        <span class="resource-badge primary">Reading</span>
+                                        <span class="resource-badge success">Practice</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <div class="timeline-week">Week 3</div>
+                                    <div class="timeline-title">Practical Application</div>
+                                    <div class="timeline-description">Apply concepts through hands-on exercises</div>
+                                    <div class="timeline-resources">
+                                        <span class="resource-badge primary">Projects</span>
+                                        <span class="resource-badge success">Quizzes</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <div class="timeline-week">Week 4</div>
+                                    <div class="timeline-title">Advanced Topics</div>
+                                    <div class="timeline-description">Explore advanced features and best practices</div>
+                                    <div class="timeline-resources">
+                                        <span class="resource-badge primary">Research</span>
+                                        <span class="resource-badge success">Community</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button class="btn btn-outline-primary me-2" onclick="updateRoadmap()">
+                                <i class="fas fa-sync me-2"></i>Update Roadmap
+                            </button>
+                            <button class="btn btn-primary" onclick="startLearning()">
+                                <i class="fas fa-play me-2"></i>Start Learning
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Bookmarks Content START -->
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <!-- Filter tabs -->
+                        <ul class="nav nav-tabs mb-4" id="bookmarkTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab">
+                                    All ({{ bookmarks|length }})
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses" type="button" role="tab">
+                                    Courses
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="lessons-tab" data-bs-toggle="tab" data-bs-target="#lessons" type="button" role="tab">
+                                    Lessons
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab content -->
+                        <div class="tab-content" id="bookmarkTabContent">
+                            <div class="tab-pane fade show active" id="all" role="tabpanel">
+                                <div class="row g-4">
+                                    {% for bookmark in bookmarks %}
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card h-100 border-0 shadow-sm">
+                                                {% if bookmark.type == 'course' and bookmark.course.thumbnailUrl %}
+                                                    <img src="{{ asset(bookmark.course.thumbnailUrl) }}" class="card-img-top" alt="{{ bookmark.title }}" style="height: 200px; object-fit: cover;">
+                                                {% else %}
+                                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                        <i class="fas fa-{{ bookmark.type == 'course' ? 'graduation-cap' : 'play-circle' }} fa-3x text-muted"></i>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <small class="text-muted">{{ bookmark.bookmarkedAt|date('M d, Y') }}</small>
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            {% if bookmark.progress is defined %}
+                                                                <span class="badge bg-{{ bookmark.progress >= 100 ? 'success' : 'primary' }}">
+                                                                    {{ bookmark.progress|round }}% Complete
+                                                                </span>
+                                                            {% endif %}
+                                                            <span class="badge bg-{{ bookmark.type == 'course' ? 'primary' : 'info' }} text-white">
+                                                                {{ bookmark.type|title }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {% if bookmark.progress is defined %}
+                                                        <div class="progress mb-3" style="height: 6px;">
+                                                            <div class="progress-bar bg-{{ bookmark.progress >= 100 ? 'success' : 'primary' }}" 
+                                                                 style="width: {{ bookmark.progress }}%"></div>
+                                                        </div>
+                                                    {% endif %}
+                                                    <p class="card-text small text-muted">{{ bookmark.description|slice(0, 80) }}...</p>
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <small class="text-muted">{{ bookmark.bookmarkedAt|date('M d, Y') }}</small>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <button class="btn btn-outline-secondary">
+                                                                <i class="fas fa-bookmark"></i>
+                                                            </button>
+                                                            <button class="btn btn-outline-danger">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <a href="{{ bookmark.type == 'course' ? path('app_course_show', {'id': bookmark.course.id}) : '#' }}" class="btn btn-primary btn-sm w-100">
+                                                        <i class="fas fa-{{ bookmark.type == 'course' ? 'play' : 'eye' }} me-1"></i>
+                                                        {{ bookmark.type == 'course' ? 'Start Course' : 'View Lesson' }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="courses" role="tabpanel">
+                                <div class="row g-4">
+                                    {% for bookmark in bookmarks|filter(b => b.type == 'course') %}
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card h-100 border-0 shadow-sm">
+                                                {% if bookmark.course.thumbnailUrl %}
+                                                    <img src="{{ asset(bookmark.course.thumbnailUrl) }}" class="card-img-top" alt="{{ bookmark.title }}" style="height: 200px; object-fit: cover;">
+                                                {% endif %}
+                                                <div class="card-body">
+                                                    <h6 class="card-title">{{ bookmark.title }}</h6>
+                                                    <p class="card-text small text-muted">{{ bookmark.description|slice(0, 80) }}...</p>
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <small class="text-muted">{{ bookmark.bookmarkedAt|date('M d, Y') }}</small>
+                                                        <span class="badge bg-primary">Course</span>
+                                                    </div>
+                                                    <a href="{{ path('app_course_show', {'id': bookmark.course.id}) }}" class="btn btn-primary btn-sm w-100">
+                                                        <i class="fas fa-play me-1"></i>Start Course
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-12">
+                                            <div class="text-center py-4">
+                                                <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
+                                                <h5 class="text-muted">No course bookmarks yet</h5>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="lessons" role="tabpanel">
+                                <div class="row g-4">
+                                    {% for bookmark in bookmarks|filter(b => b.type == 'lesson') %}
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card h-100 border-0 shadow-sm">
+                                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                    <i class="fas fa-play-circle fa-3x text-muted"></i>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h6 class="card-title">{{ bookmark.title }}</h6>
+                                                    <p class="card-text small text-muted">{{ bookmark.description|slice(0, 80) }}...</p>
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <small class="text-muted">{{ bookmark.bookmarkedAt|date('M d, Y') }}</small>
+                                                        <span class="badge bg-info">Lesson</span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-primary btn-sm w-100">
+                                                        <i class="fas fa-eye me-1"></i>View Lesson
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-12">
+                                            <div class="text-center py-4">
+                                                <i class="fas fa-play-circle fa-3x text-muted mb-3"></i>
+                                                <h5 class="text-muted">No lesson bookmarks yet</h5>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+                <!-- Bookmarks Content END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Student Bookmarks END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+{% endblock %}
+
+<!-- AI Recommendations Modal -->
+<div class="modal fade" id="aiRecommendationsModal" tabindex="-1" aria-labelledby="aiRecommendationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aiRecommendationsModalLabel">
+                    <i class="fas fa-lightbulb me-2"></i>AI Learning Recommendations
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="aiRecommendationsForm">
+                    <div class="mb-4">
+                        <label for="learningGoalInput" class="form-label fw-bold">What do you want to learn?</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-target"></i>
+                            </span>
+                            <input type="text" class="form-control form-control-lg" id="learningGoalInput" 
+                                   placeholder="e.g., Web Development, Data Science, Machine Learning, Mobile App Development" 
+                                   required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="currentLevelInput" class="form-label fw-bold">Current Skill Level</label>
+                        <select class="form-select form-select-lg" id="currentLevelInput" required>
+                            <option value="">Select your current level</option>
+                            <option value="beginner">Beginner - Just starting out</option>
+                            <option value="intermediate">Intermediate - Some experience</option>
+                            <option value="advanced">Advanced - Experienced practitioner</option>
+                            <option value="expert">Expert - Professional level</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="timeCommitmentInput" class="form-label fw-bold">Weekly Time Commitment</label>
+                        <select class="form-select form-select-lg" id="timeCommitmentInput" required>
+                            <option value="">Select time availability</option>
+                            <option value="1-2">1-2 hours per week</option>
+                            <option value="3-5">3-5 hours per week</option>
+                            <option value="6-10">6-10 hours per week</option>
+                            <option value="10+">10+ hours per week</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Preferred Learning Style</label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="visualInput" name="learningStyleInput[]" value="visual">
+                                    <label class="form-check-label" for="visualInput">
+                                        <i class="fas fa-eye me-2"></i>Visual (Videos, Diagrams)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="practicalInput" name="learningStyleInput[]" value="practical">
+                                    <label class="form-check-label" for="practicalInput">
+                                        <i class="fas fa-code me-2"></i>Practical (Hands-on, Projects)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="readingInput" name="learningStyleInput[]" value="reading">
+                                    <label class="form-check-label" for="readingInput">
+                                        <i class="fas fa-book-open me-2"></i>Reading (Documentation, Articles)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interactiveInput" name="learningStyleInput[]" value="interactive">
+                                    <label class="form-check-label" for="interactiveInput">
+                                        <i class="fas fa-comments me-2"></i>Interactive (Quizzes, Discussions)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="fas fa-magic me-2"></i>Generate AI Recommendations
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="redirectToRoadmap()">Generate Full Roadmap</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- AI Recommendations Modal END -->
+
+<script>
+// AI Recommendations Modal Functions
+function showAiRecommendationsModal() {
+    const modal = new bootstrap.Modal(document.getElementById('aiRecommendationsModal'));
+    modal.show();
+}
+function redirectToRoadmap() {
+    // Get form data
+    const learningGoal = document.getElementById('learningGoalInput').value;
+    const currentLevel = document.getElementById('currentLevelInput').value;
+    const timeCommitment = document.getElementById('timeCommitmentInput').value;
+    
+    if (!learningGoal || !currentLevel || !timeCommitment) {
+        alert('Please fill in all fields before generating a roadmap.');
+        return;
+    }
+    
+    // Store preferences and redirect to roadmap page
+    localStorage.setItem('aiLearningGoal', learningGoal);
+    localStorage.setItem('aiCurrentLevel', currentLevel);
+    localStorage.setItem('aiTimeCommitment', timeCommitment);
+    
+    // Close modal and redirect
+    const modal = bootstrap.Modal.getInstance(document.getElementById('aiRecommendationsModal'));
+    modal.hide();
+    
+    // Redirect to roadmap page
+    window.location.href = '/student-ai-roadmap';
+}
+
+// Handle AI Recommendations form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const aiForm = document.getElementById('aiRecommendationsForm');
+    if (aiForm) {
+        aiForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            redirectToRoadmap();
+        });
+    }
+});
+
+// Roadmap functionality
+function updateRoadmap() {
+    // Update roadmap based on user progress
+    console.log('Updating roadmap...');
+    // Add animation or refresh logic here
+}
+
+function startLearning() {
+    // Start learning from roadmap
+    console.log('Starting learning journey...');
+    // Navigate to first course or learning path
+}
+</script>
+
+<style>
+/* Roadmap Timeline Styles */
+.roadmap-timeline {
+    position: relative;
+    padding-left: 30px;
+    margin-top: 20px;
+}
+
+.roadmap-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: linear-gradient(to bottom, #0d6efd, #198754);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -38px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #0d6efd;
+    border: 2px solid #fff;
+}
+
+.timeline-item.completed::before {
+    background: #198754;
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-left: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.timeline-week {
+    font-weight: 600;
+    color: #0d6efd;
+    margin-bottom: 5px;
+}
+
+.timeline-title {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.timeline-description {
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.timeline-resources {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.resource-badge {
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.resource-badge.primary {
+    background: #0d6efd;
+    color: #fff;
+}
+
+.resource-badge.success {
+    background: #198754;
+    color: #fff;
+}
+</style>

@@ -3,6 +3,7 @@
 {% block title %}Sign Up - Unilearn{% endblock %}
 
 {% block body %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
 
@@ -98,6 +99,32 @@ Register START -->
                                     </div>
                                 </div>
                                 
+                                <!-- Face Registration (Optional) -->
+                                <div class="col-12">
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info bg-opacity-10 text-info">
+                                            <i class="fas fa-fingerprint me-2"></i>Face Recognition (Optional)
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="small text-muted mb-2">Enable face recognition for faster, password-free login in the future.</p>
+                                            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#faceRegistrationModal">
+                                                <i class="fas fa-camera me-2"></i>Register Face (Optional)
+                                            </button>
+                                            <input type="hidden" name="faceImage" id="faceImageInput">
+                                            <div id="faceRegistrationStatus" class="mt-2 small d-none">
+                                                <i class="fas fa-check-circle text-success me-1"></i>Face registered successfully!
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- reCAPTCHA -->
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-center mb-3">
+                                        <div class="g-recaptcha" data-sitekey="{{ google_recaptcha_site_key }}"></div>
+                                    </div>
+                                </div>
+                                
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary w-100 mb-3">Create Account</button>
                                 </div>
@@ -121,9 +148,6 @@ Register START -->
                             <a href="{{ path('auth_facebook') }}" class="btn btn-outline-primary">
                                 <i class="fab fa-facebook-f me-2"></i>Sign up with Facebook
                             </a>
-                            <button class="btn btn-outline-primary" type="button">
-                                <i class="fab fa-linkedin-in me-2"></i>Sign up with LinkedIn
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -138,4 +162,62 @@ Register END -->
 <!-- **************** MAIN CONTENT END **************** -->
 
 {% include 'components/footer.html.twig' %}
+
+<!-- Face Registration Modal -->
+<div class="modal fade" id="faceRegistrationModal" tabindex="-1" aria-labelledby="faceRegistrationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="faceRegistrationModalLabel">
+                    <i class="fas fa-camera me-2"></i>Register Your Face
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Position your face within the frame and ensure good lighting. This will be used for password-free login.
+                </div>
+                <div class="position-relative mb-3">
+                    <video id="faceVideo" width="100%" height="400" autoplay playsinline 
+                           style="border-radius: 8px; background: #000; display: none;"></video>
+                    <canvas id="faceCanvas" width="640" height="480" 
+                            style="border-radius: 8px; background: #f8f9fa; width: 100%; height: 400px;"></canvas>
+                </div>
+                <div class="text-center">
+                    <button type="button" id="captureFaceBtn" class="btn btn-primary btn-lg">
+                        <i class="fas fa-camera me-2"></i>Capture Face
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ asset('js/face-auth.js') }}"></script>
+<script>
+// Handle face registration for new users
+let registeredFaceImage = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const captureBtn = document.getElementById('captureFaceBtn');
+    const faceInput = document.getElementById('faceImageInput');
+    const statusDiv = document.getElementById('faceRegistrationStatus');
+    
+    if (captureBtn) {
+        captureBtn.addEventListener('click', function() {
+            const imageData = window.FaceAuth.captureImage();
+            if (imageData) {
+                registeredFaceImage = imageData;
+                faceInput.value = imageData;
+                statusDiv.classList.remove('d-none');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('faceRegistrationModal'));
+                modal.hide();
+                window.FaceAuth.stopWebcam();
+                alert('Face captured! Complete registration to enable face login.');
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

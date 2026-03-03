@@ -1,89 +1,92 @@
 {% extends 'front_base.html.twig' %}
 
-{% block title %}Orders - Eduport{% endblock %}
+{% block title %}My Orders - UniLearn{% endblock %}
 
 {% block stylesheets %}
 <style>
-/* Modern Instructor Dashboard Styles */
 .instructor-gradient {
-    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     position: relative;
     overflow: hidden;
 }
 .instructor-gradient::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center;
     background-size: cover;
     opacity: 0.1;
 }
-.profile-banner {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+.order-card {
+    background: white;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     overflow: hidden;
-}
-.profile-banner::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(13, 110, 253, 0.05) 0%, transparent 70%);
-    animation: float 6s ease-in-out infinite;
-}
-.avatar-enhanced {
-    border: 4px solid white;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
-}
-.avatar-enhanced:hover {
-    transform: scale(1.05);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-}
-.sidebar-modern {
-    background: #212529;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-.sidebar-modern .list-group-item {
-    background: transparent;
     border: none;
-    color: rgba(255,255,255,0.8);
     transition: all 0.3s ease;
-    border-radius: 10px;
-    margin: 5px;
 }
-.sidebar-modern .list-group-item:hover {
-    background: rgba(255,255,255,0.1);
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    border: none;
+    border-top: 4px solid;
+    transition: all 0.3s ease;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+}
+.stat-card.primary { border-top-color: #667eea; }
+.stat-card.success { border-top-color: #10b981; }
+.stat-card.warning { border-top-color: #f59e0b; }
+.stat-card.info { border-top-color: #06b6d4; }
+.nav-tabs-custom .nav-link {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    color: #6b7280;
+    transition: all 0.3s ease;
+}
+.nav-tabs-custom .nav-link.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    transform: translateX(5px);
 }
-.sidebar-modern .list-group-item.active {
-    background: rgba(255,255,255,0.2);
-    color: white;
+.nav-tabs-custom .nav-link:hover:not(.active) {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
 }
-.sidebar-modern .list-group-item.text-danger:hover {
-    background: rgba(220, 53, 69, 0.2);
+.order-item {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
 }
-@keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(180deg); }
+.order-item:hover {
+    background: #f1f5f9;
 }
-.verified-badge {
-    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
-    color: white;
-    padding: 2px 8px;
+.status-badge {
+    padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.75rem;
-    font-weight: bold;
+    font-weight: 600;
+}
+.status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.status-completed { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.status-cancelled { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.status-processing { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.section-title {
+    color: #667eea;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 </style>
 {% endblock %}
@@ -91,104 +94,284 @@
 {% block content %}
 
 <!-- **************** MAIN CONTENT START **************** -->
-<main>
-	
-<!-- =======================
-Page Banner START -->
-<section class="pt-0">
-	<!-- Main banner background image -->
-	<div class="container-fluid px-0">
-		<div class="bg-blue h-100px h-md-200px rounded-0" style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
-		</div>
-	</div>
-	<div class="container mt-n4">
-		<div class="row">
-			<!-- Profile banner START -->
-			<div class="col-12">
-				<div class="card bg-transparent card-body p-0">
-					<div class="row d-flex justify-content-between">
-						<!-- Avatar -->
-						<div class="col-auto mt-4 mt-md-0">
-							<div class="avatar avatar-xxl mt-n3">
-								<img class="avatar-img rounded-circle border border-white border-3 shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="">
-							</div>
-						</div>
-						<!-- Profile info -->
-						<div class="col d-md-flex justify-content-between align-items-center mt-4">
-							<div>
-								<h1 class="my-1 fs-4">Lori Stevens <i class="bi bi-patch-check-fill text-info small"></i></h1>
-								<ul class="list-inline mb-0">
-									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-star text-warning me-2"></i>4.5/5.0</li>
-									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-user-graduate text-orange me-2"></i>12k Enrolled Students</li>
-									<li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-book text-purple me-2"></i>25 Courses</li>
-								</ul>
-							</div>
-							<!-- Button -->
-							<div class="d-flex align-items-center mt-2 mt-md-0">
-								<a href="#" class="btn btn-success mb-0">Create a course</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- Profile banner END -->
+<main class="bg-white">
 
-				<!-- Advanced filter responsive toggler START -->
-				<!-- Divider -->
-				<hr class="d-xl-none">
-				<div class="col-12 col-xl-3 d-flex justify-content-between align-items-center">
-					<a class="h6 mb-0 fw-bold d-xl-none" href="#">Menu</a>
-					<button class="btn btn-primary d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
-						<i class="fas fa-sliders-h"></i>
-					</button>
-				</div>
-				<!-- Advanced filter responsive toggler END -->
-			</div>
-		</div>
-	</div>
+<!-- =======================
+Hero Section START -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-4">
+                    <div class="mb-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                            <i class="fas fa-shopping-bag fa-3x text-primary"></i>
+                        </div>
+                    </div>
+                    <h1 class="display-5 fw-bold text-primary mb-3">Order Management</h1>
+                    <p class="lead text-muted">Track your purchases, sales, and job postings</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 <!-- =======================
-Page Banner END -->
+Hero Section END -->
 
 <!-- =======================
-Page content START -->
-<section class="pt-0">
-	<div class="container">
-		<div class="row">
-			<!-- Left sidebar START -->
-			<div class="col-xl-3">
-				<!-- Responsive offcanvas body START -->
-				<div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
-					<!-- Offcanvas header -->
-					<div class="offcanvas-header bg-light">
-						<h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
-						<button  type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
-					</div>
-					<!-- Offcanvas body -->
-					<div class="offcanvas-body p-3 p-xl-0">
-						{% include 'instructor/_sidebar.html.twig' %}
-					</div>
-				</div>
-				<!-- Responsive offcanvas body END -->
-			</div>
-			<!-- Left sidebar END -->
-
-			<!-- Main content START -->
-			<div class="col-xl-9">
-				<div class="card bg-transparent border">
-					<div class="card-header bg-light border-bottom">
-						<h5 class="mb-0">Order Management</h5>
-					</div>
-					<div class="card-body">
-						<p>Order management functionality will be implemented here.</p>
-					</div>
-				</div>
-			</div>
-			<!-- Main content END -->
-		</div>
-	</div>
+Stats Section START -->
+<section class="py-4 bg-white">
+    <div class="container">
+        <div class="row g-4 mb-5">
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card primary h-100 p-4 text-center">
+                    <div class="mb-3">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(102,126,234,0.15);">
+                            <i class="fas fa-shopping-cart text-primary"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0" style="color: #667eea;">{{ stats.totalBuyerOrders }}</h3>
+                    <p class="text-muted mb-0 small">Purchases</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card success h-100 p-4 text-center">
+                    <div class="mb-3">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(16,185,129,0.15);">
+                            <i class="fas fa-hand-holding-usd text-success"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0 text-success">{{ stats.totalSellerOrders }}</h3>
+                    <p class="text-muted mb-0 small">Sales</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card warning h-100 p-4 text-center">
+                    <div class="mb-3">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(245,158,11,0.15);">
+                            <i class="fas fa-briefcase text-warning"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0 text-warning">{{ stats.totalJobs }}</h3>
+                    <p class="text-muted mb-0 small">Jobs Posted</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card info h-100 p-4 text-center">
+                    <div class="mb-3">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(6,182,212,0.15);">
+                            <i class="fas fa-dollar-sign text-info"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0 text-info">${{ stats.totalEarned|number_format(2) }}</h3>
+                    <p class="text-muted mb-0 small">Total Earned</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 <!-- =======================
-Page content END -->
+Stats Section END -->
+
+<!-- =======================
+Orders Content START -->
+<section class="py-4 bg-white">
+    <div class="container">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs nav-tabs-custom mb-4 justify-content-center" id="orderTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="purchases-tab" data-bs-toggle="tab" data-bs-target="#purchases" type="button" role="tab">
+                    <i class="fas fa-shopping-cart me-2"></i>My Purchases
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab">
+                    <i class="fas fa-hand-holding-usd me-2"></i>My Sales
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="jobs-tab" data-bs-toggle="tab" data-bs-target="#jobs" type="button" role="tab">
+                    <i class="fas fa-briefcase me-2"></i>My Jobs
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab content -->
+        <div class="tab-content" id="orderTabsContent">
+            <!-- Purchases Tab -->
+            <div class="tab-pane fade show active" id="purchases" role="tabpanel">
+                <div class="card order-card">
+                    <div class="card-header bg-transparent border-0 py-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-bold"><i class="fas fa-shopping-cart text-primary me-2"></i>Orders I've Made</h5>
+                            <span class="badge bg-primary rounded-pill">{{ buyerOrders|length }} orders</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if buyerOrders|length > 0 %}
+                            {% for order in buyerOrders %}
+                                <div class="order-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-2">
+                                            {% if order.product and order.product.image %}
+                                                <img src="{{ vich_uploader_asset(order.product, 'imageFile') }}" class="rounded-3" width="60" height="60" alt="{{ order.product.title }}" style="object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-primary bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                    <i class="fas fa-box text-primary"></i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 class="mb-1 fw-bold">{{ order.product ? order.product.title : 'N/A' }}</h6>
+                                            <p class="text-muted mb-0 small">Order #{{ order.id }}</p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <span class="fw-bold text-primary">${{ order.totalPrice|number_format(2) }}</span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <span class="status-badge status-{{ order.status }}">{{ order.status|title }}</span>
+                                        </div>
+                                        <div class="col-md-2 text-end">
+                                            <small class="text-muted">{{ order.createdAt ? order.createdAt|date('M d, Y') : 'N/A' }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-5">
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-shopping-cart text-muted fa-2x"></i>
+                                </div>
+                                <h5 class="text-muted">No purchases yet</h5>
+                                <p class="text-muted mb-3">Start shopping to see your orders here</p>
+                                <a href="{{ path('app_marketplace_shop') }}" class="btn btn-primary rounded-pill">
+                                    <i class="fas fa-store me-2"></i>Browse Marketplace
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Tab -->
+            <div class="tab-pane fade" id="sales" role="tabpanel">
+                <div class="card order-card">
+                    <div class="card-header bg-transparent border-0 py-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-bold"><i class="fas fa-hand-holding-usd text-success me-2"></i>Orders for My Products</h5>
+                            <span class="badge bg-success rounded-pill">{{ sellerOrders|length }} orders</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if sellerOrders|length > 0 %}
+                            {% for order in sellerOrders %}
+                                <div class="order-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-2">
+                                            {% if order.product and order.product.image %}
+                                                <img src="{{ vich_uploader_asset(order.product, 'imageFile') }}" class="rounded-3" width="60" height="60" alt="{{ order.product.title }}" style="object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-success bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                    <i class="fas fa-box text-success"></i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h6 class="mb-1 fw-bold">{{ order.product ? order.product.title : 'N/A' }}</h6>
+                                            <p class="text-muted mb-0 small">Order #{{ order.id }}</p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p class="mb-0 small text-muted">Buyer:</p>
+                                            <p class="mb-0 fw-bold">{{ order.buyer ? order.buyer.fullName : 'N/A' }}</p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <span class="fw-bold text-success">${{ order.totalPrice|number_format(2) }}</span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <span class="status-badge status-{{ order.status }}">{{ order.status|title }}</span>
+                                        </div>
+                                        <div class="col-md-1 text-end">
+                                            <small class="text-muted">{{ order.createdAt ? order.createdAt|date('M d') : 'N/A' }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-5">
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-hand-holding-usd text-muted fa-2x"></i>
+                                </div>
+                                <h5 class="text-muted">No sales yet</h5>
+                                <p class="text-muted mb-3">Add products to start receiving orders</p>
+                                <a href="{{ path('app_product_new') }}" class="btn btn-success rounded-pill">
+                                    <i class="fas fa-plus me-2"></i>Add Product
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Tab -->
+            <div class="tab-pane fade" id="jobs" role="tabpanel">
+                <div class="card order-card">
+                    <div class="card-header bg-transparent border-0 py-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-bold"><i class="fas fa-briefcase text-warning me-2"></i>Jobs I've Posted</h5>
+                            <span class="badge bg-warning rounded-pill">{{ postedJobs|length }} jobs</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if postedJobs|length > 0 %}
+                            {% for job in postedJobs %}
+                                <div class="order-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-1">
+                                            <div class="bg-warning bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                <i class="fas fa-briefcase text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 class="mb-1 fw-bold">{{ job.title }}</h6>
+                                            <p class="text-muted mb-0 small">{{ job.description|slice(0, 50) }}...</p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <span class="fw-bold text-warning">${{ job.budget|number_format(2) }}</span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <span class="status-badge status-{{ job.status }}">{{ job.status|title }}</span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <small class="text-muted">{{ job.createdAt ? job.createdAt|date('M d, Y') : 'N/A' }}</small>
+                                        </div>
+                                        <div class="col-md-1 text-end">
+                                            <a href="{{ path('app_job_show', {'id': job.id}) }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-5">
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-briefcase text-muted fa-2x"></i>
+                                </div>
+                                <h5 class="text-muted">No jobs posted yet</h5>
+                                <p class="text-muted mb-3">Post a job to find freelancers</p>
+                                <a href="{{ path('app_job_new') }}" class="btn btn-warning rounded-pill text-white">
+                                    <i class="fas fa-plus me-2"></i>Post a Job
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Orders Content END -->
 
 </main>
 <!-- **************** MAIN CONTENT END **************** -->

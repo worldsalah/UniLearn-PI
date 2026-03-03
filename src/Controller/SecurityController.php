@@ -21,7 +21,6 @@ class SecurityController extends AbstractController
         return $this->render('auth/sign-in.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
-            'recaptcha_site_key' => $this->getParameter('google_recaptcha_site_key'),
         ]);
     }
 

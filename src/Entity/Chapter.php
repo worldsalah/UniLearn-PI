@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ChapterRepository::class)]
+#[ORM\Index(name: 'idx_chapter_course', columns: ['course_id'])]
 class Chapter
 {
     #[ORM\Id]
@@ -22,10 +23,10 @@ class Chapter
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'chapters')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Course $course = null;
 
-    #[ORM\OneToMany(mappedBy: 'chapter', targetEntity: Lesson::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'chapter', targetEntity: Lesson::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $lessons;
 
     #[ORM\Column]

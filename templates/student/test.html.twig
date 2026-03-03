@@ -1,0 +1,15 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Test Page{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h1>Test Page</h1>
+            <p>If you can see this, the template is working!</p>
+            <p>User: {{ user.name|default(user.email) }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

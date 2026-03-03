@@ -1,0 +1,223 @@
+{% extends 'admin/admin/admin_base.html.twig' %}
+
+{% block title %}Enrollment Statistics{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Overview Cards -->
+        <div class="col-md-3 mb-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">{{ totalEnrollments }}</h4>
+                            <p class="mb-0">Total Enrollments</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Monthly Enrollments Chart -->
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Monthly Enrollments
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if enrollmentsByMonth|length > 0 %}
+                        <canvas id="monthlyChart" width="400" height="200"></canvas>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No enrollment data available</h5>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Courses -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-trophy me-2"></i>
+                        Top Courses by Enrollments
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if enrollmentsByCourse|length > 0 %}
+                        {% for courseData in enrollmentsByCourse %}
+                            <div class="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom">
+                                <div>
+                                    <strong>{{ courseData.courseTitle }}</strong>
+                                </div>
+                                <div>
+                                    <span class="badge bg-info">{{ courseData.enrollmentCount }} students</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No course data available</h5>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Enrollments -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-clock me-2"></i>
+                        Recent Enrollments (Last 30 Days)
+                        <span class="badge bg-success ms-2">{{ recentEnrollments|length }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recentEnrollments|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Course</th>
+                                        <th>Enrolled Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for enrollment in recentEnrollments %}
+                                        <tr>
+                                            <td>
+                                                {% if enrollment.user %}
+                                                    {{ enrollment.user.fullName|default('N/A') }}
+                                                    <small class="text-muted d-block">{{ enrollment.user.email }}</small>
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if enrollment.course %}
+                                                    {{ enrollment.course.title }}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ enrollment.enrolledAt ? enrollment.enrolledAt|date('Y-m-d H:i') : 'N/A' }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ enrollment.status == 'active' ? 'success' : 'secondary' }}">
+                                                    {{ enrollment.status|capitalize }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-clock fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No recent enrollments</h5>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.bg-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+}
+
+.icon {
+    opacity: 0.3;
+    font-size: 3rem;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    border-top: none;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+</style>
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% if enrollmentsByMonth|length > 0 %}
+        const ctx = document.getElementById('monthlyChart').getContext('2d');
+        const monthlyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for data in enrollmentsByMonth %}
+                        '{{ data.month }}/{{ data.year }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Enrollments',
+                    data: [
+                        {% for data in enrollmentsByMonth %}
+                            {{ data.enrollmentCount }},
+                        {% endfor %}
+                    ],
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    {% endif %}
+});
+</script>
+{% endblock %}
+{% endblock %}

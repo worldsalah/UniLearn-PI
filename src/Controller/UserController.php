@@ -26,20 +26,20 @@ class UserController extends AbstractController
         $queryBuilder = $userRepository->createQueryBuilder('u');
 
         // Apply search filter
-        if ($search) {
+        if (is_string($search) && $search !== '') {
             $queryBuilder->where('u.fullName LIKE :search OR u.email LIKE :search')
                       ->setParameter('search', '%'.$search.'%');
         }
 
         // Apply role filter
-        if ($role) {
+        if (is_string($role) && $role !== '') {
             $queryBuilder->join('u.role', 'r')
                       ->where('r.name = :role')
                       ->setParameter('role', $role);
         }
 
         // Apply status filter
-        if ($status) {
+        if (is_string($status) && $status !== '') {
             $queryBuilder->andWhere('u.status = :status')
                       ->setParameter('status', $status);
         }
@@ -80,8 +80,9 @@ class UserController extends AbstractController
     public function show(User $user, UserRepository $userRepository): Response
     {
         // Get user statistics
-        $courseCount = $userRepository->countCoursesByUser($user->getId());
-        $quizResultCount = $userRepository->countQuizResultsByUser($user->getId());
+        $userId = $user->getId();
+        $courseCount = $userId !== null ? $userRepository->countCoursesByUser($userId) : 0;
+        $quizResultCount = $userId !== null ? $userRepository->countQuizResultsByUser($userId) : 0;
 
         return $this->render('admin/users/show.html.twig', [
             'user' => $user,

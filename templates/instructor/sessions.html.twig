@@ -792,10 +792,7 @@ Page content END -->
 {% endblock %}
 
 {% block javascripts %}
-<!-- Choices.js -->
-<script src="{{ asset('assets/vendor/choices/js/choices.min.js') }}"></script>
-
-<!-- Init Choices.js -->
+<!-- Init Choices.js (choices.js already loaded in base.html.twig) -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     // Initialize Choices.js

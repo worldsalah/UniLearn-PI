@@ -7,6 +7,7 @@ use App\Repository\BookingRepository;
 use App\Repository\RoleRepository;
 use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,17 +40,25 @@ class SessionController extends AbstractController
         if ($request->isMethod('POST')) {
             $session = new Session();
 
-            $session->setName($request->request->get('name'));
+            $name = $request->request->get('name');
+            if (is_string($name)) {
+                $session->setName($name);
+            }
 
             $dateString = $request->request->get('date');
 
-            if ($dateString) {
+            if (is_string($dateString) && $dateString !== '') {
                 $date = new \DateTime($dateString);
                 $session->setDate($date);
             }
-            $session->setDuration($request->request->get('duration'));
-            $session->setSessionDescription($request->request->get('sessionDescription'));
-            $session->setLevel($request->request->get('level'));
+            $duration = $request->request->get('duration');
+            if (is_numeric($duration)) {
+                $session->setDuration((int) $duration);
+            }
+            $sessionDescription = $request->request->get('sessionDescription');
+            $session->setSessionDescription(is_string($sessionDescription) ? $sessionDescription : null);
+            $level = $request->request->get('level');
+            $session->setLevel(is_string($level) ? $level : '');
 
             $sessionRepository->save($session);
 
@@ -64,6 +73,7 @@ class SessionController extends AbstractController
         Request $request,
         SessionRepository $sessionRepository,
         AuthorizationCheckerInterface $authChecker,
+        CategoryRepository $categoryRepository,
     ): Response {
         // Check if user has permission to create sessions
         if (!$authChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -83,8 +93,9 @@ class SessionController extends AbstractController
             $errors = [];
 
             // Validate session name
-            $name = trim($request->request->get('name') ?? '');
-            if (null !== $name && empty($name)) {
+            $nameRaw = $request->request->get('name');
+            $name = is_string($nameRaw) ? trim($nameRaw) : '';
+            if (empty($name)) {
                 $errors['name'] = 'Session name is required.';
             } elseif (strlen($name) < 3) {
                 $errors['name'] = 'Session name must be at least 3 characters long.';
@@ -113,15 +124,55 @@ class SessionController extends AbstractController
                 $errors['duration'] = 'Session duration cannot exceed 480 minutes (8 hours).';
             }
 
+            // Validate availability time range
+            $availableFromString = $request->request->get('availableFrom');
+            $availableToString = $request->request->get('availableTo');
+
+            if (empty($availableFromString)) {
+                $errors['availableFrom'] = 'Available from time is required.';
+            }
+
+            if (empty($availableToString)) {
+                $errors['availableTo'] = 'Available to time is required.';
+            }
+
+            if (!isset($errors['availableFrom']) && !isset($errors['availableTo'])) {
+                try {
+                    $availableFromStringSafe = is_string($availableFromString) ? $availableFromString : '';
+                    $availableToStringSafe = is_string($availableToString) ? $availableToString : '';
+                    $availableFrom = new \DateTimeImmutable($availableFromStringSafe);
+                    $availableTo = new \DateTimeImmutable($availableToStringSafe);
+
+                    if ($availableTo <= $availableFrom) {
+                        $errors['availableTo'] = 'Available to time must be after available from time.';
+                    }
+                } catch (\Exception $e) {
+                    $errors['availableFrom'] = 'Invalid time format.';
+                }
+            }
+
+            // Validate hourly price
+            $hourlyPrice = $request->request->get('hourlyPrice');
+            if (empty($hourlyPrice)) {
+                $errors['hourlyPrice'] = 'Price per hour is required.';
+            } elseif (!is_numeric($hourlyPrice)) {
+                $errors['hourlyPrice'] = 'Price per hour must be a number.';
+            } elseif ((float) $hourlyPrice <= 0) {
+                $errors['hourlyPrice'] = 'Price per hour must be greater than 0.';
+            }
+
             // Validate date range
             $startDateString = $request->request->get('startDate');
             $endDateString = $request->request->get('endDate');
+            $startDateStringSafe = '';
+            $endDateStringSafe = '';
 
             if (empty($startDateString)) {
                 $errors['startDate'] = 'Start date is required.';
             } else {
+                $startDateStringSafe = is_string($startDateString) ? $startDateString : '';
                 try {
-                    $startDate = new \DateTime($startDateString);
+                    $startDate = new \DateTime($startDateStringSafe);
                     if ($startDate < new \DateTime('today')) {
                         $errors['startDate'] = 'Start date cannot be in the past.';
                     }
@@ -133,8 +184,9 @@ class SessionController extends AbstractController
             if (empty($endDateString)) {
                 $errors['endDate'] = 'End date is required.';
             } else {
+                $endDateStringSafe = is_string($endDateString) ? $endDateString : '';
                 try {
-                    $endDate = new \DateTime($endDateString);
+                    $endDate = new \DateTime($endDateStringSafe);
                 } catch (\Exception $e) {
                     $errors['endDate'] = 'Invalid end date format.';
                 }
@@ -142,8 +194,8 @@ class SessionController extends AbstractController
 
             // Validate date range logic
             if (!isset($errors['startDate']) && !isset($errors['endDate'])) {
-                $startDate = new \DateTime($startDateString);
-                $endDate = new \DateTime($endDateString);
+                $startDate = new \DateTime($startDateStringSafe);
+                $endDate = new \DateTime($endDateStringSafe);
 
                 if ($endDate < $startDate) {
                     $errors['endDate'] = 'End date must be after or equal to start date.';
@@ -156,14 +208,18 @@ class SessionController extends AbstractController
             }
 
             // Validate description
-            $description = trim($request->request->get('sessionDescription') ?? '');
-            if (null !== $description && empty($description)) {
+            $descriptionRaw = $request->request->get('sessionDescription');
+            $description = is_string($descriptionRaw) ? trim($descriptionRaw) : '';
+            if (empty($description)) {
                 $errors['sessionDescription'] = 'Session description is required.';
             } elseif (strlen($description) < 10) {
                 $errors['sessionDescription'] = 'Description must be at least 10 characters long.';
             } elseif (strlen($description) > 1000) {
                 $errors['sessionDescription'] = 'Description cannot exceed 1000 characters.';
             }
+
+            // Get categories from database for re-render
+            $categories = $categoryRepository->findBy(['isActive' => true], ['name' => 'ASC']);
 
             // If there are validation errors, re-render the form with errors
             if (!empty($errors)) {
@@ -176,6 +232,7 @@ class SessionController extends AbstractController
                     'totalCourses' => $totalCourses,
                     'totalStudents' => $totalStudents,
                     'averageRating' => $averageRating,
+                    'categories' => $categories,
                     'errors' => $errors,
                     'formData' => $request->request->all(),
                 ]);
@@ -184,17 +241,41 @@ class SessionController extends AbstractController
             // If no errors, create the session
             $session = new Session();
             $session->setName($name);
-            $session->setLevel($level);
+            $session->setLevel(is_string($level) ? $level : '');
             $session->setDuration((int) $duration);
             $session->setSessionDescription($description);
 
-            $startDate = new \DateTime($startDateString);
-            $endDate = new \DateTime($endDateString);
+            // Associate current instructor
+            $user = $this->getUser();
+            if ($user instanceof \App\Entity\User) {
+                $session->setInstructor($user);
+            }
+
+            $startDate = new \DateTime($startDateStringSafe);
+            $endDate = new \DateTime($endDateStringSafe);
             $session->setStartDate($startDate);
             $session->setEndDate($endDate);
 
             // Keep the old date field for backward compatibility
             $session->setDate($startDate);
+
+            // Set availability times (already validated above)
+            $availableFromStringSafe = is_string($availableFromString) ? $availableFromString : '';
+            $availableToStringSafe = is_string($availableToString) ? $availableToString : '';
+            $session->setAvailableFrom(new \DateTimeImmutable($availableFromStringSafe));
+            $session->setAvailableTo(new \DateTimeImmutable($availableToStringSafe));
+
+            // Set hourly price (already validated above)
+            $session->setHourlyPrice(number_format((float) $hourlyPrice, 2, '.', ''));
+
+            // Set category if selected
+            $categoryId = $request->request->get('category_id');
+            if (!empty($categoryId)) {
+                $category = $categoryRepository->find($categoryId);
+                if ($category !== null) {
+                    $session->setCategory($category);
+                }
+            }
 
             $sessionRepository->save($session);
 
@@ -202,6 +283,9 @@ class SessionController extends AbstractController
 
             return $this->redirectToRoute('instructor_sessions');
         }
+
+        // Get categories from database
+        $categories = $categoryRepository->findBy(['isActive' => true], ['name' => 'ASC']);
 
         // Mock statistics for instructor dashboard
         $totalCourses = 2;
@@ -212,6 +296,7 @@ class SessionController extends AbstractController
             'totalCourses' => $totalCourses,
             'totalStudents' => $totalStudents,
             'averageRating' => $averageRating,
+            'categories' => $categories,
         ]);
     }
 
@@ -237,7 +322,7 @@ class SessionController extends AbstractController
         }
 
         $session = $sessionRepository->find($id);
-        if (!$session) {
+        if (!$session instanceof Session) {
             $this->addFlash('error', 'Session not found.');
 
             return $this->redirectToRoute('instructor_sessions');
@@ -247,8 +332,9 @@ class SessionController extends AbstractController
             $errors = [];
 
             // Validate session name
-            $name = trim($request->request->get('name') ?? '');
-            if (null !== $name && empty($name)) {
+            $nameRaw = $request->request->get('name');
+            $name = is_string($nameRaw) ? trim($nameRaw) : '';
+            if (empty($name)) {
                 $errors['name'] = 'Session name is required.';
             } elseif (strlen($name) < 3) {
                 $errors['name'] = 'Session name must be at least 3 characters long.';
@@ -277,15 +363,25 @@ class SessionController extends AbstractController
                 $errors['duration'] = 'Session duration cannot exceed 480 minutes (8 hours).';
             }
 
+            // Get availability times (not validated in edit, but needed for update)
+            $availableFromString = $request->request->get('availableFrom');
+            $availableToString = $request->request->get('availableTo');
+
+            // Get hourly price (not validated in edit, but needed for update)
+            $hourlyPrice = $request->request->get('hourlyPrice');
+
             // Validate date range
             $startDateString = $request->request->get('startDate');
             $endDateString = $request->request->get('endDate');
+            $startDateStringSafe = '';
+            $endDateStringSafe = '';
 
             if (empty($startDateString)) {
                 $errors['startDate'] = 'Start date is required.';
             } else {
+                $startDateStringSafe = is_string($startDateString) ? $startDateString : '';
                 try {
-                    $startDate = new \DateTime($startDateString);
+                    $startDate = new \DateTime($startDateStringSafe);
                     if ($startDate < new \DateTime('today')) {
                         $errors['startDate'] = 'Start date cannot be in the past.';
                     }
@@ -297,8 +393,9 @@ class SessionController extends AbstractController
             if (empty($endDateString)) {
                 $errors['endDate'] = 'End date is required.';
             } else {
+                $endDateStringSafe = is_string($endDateString) ? $endDateString : '';
                 try {
-                    $endDate = new \DateTime($endDateString);
+                    $endDate = new \DateTime($endDateStringSafe);
                 } catch (\Exception $e) {
                     $errors['endDate'] = 'Invalid end date format.';
                 }
@@ -306,8 +403,8 @@ class SessionController extends AbstractController
 
             // Validate date range logic
             if (!isset($errors['startDate']) && !isset($errors['endDate'])) {
-                $startDate = new \DateTime($startDateString);
-                $endDate = new \DateTime($endDateString);
+                $startDate = new \DateTime($startDateStringSafe);
+                $endDate = new \DateTime($endDateStringSafe);
 
                 if ($endDate < $startDate) {
                     $errors['endDate'] = 'End date must be after or equal to start date.';
@@ -320,8 +417,9 @@ class SessionController extends AbstractController
             }
 
             // Validate description
-            $description = trim($request->request->get('sessionDescription') ?? '');
-            if (null !== $description && empty($description)) {
+            $descriptionRaw = $request->request->get('sessionDescription');
+            $description = is_string($descriptionRaw) ? trim($descriptionRaw) : '';
+            if (empty($description)) {
                 $errors['sessionDescription'] = 'Session description is required.';
             } elseif (strlen($description) < 10) {
                 $errors['sessionDescription'] = 'Description must be at least 10 characters long.';
@@ -348,17 +446,26 @@ class SessionController extends AbstractController
 
             // If no errors, update the session
             $session->setName($name);
-            $session->setLevel($level);
+            $session->setLevel(is_string($level) ? $level : '');
             $session->setDuration((int) $duration);
             $session->setSessionDescription($description);
 
-            $startDate = new \DateTime($startDateString);
-            $endDate = new \DateTime($endDateString);
+            $startDate = new \DateTime($startDateStringSafe);
+            $endDate = new \DateTime($endDateStringSafe);
             $session->setStartDate($startDate);
             $session->setEndDate($endDate);
 
             // Keep the old date field for backward compatibility
             $session->setDate($startDate);
+
+            // Set availability times (already validated above)
+            $availableFromStringSafe = is_string($availableFromString) ? $availableFromString : '';
+            $availableToStringSafe = is_string($availableToString) ? $availableToString : '';
+            $session->setAvailableFrom(new \DateTimeImmutable($availableFromStringSafe));
+            $session->setAvailableTo(new \DateTimeImmutable($availableToStringSafe));
+
+            // Set hourly price (already validated above)
+            $session->setHourlyPrice(number_format((float) $hourlyPrice, 2, '.', ''));
 
             $sessionRepository->save($session);
 
@@ -401,7 +508,7 @@ class SessionController extends AbstractController
         }
 
         $session = $sessionRepository->find($id);
-        if (!$session) {
+        if (!$session instanceof Session) {
             $this->addFlash('error', 'Session not found.');
 
             return $this->redirectToRoute('instructor_sessions');
@@ -442,7 +549,7 @@ class SessionController extends AbstractController
         }
 
         $session = $sessionRepository->find($id);
-        if (!$session) {
+        if (!$session instanceof Session) {
             $this->addFlash('error', 'Session not found.');
 
             return $this->redirectToRoute('instructor_sessions');
@@ -465,7 +572,7 @@ class SessionController extends AbstractController
         // Get the currently logged-in user
         $user = $this->getUser();
 
-        if (!$user) {
+        if ($user === null) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -486,14 +593,94 @@ class SessionController extends AbstractController
     }
 
     #[Route('/sessions', name: 'all_sessions')]
-    public function getAllSessions(SessionRepository $sessionRepository): Response
-    {
-        // Get all sessions using your repository method
-        $sessions = $sessionRepository->findAllSessions();
+    public function getAllSessions(
+        Request $request,
+        SessionRepository $sessionRepository,
+        CategoryRepository $categoryRepository
+    ): Response {
+        // Get query parameters
+        $search = $request->query->get('search', '');
+        $category = $request->query->get('category', '');
+        $level = $request->query->get('level', '');
+        $minPrice = $request->query->get('minPrice', '');
+        $maxPrice = $request->query->get('maxPrice', '');
+        $sort = $request->query->get('sort', 'date_asc');
 
-        // Render the template and pass the sessions
+        // Build query with filters
+        $qb = $sessionRepository->createQueryBuilder('s')
+            ->leftJoin('s.instructor', 'i')
+            ->leftJoin('s.category', 'c')
+            ->addSelect('i', 'c');
+
+        // Search filter
+        if (!empty($search)) {
+            $qb->andWhere('s.name LIKE :search OR s.sessionDescription LIKE :search OR i.fullName LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
+
+        // Category filter
+        if (!empty($category)) {
+            $qb->andWhere('c.id = :category')
+               ->setParameter('category', $category);
+        }
+
+        // Level filter
+        if (!empty($level)) {
+            $qb->andWhere('s.level = :level')
+               ->setParameter('level', $level);
+        }
+
+        // Price range filter
+        if (!empty($minPrice)) {
+            $qb->andWhere('s.hourlyPrice >= :minPrice')
+               ->setParameter('minPrice', $minPrice);
+        }
+        if (!empty($maxPrice)) {
+            $qb->andWhere('s.hourlyPrice <= :maxPrice')
+               ->setParameter('maxPrice', $maxPrice);
+        }
+
+        // Sorting
+        switch ($sort) {
+            case 'price_asc':
+                $qb->orderBy('s.hourlyPrice', 'ASC');
+                break;
+            case 'price_desc':
+                $qb->orderBy('s.hourlyPrice', 'DESC');
+                break;
+            case 'date_asc':
+                $qb->orderBy('s.startDate', 'ASC');
+                break;
+            case 'date_desc':
+                $qb->orderBy('s.startDate', 'DESC');
+                break;
+            case 'name_asc':
+                $qb->orderBy('s.name', 'ASC');
+                break;
+            case 'duration_asc':
+                $qb->orderBy('s.duration', 'ASC');
+                break;
+            default:
+                $qb->orderBy('s.startDate', 'ASC');
+        }
+
+        $sessions = $qb->getQuery()->getResult();
+
+        // Get all categories for filter dropdown
+        $categories = $categoryRepository->findBy(['isActive' => true], ['name' => 'ASC']);
+
+        // Render the template and pass the sessions and filters
         return $this->render('/Front-office/session/sessionList.html.twig', [
             'sessions' => $sessions,
+            'categories' => $categories,
+            'filters' => [
+                'search' => $search,
+                'category' => $category,
+                'level' => $level,
+                'minPrice' => $minPrice,
+                'maxPrice' => $maxPrice,
+                'sort' => $sort,
+            ],
         ]);
     }
 
@@ -517,7 +704,7 @@ class SessionController extends AbstractController
     ): Response {
         $session = $sessionRepository->find($id);
 
-        if (!$session) {
+        if (!$session instanceof Session) {
             throw $this->createNotFoundException('Session not found');
         }
 
@@ -545,18 +732,28 @@ class SessionController extends AbstractController
     ): Response {
         $session = $sessionRepository->find($request->request->get('id'));
 
-        if (!$session) {
+        if (!$session instanceof Session) {
             throw $this->createNotFoundException('Session not found');
         }
 
-        $session->setName($request->request->get('name'));
-        $session->setLevel($request->request->get('level'));
+        $name = $request->request->get('name');
+        if (is_string($name)) {
+            $session->setName($name);
+        }
+        $level = $request->request->get('level');
+        if (is_string($level)) {
+            $session->setLevel($level);
+        }
         $dateString = $request->request->get('date');
-        if ($dateString) {
+        if (is_string($dateString) && $dateString !== '') {
             $session->setDate(new \DateTimeImmutable($dateString));
         }
-        $session->setSessionDescription($request->request->get('sessionDescription'));
-        $session->setDuration($request->request->get('duration'));
+        $sessionDescription = $request->request->get('sessionDescription');
+        $session->setSessionDescription(is_string($sessionDescription) ? $sessionDescription : null);
+        $duration = $request->request->get('duration');
+        if (is_numeric($duration)) {
+            $session->setDuration((int) $duration);
+        }
 
         $sessionRepository->save($session, true);
 
@@ -570,7 +767,7 @@ class SessionController extends AbstractController
         BookingRepository $bookingRepository,
     ): Response {
         $session = $sessionRepository->find($id);
-        if (!$session) {
+        if (!$session instanceof Session) {
             return $this->json(['error' => 'Session not found'], 404);
         }
 
@@ -581,7 +778,7 @@ class SessionController extends AbstractController
         $bookedDates = [];
         foreach ($bookings as $booking) {
             $preferredDate = $booking->getPreferredDate();
-            if ($preferredDate) {
+            if ($preferredDate !== null) {
                 $bookedDates[] = $preferredDate->format('Y-m-d');
             }
         }
@@ -605,11 +802,13 @@ class SessionController extends AbstractController
         $id = $request->request->get('id');
         $session = $sessionRepository->find($id);
 
-        if (!$session) {
+        if (!$session instanceof Session) {
             throw $this->createNotFoundException();
         }
 
-        if ($this->isCsrfTokenValid('delete_session_'.$id, $request->request->get('_token'))) {
+        $token = $request->request->get('_token');
+        $tokenString = is_string($token) ? $token : '';
+        if ($this->isCsrfTokenValid('delete_session_'.$id, $tokenString)) {
             $em->remove($session);
             $em->flush();
 
@@ -626,7 +825,7 @@ class SessionController extends AbstractController
     ): JsonResponse {
         $session = $sessionRepository->find($id);
 
-        if (!$session) {
+        if (!$session instanceof Session) {
             return $this->json(['error' => 'Session not found'], 404);
         }
 
@@ -635,11 +834,14 @@ class SessionController extends AbstractController
             'name' => $session->getName(),
             'level' => $session->getLevel(),
             'duration' => $session->getDuration(),
-            'startDate' => $session->getStartDate() ? $session->getStartDate()->format('Y-m-d') : null,
-            'endDate' => $session->getEndDate() ? $session->getEndDate()->format('Y-m-d') : null,
+            'availableFrom' => $session->getAvailableFrom() !== null ? $session->getAvailableFrom()->format('H:i') : null,
+            'availableTo' => $session->getAvailableTo() !== null ? $session->getAvailableTo()->format('H:i') : null,
+            'hourlyPrice' => $session->getHourlyPrice(),
+            'startDate' => $session->getStartDate() !== null ? $session->getStartDate()->format('Y-m-d') : null,
+            'endDate' => $session->getEndDate() !== null ? $session->getEndDate()->format('Y-m-d') : null,
             'sessionDescription' => $session->getSessionDescription(),
             'instructor_id' => $session->getInstructor()?->getId() ?? null,
-            'instructor' => $session->getInstructor() ? [
+            'instructor' => $session->getInstructor() !== null ? [
                 'id' => $session->getInstructor()->getId(),
                 'fullName' => $session->getInstructor()->getFullName(),
                 'email' => $session->getInstructor()->getEmail(),
@@ -654,11 +856,11 @@ class SessionController extends AbstractController
     ): JsonResponse {
         // Get instructor role
         $instructorRole = $roleRepository->findOneBy(['name' => 'instructor']);
-        if (!$instructorRole) {
+        if ($instructorRole === null) {
             $instructorRole = $roleRepository->findOneBy(['name' => 'ROLE_INSTRUCTOR']);
         }
 
-        if (!$instructorRole) {
+        if ($instructorRole === null) {
             return $this->json([]);
         }
 

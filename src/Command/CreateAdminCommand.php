@@ -31,7 +31,7 @@ class CreateAdminCommand extends Command
         // Check if admin user already exists
         $existingAdmin = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'admin@unilearn.com']);
 
-        if ($existingAdmin) {
+        if ($existingAdmin !== null) {
             // Update password for existing admin
             $hashedPassword = $this->passwordHasher->hashPassword($existingAdmin, 'admin123');
             $existingAdmin->setPassword($hashedPassword);

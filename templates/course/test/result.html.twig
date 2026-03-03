@@ -1,0 +1,558 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ course.title }} - Test Results{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.result-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.result-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    padding: 3rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+    animation: shimmer 3s infinite linear;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.result-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.result-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.score-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.score-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.score-circle.excellent {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.score-circle.good {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+.score-circle.passed {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.score-circle.failed {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.score-details {
+    text-align: center;
+}
+
+.score-percentage {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.score-percentage.excellent { color: #28a745; }
+.score-percentage.good { color: #17a2b8; }
+.score-percentage.passed { color: #007bff; }
+.score-percentage.failed { color: #dc3545; }
+
+.score-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.score-status {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    margin-top: 1rem;
+}
+
+.score-status.passed {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.score-status.failed {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.result-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-radius: 15px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.recommendations-section {
+    margin-top: 3rem;
+}
+
+.recommendations-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.recommendation-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.recommendation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.recommendation-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.recommendation-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.recommendation-icon.success { background: linear-gradient(135deg, #28a745, #20c997); }
+.recommendation-icon.primary { background: linear-gradient(135deg, #007bff, #0056b3); }
+.recommendation-icon.info { background: linear-gradient(135deg, #17a2b8, #138496); }
+.recommendation-icon.warning { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+.recommendation-icon.danger { background: linear-gradient(135deg, #dc3545, #c82333); }
+.recommendation-icon.secondary { background: linear-gradient(135deg, #6c757d, #495057); }
+
+.recommendation-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.recommendation-description {
+    color: #495057;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.recommendation-courses {
+    margin-top: 1rem;
+}
+
+.course-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.course-item:hover {
+    background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
+    transform: translateX(5px);
+}
+
+.course-item a {
+    text-decoration: none;
+    color: #495057;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.course-item a:hover {
+    color: #667eea;
+}
+
+.learning-path {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-top: 1rem;
+}
+
+.path-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.path-step {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-right: 1rem;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.step-description {
+    color: #495057;
+    font-size: 0.875rem;
+}
+
+.step-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.step-status.recommended {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.step-status.locked {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+}
+
+.result-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+}
+
+.btn-action {
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(108, 117, 125, 0.4);
+}
+
+@media (max-width: 768px) {
+    .result-card {
+        margin: 1rem;
+        padding: 2rem;
+    }
+    
+    .score-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 2.5rem;
+    }
+    
+    .result-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .result-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Flash Messages -->
+{% for message in app.flashes('error') %}
+    <div data-flash-type="error" 
+         data-flash-title="Access Denied" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('success') %}
+    <div data-flash-type="success" 
+         data-flash-title="Success" 
+         data-flash-message="{{ message }}"
+         style="display: none;">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<div class="result-container">
+    <div class="result-card">
+        <div class="result-header">
+            <h1 class="result-title">Test Results</h1>
+        </div>
+
+        <div class="score-display">
+            {% set scoreClass = 'failed' %}
+            {% if result.passed %}
+                {% if result.percentage >= 90 %}
+                    {% set scoreClass = 'excellent' %}
+                {% elseif result.percentage >= 80 %}
+                    {% set scoreClass = 'good' %}
+                {% else %}
+                    {% set scoreClass = 'passed' %}
+                {% endif %}
+            {% endif %}
+            <div class="score-circle {{ scoreClass }}">
+                {{ result.percentage|number_format(1) }}%
+            </div>
+            <div class="score-details">
+                <div class="score-percentage {{ scoreClass }}">
+                    {{ result.score }}/{{ result.totalQuestions }}
+                </div>
+                <div class="score-text">
+                    {% if result.passed %}
+                        Congratulations! You passed the test.
+                    {% else %}
+                        You didn't pass this time. Keep studying!
+                    {% endif %}
+                </div>
+                <div class="score-status {{ result.passed ? 'passed' : 'failed' }}">
+                    {{ result.passed ? 'PASSED' : 'FAILED' }}
+                </div>
+            </div>
+        </div>
+
+        <div class="result-stats">
+            <div class="stat-item">
+                <div class="stat-value">{{ result.score }}</div>
+                <div class="stat-label">Correct Answers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ result.totalQuestions }}</div>
+                <div class="stat-label">Total Questions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ result.percentage|number_format(1) }}%</div>
+                <div class="stat-label">Score Percentage</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ test.passingScore }}%</div>
+                <div class="stat-label">Passing Score</div>
+            </div>
+        </div>
+
+        <div class="recommendations-section">
+            <h2 class="recommendations-title">AI-Powered Recommendations</h2>
+            <div class="recommendations-grid">
+                {% for recommendation in recommendations %}
+                    <div class="recommendation-card">
+                        <div class="recommendation-header">
+                            <div class="recommendation-icon {{ recommendation.color }}">
+                                <i class="fas fa-{{ recommendation.icon }}"></i>
+                            </div>
+                            <h3 class="recommendation-title">{{ recommendation.title }}</h3>
+                        </div>
+                        <p class="recommendation-description">{{ recommendation.description }}</p>
+                        
+                        {% if recommendation.courses is defined %}
+                            <div class="recommendation-courses">
+                                <h4>Recommended Courses:</h4>
+                                {% for course in recommendation.courses %}
+                                    <div class="course-item">
+                                        <a href="{{ path('app_course_show', {'id': course.id}) }}">
+                                            <i class="fas fa-graduation-cap"></i>
+                                            <div>
+                                                <div>{{ course.title }}</div>
+                                                <small>{{ course.level }} • {{ course.category.name }}</small>
+                                            </div>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        {% if recommendation.path is defined %}
+                            <div class="learning-path">
+                                <h4>Your Learning Path:</h4>
+                                <div class="path-steps">
+                                    {% for step in recommendation.path %}
+                                        <div class="path-step">
+                                            <div class="step-number">{{ step.step }}</div>
+                                            <div class="step-content">
+                                                <div class="step-title">{{ step.title }}</div>
+                                                <div class="step-description">{{ step.description }}</div>
+                                                <span class="step-status {{ step.status }}">{{ step.status }}</span>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="result-actions">
+            <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn-action btn-primary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Course
+            </a>
+            {% if result.passed %}
+                <a href="{{ path('app_course_certificate', {'id': course.id}) }}" class="btn-action btn-primary">
+                    <i class="fas fa-certificate"></i>
+                    Get Certificate
+                </a>
+            {% else %}
+                <a href="{{ path('app_course_test_take', {'id': course.id}) }}" class="btn-action btn-secondary">
+                    <i class="fas fa-redo"></i>
+                    Retake Test
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

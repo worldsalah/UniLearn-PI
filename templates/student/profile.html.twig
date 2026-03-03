@@ -1,0 +1,322 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}My Profile - Student Dashboard{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+    <!-- =======================
+    Student Profile START -->
+    <section class="pt-4">
+        <div class="container">
+            <div class="row">
+                <!-- Left sidebar START -->
+                <div class="col-lg-3">
+                    <!-- User profile START -->
+                    <div class="card shadow mb-4">
+                        <div class="card-body text-center p-4">
+                            <div class="avatar avatar-xl mb-3">
+                                {% if user.profileImage %}
+                                    <img class="avatar-img rounded-circle" src="{{ asset('uploads/profiles/' ~ user.profileImage) }}" alt="avatar">
+                                {% else %}
+                                    <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                                {% endif %}
+                            </div>
+                            <h5 class="mb-1">{{ user.fullName|default(user.email) }}</h5>
+                            <p class="mb-2 text-muted">{{ user.email }}</p>
+                            {% if user.role %}
+                                <span class="badge bg-primary mb-2">{{ user.role.name|title }}</span>
+                            {% endif %}
+                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                <a href="{{ path('app_student_settings') }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit me-1"></i>Edit Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- User profile END -->
+
+                    <!-- Navigation menu START -->
+                    <div class="card shadow">
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                </a>
+                                <a href="{{ path('app_student_courses') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-book me-2"></i>My Courses
+                                </a>
+                                <a href="{{ path('app_student_certificates') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-certificate me-2"></i>Certificates
+                                </a>
+                                <a href="{{ path('app_student_quiz_analysis') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-brain me-2"></i>AI Quiz Analysis
+                                </a>
+                                <a href="{{ path('app_student_ai_roadmap') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-lightbulb me-2"></i>AI Recommendations
+                                </a>
+                                <a href="{{ path('gamification_profile') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-trophy me-2"></i>My Gamification
+                                </a>
+                                <a href="{{ path('app_student_profile') }}" class="list-group-item list-group-item-action active">
+                                    <i class="fas fa-user me-2"></i>My Profile
+                                </a>
+                                <a href="{{ path('app_student_settings') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-cog me-2"></i>Settings
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Navigation menu END -->
+                </div>
+
+                <!-- Main content START -->
+                <div class="col-lg-9">
+                    <!-- Profile Header START -->
+                    <div class="card shadow mb-4">
+                        <div class="card-body p-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h3 class="mb-1">My Profile</h3>
+                                    <p class="mb-0 text-muted">View and manage your public profile</p>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <a href="{{ path('app_student_settings') }}" class="btn btn-primary">
+                                        <i class="fas fa-edit me-2"></i>Edit Profile
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Profile Header END -->
+
+                    <!-- Stats Cards START -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3 col-6">
+                            <div class="card shadow-sm h-100 border-0 bg-primary bg-opacity-10">
+                                <div class="card-body text-center py-3">
+                                    <div class="display-6 text-primary mb-0">{{ totalEnrollments }}</div>
+                                    <small class="text-muted">Enrolled Courses</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="card shadow-sm h-100 border-0 bg-success bg-opacity-10">
+                                <div class="card-body text-center py-3">
+                                    <div class="display-6 text-success mb-0">{{ completedCourses }}</div>
+                                    <small class="text-muted">Completed</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="card shadow-sm h-100 border-0 bg-warning bg-opacity-10">
+                                <div class="card-body text-center py-3">
+                                    <div class="display-6 text-warning mb-0">{{ inProgressCourses }}</div>
+                                    <small class="text-muted">In Progress</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="card shadow-sm h-100 border-0 bg-info bg-opacity-10">
+                                <div class="card-body text-center py-3">
+                                    <div class="display-6 text-info mb-0">{{ certificates|length }}</div>
+                                    <small class="text-muted">Certificates</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Stats Cards END -->
+
+                    <div class="row g-4">
+                        <!-- Profile Info START -->
+                        <div class="col-lg-6">
+                            <div class="card shadow h-100">
+                                <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-user-circle text-primary me-2"></i>Personal Information
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Full Name</span>
+                                            <strong>{{ user.fullName|default('Not set') }}</strong>
+                                        </li>
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Email</span>
+                                            <strong>{{ user.email }}</strong>
+                                        </li>
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Phone</span>
+                                            <strong>{{ user.phone|default('Not set') }}</strong>
+                                        </li>
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Location</span>
+                                            <strong>{{ user.location|default('Not set') }}</strong>
+                                        </li>
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Website</span>
+                                            {% if user.website %}
+                                                <a href="{{ user.website }}" target="_blank">{{ user.website }}</a>
+                                            {% else %}
+                                                <strong>Not set</strong>
+                                            {% endif %}
+                                        </li>
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Member Since</span>
+                                            <strong>{{ user.createdAt|date('M d, Y') }}</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Profile Info END -->
+
+                        <!-- Bio & Stats START -->
+                        <div class="col-lg-6">
+                            <div class="card shadow h-100">
+                                <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-info-circle text-primary me-2"></i>About Me
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if user.bio %}
+                                        <p class="mb-4">{{ user.bio }}</p>
+                                    {% else %}
+                                        <p class="text-muted mb-4">No bio provided yet. <a href="{{ path('app_student_settings') }}">Add one</a></p>
+                                    {% endif %}
+                                    
+                                    <hr class="my-4">
+                                    
+                                    <h6 class="mb-3">Learning Statistics</h6>
+                                    <div class="row g-3">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-2">
+                                                    <i class="fas fa-chart-line text-primary"></i>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted d-block">Avg Quiz Score</small>
+                                                    <strong>{{ avgScore }}%</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-circle bg-success bg-opacity-10 p-2 me-2">
+                                                    <i class="fas fa-award text-success"></i>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted d-block">Certificates</small>
+                                                    <strong>{{ certificates|length }}</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Bio & Stats END -->
+                    </div>
+
+                    <!-- Recent Quiz Results START -->
+                    <div class="card shadow mt-4">
+                        <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-question-circle text-primary me-2"></i>Recent Quiz Results
+                                </h5>
+                                <a href="{{ path('app_student_quiz_analysis') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% if quizResults|length > 0 %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Quiz</th>
+                                                <th>Score</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for result in quizResults %}
+                                                <tr>
+                                                    <td>
+                                                        <strong>{{ result.quiz.title|default('Unknown Quiz') }}</strong>
+                                                        <small class="d-block text-muted">{{ result.quiz.course.title|default('') }}</small>
+                                                    </td>
+                                                    <td>
+                                                        {% set percentage = result.maxScore > 0 ? (result.score / result.maxScore * 100)|round(1) : 0 %}
+                                                        <span class="badge {% if percentage >= 70 %}bg-success{% elseif percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                                            {{ percentage }}%
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <small class="text-muted">{{ result.takenAt|default(result.createdAt)|date('M d, Y') }}</small>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-clipboard-check fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">No quiz results yet</h6>
+                                    <p class="mb-0">Complete some quizzes to see your results here.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Recent Quiz Results END -->
+
+                    <!-- Certificates START -->
+                    <div class="card shadow mt-4">
+                        <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-certificate text-warning me-2"></i>My Certificates
+                                </h5>
+                                <a href="{{ path('app_student_certificates') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% if certificates|length > 0 %}
+                                <div class="row g-3">
+                                    {% for certificate in certificates[:3] %}
+                                        <div class="col-md-4">
+                                            <div class="card border h-100">
+                                                <div class="card-body text-center">
+                                                    <div class="bg-gradient-gold rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                                        <i class="fas fa-certificate text-white fa-2x"></i>
+                                                    </div>
+                                                    <h6 class="mb-1">{{ certificate.course.title|default('Course Certificate') }}</h6>
+                                                    <small class="text-muted d-block">{{ certificate.issuedAt|date('M d, Y') }}</small>
+                                                    <a href="{{ path('app_certificate_view', {'id': certificate.id}) }}" class="btn btn-sm btn-outline-primary mt-2">View</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-certificate fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">No certificates yet</h6>
+                                    <p class="mb-0">Complete courses to earn certificates.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Certificates END -->
+                </div>
+                <!-- Main content END -->
+            </div>
+        </div>
+    </section>
+    <!-- Student Profile END -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+{% endblock %}

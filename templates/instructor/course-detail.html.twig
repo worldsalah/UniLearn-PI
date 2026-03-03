@@ -397,6 +397,17 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #20c997, #198754);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
 .btn-primary {
     background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
     color: white;
@@ -563,13 +574,22 @@ Page Banner START -->
                                 </ul>
                             </div>
                             <!-- Button -->
-                            <div class="d-flex align-items-center mt-2 mt-md-0">
-                                <a href="{{ path('app_instructor_edit_course', {'id': course.id}) }}" class="btn btn-primary btn-action me-2">
-                                    <i class="fas fa-edit me-1"></i>Edit Course
+                            <div class="d-grid gap-2">
+                                <a href="{{ path('app_instructor_edit_course', {'id': course.id}) }}" class="btn btn-primary btn-action">
+                                    <i class="fas fa-edit me-2"></i>Edit Course
                                 </a>
-                                <a href="{{ path('app_instructor_manage_courses') }}" class="btn btn-secondary btn-action">
-                                    <i class="fas fa-arrow-left me-1"></i>Back to Courses
-                                </a>
+                                {% if isEnrolled %}
+                                    <a href="{{ path('app_course_test', {'id': course.id}) }}" class="btn btn-success btn-action">
+                                        <i class="fas fa-graduation-cap me-2"></i>Take Test
+                                    </a>
+                                    <a href="{{ path('app_course_dashboard', {'id': course.id}) }}" class="btn btn-primary btn-action">
+                                        <i class="fas fa-tachometer-alt me-2"></i>View Progress
+                                    </a>
+                                {% else %}
+                                    <a href="{{ path('app_course_enroll', {'id': course.id}) }}" class="btn btn-primary btn-action">
+                                        <i class="fas fa-plus me-2"></i>Enroll Now
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

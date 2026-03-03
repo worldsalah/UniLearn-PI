@@ -154,11 +154,25 @@ class Job
         return $this->deletedAt;
     }
 
-    public function setDeletedAt(?\DateTimeImmutable $deletedAt): static
+    public function delete(): void
     {
-        $this->deletedAt = $deletedAt;
+        if ($this->isDeleted()) {
+            throw new \LogicException('Job is already deleted.');
+        }
+        $this->deletedAt = new \DateTimeImmutable();
+    }
 
-        return $this;
+    public function restore(): void
+    {
+        if (!$this->isDeleted()) {
+            throw new \LogicException('Job is not deleted.');
+        }
+        $this->deletedAt = null;
+    }
+
+    public function isDeleted(): bool
+    {
+        return null !== $this->deletedAt;
     }
 
     public function getClient(): ?User

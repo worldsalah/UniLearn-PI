@@ -1,0 +1,319 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}{{ quiz.title }} - {{ course.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+        }
+        
+        .question-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: #4f46e5;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .options-grid {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option-label:hover {
+            border-color: #4f46e5;
+            background: #f8fafc;
+        }
+        
+        .option-label input[type="radio"] {
+            margin-right: 0.75rem;
+        }
+        
+        .option-label.selected {
+            border-color: #4f46e5;
+            background: #eef2ff;
+        }
+        
+        .quiz-timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .quiz-timer.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .quiz-timer.danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .submit-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            transition: width 0.3s ease;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1>{{ quiz.title }}</h1>
+        <p class="mb-0">{{ course.title }}</p>
+        <div class="mt-3">
+            <span class="badge bg-white text-dark">{{ questions|length }} Questions</span>
+        </div>
+    </div>
+
+    <form method="post" action="{{ path('quiz_submit', {'id': quiz.id}) }}" id="quizForm">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+        
+        <div class="mb-3 text-muted">
+            Question <span id="currentQuestion">1</span> of {{ questions|length }}
+        </div>
+
+        {% for question in questions %}
+            <div class="question-card" data-question-id="{{ question.id }}" style="display: {% if loop.first %}block{% else %}none{% endif %};">
+                <div class="question-number">Question {{ loop.index }}</div>
+                <h5 class="mb-3">{{ question.question }}</h5>
+                
+                <div class="options-grid">
+                    <label class="option-label">
+                        <input type="radio" name="answers[{{ question.id }}]" value="A" required>
+                        <span>A. {{ question.optionA }}</span>
+                    </label>
+                    
+                    <label class="option-label">
+                        <input type="radio" name="answers[{{ question.id }}]" value="B" required>
+                        <span>B. {{ question.optionB }}</span>
+                    </label>
+                    
+                    <label class="option-label">
+                        <input type="radio" name="answers[{{ question.id }}]" value="C" required>
+                        <span>C. {{ question.optionC }}</span>
+                    </label>
+                    
+                    <label class="option-label">
+                        <input type="radio" name="answers[{{ question.id }}]" value="D" required>
+                        <span>D. {{ question.optionD }}</span>
+                    </label>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="submit-section">
+            <div class="mb-3">
+                <button type="button" class="btn btn-secondary me-2" id="prevBtn" onclick="previousQuestion()" style="display: none;">
+                    <i class="fas fa-arrow-left me-2"></i>Previous
+                </button>
+                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">
+                    Next<i class="fas fa-arrow-right ms-2"></i>
+                </button>
+                <button type="submit" class="btn-submit" id="submitBtn" style="display: none;">
+                    <i class="fas fa-check me-2"></i>Submit Quiz
+                </button>
+            </div>
+            
+            <div class="mt-3">
+                <button type="button" class="btn btn-outline-secondary" onclick="showAllQuestions()">
+                    <i class="fas fa-list me-2"></i>Show All Questions
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        let currentQuestionIndex = 0;
+        const questions = document.querySelectorAll('.question-card');
+        const totalQuestions = questions.length;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateQuestionDisplay();
+            
+            // Log correct answers to console for debugging
+            console.log('=== QUIZ ANSWERS ===');
+            {% for question in questions %}
+            console.log('Q{{ loop.index }}: {{ question.question }}');
+            console.log('Correct Answer: {{ question.getCorrectOption() }}');
+            console.log('Options:');
+            console.log('  A: {{ question.getOptionA() }}');
+            console.log('  B: {{ question.getOptionB() }}');
+            console.log('  C: {{ question.getOptionC() }}');
+            console.log('  D: {{ question.getOptionD() }}');
+            console.log('---');
+            {% endfor %}
+            console.log('=== END QUIZ ANSWERS ===');
+            
+            // Add click handlers to option labels
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.addEventListener('click', function() {
+                    // Remove selected class from siblings
+                    this.parentElement.querySelectorAll('.option-label').forEach(l => {
+                        l.classList.remove('selected');
+                    });
+                    // Add selected class to clicked label
+                    this.classList.add('selected');
+                });
+            });
+        });
+
+        function updateQuestionDisplay() {
+            // Hide all questions
+            questions.forEach(q => q.style.display = 'none');
+            
+            // Show current question
+            questions[currentQuestionIndex].style.display = 'block';
+            
+            // Update progress
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            
+            // Update buttons
+            document.getElementById('prevBtn').style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+            document.getElementById('nextBtn').style.display = currentQuestionIndex < totalQuestions - 1 ? 'inline-block' : 'none';
+            document.getElementById('submitBtn').style.display = currentQuestionIndex === totalQuestions - 1 ? 'inline-block' : 'none';
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                updateQuestionDisplay();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateQuestionDisplay();
+            }
+        }
+
+        function showAllQuestions() {
+            questions.forEach(q => q.style.display = 'block');
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('progressBar').style.width = '100%';
+        }
+
+        // Form validation
+        document.getElementById('quizForm').addEventListener('submit', function(e) {
+            const unanswered = [];
+            
+            questions.forEach((question, index) => {
+                const questionId = question.dataset.questionId;
+                // Use proper escaping for array-style names
+                const selected = document.querySelector(`input[name="answers\\[${questionId}\\]"]:checked`);
+                
+                if (!selected) {
+                    unanswered.push(index + 1);
+                }
+            });
+            
+            if (unanswered.length > 0) {
+                e.preventDefault();
+                alert(`Please answer all questions. Unanswered: ${unanswered.join(', ')}`);
+                return false;
+            }
+            
+            // Confirm submission
+            if (!confirm('Are you sure you want to submit your quiz?')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+{% endblock %}

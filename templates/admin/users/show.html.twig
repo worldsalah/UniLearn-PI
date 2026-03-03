@@ -241,7 +241,7 @@ Page content START -->
                     <div class="info-item">
                         <div class="info-label">Account Age</div>
                         <div class="info-value">
-                            {{ user.createdAt|date('Y-m-d') }}
+                            {{ user.createdAt|date('Y-m-d')|time_diff }} ago
                         </div>
                     </div>
                 </div>

@@ -78,4 +78,10 @@ return [
     'lodash.isequal' => [
         'version' => '4.5.0',
     ],
+    'chart.js' => [
+        'version' => '3.9.1',
+    ],
+    'apexcharts' => [
+        'version' => '3.54.1',
+    ],
 ];

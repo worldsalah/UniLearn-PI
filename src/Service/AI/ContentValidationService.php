@@ -50,7 +50,7 @@ class ContentValidationService
         }
 
         // 3. Image Validation (if image exists)
-        if ($product->getImage() !== null && $product->getImage() !== '') {
+        if ($product->getImage() !== null) {
             $imageResult = $this->validateImage($product->getImage());
             $score -= (100 - $imageResult['score']) * 0.20;
 
@@ -167,7 +167,7 @@ class ContentValidationService
 
         // Check for special characters spam
         $combinedText = ($title ?? '').($description ?? '');
-        if (preg_match('/[!@#$%^&*]{3,}/', $combinedText)) {
+        if (preg_match('/[!@#$%^&*]{3,}/', $combinedText) === 1) {
             $score -= 20;
             $suggestion = 'Remove excessive special characters';
         }
@@ -180,7 +180,7 @@ class ContentValidationService
 
     private function validateImage(?string $imagePath): array
     {
-        if ($imagePath === null || $imagePath === '') {
+        if ($imagePath === null) {
             return ['score' => 100, 'message' => 'No image provided'];
         }
 
@@ -208,7 +208,7 @@ class ContentValidationService
         $text = strtolower(($product->getTitle() ?? '').' '.($product->getDescription() ?? ''));
 
         foreach ($inappropriateKeywords as $keyword) {
-            if (false !== strpos($text, $keyword)) {
+            if (strpos($text, $keyword) !== false) {
                 $score -= 30;
                 break;
             }

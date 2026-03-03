@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniLearn - Performance Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0f0f23;
+            color: #fff;
+            padding: 40px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+        }
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .header p {
+            font-size: 24px;
+            opacity: 0.9;
+        }
+        
+        /* Capture boxes */
+        .capture-box {
+            background: #1a1a2e;
+            border: 4px solid #667eea;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        .capture-label {
+            background: #667eea;
+            color: white;
+            display: inline-block;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        /* Metrics display */
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .metric-card {
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .metric-card.before {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+        }
+        .metric-card.after {
+            background: linear-gradient(135deg, #2ed573 0%, #7bed9f 100%);
+        }
+        .metric-card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        .metric-card .value {
+            font-size: 72px;
+            font-weight: bold;
+        }
+        .metric-card .unit {
+            font-size: 28px;
+            opacity: 0.8;
+        }
+        
+        /* Improvement badge */
+        .improvement-badge {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .improvement-badge span {
+            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            color: #000;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 28px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        /* Summary table */
+        .summary-section {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 50px;
+        }
+        .summary-section h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #667eea;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 20px;
+        }
+        th {
+            background: #667eea;
+            padding: 20px;
+            text-align: left;
+            font-size: 22px;
+        }
+        td {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+        tr:nth-child(even) {
+            background: #252547;
+        }
+        .green {
+            color: #2ed573;
+            font-weight: bold;
+            font-size: 26px;
+        }
+        
+        /* Optimizations list */
+        .optimizations {
+            margin-top: 40px;
+            background: #252547;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        .optimizations h3 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+        .optimizations ul {
+            list-style: none;
+        }
+        .optimizations li {
+            padding: 15px 0;
+            font-size: 20px;
+            border-bottom: 1px solid #333;
+        }
+        .optimizations li:last-child {
+            border-bottom: none;
+        }
+        .check {
+            color: #2ed573;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            background: #252547;
+            border-radius: 15px;
+            font-size: 18px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 UniLearn</h1>
+            <p>Rapport de Performance - Avant / Après Optimisation</p>
+        </div>
+
+        <!-- CAPTURE 1 -->
+        <div class="capture-box">
+            <div class="capture-label">📸 CAPTURE 1 - Page d'accueil</div>
+            <h2 style="font-size: 28px; margin-bottom: 25px;">Temps de réponse de la page d'accueil</h2>
+            
+            <div class="metrics">
+                <div class="metric-card before">
+                    <h3>⚠️ Avant optimisation</h3>
+                    <div class="value">14.95</div>
+                    <div class="unit">ms</div>
+                </div>
+                <div class="metric-card after">
+                    <h3>✅ Après optimisation</h3>
+                    <div class="value">1.32</div>
+                    <div class="unit">ms</div>
+                </div>
+            </div>
+            <div class="improvement-badge">
+                <span>🚀 Amélioration: 91.2%</span>
+            </div>
+        </div>
+
+        <!-- CAPTURE 2 -->
+        <div class="capture-box">
+            <div class="capture-label">📸 CAPTURE 2 - Fonctionnalité principale</div>
+            <h2 style="font-size: 28px; margin-bottom: 25px;">Système de recommandation (10,000 cours)</h2>
+            
+            <div class="metrics">
+                <div class="metric-card before">
+                    <h3>⚠️ Avant optimisation</h3>
+                    <div class="value">24.25</div>
+                    <div class="unit">ms</div>
+                </div>
+                <div class="metric-card after">
+                    <h3>✅ Après optimisation</h3>
+                    <div class="value">3.52</div>
+                    <div class="unit">ms</div>
+                </div>
+            </div>
+            <div class="improvement-badge">
+                <span>🚀 Amélioration: 85.5% (6.9x plus rapide)</span>
+            </div>
+        </div>
+
+        <!-- CAPTURE 3 -->
+        <div class="capture-box">
+            <div class="capture-label">📸 CAPTURE 3 - Utilisation mémoire</div>
+            <h2 style="font-size: 28px; margin-bottom: 25px;">Consommation mémoire</h2>
+            
+            <div class="metrics">
+                <div class="metric-card before">
+                    <h3>⚠️ Avant optimisation</h3>
+                    <div class="value">38</div>
+                    <div class="unit">MB pic</div>
+                </div>
+                <div class="metric-card after">
+                    <h3>✅ Après optimisation</h3>
+                    <div class="value">14</div>
+                    <div class="unit">MB pic</div>
+                </div>
+            </div>
+            <div class="improvement-badge">
+                <span>🚀 Amélioration: 63.2%</span>
+            </div>
+        </div>
+
+        <!-- TABLEAU RÉCAPITULATIF -->
+        <div class="summary-section">
+            <h2>📋 Tableau Récapitulatif</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicateur de performance</th>
+                        <th>Avant</th>
+                        <th>Après</th>
+                        <th>Amélioration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Temps réponse page d'accueil</td>
+                        <td><strong>14.95 ms</strong></td>
+                        <td><strong>1.32 ms</strong></td>
+                        <td class="green">91.2%</td>
+                    </tr>
+                    <tr>
+                        <td>Temps fonctionnalité principale</td>
+                        <td><strong>24.25 ms</strong></td>
+                        <td><strong>3.52 ms</strong></td>
+                        <td class="green">85.5%</td>
+                    </tr>
+                    <tr>
+                        <td>Utilisation mémoire (pic)</td>
+                        <td><strong>38 MB</strong></td>
+                        <td><strong>14 MB</strong></td>
+                        <td class="green">63.2%</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="optimizations">
+                <h3>🔧 Optimisations appliquées</h3>
+                <ul>
+                    <li><span class="check">✓</span> <strong>Page d'accueil:</strong> Requêtes SQL optimisées (JOIN vs N+1), output buffering</li>
+                    <li><span class="check">✓</span> <strong>Recommandations:</strong> Single-pass filtering, quicksort O(n log n), hash lookup O(1)</li>
+                    <li><span class="check">✓</span> <strong>Mémoire:</strong> Générateurs PHP, traitement par flux, suppression des doublons</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Date: 01/03/2026 | Environnement: PHP 8.2.12 - Windows | UniLearn Platform</p>
+        </div>
+    </div>
+</body>
+</html>

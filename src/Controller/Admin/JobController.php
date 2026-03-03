@@ -35,7 +35,7 @@ class JobController extends AbstractController
             ->addSelect('COUNT(a.id) as applicationCount')
             ->groupBy('j.id');
 
-        if ($search) {
+        if ($search !== '' && $search !== null) {
             $queryBuilder
                 ->leftJoin('j.client', 'c')
                 ->where('j.title LIKE :search')
@@ -112,7 +112,7 @@ class JobController extends AbstractController
     #[Route('/{id}/delete', name: 'app_admin_job_delete', methods: ['POST'])]
     public function delete(Request $request, Job $job, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$job->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$job->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($job);
             $entityManager->flush();
         }

@@ -1,0 +1,200 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Placement Test Result - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="page-wrapper" style="background-color: white;">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Result Header -->
+            <div class="text-center mb-5">
+                {% if result.percentage >= 100 %}
+                    <div class="mb-4">
+                        <div class="display-1 text-success">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                    <h1 class="display-5 fw-bold text-success mb-3">Perfect Score!</h1>
+                    <p class="lead">Congratulations! You've demonstrated complete mastery of this course content.</p>
+                {% elseif result.percentage >= 70 %}
+                    <div class="mb-4">
+                        <div class="display-1 text-primary">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <h1 class="display-5 fw-bold text-primary mb-3">Great Performance!</h1>
+                    <p class="lead">You have solid knowledge of this subject. You'll start from the intermediate section.</p>
+                {% else %}
+                    <div class="mb-4">
+                        <div class="display-1 text-info">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                    </div>
+                    <h1 class="display-5 fw-bold text-info mb-3">Ready to Learn!</h1>
+                    <p class="lead">You'll start from the beginning and build a strong foundation.</p>
+                {% endif %}
+            </div>
+
+            <!-- Score Card -->
+            <div class="card border-0 shadow-lg mb-4">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <div class="display-2 fw-bold 
+                            {% if result.percentage >= 100 %}text-success
+                            {% elseif result.percentage >= 70 %}text-primary
+                            {% else %}text-info{% endif %}">
+                            {{ result.percentage|number_format(1) }}%
+                        </div>
+                        <p class="text-muted fs-5">{{ result.score }} out of {{ result.totalQuestions }} correct answers</p>
+                    </div>
+                    
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-auto">
+                            <div class="text-center">
+                                <div class="fs-3 fw-semibold text-primary">{{ result.totalQuestions }}</div>
+                                <small class="text-muted">Questions</small>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="text-center">
+                                <div class="fs-3 fw-semibold text-success">{{ result.score }}</div>
+                                <small class="text-muted">Correct</small>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="text-center">
+                                <div class="fs-3 fw-semibold text-danger">{{ result.totalQuestions - result.score }}</div>
+                                <small class="text-muted">Incorrect</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placement Result -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="fas fa-route text-primary me-2"></i>Your Learning Path
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    {% if result.percentage >= 100 %}
+                        <div class="alert alert-success d-flex align-items-start" role="alert">
+                            <i class="fas fa-check-circle fs-4 me-3"></i>
+                            <div>
+                                <h5 class="alert-heading fw-bold">Course Completed!</h5>
+                                <p class="mb-0">Based on your perfect score, this course is marked as complete. You can now take the certification exam to earn your certificate!</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex flex-column flex-md-row gap-3 mt-4">
+                            {% if course.quizzes|length > 0 %}
+                            <a href="{{ path('app_quiz_take', {'id': course.quizzes.first.id}) }}" class="btn btn-success btn-lg">
+                                <i class="fas fa-certificate me-2"></i>Take Certification Exam
+                            </a>
+                            {% endif %}
+                            <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-eye me-2"></i>View Course Content
+                            </a>
+                        </div>
+                        
+                    {% elseif result.percentage >= 70 %}
+                        <div class="alert alert-primary d-flex align-items-start" role="alert">
+                            <i class="fas fa-forward fs-4 me-3"></i>
+                            <div>
+                                <h5 class="alert-heading fw-bold">Starting from Middle</h5>
+                                <p class="mb-0">You'll skip the first half of the course and start from the intermediate section. The skipped lessons have been marked as complete.</p>
+                            </div>
+                        </div>
+                        
+                        {% if enrollment.startingLesson %}
+                        <div class="bg-light rounded p-4 mt-3">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="icon-lg bg-primary rounded-circle d-flex align-items-center justify-content-center text-white">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0 fw-semibold">Start with:</h6>
+                                    <p class="mb-0 text-muted">{{ enrollment.startingLesson.title }}</p>
+                                </div>
+                                <a href="{{ path('app_lesson_show', {'id': enrollment.startingLesson.id}) }}" class="btn btn-primary">
+                                    Start Learning<i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                    {% else %}
+                        <div class="alert alert-info d-flex align-items-start" role="alert">
+                            <i class="fas fa-graduation-cap fs-4 me-3"></i>
+                            <div>
+                                <h5 class="alert-heading fw-bold">Starting from Beginning</h5>
+                                <p class="mb-0">You'll start from lesson 1 and learn all the fundamentals. This will give you a solid foundation.</p>
+                            </div>
+                        </div>
+                        
+                        {% if enrollment.startingLesson %}
+                        <div class="bg-light rounded p-4 mt-3">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="icon-lg bg-info rounded-circle d-flex align-items-center justify-content-center text-white">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0 fw-semibold">Start with:</h6>
+                                    <p class="mb-0 text-muted">{{ enrollment.startingLesson.title }}</p>
+                                </div>
+                                <a href="{{ path('app_lesson_show', {'id': enrollment.startingLesson.id}) }}" class="btn btn-info text-white">
+                                    Start Learning<i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Course Progress -->
+            {% if result.percentage >= 70 and result.percentage < 100 %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h6 class="fw-semibold mb-3">Your Current Progress</h6>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ enrollment.progress }}%">
+                            {{ enrollment.progress|number_format(0) }}%
+                        </div>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Lessons before your starting point have been marked as complete.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Back to Course -->
+            <div class="text-center">
+                <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Course
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<style>
+.icon-lg {
+    width: 48px;
+    height: 48px;
+}
+</style>
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

@@ -17,7 +17,7 @@ class UniqueEmailValidator extends ConstraintValidator
         $this->userRepository = $userRepository;
     }
 
-    public function validate($value, Constraint $constraint)
+    public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$constraint instanceof UniqueEmail) {
             throw new UnexpectedTypeException($constraint, UniqueEmail::class);
@@ -29,7 +29,7 @@ class UniqueEmailValidator extends ConstraintValidator
 
         $existingUser = $this->userRepository->findOneBy(['email' => $value]);
 
-        if (null !== $existingUser && $existingUser instanceof User) {
+        if ($existingUser !== null) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

@@ -1,0 +1,404 @@
+{% macro dynamicProgressBar(current, total, color = 'primary', animated = true, showPercentage = true, showLabels = true, height = '25px', striped = false) %}
+    {% set percentage = total > 0 ? (current / total) * 100 : 0 %}
+    
+    <div class="dynamic-progress-container {% if animated %}animated{% endif %}">
+        {% if showLabels %}
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="progress-label">{{ current }} / {{ total }}</span>
+                {% if showPercentage %}
+                    <span class="progress-percentage text-muted">{{ percentage|round }}%</span>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        <div class="progress" style="height: {{ height }};">
+            <div class="progress-bar 
+                 bg-{{ color }} 
+                 {% if striped %}progress-bar-striped{% endif %} 
+                 {% if animated %}progress-bar-animated{% endif %}"
+                 role="progressbar" 
+                 style="width: {{ percentage }}%;"
+                 aria-valuenow="{{ percentage|round }}" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+                {% if showPercentage %}
+                    <span class="progress-bar-text">{{ percentage|round }}%</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if showLabels %}
+            <div class="d-flex justify-content-between mt-2">
+                <small class="text-muted">{{ current }} completed</small>
+                <small class="text-muted">{{ total - current }} remaining</small>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .dynamic-progress-container {
+            transition: all 0.3s ease;
+        }
+        
+        .dynamic-progress-container.animated .progress-bar {
+            transition: width 0.6s ease-in-out;
+        }
+        
+        .progress-bar-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .progress-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .progress-percentage {
+            font-weight: 600;
+        }
+        
+        @keyframes progressPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(25, 135, 84, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
+            }
+        }
+        
+        .dynamic-progress-container.updating .progress-bar {
+            animation: progressPulse 1s ease-out;
+        }
+    </style>
+{% endmacro %}
+
+{% macro circularProgressBar(percentage, color = 'primary', size = 'md', animated = true, showText = true) %}
+    {% set sizeClasses = {
+        'sm': 'progress-circle-sm',
+        'md': 'progress-circle-md', 
+        'lg': 'progress-circle-lg',
+        'xl': 'progress-circle-xl'
+    } %}
+    
+    <div class="progress-circle {{ sizeClasses[size] }} {% if animated %}animated{% endif %}">
+        <div class="progress-circle-inner">
+            <div class="progress-circle-bar bg-{{ color }}" 
+                 style="transform: rotate({{ 360 - (percentage * 3.6) }}deg);">
+                <div class="progress-circle-left"></div>
+                <div class="progress-circle-right"></div>
+            </div>
+            <div class="progress-circle-overlay">
+                {% if showText %}
+                    <div class="progress-circle-text">
+                        {{ percentage|round }}%
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .progress-circle {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto;
+        }
+        
+        .progress-circle-sm {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .progress-circle-md {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .progress-circle-lg {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .progress-circle-xl {
+            width: 160px;
+            height: 160px;
+        }
+        
+        .progress-circle-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #e9ecef;
+        }
+        
+        .progress-circle-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip: rect(0, 50%, 100%, 100%);
+            transform: rotate(0deg);
+            transition: transform 0.6s ease-in-out;
+        }
+        
+        .progress-circle-animated .progress-circle-bar {
+            transition: transform 0.6s ease-in-out;
+        }
+        
+        .progress-circle-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            clip: rect(0, 0, 50%, 100%);
+        }
+        
+        .progress-circle-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            clip: rect(0, 50%, 100%, 100%);
+        }
+        
+        .progress-circle-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .progress-circle-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .progress-circle-sm .progress-circle-text {
+            font-size: 0.75rem;
+        }
+        
+        .progress-circle-lg .progress-circle-text {
+            font-size: 1rem;
+        }
+        
+        .progress-circle-xl .progress-circle-text {
+            font-size: 1.25rem;
+        }
+    </style>
+{% endmacro %}
+
+{% macro stepProgressBar(steps, currentStep, color = 'primary', clickable = false) %}
+    <div class="step-progress">
+        {% for step in steps %}
+            <div class="step-progress-item {% if step.completed %}completed{% endif %} {% if step.active %}active{% endif %}">
+                <div class="step-progress-marker">
+                    {% if step.completed %}
+                        <i class="fas fa-check"></i>
+                    {% else %}
+                        <span>{{ loop.index }}</span>
+                    {% endif %}
+                </div>
+                <div class="step-progress-label">
+                    {{ step.title }}
+                </div>
+                {% if loop.last == false %}
+                    <div class="step-progress-line {% if step.completed %}completed{% endif %}"></div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <style>
+        .step-progress {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        .step-progress-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+        
+        .step-progress-marker {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            border: 2px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        
+        .step-progress-item.active .step-progress-marker {
+            background: var(--bs-{{ color }});
+            border-color: var(--bs-{{ color }});
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .step-progress-item.completed .step-progress-marker {
+            background: var(--bs-success);
+            border-color: var(--bs-success);
+            color: white;
+        }
+        
+        .step-progress-label {
+            margin-top: 8px;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .step-progress-line {
+            flex: 1;
+            height: 2px;
+            background: #dee2e6;
+            margin: 0 8px;
+            position: relative;
+            top: 20px;
+        }
+        
+        .step-progress-line.completed {
+            background: var(--bs-success);
+        }
+        
+        {% if clickable %}
+        .step-progress-item {
+            cursor: pointer;
+        }
+        
+        .step-progress-item:hover .step-progress-marker {
+            transform: scale(1.05);
+        }
+        {% endif %}
+    </style>
+{% endmacro %}
+
+{% macro skillBar(skill, level, maxLevel = 5, color = 'primary') %}
+    {% set percentage = (level / maxLevel) * 100 %}
+    
+    <div class="skill-bar-container">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="skill-name">{{ skill }}</span>
+            <span class="skill-level">{{ level }}/{{ maxLevel }}</span>
+        </div>
+        <div class="progress" style="height: 8px;">
+            <div class="progress-bar bg-{{ color }}" 
+                 style="width: {{ percentage }}%;"
+                 role="progressbar" 
+                 aria-valuenow="{{ percentage|round }}" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .skill-bar-container {
+            margin-bottom: 1rem;
+        }
+        
+        .skill-name {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .skill-level {
+            font-size: 0.875rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .skill-bar-container .progress {
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        
+        .skill-bar-container .progress-bar {
+            border-radius: 4px;
+            transition: width 0.8s ease-in-out;
+        }
+    </style>
+{% endmacro %}
+
+{% macro loadingBar(color = 'primary', height = '4px') %}
+    <div class="loading-bar-container">
+        <div class="progress" style="height: {{ height }};">
+            <div class="progress-bar bg-{{ color }} progress-bar-striped progress-bar-animated" 
+                 role="progressbar" 
+                 style="width: 100%;"
+                 aria-valuenow="100" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .loading-bar-container {
+            width: 100%;
+        }
+        
+        .loading-bar-container .progress {
+            background-color: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loading-bar-container .progress-bar {
+            background-image: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.15) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.15) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 40px 40px;
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+        
+        @keyframes progress-bar-stripes {
+            0% {
+                background-position: 40px 0;
+            }
+            100% {
+                background-position: 0 0;
+            }
+        }
+    </style>
+{% endmacro %}

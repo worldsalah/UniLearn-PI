@@ -128,7 +128,7 @@
                                 <span class="text-warning me-1">{{ instructor.rating ?? 0 }}</span>
                                 <div class="text-warning">
                                     {% set rating = instructor.rating ?? 0 %}
-                                    {% for i in range(1, 6) %}
+                                    {% for i in range(5) %}
                                         {% if i < rating %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star-half"></i>{% endif %}
                                     {% endfor %}
                                 </div>

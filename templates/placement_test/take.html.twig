@@ -1,0 +1,211 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}Taking Placement Test - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="page-wrapper" style="background-color: white;">
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Progress Header -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0 fw-semibold">{{ course.title }}</h5>
+                            <small class="text-muted">Placement Test</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="text-end">
+                                <span class="badge bg-primary fs-6" id="questionCounter">Question 1 of {{ test.questions|length }}</span>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-warning text-dark fs-6" id="timer">
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span id="timeDisplay">{{ test.timeLimit }}:00</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress mt-3" style="height: 8px;">
+                        <div class="progress-bar" role="progressbar" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Form -->
+            <form id="placementTestForm" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('placement_test' ~ course.id) }}">
+                
+                {% for question in test.questions %}
+                <div class="card border-0 shadow-sm mb-4 question-card" id="question{{ loop.index }}" {% if loop.index > 1 %}style="display: none;"{% endif %}>
+                    <div class="card-header bg-white py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-light text-dark fs-6">Question {{ loop.index }}</span>
+                            {% if question.difficulty %}
+                            <span class="badge 
+                                {% if question.difficulty == 'easy' %}bg-success
+                                {% elseif question.difficulty == 'medium' %}bg-warning text-dark
+                                {% else %}bg-danger{% endif %}">
+                                {{ question.difficulty|capitalize }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <h5 class="fw-semibold mb-4">{{ question.question }}</h5>
+                        
+                        <div class="options-container">
+                            {% for key, option in question.options %}
+                            <div class="form-check mb-3 option-item">
+                                <input class="form-check-input" type="radio" 
+                                    name="answers[{{ question.id }}]" 
+                                    id="q{{ question.id }}_{{ key }}" 
+                                    value="{{ key }}"
+                                    onchange="updateProgress()">
+                                <label class="form-check-label w-100 p-3 border rounded option-label" 
+                                    for="q{{ question.id }}_{{ key }}"
+                                    style="cursor: pointer; transition: all 0.2s;">
+                                    <span class="fw-semibold me-2">{{ key }}.</span>
+                                    {{ option }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white py-3">
+                        <div class="d-flex justify-content-between">
+                            {% if loop.index > 1 %}
+                            <button type="button" class="btn btn-outline-secondary" onclick="showQuestion({{ loop.index - 1 }})">
+                                <i class="fas fa-arrow-left me-2"></i>Previous
+                            </button>
+                            {% else %}
+                            <div></div>
+                            {% endif %}
+                            
+                            {% if loop.index < test.questions|length %}
+                            <button type="button" class="btn btn-primary" onclick="showQuestion({{ loop.index + 1 }})">
+                                Next<i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                            {% else %}
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check me-2"></i>Submit Test
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </form>
+
+            <!-- Question Navigator -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-3">
+                    <div class="d-flex flex-wrap gap-2 justify-content-center" id="questionNav">
+                        {% for question in test.questions %}
+                        <button type="button" class="btn btn-outline-secondary btn-sm question-nav-btn" 
+                            onclick="showQuestion({{ loop.index }})"
+                            id="navBtn{{ loop.index }}"
+                            style="width: 40px; height: 40px;">
+                            {{ loop.index }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.option-label:hover {
+    border-color: #0d6efd !important;
+    background-color: rgba(13, 110, 253, 0.05);
+}
+.form-check-input:checked + .option-label {
+    border-color: #0d6efd !important;
+    background-color: rgba(13, 110, 253, 0.1);
+}
+.question-nav-btn.answered {
+    background-color: #198754;
+    border-color: #198754;
+    color: white;
+}
+.question-nav-btn.current {
+    border-color: #0d6efd;
+    border-width: 2px;
+}
+</style>
+
+<script>
+let currentQuestion = 1;
+const totalQuestions = {{ test.questions|length }};
+let timeLeft = {{ test.timeLimit }} * 60; // in seconds
+
+// Timer
+const timerInterval = setInterval(function() {
+    timeLeft--;
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timeDisplay').textContent = 
+        minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+    
+    if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('placementTestForm').submit();
+    }
+}, 1000);
+
+function showQuestion(num) {
+    // Hide all questions
+    document.querySelectorAll('.question-card').forEach(card => {
+        card.style.display = 'none';
+    });
+    
+    // Show selected question
+    document.getElementById('question' + num).style.display = 'block';
+    
+    // Update counter
+    document.getElementById('questionCounter').textContent = 'Question ' + num + ' of ' + totalQuestions;
+    
+    // Update progress bar
+    const progress = ((num - 1) / totalQuestions) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+    
+    // Update nav buttons
+    document.querySelectorAll('.question-nav-btn').forEach(btn => {
+        btn.classList.remove('current');
+    });
+    document.getElementById('navBtn' + num).classList.add('current');
+    
+    currentQuestion = num;
+}
+
+function updateProgress() {
+    // Mark nav button as answered
+    const currentBtn = document.getElementById('navBtn' + currentQuestion);
+    currentBtn.classList.add('answered');
+    
+    // Check if all questions are answered
+    const answeredCount = document.querySelectorAll('.question-nav-btn.answered').length;
+    if (answeredCount === totalQuestions) {
+        document.getElementById('progressBar').style.width = '100%';
+    }
+}
+
+// Initialize first nav button as current
+document.getElementById('navBtn1').classList.add('current');
+
+// Warn before leaving page
+window.addEventListener('beforeunload', function(e) {
+    if (document.querySelectorAll('.question-nav-btn.answered').length < totalQuestions) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+</script>
+
+</div>
+
+{% include 'components/footer.html.twig' %}
+{% endblock %}

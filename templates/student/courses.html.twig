@@ -1,0 +1,386 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}My Courses - Student Dashboard{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* Enhanced Course Card Styles */
+.course-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    overflow: hidden;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.course-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.course-image-container .card-img-top {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.course-card:hover .course-image-container .card-img-top {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.course-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.course-card:hover .course-image-overlay {
+    opacity: 1;
+}
+
+.course-progress-badge,
+.course-duration-badge {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.course-progress-badge {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    align-self: flex-start;
+}
+
+.course-duration-badge {
+    align-self: flex-end;
+}
+
+/* Enhanced Progress Bar */
+.progress {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #ffc107, #ff9800);
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+/* Card Hover Effects */
+.card-body {
+    transition: background-color 0.3s ease;
+}
+
+.course-card:hover .card-body {
+    background-color: rgba(248, 249, 250, 0.8);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Student Courses START -->
+<section class="pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Left sidebar START -->
+            <div class="col-lg-3">
+                <!-- User profile START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </div>
+                        <h5 class="mb-1">{{ user.name|default(user.email) }}</h5>
+                        <p class="mb-2">{{ user.email }}</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-sm btn-primary">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- User profile END -->
+
+                <!-- Navigation menu START -->
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="{{ path('app_student_dashboard') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                            <a href="{{ path('app_student_courses') }}" class="list-group-item list-group-item-action active">
+                                <i class="fas fa-book me-2"></i>My Courses
+                            </a>
+                            <a href="{{ path('app_student_certificates') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-certificate me-2"></i>Certificates
+                            </a>
+                            <a href="{{ path('app_student_quiz_analysis') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-brain me-2"></i>AI Quiz Analysis
+                            </a>
+                            <a href="/student-ai-roadmap" class="list-group-item list-group-item-action" onclick="console.log('AI Recommendations clicked'); window.location.href='/student-ai-roadmap'; return false;">
+                                <i class="fas fa-lightbulb me-2"></i>AI Recommendations
+                            </a>
+                            <a href="{{ path('app_gamification_profile') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-trophy me-2"></i>My Gamification
+                            </a>
+                            <a href="{{ path('app_student_settings') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation menu END -->
+            </div>
+
+            <!-- Main content START -->
+            <div class="col-lg-9">
+                <!-- Header START -->
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-1">My Courses</h3>
+                                <p class="mb-0 text-muted">Track your learning progress and continue your studies</p>
+                            </div>
+                            <div class="text-end">
+                                <h4 class="mb-0">{{ totalEnrollments }}</h4>
+                                <p class="mb-0 small text-muted">Total Enrollments</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Header END -->
+
+                <!-- In Progress Courses START -->
+                {% if inProgressCourses|length > 0 %}
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0">
+                                <i class="fas fa-clock text-warning me-2"></i>In Progress
+                                <span class="badge bg-warning ms-2">{{ inProgressCourses|length }}</span>
+                            </h5>
+                        </div>
+                        
+                        <div class="row g-4">
+                            {% for enrollment in inProgressCourses %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card h-100 border-0 shadow-sm course-card">
+                                        {% set thumbnail = enrollment.course.thumbnailUrl %}
+                                        {% if thumbnail %}
+                                            <div class="course-image-container">
+                                                {% if thumbnail starts with 'http' or thumbnail starts with 'https' %}
+                                                    <img src="{{ thumbnail }}" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                                {% else %}
+                                                    <img src="{{ asset(thumbnail) }}" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                                {% endif %}
+                                                <div class="course-image-overlay">
+                                                    <div class="course-progress-badge">
+                                                        <i class="fas fa-chart-line me-1"></i>
+                                                        {{ enrollment.progress|round }}% Complete
+                                                    </div>
+                                                    <div class="course-duration-badge">
+                                                        <i class="fas fa-clock me-1"></i>
+                                                        {% if enrollment.course.duration %}{{ enrollment.course.duration }}h{% else %}Self-paced{% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="course-image-container">
+                                                {% set randomImage = random(['programming', 'webdev', 'design', 'business', 'data']) %}
+                                                {% if randomImage == 'programming' %}
+                                                    <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                                {% elseif randomImage == 'webdev' %}
+                                                    <img src="https://images.unsplash.com/photo-1522252234503-e356532cafd5?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                                {% elseif randomImage == 'design' %}
+                                                    <img src="https://images.unsplash.com/photo-1559028006-848865316f3c?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                                {% elseif randomImage == 'business' %}
+                                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                                {% else %}
+                                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop&auto=format" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                                {% endif %}
+                                                <div class="course-image-overlay">
+                                                    <div class="course-progress-badge">
+                                                        <i class="fas fa-chart-line me-1"></i>
+                                                        {{ enrollment.progress|round }}% Complete
+                                                    </div>
+                                                    <div class="course-duration-badge">
+                                                        <i class="fas fa-clock me-1"></i>
+                                                        {% if enrollment.course.duration %}{{ enrollment.course.duration }}h{% else %}Self-paced{% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ enrollment.course.title }}</h6>
+                                            <p class="card-text small text-muted">{{ enrollment.course.shortDescription|slice(0, 80) }}...</p>
+                                            
+                                            <!-- Progress Bar -->
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <small class="text-muted">Progress</small>
+                                                    <small class="text-muted">{{ enrollment.progress|default(0) }}%</small>
+                                                </div>
+                                                <div class="progress" style="height: 6px;">
+                                                    <div class="progress-bar bg-warning" style="width: {{ enrollment.progress|default(0) }}%"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Course Meta -->
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <span class="badge bg-light text-dark">{{ enrollment.course.level|default('All Levels') }}</span>
+                                                <small class="text-muted">
+                                                    {% if enrollment.course.chapters %}
+                                                        {{ enrollment.course.chapters|length }} chapters
+                                                    {% else %}
+                                                        Multiple lessons
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                            
+                                            <!-- Action Buttons -->
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ path('app_course_show', {'id': enrollment.course.id}) }}" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-play me-1"></i>Continue Learning
+                                                </a>
+                                                <a href="{{ path('app_course_dashboard', {'id': enrollment.course.id}) }}" class="btn btn-outline-secondary btn-sm">
+                                                    <i class="fas fa-chart-line me-1"></i>View Progress
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- In Progress Courses END -->
+
+                <!-- Completed Courses START -->
+                {% if completedCourses|length > 0 %}
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0">
+                                <i class="fas fa-check-circle text-success me-2"></i>Completed
+                                <span class="badge bg-success ms-2">{{ completedCourses|length }}</span>
+                            </h5>
+                        </div>
+                        
+                        <div class="row g-4">
+                            {% for enrollment in completedCourses %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        {% set thumbnail = enrollment.course.thumbnailUrl %}
+                                        {% if thumbnail %}
+                                            {% if thumbnail starts with 'http' or thumbnail starts with 'https' %}
+                                                <img src="{{ thumbnail }}" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                            {% else %}
+                                                <img src="{{ asset(thumbnail) }}" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                            {% endif %}
+                                        {% else %}
+                                            <img src="{{ asset('assets/images/courses/4by3/01.jpg') }}" class="card-img-top" alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                                        {% endif %}
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="card-title">{{ enrollment.course.title }}</h6>
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check"></i>
+                                                </span>
+                                            </div>
+                                            <p class="card-text small text-muted">{{ enrollment.course.shortDescription|slice(0, 80) }}...</p>
+                                            
+                                            <!-- Completion Info -->
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between mb-1">
+                                                    <small class="text-muted">Completed</small>
+                                                    <small class="text-success fw-bold">100%</small>
+                                                </div>
+                                                <div class="progress" style="height: 6px;">
+                                                    <div class="progress-bar bg-success" style="width: 100%"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Course Meta -->
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <span class="badge bg-light text-dark">{{ enrollment.course.level|default('All Levels') }}</span>
+                                                <small class="text-muted">
+                                                    {% if enrollment.completedAt %}
+                                                        Completed on {{ enrollment.completedAt|date('M d, Y') }}
+                                                    {% else %}
+                                                        Recently completed
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                            
+                                            <!-- Action Buttons -->
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ path('app_course_show', {'id': enrollment.course.id}) }}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-redo me-1"></i>Review Course
+                                                </a>
+                                                <a href="#" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-download me-1"></i>Download Certificate
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Completed Courses END -->
+
+                <!-- Empty State START -->
+                {% if inProgressCourses|length == 0 and completedCourses|length == 0 %}
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center py-4">
+                            <i class="fas fa-book-open fa-4x text-muted mb-4"></i>
+                            <h4 class="text-muted mb-3">No courses yet</h4>
+                            <p class="text-muted mb-4">Start your learning journey by enrolling in your first course!</p>
+                            <a href="{{ path('app_course_grid') }}" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Browse Courses
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Empty State END -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Student Courses END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+{% endblock %}
+
+{% block body_end %}
+{% include 'components/footer.html.twig' %}
+{% endblock %}

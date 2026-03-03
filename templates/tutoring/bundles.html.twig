@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Bundles - UniLearn{% endblock %}
+
+{% block body %}
+<div class="bg-gray-50 min-h-screen">
+    {# Header #}
+    <div class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <h1 class="text-2xl font-bold text-gray-900">My Session Bundles</h1>
+            <p class="text-gray-600">Save up to 20% with session packages</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        {# Purchase Options #}
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Purchase New Bundle</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {# Single Session #}
+                <div class="bg-white rounded-lg shadow p-6 border-2 border-transparent hover:border-blue-500 transition">
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">📚</div>
+                        <h3 class="text-lg font-semibold">Single Session</h3>
+                        <div class="text-3xl font-bold text-gray-900 my-4">$45</div>
+                        <p class="text-gray-500 text-sm mb-4">1 session • No discount</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-2 mb-6">
+                            <li>✓ 1 hour session</li>
+                            <li>✓ Valid for 2 months</li>
+                            <li>✓ Any tutor</li>
+                        </ul>
+                        <button class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                            Book Instead
+                        </button>
+                    </div>
+                </div>
+
+                {# 5 Pack #}
+                <div class="bg-white rounded-lg shadow p-6 border-2 border-blue-500 relative">
+                    <div class="absolute top-0 right-0 bg-green-500 text-white text-xs px-3 py-1 rounded-bl-lg rounded-tr-lg">
+                        Save 10%
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">🎁</div>
+                        <h3 class="text-lg font-semibold">5-Session Pack</h3>
+                        <div class="text-3xl font-bold text-blue-600 my-4">$202</div>
+                        <p class="text-gray-500 text-sm mb-4">5 sessions • $40.40 each</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-2 mb-6">
+                            <li>✓ 5 hour sessions</li>
+                            <li>✓ Valid for 4 months</li>
+                            <li>✓ Any tutor</li>
+                            <li class="text-green-600 font-medium">✓ Save $23</li>
+                        </ul>
+                        <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            Purchase Pack
+                        </button>
+                    </div>
+                </div>
+
+                {# 10 Pack #}
+                <div class="bg-white rounded-lg shadow p-6 border-2 border-transparent hover:border-blue-500 transition relative">
+                    <div class="absolute top-0 right-0 bg-green-500 text-white text-xs px-3 py-1 rounded-bl-lg rounded-tr-lg">
+                        Save 20%
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">🏆</div>
+                        <h3 class="text-lg font-semibold">10-Session Pack</h3>
+                        <div class="text-3xl font-bold text-gray-900 my-4">$360</div>
+                        <p class="text-gray-500 text-sm mb-4">10 sessions • $36 each</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-2 mb-6">
+                            <li>✓ 10 hour sessions</li>
+                            <li>✓ Valid for 6 months</li>
+                            <li>✓ Any tutor</li>
+                            <li class="text-green-600 font-medium">✓ Save $90</li>
+                        </ul>
+                        <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            Purchase Pack
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Active Bundles #}
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Active Bundles</h2>
+            {% if bundles|length > 0 %}
+            <div class="space-y-4">
+                {% for bundle in bundles %}
+                {% if bundle.status == 'active' %}
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🎁</span>
+                                <div>
+                                    <h3 class="font-semibold">{{ bundle.type|capitalize }} Pack</h3>
+                                    <p class="text-gray-500 text-sm">
+                                        {% if bundle.teacher %}
+                                        with {{ bundle.teacher.user.firstName }} {{ bundle.teacher.user.lastName }}
+                                        {% else %}
+                                        Any tutor
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-8">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600">{{ bundle.sessionsRemaining }}</div>
+                                <div class="text-gray-500 text-sm">Sessions Left</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-gray-700">{{ bundle.expiresAt|date('M j, Y') }}</div>
+                                <div class="text-gray-500 text-sm">Expires</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>{{ bundle.sessionsUsed }} used</span>
+                            <span>{{ bundle.sessionsTotal }} total</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="bg-blue-600 h-3 rounded-full" 
+                                 style="width: {{ (bundle.sessionsUsed / bundle.sessionsTotal * 100) }}%"></div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+                <div class="text-4xl mb-2">🎁</div>
+                <p>No active bundles</p>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Expired/Used Bundles #}
+        {% set expiredBundles = bundles|filter(b => b.status != 'active') %}
+        {% if expiredBundles|length > 0 %}
+        <div>
+            <h2 class="text-xl font-semibold mb-4 text-gray-500">Past Bundles</h2>
+            <div class="space-y-4">
+                {% for bundle in expiredBundles %}
+                <div class="bg-gray-100 rounded-lg p-6 opacity-75">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="font-medium">{{ bundle.type|capitalize }} Pack</span>
+                            <span class="ml-2 px-2 py-1 text-xs rounded-full
+                                {{ bundle.status == 'exhausted' ? 'bg-gray-200 text-gray-600' : 'bg-red-100 text-red-600' }}">
+                                {{ bundle.status|capitalize }}
+                            </span>
+                        </div>
+                        <div class="text-gray-500 text-sm">
+                            {{ bundle.sessionsUsed }}/{{ bundle.sessionsTotal }} sessions used
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

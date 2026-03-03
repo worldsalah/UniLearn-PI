@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Find Tutors - UniLearn{% endblock %}
+
+{% block body %}
+<div class="bg-gray-50 min-h-screen">
+    {# Header #}
+    <div class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <h1 class="text-3xl font-bold text-gray-900">Find Your Perfect Tutor</h1>
+            <p class="text-gray-600 mt-1">Browse our verified tutors and book a session today</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        {# Filters #}
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <form method="GET" class="flex flex-wrap gap-4 items-end">
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                    <input type="text" name="subject" value="{{ filters.subject }}" 
+                           placeholder="e.g., Mathematics, Physics"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div class="w-40">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Min Rating</label>
+                    <select name="minRating" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">Any</option>
+                        <option value="4.5" {{ filters.minRating == '4.5' ? 'selected' : '' }}>4.5+ ⭐</option>
+                        <option value="4" {{ filters.minRating == '4' ? 'selected' : '' }}>4+ ⭐</option>
+                        <option value="3.5" {{ filters.minRating == '3.5' ? 'selected' : '' }}>3.5+ ⭐</option>
+                    </select>
+                </div>
+                <div class="w-40">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Max Price</label>
+                    <select name="maxPrice" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">Any</option>
+                        <option value="30" {{ filters.maxPrice == '30' ? 'selected' : '' }}>$30/hr</option>
+                        <option value="50" {{ filters.maxPrice == '50' ? 'selected' : '' }}>$50/hr</option>
+                        <option value="75" {{ filters.maxPrice == '75' ? 'selected' : '' }}>$75/hr</option>
+                        <option value="100" {{ filters.maxPrice == '100' ? 'selected' : '' }}>$100/hr</option>
+                    </select>
+                </div>
+                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    🔍 Search
+                </button>
+                <a href="{{ path('tutoring_teachers') }}" class="px-4 py-2 text-gray-600 hover:text-gray-800">Clear</a>
+            </form>
+        </div>
+
+        {# Results count #}
+        <p class="text-gray-600 mb-4">Showing {{ total }} tutor{{ total != 1 ? 's' : '' }}</p>
+
+        {# Teachers Grid #}
+        {% if teachers|length > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for teacher in teachers %}
+            <a href="{{ path('tutoring_teacher_profile', {'id': teacher.id}) }}" 
+               class="bg-white rounded-lg shadow hover:shadow-lg transition block">
+                <div class="p-6">
+                    {# Avatar & Name #}
+                    <div class="flex items-center mb-4">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl">
+                            👨‍🏫
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="font-semibold text-lg text-gray-900">
+                                {{ teacher.user.firstName }} {{ teacher.user.lastName }}
+                            </h3>
+                            <div class="flex items-center text-sm">
+                                <span class="text-yellow-500">⭐</span>
+                                <span class="ml-1 font-medium">{{ teacher.ratingAvg|number_format(1) }}</span>
+                                <span class="text-gray-400 ml-1">({{ teacher.reviewCount }})</span>
+                                {% if teacher.isVerified %}
+                                <span class="ml-2 text-green-500">✓</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Subjects #}
+                    <div class="mb-3">
+                        <div class="flex flex-wrap gap-2">
+                            {% for subject in teacher.subjects|slice(0, 3) %}
+                            <span class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
+                                {{ subject }}
+                            </span>
+                            {% endfor %}
+                            {% if teacher.subjects|length > 3 %}
+                            <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                +{{ teacher.subjects|length - 3 }} more
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Bio #}
+                    {% if teacher.bio %}
+                    <p class="text-gray-600 text-sm line-clamp-2 mb-4">{{ teacher.bio|slice(0, 100) }}...</p>
+                    {% endif %}
+
+                    {# Price #}
+                    <div class="flex items-center justify-between pt-4 border-t">
+                        <span class="text-2xl font-bold text-gray-900">${{ teacher.hourlyRate }}</span>
+                        <span class="text-gray-500 text-sm">/hour</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        {# Pagination #}
+        {% if pages > 1 %}
+        <div class="flex justify-center mt-8">
+            <nav class="flex items-center gap-2">
+                {% if page > 1 %}
+                <a href="{{ path('tutoring_teachers', app.request.query.all|merge({'page': page - 1})) }}" 
+                   class="px-4 py-2 bg-white border rounded-lg hover:bg-gray-50">
+                    ← Previous
+                </a>
+                {% endif %}
+
+                {% for p in 1..pages %}
+                    {% if p == page %}
+                    <span class="px-4 py-2 bg-blue-600 text-white rounded-lg">{{ p }}</span>
+                    {% elseif p <= 3 or p > pages - 2 or (p >= page - 1 and p <= page + 1) %}
+                    <a href="{{ path('tutoring_teachers', app.request.query.all|merge({'page': p})) }}" 
+                       class="px-4 py-2 bg-white border rounded-lg hover:bg-gray-50">
+                        {{ p }}
+                    </a>
+                    {% elseif p == 4 or p == pages - 2 %}
+                    <span class="px-2">...</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page < pages %}
+                <a href="{{ path('tutoring_teachers', app.request.query.all|merge({'page': page + 1})) }}" 
+                   class="px-4 py-2 bg-white border rounded-lg hover:bg-gray-50">
+                    Next →
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        {# No results #}
+        <div class="text-center py-16">
+            <div class="text-6xl mb-4">🔍</div>
+            <h2 class="text-2xl font-semibold text-gray-700 mb-2">No tutors found</h2>
+            <p class="text-gray-500">Try adjusting your filters or search criteria</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

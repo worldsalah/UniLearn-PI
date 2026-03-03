@@ -536,23 +536,23 @@ Page content START -->
 						<!-- Course stats -->
 						<div class="courses-stats">
 							<div class="stat-item">
-								<div class="stat-trend trend-up">
-									<i class="fas fa-arrow-up"></i> 12%
+								<div class="stat-trend {{ courseStats.totalPercentChange >= 0 ? 'trend-up' : 'trend-down' }}">
+									<i class="fas fa-arrow-{{ courseStats.totalPercentChange >= 0 ? 'up' : 'down' }}"></i> {{ courseStats.totalPercentChange|number_format(0) }}%
 								</div>
 								<div class="stat-icon">
 									<i class="fas fa-book"></i>
 								</div>
-								<div class="stat-number">{{ courses|length }}</div>
+								<div class="stat-number">{{ courseStats.total }}</div>
 								<div class="stat-label">Total Courses</div>
 							</div>
 							<div class="stat-item">
-								<div class="stat-trend trend-up">
-									<i class="fas fa-arrow-up"></i> 8%
+								<div class="stat-trend {{ courseStats.activePercentChange >= 0 ? 'trend-up' : 'trend-down' }}">
+									<i class="fas fa-arrow-{{ courseStats.activePercentChange >= 0 ? 'up' : 'down' }}"></i> {{ courseStats.activePercentChange|number_format(0) }}%
 								</div>
 								<div class="stat-icon">
 									<i class="fas fa-play-circle"></i>
 								</div>
-								<div class="stat-number">{{ courses|filter(c => c.status == 'active')|length }}</div>
+								<div class="stat-number">{{ courseStats.active }}</div>
 								<div class="stat-label">Active</div>
 							</div>
 							<div class="stat-item">
@@ -562,17 +562,17 @@ Page content START -->
 								<div class="stat-icon">
 									<i class="fas fa-clock"></i>
 								</div>
-								<div class="stat-number">{{ courses|filter(c => c.status == 'pending')|length }}</div>
+								<div class="stat-number">{{ courseStats.pending }}</div>
 								<div class="stat-label">Pending</div>
 							</div>
 							<div class="stat-item">
 								<div class="stat-trend trend-up">
-									<i class="fas fa-arrow-up"></i> 24%
+									<i class="fas fa-arrow-up"></i> {{ courseStats.totalValue > 0 ? '24' : '0' }}%
 								</div>
 								<div class="stat-icon">
 									<i class="fas fa-dollar-sign"></i>
 								</div>
-								<div class="stat-number">${{ courses|reduce((sum, c) => sum + c.price, 0) }}</div>
+								<div class="stat-number">${{ courseStats.totalValue|number_format(2) }}</div>
 								<div class="stat-label">Total Value</div>
 							</div>
 						</div>
@@ -660,7 +660,7 @@ Page content START -->
 										</tr>
 									{% else %}
 										{% for course in courses %}
-											<tr data-course-id="{{ course.id }}" data-course-title="{{ course.title|lower }}" data-course-price="{{ course.price }}" data-course-students="{{ course.students|default(0) }}" data-course-status="{{ course.status }}">
+											<tr data-course-id="{{ course.id }}" data-course-title="{{ course.title|lower }}" data-course-price="{{ course.price }}" data-course-students="{{ courseEnrollments[course.id]|default(0) }}" data-course-status="{{ course.status }}">
 												<td>
 													<div class="d-flex align-items-center">
 														<div class="me-3">
@@ -679,11 +679,11 @@ Page content START -->
 												<td>
 													<div class="d-flex align-items-center">
 														<i class="fas fa-users me-2 text-primary"></i>
-														<span class="fw-bold">{{ course.students|default(0) }}</span>
+														<span class="fw-bold">{{ courseEnrollments[course.id]|default(0) }}</span>
 													</div>
 												</td>
 												<td>
-													{% if course.status == 'active' %}
+													{% if course.status == 'active' or course.status == 'live' %}
 														<span class="badge badge-modern bg-success">Live</span>
 													{% elseif course.status == 'inactive' %}
 														<span class="badge badge-modern bg-secondary">Disabled</span>
@@ -784,10 +784,7 @@ Page content END -->
 {% endblock %}
 
 {% block javascripts %}
-<!-- Choices.js -->
-<script src="{{ asset('assets/vendor/choices/js/choices.min.js') }}"></script>
-
-<!-- Init Choices.js -->
+<!-- Init Choices.js (choices.js already loaded in base.html.twig) -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     // Initialize Choices.js

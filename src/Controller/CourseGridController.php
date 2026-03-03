@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\Pagination\Pagination;
 
 class CourseGridController extends AbstractController
 {
@@ -26,19 +28,16 @@ class CourseGridController extends AbstractController
         CourseRepository $courseRepository,
         CategoryRepository $categoryRepository,
         EntityManagerInterface $entityManager,
+        PaginatorInterface $paginator,
     ): Response {
         // Get filter parameters with safe defaults
         $search = $request->query->get('search', '');
         $sort = $request->query->get('sort', 'newest');
-        $categories = $request->query->all('categories', []);
-        $levels = $request->query->all('levels', []);
+        $categories = $request->query->all('categories');
+        $levels = $request->query->all('levels');
         $priceType = $request->query->get('price_type', '');
-        $languages = $request->query->all('languages', []);
-
-        // Ensure all filter parameters are arrays
-        $categories = is_array($categories) ? $categories : [];
-        $levels = is_array($levels) ? $levels : [];
-        $languages = is_array($languages) ? $languages : [];
+        $languages = $request->query->all('languages');
+        $page = $request->query->getInt('page', 1);
 
         // Clean up filter parameters - remove empty values and convert to strings
         $categories = array_filter($categories, fn($cat) => is_string($cat) && $cat !== '');
@@ -56,7 +55,7 @@ class CourseGridController extends AbstractController
             ->setParameter('status', 'live');
 
         // Apply search filter
-        if ($search) {
+        if ($search !== '') {
             $queryBuilder->andWhere('c.title LIKE :search OR c.shortDescription LIKE :search')
                 ->setParameter('search', '%'.$search.'%');
         }
@@ -93,28 +92,41 @@ class CourseGridController extends AbstractController
                 ->setParameter('languages', $languages);
         }
 
-        // Get all courses before sorting
-        $courses = $queryBuilder->getQuery()->getResult();
-
-        // Apply sorting
+        // Apply sorting based on the sort parameter
         switch ($sort) {
-            case 'popular':
-                usort($courses, fn($a, $b) => $b->getCreatedAt() <=> $a->getCreatedAt());
-                break;
             case 'newest':
-                usort($courses, fn($a, $b) => $b->getCreatedAt() <=> $a->getCreatedAt());
+                $queryBuilder->orderBy('c.createdAt', 'DESC');
                 break;
-            case 'rating':
-                usort($courses, fn($a, $b) => $b->getCreatedAt() <=> $a->getCreatedAt());
+            case 'oldest':
+                $queryBuilder->orderBy('c.createdAt', 'ASC');
                 break;
             case 'price_low':
-                usort($courses, fn($a, $b) => $a->getPrice() <=> $b->getPrice());
+                $queryBuilder->orderBy('c.price', 'ASC');
                 break;
             case 'price_high':
-                usort($courses, fn($a, $b) => $b->getPrice() <=> $a->getPrice());
+                $queryBuilder->orderBy('c.price', 'DESC');
+                break;
+            case 'name':
+                $queryBuilder->orderBy('c.title', 'ASC');
                 break;
             default:
-                usort($courses, fn($a, $b) => $b->getCreatedAt() <=> $a->getCreatedAt());
+                $queryBuilder->orderBy('c.createdAt', 'DESC');
+        }
+
+        // Temporarily remove sort parameter from request to prevent KnpPaginator conflicts
+        $originalRequest = $request->query->all();
+        $request->query->remove('sort');
+        
+        // Use pagination
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $page,
+            9 // 9 courses per page
+        );
+        
+        // Restore the sort parameter
+        foreach ($originalRequest as $key => $value) {
+            $request->query->set($key, $value);
         }
 
         // Get filter data
@@ -123,7 +135,7 @@ class CourseGridController extends AbstractController
         $availableLanguages = $this->getAvailableLanguages($entityManager);
 
         return $this->render('course/course-grid.html.twig', [
-            'courses' => $courses,
+            'pagination' => $pagination,
             'categories' => $categoriesWithCount,
             'levels' => $availableLevels,
             'languages' => $availableLanguages,
@@ -147,19 +159,16 @@ class CourseGridController extends AbstractController
         CourseRepository $courseRepository,
         CategoryRepository $categoryRepository,
         EntityManagerInterface $entityManager,
+        PaginatorInterface $paginator,
     ): JsonResponse {
         // Get filter parameters with safe defaults
         $search = $request->query->get('search', '');
         $sort = $request->query->get('sort', 'newest');
-        $categories = $request->query->all('categories', []);
-        $levels = $request->query->all('levels', []);
+        $categories = $request->query->all('categories');
+        $levels = $request->query->all('levels');
         $priceType = $request->query->get('price_type', '');
-        $languages = $request->query->all('languages', []);
-
-        // Ensure all filter parameters are arrays
-        $categories = is_array($categories) ? $categories : [];
-        $levels = is_array($levels) ? $levels : [];
-        $languages = is_array($languages) ? $languages : [];
+        $languages = $request->query->all('languages');
+        $page = $request->query->getInt('page', 1);
 
         // Clean up filter parameters - remove empty values and convert to strings
         $categories = array_filter($categories, fn($cat) => is_string($cat) && $cat !== '');
@@ -177,7 +186,7 @@ class CourseGridController extends AbstractController
             ->setParameter('status', 'live');
 
         // Apply search filter
-        if ($search) {
+        if ($search !== '') {
             $queryBuilder->andWhere('c.title LIKE :search OR c.shortDescription LIKE :search')
                 ->setParameter('search', '%'.$search.'%');
         }
@@ -214,33 +223,46 @@ class CourseGridController extends AbstractController
                 ->setParameter('languages', $languages);
         }
 
-        // Get all courses before sorting
-        $courses = $queryBuilder->getQuery()->getResult();
-
-        // Apply sorting (same logic as main method)
+        // Apply sorting based on the sort parameter
         switch ($sort) {
-            case 'popular':
-                usort($courses, fn($a, $b) => $b->getCreatedAt() <=> $a->getCreatedAt());
-                break;
             case 'newest':
-                usort($courses, fn($a, $b) => $b->getCreatedAt() <=> $a->getCreatedAt());
+                $queryBuilder->orderBy('c.createdAt', 'DESC');
                 break;
-            case 'rating':
-                usort($courses, fn($a, $b) => $b->getCreatedAt() <=> $a->getCreatedAt());
+            case 'oldest':
+                $queryBuilder->orderBy('c.createdAt', 'ASC');
                 break;
             case 'price_low':
-                usort($courses, fn($a, $b) => $a->getPrice() <=> $b->getPrice());
+                $queryBuilder->orderBy('c.price', 'ASC');
                 break;
             case 'price_high':
-                usort($courses, fn($a, $b) => $b->getPrice() <=> $a->getPrice());
+                $queryBuilder->orderBy('c.price', 'DESC');
+                break;
+            case 'name':
+                $queryBuilder->orderBy('c.title', 'ASC');
                 break;
             default:
-                usort($courses, fn($a, $b) => $b->getCreatedAt() <=> $a->getCreatedAt());
+                $queryBuilder->orderBy('c.createdAt', 'DESC');
+        }
+
+        // Temporarily remove sort parameter from request to prevent KnpPaginator conflicts
+        $originalRequest = $request->query->all();
+        $request->query->remove('sort');
+        
+        // Use pagination for filter method
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $page,
+            9 // 9 courses per page
+        );
+        
+        // Restore the sort parameter
+        foreach ($originalRequest as $key => $value) {
+            $request->query->set($key, $value);
         }
 
         // Render the course grid HTML
         $gridHtml = $this->renderView('course/_course-grid.html.twig', [
-            'courses' => $courses,
+            'pagination' => $pagination,
             'currentFilters' => [
                 'search' => $search,
                 'sort' => $sort,
@@ -255,7 +277,7 @@ class CourseGridController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'html' => $gridHtml,
-            'count' => count($courses),
+            'count' => $pagination->getTotalItemCount(),
             'filters' => [
                 'search' => $search,
                 'sort' => $sort,

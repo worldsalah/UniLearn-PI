@@ -34,6 +34,23 @@ class Enrollment
     #[ORM\Column(type: 'float', options: ['default' => 0.0])]
     private float $progress = 0.0;
 
+    #[ORM\Column(name: 'ip_address', type: 'string', length: 45, nullable: true)]
+    private ?string $ipAddress = null;
+
+    #[ORM\Column(name: 'user_agent', type: 'text', nullable: true)]
+    private ?string $userAgent = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $placementTestTaken = false;
+
+    #[ORM\ManyToOne(targetEntity: Lesson::class)]
+    #[ORM\JoinColumn(name: 'starting_lesson_id', referencedColumnName: 'id', nullable: true)]
+    private ?Lesson $startingLesson = null;
+
+    #[ORM\ManyToOne(targetEntity: CourseTestResult::class)]
+    #[ORM\JoinColumn(name: 'placement_test_result_id', referencedColumnName: 'id', nullable: true)]
+    private ?CourseTestResult $placementTestResult = null;
+
     public function __construct()
     {
         $this->enrolledAt = new \DateTimeImmutable();
@@ -112,6 +129,66 @@ class Enrollment
     public function setProgress(float $progress): self
     {
         $this->progress = $progress;
+
+        return $this;
+    }
+
+    public function getIpAddress(): ?string
+    {
+        return $this->ipAddress;
+    }
+
+    public function setIpAddress(?string $ipAddress): self
+    {
+        $this->ipAddress = $ipAddress;
+
+        return $this;
+    }
+
+    public function getUserAgent(): ?string
+    {
+        return $this->userAgent;
+    }
+
+    public function setUserAgent(?string $userAgent): self
+    {
+        $this->userAgent = $userAgent;
+
+        return $this;
+    }
+
+    public function isPlacementTestTaken(): bool
+    {
+        return $this->placementTestTaken;
+    }
+
+    public function setPlacementTestTaken(bool $placementTestTaken): self
+    {
+        $this->placementTestTaken = $placementTestTaken;
+
+        return $this;
+    }
+
+    public function getStartingLesson(): ?Lesson
+    {
+        return $this->startingLesson;
+    }
+
+    public function setStartingLesson(?Lesson $startingLesson): self
+    {
+        $this->startingLesson = $startingLesson;
+
+        return $this;
+    }
+
+    public function getPlacementTestResult(): ?CourseTestResult
+    {
+        return $this->placementTestResult;
+    }
+
+    public function setPlacementTestResult(?CourseTestResult $placementTestResult): self
+    {
+        $this->placementTestResult = $placementTestResult;
 
         return $this;
     }

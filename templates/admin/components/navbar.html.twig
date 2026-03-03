@@ -48,22 +48,14 @@
 
                 <!-- Menu item 3 - Quiz -->
                 <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_admin_quizzes' ? 'active' : '' }}" data-bs-toggle="collapse" href="#collapsequiz" role="button" aria-expanded="{{ app.request.attributes.get('_route') starts with 'app_admin_quizzes' ? 'true' : 'false' }}" aria-controls="collapsequiz">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_admin_quizzes' ? 'active' : '' }}" href="{{ path('app_admin_quizzes') }}">
                         <i class="fas fa-question-circle fa-fw me-2"></i>Quiz
                     </a>
-                    <!-- Submenu -->
-                    <ul class="nav collapse flex-column {{ app.request.attributes.get('_route') starts with 'app_admin_quizzes' ? 'show' : '' }}" id="collapsequiz" data-bs-parent="#navbar-sidebar">
-                        <li class="nav-item"> 
-                            <a class="nav-link {{ app.request.attributes.get('_route') == 'app_admin_quizzes' ? 'active' : '' }}" href="{{ path('app_admin_quizzes') }}">
-                                <i class="bi bi-list fa-fw me-2"></i>All Quizzes
-                            </a>
-                        </li>
-                                            </ul>
                 </li>
 
                 <!-- Menu item 4 - Students -->
                 <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_student' ? 'active' : '' }}" href="{{ path('admin_student_list') }}">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_admin_student' ? 'active' : '' }}" href="{{ path('app_admin_student_index') }}">
                         <i class="fas fa-user-graduate fa-fw me-2"></i>Students
                     </a>
                 </li>
@@ -113,74 +105,29 @@
                     </ul>
                 </li>
                 
-                <!-- Menu item 6 - Reviews -->
+                <!-- Menu item 7 - Reviews -->
                 <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_review' ? 'active' : '' }}" href="{{ path('admin_review_list') }}">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_instructor_reviews' ? 'active' : '' }}" href="{{ path('app_instructor_reviews') }}">
                         <i class="far fa-comment-dots fa-fw me-2"></i>Reviews
                     </a>
                 </li>
 
-                <!-- Menu item 7 - Earnings -->
+                <!-- Menu item 8 - Earnings -->
                 <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_earnings' ? 'active' : '' }}" href="#">
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_instructor_earnings' ? 'active' : '' }}" href="{{ path('app_instructor_earnings') }}">
                         <i class="far fa-chart-bar fa-fw me-2"></i>Earnings
                     </a>
                 </li>
 
-                <!-- Menu item 8 - Admin Settings -->
+                <!-- Menu item 9 - Admin Settings -->
                 <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_settings' ? 'active' : '' }}" href="#">
-                        <i class="fas fa-user-cog fa-fw me-2"></i>Admin Settings
+                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_instructor_settings' ? 'active' : '' }}" href="{{ path('app_instructor_settings') }}">
+                        <i class="fas fa-user-cog fa-fw me-2"></i>Settings
                     </a>
                 </li>
 
-                <!-- Menu item 9 - Authentication -->
-                <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_auth' ? 'active' : '' }}" data-bs-toggle="collapse" href="#collapseauthentication" role="button" aria-expanded="false" aria-controls="collapseauthentication">
-                        <i class="bi bi-lock fa-fw me-2"></i>Authentication
-                    </a>
-                    <!-- Submenu -->
-                    <ul class="nav collapse flex-column" id="collapseauthentication" data-bs-parent="#navbar-sidebar">
-                        <li class="nav-item"> 
-                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_signup' ? 'active' : '' }}" href="#">
-                                <i class="bi bi-person-plus fa-fw me-2"></i>Sign Up
-                            </a>
-                        </li>
-                        <li class="nav-item"> 
-                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_signin' ? 'active' : '' }}" href="#">
-                                <i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In
-                            </a>
-                        </li>
-                        <li class="nav-item"> 
-                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_forgot_password' ? 'active' : '' }}" href="#">
-                                <i class="bi bi-key fa-fw me-2"></i>Forgot Password
-                            </a>
-                        </li>
-                        <li class="nav-item"> 
-                            <a class="nav-link {{ app.request.attributes.get('_route') == 'admin_error' ? 'active' : '' }}" href="#">
-                                <i class="bi bi-exclamation-triangle fa-fw me-2"></i>Error 404
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <!-- Title -->
-                <li class="nav-item ms-2 my-2">Documentation</li>
-
-                <!-- Menu item 10 - Documentation -->
-                <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_docs' ? 'active' : '' }}" href="#">
-                        <i class="far fa-clipboard fa-fw me-2"></i>Documentation
-                    </a>
-                </li>
-
-                <!-- Menu item 11 - Changelog -->
-                <li class="nav-item">
-                    <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_changelog' ? 'active' : '' }}" href="#">
-                        <i class="fas fa-sitemap fa-fw me-2"></i>Changelog
-                    </a>
-                </li>
-            </ul>
+                
+                </ul>
             <!-- Sidebar menu end -->
 
             <!-- Sidebar footer START -->

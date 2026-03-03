@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\Category;
 use App\Entity\Course;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -238,7 +239,12 @@ class CreateSampleCoursesCommand extends Command
             $course = new Course();
             $course->setTitle($courseData['title']);
             $course->setShortDescription($courseData['shortDescription']);
-            $course->setCategory($courseData['category']);
+            
+            // Find or create category by name
+            $category = $this->entityManager->getRepository(Category::class)
+                ->findOneBy(['name' => $courseData['category']]);
+            $course->setCategory($category);
+            
             $course->setLevel($courseData['level']);
             $course->setPrice($courseData['price']);
             $course->setDuration($courseData['duration']);

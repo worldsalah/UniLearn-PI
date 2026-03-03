@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[Vich\Uploadable]
@@ -32,11 +32,11 @@ class Product
     #[Assert\Length(min: 20, minMessage: 'La description doit contenir au moins {{ limit }} caractères.')]
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     #[Assert\NotBlank(message: 'Le prix du produit est obligatoire.')]
     #[Assert\Positive(message: 'Le prix doit être un nombre positif.')]
     #[Assert\Range(min: 0.01, minMessage: 'Le prix doit être supérieur à 0.')]
-    private ?float $price = null;
+    private ?string $price = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -183,11 +183,25 @@ class Product
         return $this->deletedAt;
     }
 
-    public function setDeletedAt(?\DateTimeImmutable $deletedAt): static
+    public function delete(): void
     {
-        $this->deletedAt = $deletedAt;
+        if ($this->isDeleted()) {
+            throw new \LogicException('Product is already deleted.');
+        }
+        $this->deletedAt = new \DateTimeImmutable();
+    }
 
-        return $this;
+    public function restore(): void
+    {
+        if (!$this->isDeleted()) {
+            throw new \LogicException('Product is not deleted.');
+        }
+        $this->deletedAt = null;
+    }
+
+    public function isDeleted(): bool
+    {
+        return null !== $this->deletedAt;
     }
 
     public function getSlug(): ?string

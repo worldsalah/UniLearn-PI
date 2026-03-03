@@ -5,8 +5,16 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     google_youtube_api_key: '%env(GOOGLE_YOUTUBE_API_KEY)%'
-    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
     gemini_api_key: '%env(GEMINI_API_KEY)%'
+    google_translate_api_key: '%env(GOOGLE_TRANSLATE_API_KEY)%'
+    vertex_api_key: '%env(VERTEX_API_KEY)%'
+    vertex_project_id: '%env(VERTEX_PROJECT_ID)%'
+    vertex_location: '%env(VERTEX_LOCATION)%'
+    vertex_model: '%env(VERTEX_MODEL)%'
+    hugging_face_api_key: '%env(HUGGING_FACE_API_KEY)%'
+    facebook_app_id: '%env(FACEBOOK_APP_ID)%'
+    facebook_app_secret: '%env(FACEBOOK_APP_SECRET)%'
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:
     # default configuration for services in *this* file
@@ -32,25 +40,51 @@ services:
         arguments:
             $googleYoutubeApiKey: '%google_youtube_api_key%'
 
-    # AI Assistant Service (Google Gemini)
+    # Gemini AI Service Configuration
+    App\Service\GeminiAiService:
+        arguments:
+            $apiKey: '%gemini_api_key%'
+
+    # Translation API Service Configuration
+    App\Service\TranslationApiService:
+        arguments:
+            $googleTranslateApiKey: '%google_translate_api_key%'
+
+    # Vertex AI Service Configuration
+    App\Service\VertexApiService:
+        arguments:
+            $vertexApiKey: '%vertex_api_key%'
+            $vertexProjectId: '%vertex_project_id%'
+            $vertexLocation: '%vertex_location%'
+            $vertexModel: '%vertex_model%'
+
+    # AI Analyst Service Configuration
+    App\Service\AIAnalystService:
+        arguments:
+            $huggingFaceApiKey: '%hugging_face_api_key%'
+
+    # Chatbot Controller Configuration
+    App\Controller\Api\ChatbotController:
+        arguments:
+            $geminiApiKey: '%gemini_api_key%'
+
+    # AI Assistant Service Configuration
     App\Service\AiAssistantService:
         arguments:
             $geminiApiKey: '%gemini_api_key%'
 
-    # Elasticsearch Finder Services
-    
-    App\Controller\Api\JobAutocompleteController:
+    # Facebook Auth Controller Configuration
+    App\Controller\FacebookAuthController:
         arguments:
-            $finder: '@fos_elastica.finder.jobs'
-    
-    App\Controller\Api\ProductAutocompleteController:
+            $facebookAppId: '%facebook_app_id%'
+            $facebookAppSecret: '%facebook_app_secret%'
+
+    # ReCaptcha service injection for LoginFormAuthenticator
+    App\Security\LoginFormAuthenticator:
         arguments:
-            $finder: '@fos_elastica.finder.products'
-    
-        
-    App\Controller\Api\UniversalAutocompleteController:
+            $reCaptcha: '@victor_prdh.recaptcha'
+
+    # Gemini Chatbot Service
+    App\Service\GeminiChatbotService:
         arguments:
-            $coursesFinder: '@fos_elastica.finder.courses'
-            $jobsFinder: '@fos_elastica.finder.jobs'
-            $productsFinder: '@fos_elastica.finder.products'
-            $usersFinder: '@fos_elastica.finder.users'
+            $geminiApiKey: '%env(GEMINI_API_KEY)%'

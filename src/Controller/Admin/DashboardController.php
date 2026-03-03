@@ -17,6 +17,9 @@ class DashboardController extends AbstractController
         \App\Repository\ProductRepository $productRepository,
         \App\Repository\JobRepository $jobRepository,
         \App\Repository\OrderRepository $orderRepository,
+        \App\Repository\CourseRepository $courseRepository,
+        \App\Repository\UserRepository $userRepository,
+        \App\Repository\QuizRepository $quizRepository,
     ): Response {
         return $this->render('admin/dashboard.html.twig', [
             'stats' => [
@@ -31,6 +34,9 @@ class DashboardController extends AbstractController
                     ->getQuery()
                     ->getSingleScalarResult() ?: 0,
             ],
+            'totalCourses' => $courseRepository->count([]),
+            'totalUsers' => $userRepository->count([]),
+            'totalQuizzes' => $quizRepository->count([]),
         ]);
     }
 }

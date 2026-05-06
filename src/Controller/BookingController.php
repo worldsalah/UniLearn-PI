@@ -335,32 +335,27 @@ class BookingController extends AbstractController
         $categories = $categoryRepository->findBy(['isActive' => true], ['name' => 'ASC']);
 
         // Get instructors (users with instructor role)
-        $instructorRole = $roleRepository->findOneBy(['name' => 'instructor']);
+        $instructorRole = $roleRepository->findOneBy(['name' => 'ROLE_INSTRUCTOR']);
         $instructors = [];
         if ($instructorRole !== null) {
             $instructors = $userRepository->findBy(['role' => $instructorRole], ['fullName' => 'ASC']);
-        } else {
-            // Try alternative role name
-            $instructorRole = $roleRepository->findOneBy(['name' => 'ROLE_INSTRUCTOR']);
-            if ($instructorRole !== null) {
-                $instructors = $userRepository->findBy(['role' => $instructorRole], ['fullName' => 'ASC']);
-            }
         }
 
         // Get students (users with student role)
-        $studentRole = $roleRepository->findOneBy(['name' => 'student']);
+        $studentRole = $roleRepository->findOneBy(['name' => 'ROLE_STUDENT']);
         $students = [];
         if ($studentRole !== null) {
             $students = $userRepository->findBy(['role' => $studentRole], ['fullName' => 'ASC']);
-        } else {
-            // Try alternative role name
-            $studentRole = $roleRepository->findOneBy(['name' => 'ROLE_STUDENT']);
-            if ($studentRole !== null) {
-                $students = $userRepository->findBy(['role' => $studentRole], ['fullName' => 'ASC']);
-            }
         }
 
         if ($request->isMethod('POST')) {
+            // Debug: Log to Symfony logger
+            $logger = $this->logger ?? null;
+            if ($logger) {
+                $logger->info('=== BOOKING CONTROLLER POST RECEIVED ===');
+                $logger->info('All POST data: ', $request->request->all());
+            }
+            
             $booking = new Booking();
             $errors = [];
 
@@ -390,10 +385,7 @@ class BookingController extends AbstractController
                 // Instructors don't need to select students - students book directly
                 // No validation needed for instructors
             } else {
-                $allUserId = $request->request->get('all_users');
-                if (empty($allUserId)) {
-                    $errors['all_users'] = 'Please select a user from the list.';
-                }
+                // Guests/other roles - no user selection validation needed
             }
 
             // Common validations
@@ -435,20 +427,9 @@ class BookingController extends AbstractController
                 }
             }
 
-            // Time slot validation
-            $startTimeStr = $request->request->get('start_time');
-            $durationMinutes = $request->request->get('duration_minutes');
-            $totalPrice = $request->request->get('total_price');
-
-            if (empty($startTimeStr)) {
-                $errors['start_time'] = 'Please select a start time.';
-            }
-
-            if (empty($durationMinutes)) {
-                $errors['duration_minutes'] = 'Please select a duration.';
-            } elseif (!is_numeric($durationMinutes) || (int) $durationMinutes <= 0) {
-                $errors['duration_minutes'] = 'Duration must be a positive number.';
-            }
+            // Time validation removed - these fields are no longer in the form
+            
+            // Total price validation removed - not required without time selection
 
             if (empty($terms)) {
                 $errors['terms'] = 'You must accept the terms and conditions.';
@@ -516,32 +497,15 @@ class BookingController extends AbstractController
                 }
             }
 
-            // Set start time
-            $startTimeStr = $request->request->get('start_time');
-            if ($startTimeStr !== null && $startTimeStr !== '') {
-                try {
-                    $startTime = new \DateTime((string) $startTimeStr);
-                    $booking->setStartTime($startTime);
-                } catch (\Exception $e) {
-                    // Invalid time format, will be caught by validation
-                }
-            }
-
-            // Set duration
-            $durationMinutes = $request->request->get('duration_minutes');
-            if ($durationMinutes !== null && $durationMinutes !== '') {
-                $booking->setDurationMinutes((int) $durationMinutes);
-            }
-
-            // Set total price
-            $totalPrice = $request->request->get('total_price');
-            if ($totalPrice !== null && $totalPrice !== '') {
-                $booking->setTotalPrice(number_format((float) $totalPrice, 2, '.', ''));
-            }
+            // Time-related fields removed - no longer part of the form
 
             $bookingRepository->save($booking);
+            error_log('Booking saved successfully with ID: ' . $booking->getId());
 
-            return $this->redirectToRoute('booking_create');
+            // Add success flash message
+            $this->addFlash('success', 'Your booking has been successfully created!');
+
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('Front-office/booking/index.html.twig', [
@@ -612,7 +576,7 @@ class BookingController extends AbstractController
         }
 
         $booking->setStatus('accepted');
-        $booking->setUpdatedAt(new \DateTime());
+        $booking->setUpdatedAt(new \DateTimeImmutable());
         $bookingRepository->save($booking, true);
 
         // Send meeting invitation email to student
@@ -634,7 +598,7 @@ class BookingController extends AbstractController
         }
 
         $booking->setStatus('denied');
-        $booking->setUpdatedAt(new \DateTime());
+        $booking->setUpdatedAt(new \DateTimeImmutable());
         $bookingRepository->save($booking, true);
 
         $this->addFlash('warning', 'Booking has been denied.');
@@ -716,14 +680,14 @@ class BookingController extends AbstractController
         $categories = $categoryRepository->findBy(['isActive' => true], ['name' => 'ASC']);
 
         // Get instructors (users with instructor role)
-        $instructorRole = $roleRepository->findOneBy(['name' => 'instructor']);
+        $instructorRole = $roleRepository->findOneBy(['name' => 'ROLE_INSTRUCTOR']);
         $instructors = [];
         if ($instructorRole !== null) {
             $instructors = $userRepository->findBy(['role' => $instructorRole], ['fullName' => 'ASC']);
         }
 
         // Get students (users with student role)
-        $studentRole = $roleRepository->findOneBy(['name' => 'student']);
+        $studentRole = $roleRepository->findOneBy(['name' => 'ROLE_STUDENT']);
         $students = [];
         if ($studentRole !== null) {
             $students = $userRepository->findBy(['role' => $studentRole], ['fullName' => 'ASC']);
@@ -801,7 +765,7 @@ class BookingController extends AbstractController
                 }
             }
 
-            $booking->setUpdatedAt(new \DateTime());
+            $booking->setUpdatedAt(new \DateTimeImmutable());
             $bookingRepository->save($booking, true);
 
             $this->addFlash('success', 'Booking updated successfully!');

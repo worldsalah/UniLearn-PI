@@ -162,7 +162,7 @@ class PlacementTestController extends AbstractController
                 $result->setTotalQuestions($totalQuestions);
                 $result->setPercentage($percentage);
                 $result->setPassed($percentage >= 70);
-                $result->setTimeTaken(new \DateTime());
+                $result->setTimeTaken(new \DateTimeImmutable());
                 $result->setAnswers($answers);
 
                 $this->entityManager->persist($result);
@@ -221,7 +221,7 @@ class PlacementTestController extends AbstractController
             $result->setTotalQuestions($totalQuestions);
             $result->setPercentage($percentage);
             $result->setPassed($percentage >= 70);
-            $result->setTimeTaken(new \DateTime());
+            $result->setTimeTaken(new \DateTimeImmutable());
             $result->setAnswers($answers);
 
             $this->entityManager->persist($result);

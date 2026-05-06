@@ -213,14 +213,14 @@ html, body {
                                     
                                     <!-- Actions -->
                                     <div class="course-actions">
-                                        {% if isComplete and hasCertificate %}
+                                        {% if isComplete and hasCertificate and certificate is not null and certificate.quizResult is not null %}
                                             {# Course complete and has certificate - show View Certificate #}
                                             <a href="{{ path('quiz_certificate', {'id': certificate.quizResult.id}) }}" class="action-btn certificate-btn">
                                                 <i class="fas fa-certificate me-1"></i>View Certificate
                                             </a>
-                                        {% elseif (isComplete or enrollment.progress >= 100) and canTakeQuiz and not hasCertificate %}
+                                        {% elseif (isComplete or enrollment.progress >= 100) and canTakeQuiz and firstQuiz is not null and not hasCertificate %}
                                             {# Course complete/progress 100%, has quiz but no certificate - show Take Quiz #}
-                                            <a href="{{ path('app_quiz_take', {'id': firstQuiz.id}) }}" class="action-btn quiz-btn">
+                                            <a href="{{ path('quiz_take', {'id': firstQuiz.id}) }}" class="action-btn quiz-btn">
                                                 <i class="fas fa-question-circle me-1"></i>Take Quiz
                                             </a>
                                         {% elseif isComplete and enrollment.progress >= 100 and not hasCertificate %}

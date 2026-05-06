@@ -855,10 +855,7 @@ class SessionController extends AbstractController
         RoleRepository $roleRepository,
     ): JsonResponse {
         // Get instructor role
-        $instructorRole = $roleRepository->findOneBy(['name' => 'instructor']);
-        if ($instructorRole === null) {
-            $instructorRole = $roleRepository->findOneBy(['name' => 'ROLE_INSTRUCTOR']);
-        }
+        $instructorRole = $roleRepository->findOneBy(['name' => 'ROLE_INSTRUCTOR']);
 
         if ($instructorRole === null) {
             return $this->json([]);

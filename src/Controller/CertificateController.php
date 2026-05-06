@@ -32,7 +32,7 @@ class CertificateController extends AbstractController
     /**
      * Browse certificates page
      */
-    #[Route('/browse-certificates', name: 'app_certificates', methods: ['GET'])]
+    #[Route('/browse-certificates', name: 'app_certificates_browse', methods: ['GET'])]
     public function browseCertificates(Request $request): Response
     {
         try {
@@ -777,7 +777,7 @@ class CertificateController extends AbstractController
             $user = $this->getUser();
             
             if ($user === null) {
-                throw $this->createAccessDeniedException('User must be logged in');
+                return $this->redirectToRoute('app_login');
             }
             
             // Debug: Log user info
@@ -834,10 +834,13 @@ class CertificateController extends AbstractController
                 'passedQuizResults' => $passedQuizResults,
                 'user' => $user
             ]);
+        } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $e) {
+            $this->logger->error('Access denied loading user certificates: ' . $e->getMessage());
+            return $this->redirectToRoute('app_login');
         } catch (\Exception $e) {
             $this->logger->error('Error loading user certificates: ' . $e->getMessage());
             $this->addFlash('error', 'Unable to load certificates. Please try again later.');
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_my_courses');
         }
     }
 }

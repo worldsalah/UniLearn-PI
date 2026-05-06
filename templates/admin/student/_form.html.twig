@@ -1,0 +1,36 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+<div class="card border-0 shadow-sm bg-white">
+    <div class="card-body p-4">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.fullName, null, {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(form.fullName) }}
+                    {{ form_errors(form.fullName) }}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.email, null, {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(form.email) }}
+                    {{ form_errors(form.email) }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg me-2"></i>{{ button_label|default('Save Changes') }}
+            </button>
+            <a href="{{ path('app_admin_student_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-lg me-2"></i>Cancel
+            </a>
+        </div>
+        
+        {{ form_end(form) }}
+    </div>
+</div>

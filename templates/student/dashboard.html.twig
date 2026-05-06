@@ -184,7 +184,7 @@ Student Dashboard START -->
                             <div class="progress-bar progress-bar-animated" id="level-progress" style="width: {{ progress.progress }}%; background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);"></div>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <small class="text-muted">Level: <span id="current-level">{{ stats.current_level.name }}</span></small>
+                            <small class="text-muted">Level: <span id="current-level">{{ stats.current_level.name|default('Beginner') }}</span></small>
                             <small class="text-muted">Rank: #<span id="user-rank">{{ stats.rank }}</span></small>
                         </div>
                         <div class="d-grid gap-2">

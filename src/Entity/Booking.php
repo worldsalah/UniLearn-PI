@@ -21,17 +21,20 @@ class Booking
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $lastName = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(name: 'email', type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'Email is required.')]
     #[Assert\Email(message: 'Please enter a valid email address.')]
     private ?string $userEmail = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'phone', type: 'string', length: 255, nullable: true)]
     private ?string $phoneNumber = null;
 
     #[ORM\ManyToOne(targetEntity: Session::class, inversedBy: 'bookings')]
     #[ORM\JoinColumn(name: 'session_id', referencedColumnName: 'id', nullable: true)]
     private ?Session $session = null;
+
+    #[ORM\Column(name: 'session_id', insertable: false, updatable: false, nullable: true)]
+    private ?int $sessionId = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
@@ -40,8 +43,8 @@ class Booking
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTime $preferredDate = null;
 
-    #[ORM\Column(name: 'created_at', type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(name: 'booked_at', type: 'datetime')]
+    private ?\DateTime $createdAt = null;
 
     #[ORM\Column(name: 'updated_at', type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
@@ -79,6 +82,11 @@ class Booking
     public function getSession(): ?Session
     {
         return $this->session;
+    }
+
+    public function getSessionId(): ?int
+    {
+        return $this->sessionId;
     }
 
     public function setSession(?Session $session): self
@@ -124,14 +132,18 @@ class Booking
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTime $updatedAt): self
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
-        $this->updatedAt = $updatedAt;
+        if ($updatedAt instanceof \DateTime) {
+            $this->updatedAt = \DateTimeImmutable::createFromMutable($updatedAt);
+        } else {
+            $this->updatedAt = $updatedAt;
+        }
 
         return $this;
     }

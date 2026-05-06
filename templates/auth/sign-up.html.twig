@@ -129,7 +129,7 @@
 									<label for="{{ registrationForm.password.first.vars.id }}" class="form-label">Password *</label>
 									<div class="input-group input-group-lg">
 										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
-										{{ form_widget(registrationForm.password.first, {'attr': {'class': 'form-control border-0 bg-light rounded-end ps-1', 'placeholder': 'Enter your password', 'novalidate': 'novalidate'}}) }}
+										{{ form_widget(registrationForm.password.first, {'attr': {'class': 'form-control border-0 bg-light rounded-end ps-1', 'placeholder': 'Enter your password', 'novalidate': 'novalidate', 'autocomplete': 'new-password'}}) }}
 									</div>
 									{{ form_errors(registrationForm.password.first) }}
 								</div>
@@ -138,7 +138,7 @@
 									<label for="{{ registrationForm.password.second.vars.id }}" class="form-label">Confirm Password *</label>
 									<div class="input-group input-group-lg">
 										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
-										{{ form_widget(registrationForm.password.second, {'attr': {'class': 'form-control border-0 bg-light rounded-end ps-1', 'placeholder': 'Confirm your password', 'novalidate': 'novalidate'}}) }}
+										{{ form_widget(registrationForm.password.second, {'attr': {'class': 'form-control border-0 bg-light rounded-end ps-1', 'placeholder': 'Confirm your password', 'novalidate': 'novalidate', 'autocomplete': 'new-password'}}) }}
 									</div>
 									{{ form_errors(registrationForm.password.second) }}
 								</div>

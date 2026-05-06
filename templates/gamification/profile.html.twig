@@ -124,7 +124,7 @@ Gamification Profile START -->
                                 <div class="card-body">
                                     {% if progress.next_level != 'Max Level' %}
                                         <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span class="fw-bold" id="current-level-name">{{ stats.current_level.name }}</span>
+                                            <span class="fw-bold" id="current-level-name">{{ stats.current_level.name|default('Beginner') }}</span>
                                             <span class="text-muted" id="next-level-name">{{ progress.next_level }}</span>
                                         </div>
                                         
@@ -390,7 +390,7 @@ class ProgressUpdater {
                 this.updateProgressBar(progress);
                 
                 // Update level names
-                this.updateLevelNames(stats.current_level.name, progress.next_level);
+                this.updateLevelNames(stats.current_level ? stats.current_level.name : 'Beginner', progress.next_level);
                 
                 // Update XP values
                 this.updateXPValues(progress.current_points, progress.points_to_next);

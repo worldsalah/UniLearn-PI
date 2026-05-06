@@ -120,16 +120,22 @@ class CourseTestResult
         return $this;
     }
 
-    public function getTimeTaken(): \DateTime
+    public function getTimeTaken(): \DateTimeImmutable
     {
         return $this->timeTaken;
     }
 
-    public function setTimeTaken(\DateTime $timeTaken): self
+    public function setTimeTaken(\DateTimeInterface $timeTaken): self
     {
-        $this->timeTaken = $timeTaken;
+        if ($timeTaken instanceof \DateTime) {
+            $immutable = \DateTimeImmutable::createFromMutable($timeTaken);
+            $this->timeTaken = $immutable !== false ? $immutable : new \DateTimeImmutable();
+        } else {
+            $this->timeTaken = $timeTaken;
+        }
         return $this;
     }
+
 
     public function getAnswers(): ?array
     {
@@ -142,14 +148,15 @@ class CourseTestResult
         return $this;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 }
+// Force refresh 03/23/2026 09:53:25

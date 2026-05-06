@@ -74,7 +74,7 @@ class BookingVoter extends Voter
      */
     private function canConfirm(Booking $booking, User $user): bool
     {
-        if (!$user->hasRole(UserRole::TEACHER)) {
+        if (!$user->hasRole(UserRole::INSTRUCTOR)) {
             return false;
         }
 
@@ -120,7 +120,7 @@ class BookingVoter extends Voter
 
         // Teacher can cancel their own bookings
         $bookingTeacher = $booking->getTeacher();
-        if ($user->hasRole(UserRole::TEACHER) && $bookingTeacher !== null && $bookingTeacher->getId() === $user->getId()) {
+        if ($user->hasRole(UserRole::INSTRUCTOR) && $bookingTeacher !== null && $bookingTeacher->getId() === $user->getId()) {
             return true;
         }
 

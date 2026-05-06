@@ -36,7 +36,15 @@ final class InstructorController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Allow all users to access the dashboard, not just teachers
+        // Check if user has instructor role
+        if (!in_array('ROLE_INSTRUCTOR', $user->getRoles())) {
+            // Redirect non-instructors to their appropriate dashboard
+            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                return $this->redirectToRoute('app_admin_dashboard');
+            }
+            return $this->redirectToRoute('app_student_dashboard');
+        }
+
         $teacher = $userRepository->find($user->getId());
 
         if ($teacher === null) {

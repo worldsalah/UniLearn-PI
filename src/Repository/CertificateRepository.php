@@ -24,13 +24,18 @@ class CertificateRepository extends ServiceEntityRepository
      */
     public function findByUser(User $user): array
     {
-        return $this->createQueryBuilder('c')
-            ->where('c.user = :user')
-            ->setParameter('user', $user)
-            ->orderBy('c.generatedAt', 'DESC')
-            ->setMaxResults(50)
-            ->getQuery()
-            ->getResult();
+        try {
+            return $this->createQueryBuilder('c')
+                ->where('c.user = :user')
+                ->setParameter('user', $user)
+                ->orderBy('c.generatedAt', 'DESC')
+                ->setMaxResults(50)
+                ->getQuery()
+                ->getResult();
+        } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+            // Some certificates reference non-existent courses, return empty array
+            return [];
+        }
     }
 
     /**
@@ -64,13 +69,18 @@ class CertificateRepository extends ServiceEntityRepository
      */
     public function findOneByUserAndCourse(User $user, Course $course): ?Certificate
     {
-        return $this->createQueryBuilder('c')
-            ->where('c.user = :user')
-            ->andWhere('c.course = :course')
-            ->setParameter('user', $user)
-            ->setParameter('course', $course)
-            ->getQuery()
-            ->getOneOrNullResult();
+        try {
+            return $this->createQueryBuilder('c')
+                ->where('c.user = :user')
+                ->andWhere('c.course = :course')
+                ->setParameter('user', $user)
+                ->setParameter('course', $course)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+            // Course referenced by certificate doesn't exist
+            return null;
+        }
     }
 
     /**

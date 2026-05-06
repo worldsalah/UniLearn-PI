@@ -351,10 +351,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         
         if ($this->role !== null) {
             $roleName = $this->role->getName();
-            $roles[] = 'ROLE_'.strtoupper($roleName ?? '');
+            // Database now stores roles with ROLE_ prefix (ROLE_STUDENT, ROLE_INSTRUCTOR, ROLE_ADMIN)
+            if ($roleName !== null && $roleName !== '') {
+                // Only add ROLE_ prefix if it's not already there
+                if (strpos($roleName, 'ROLE_') !== 0) {
+                    $roleName = 'ROLE_' . $roleName;
+                }
+                $roles[] = $roleName;
+            }
         }
         
         return $roles;
+    }
+
+    /**
+     * Check if user has a specific role
+     * @param string|\App\Enum\UserRole $role
+     */
+    public function hasRole(string|\App\Enum\UserRole $role): bool
+    {
+        $roleValue = $role instanceof \App\Enum\UserRole ? $role->value : $role;
+        return in_array($roleValue, $this->getRoles(), true);
     }
 
     public function eraseCredentials(): void
@@ -745,6 +762,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserPoints(): ?UserPoints
     {
         return $this->userPoints;
+    }
+
+    /**
+     * @return Collection<int, UserPoints>
+     */
+    public function getUserPointsList(): Collection
+    {
+        return $this->userPointsList;
     }
 
     public function setUserPoints(?UserPoints $userPoints): self

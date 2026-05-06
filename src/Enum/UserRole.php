@@ -8,7 +8,7 @@ namespace App\Enum;
 enum UserRole: string
 {
     case STUDENT = 'ROLE_STUDENT';
-    case TEACHER = 'ROLE_TEACHER';
+    case INSTRUCTOR = 'ROLE_INSTRUCTOR';
     case ADMIN = 'ROLE_ADMIN';
 
     /**
@@ -26,7 +26,7 @@ enum UserRole: string
     {
         return match ($this) {
             self::STUDENT => 'Student',
-            self::TEACHER => 'Teacher',
+            self::INSTRUCTOR => 'Instructor',
             self::ADMIN => 'Administrator',
         };
     }
@@ -44,7 +44,7 @@ enum UserRole: string
      */
     public function canTeach(): bool
     {
-        return $this === self::TEACHER;
+        return $this === self::INSTRUCTOR;
     }
 
     /**

@@ -240,20 +240,22 @@
                             </li>
                             <li> <hr class="dropdown-divider"></li>
                             <!-- Links -->
-                            {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
+                            {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="fas fa-tachometer-alt fa-fw me-2"></i>Admin Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Settings</a></li>
+                            {% elseif app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
+                                <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="fas fa-chalkboard-teacher fa-fw me-2"></i>Instructor Dashboard</a></li>
                                 <li><a class="dropdown-item" href="{{ path('teacher_calendar') }}"><i class="bi bi-calendar fa-fw me-2"></i>Calendar</a></li>
-                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
                             {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-cart fa-fw me-2"></i>My Orders</a></li>
-                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_student_dashboard') }}"><i class="fas fa-graduation-cap fa-fw me-2"></i>Student Dashboard</a></li>
                             {% else %}
-                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Settings</a></li>
                             {% endif %}
                             <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
                         </ul>

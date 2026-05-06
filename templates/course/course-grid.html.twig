@@ -712,7 +712,7 @@ nav[aria-label="Course pagination"]::before {
     <div class="container">
         <div class="row">
             <!-- Main Content -->
-            <div class="col-lg-8 col-xl-9">
+            <div class="col-lg-9 col-xl-9">
                 <!-- Search and Filter Bar -->
                 <form class="row mb-4 align-items-center" method="get" action="{{ path('app_course_grid') }}" id="main-search-form">
                     <!-- Search Bar -->
@@ -758,9 +758,9 @@ nav[aria-label="Course pagination"]::before {
                 </div>
 
                 <!-- Course Grid -->
-                <div class="row g-4" id="courseGrid">
+                <div class="row" id="courseGrid">
                     {% for course in pagination.items %}
-                        <div class="col-sm-6 col-xl-4">
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
                             <div class="card course-card shadow h-100 {% if 'Ruby' in course.title or 'Rails' in course.title %}ruby-course{% endif %}">
                                 <!-- Course Image -->
                                 {% set thumbnail = course.thumbnailUrl %}
@@ -910,7 +910,7 @@ nav[aria-label="Course pagination"]::before {
             </div>
 
             <!-- Sidebar -->
-            <div class="col-lg-4 col-xl-3">
+            <div class="col-lg-3 col-xl-3">
                 <!-- Responsive offcanvas body START -->
                 <div class="offcanvas-lg offcanvas-end" tabindex="-1" id="offcanvasSidebar">
                     <div class="offcanvas-header bg-light">

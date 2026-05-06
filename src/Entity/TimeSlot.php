@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\TimeSlotRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TimeSlotRepository::class)]
 #[ORM\Table(name: 'time_slot')]
@@ -17,12 +16,12 @@ class TimeSlot
     public const STATUS_BLOCKED = 'blocked';
 
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     public function __construct()
     {
-        $this->id = Uuid::v4()->toRfc4122();
     }
 
     #[ORM\ManyToOne(inversedBy: 'timeSlots', targetEntity: Availability::class)]
@@ -55,7 +54,7 @@ class TimeSlot
 
     // === Getters & Setters ===
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }

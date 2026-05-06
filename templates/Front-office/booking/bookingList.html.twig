@@ -643,8 +643,8 @@ Page content START -->
 													</div>
 												</td>
 												<td>
-													{% if booking.session %}
-														<span class="badge badge-modern bg-info">{{ booking.session.name|default('Session') }}</span>
+													{% if booking.sessionId %}
+														<span class="badge badge-modern bg-info">Session #{{ booking.sessionId }}</span>
 													{% else %}
 														<span class="badge badge-modern bg-secondary">No Session</span>
 													{% endif %}

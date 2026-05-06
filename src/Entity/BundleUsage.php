@@ -4,19 +4,18 @@ namespace App\Entity;
 
 use App\Repository\BundleUsageRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: BundleUsageRepository::class)]
 #[ORM\Table(name: 'bundle_usage')]
 class BundleUsage
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     public function __construct()
     {
-        $this->id = Uuid::v4()->toRfc4122();
     }
 
     #[ORM\ManyToOne(inversedBy: 'usages', targetEntity: Bundle::class)]
@@ -32,7 +31,7 @@ class BundleUsage
 
     // === Getters & Setters ===
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\CourseRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\UserPointsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,11 +13,13 @@ class HomeController extends AbstractController
 {
     private CourseRepository $courseRepository;
     private CategoryRepository $categoryRepository;
+    private UserPointsRepository $userPointsRepository;
 
-    public function __construct(CourseRepository $courseRepository, CategoryRepository $categoryRepository)
+    public function __construct(CourseRepository $courseRepository, CategoryRepository $categoryRepository, UserPointsRepository $userPointsRepository)
     {
         $this->courseRepository = $courseRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->userPointsRepository = $userPointsRepository;
     }
 
     #[Route('/', name: 'app_home')]
@@ -56,9 +59,26 @@ class HomeController extends AbstractController
             $coursesByCategory[$firstCategoryId] = $this->courseRepository->findPopular(4);
         }
 
+        // Get user points
+        $userTotalPoints = 0;
+        $user = $this->getUser();
+        
+        // Debug logging
+        error_log('DEBUG: User = ' . ($user ? 'FOUND (ID: ' . $user->getId() . ')' : 'NULL'));
+        
+        if ($user !== null) {
+            $userPoints = $this->userPointsRepository->findByUser($user->getId());
+            $userTotalPoints = $userPoints !== null ? $userPoints->getTotalPoints() : 0;
+            
+            // Debug logging
+            error_log('DEBUG: UserPoints = ' . ($userPoints ? 'FOUND' : 'NULL'));
+            error_log('DEBUG: TotalPoints = ' . $userTotalPoints);
+        }
+
         return $this->render('home/index.html.twig', [
             'categories' => $categories,
             'coursesByCategory' => $coursesByCategory,
+            'userTotalPoints' => $userTotalPoints,
         ]);
     }
 

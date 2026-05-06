@@ -14,6 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/student')]
 // #[IsGranted('ROLE_ADMIN')]
+// Force opcache refresh - 2026-03-16 11:15
 class StudentController extends AbstractController
 {
     #[Route('/', name: 'app_admin_student_index', methods: ['GET'])]
@@ -24,6 +25,11 @@ class StudentController extends AbstractController
 
         return $this->render('admin/student/index.html.twig', [
             'students' => $students,
+            'search' => $request->query->get('search', ''),
+            'status' => $request->query->get('status', ''),
+            'role' => $request->query->get('role', ''),
+            'sortBy' => $request->query->get('sort', 'createdAt'),
+            'sortOrder' => $request->query->get('order', 'desc'),
         ]);
     }
 

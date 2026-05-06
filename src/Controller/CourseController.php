@@ -64,9 +64,15 @@ class CourseController extends AbstractController
                 // Check if course is complete (progress >= 100 or status = completed)
                 $isComplete = $enrollment->getProgress() >= 100 || $enrollment->getStatus() === 'completed';
                 
-                // Check if user has certificate for this course
-                $certificate = $certificateRepository->findOneByUserAndCourse($user, $course);
-                $hasCertificate = $certificate !== null;
+                // Check if user has certificate for this course (with error handling for orphaned certificates)
+                try {
+                    $certificate = $certificateRepository->findOneByUserAndCourse($user, $course);
+                    $hasCertificate = $certificate !== null;
+                } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+                    // Certificate references a non-existent course, skip it
+                    $certificate = null;
+                    $hasCertificate = false;
+                }
             }
         }
 

@@ -30,7 +30,7 @@ class RegistrationController extends AbstractController
         EntityManagerInterface $entityManager,
     ): Response {
         // Direct file logging
-        $debugFile = 'C:/xampp/htdocs/UniLearn-PI-main/var/log/registration_debug.log';
+        $debugFile = 'C:/xampp/htdocs/UniLearn-PI-main-final/var/log/registration_debug.log';
         file_put_contents($debugFile, "\n=== " . date('Y-m-d H:i:s') . " ===\n", FILE_APPEND);
         file_put_contents($debugFile, "Request method: " . $request->getMethod() . "\n", FILE_APPEND);
         file_put_contents($debugFile, "Is AJAX: " . ($request->isXmlHttpRequest() ? 'yes' : 'no') . "\n", FILE_APPEND);
@@ -121,10 +121,14 @@ class RegistrationController extends AbstractController
                     $this->addFlash('error', 'Registration failed: '.$e->getMessage());
                 }
                 error_log('Registration error: '.$e->getMessage());
+                
+                return $this->redirectToRoute('app_register');
             } catch (\Exception $e) {
                 // Handle other exceptions
                 $this->addFlash('error', 'Registration failed: '.$e->getMessage());
                 error_log('Registration error: '.$e->getMessage());
+                
+                return $this->redirectToRoute('app_register');
             }
         }
 

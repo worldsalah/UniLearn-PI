@@ -51,8 +51,8 @@ class CourseGridController extends AbstractController
 
         // Build query for courses
         $queryBuilder = $courseRepository->createQueryBuilder('c')
-            ->where('c.status = :status')
-            ->setParameter('status', 'live');
+            ->where('c.status IN (:statuses)')
+            ->setParameter('statuses', ['live', 'published']);
 
         // Apply search filter
         if ($search !== '') {
@@ -182,8 +182,8 @@ class CourseGridController extends AbstractController
 
         // Build query for courses (same logic as main method)
         $queryBuilder = $courseRepository->createQueryBuilder('c')
-            ->where('c.status = :status')
-            ->setParameter('status', 'live');
+            ->where('c.status IN (:statuses)')
+            ->setParameter('statuses', ['live', 'published']);
 
         // Apply search filter
         if ($search !== '') {

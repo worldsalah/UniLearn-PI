@@ -1,0 +1,410 @@
+{% extends 'front_base.html.twig' %}
+
+{% block title %}My Calendar - UniLearn{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light min-vh-100">
+    <div class="container-fluid px-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <h1 class="h2 mb-1">
+                            <i class="bi bi-calendar3 text-primary me-2"></i>
+                            My Booking Calendar
+                        </h1>
+                        <p class="text-muted mb-0">View your upcoming sessions and bookings</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('all_bookings') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-list-ul me-1"></i> All Bookings
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Navigation -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="/student/calendar?month={{ prevMonth }}&year={{ prevYear }}" class="btn btn-outline-primary">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                            <h2 class="h4 mb-0 fw-bold text-primary">
+                                {{ monthName }} {{ currentYear }}
+                            </h2>
+                            <a href="/student/calendar?month={{ nextMonth }}&year={{ nextYear }}" class="btn btn-outline-primary">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Big Monthly Calendar -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-0">
+                        <!-- Weekday Headers -->
+                        <div class="calendar-weekdays">
+                            <div class="weekday-header">Monday</div>
+                            <div class="weekday-header">Tuesday</div>
+                            <div class="weekday-header">Wednesday</div>
+                            <div class="weekday-header">Thursday</div>
+                            <div class="weekday-header">Friday</div>
+                            <div class="weekday-header">Saturday</div>
+                            <div class="weekday-header">Sunday</div>
+                        </div>
+
+                        <!-- Calendar Grid -->
+                        <div class="calendar-grid">
+                            {% set firstDay = date(currentYear ~ '-' ~ currentMonth ~ '-01') %}
+                            {% set lastDay = date(currentYear ~ '-' ~ currentMonth ~ '-01')|date_modify('last day of this month') %}
+                            {% set daysInMonth = lastDay|date('d') %}
+                            
+                            {# Calculate starting position (0 = Monday, 6 = Sunday) #}
+                            {% set startDayOfWeek = firstDay|date('N') - 1 %}
+                            
+                            {# Add empty cells for days before the first of the month #}
+                            {% for i in 1..startDayOfWeek %}
+                                <div class="calendar-day empty"></div>
+                            {% endfor %}
+                            
+                            {# Add days of the month #}
+                            {% for day in 1..daysInMonth %}
+                                {% set currentDate = currentYear ~ '-' ~ '%02d'|format(currentMonth) ~ '-' ~ '%02d'|format(day) %}
+                                {% set todayDate = 'now'|date('Y-m-d') %}
+                                {% set isToday = currentDate == todayDate %}
+                                {% set dayBookings = bookingsByDate[currentDate] is defined ? bookingsByDate[currentDate] : [] %}
+                                
+                                <div class="calendar-day {% if isToday %}today{% endif %} {% if dayBookings|length > 0 %}has-bookings{% endif %}">
+                                    <div class="day-number">
+                                        {% if isToday %}
+                                            <span class="today-badge">Today</span>
+                                        {% endif %}
+                                        <span class="day-num">{{ day }}</span>
+                                    </div>
+                                    
+                                    {% if dayBookings|length > 0 %}
+                                        <div class="bookings-container">
+                                            {% for booking in dayBookings %}
+                                                <a href="{{ path('booking_meeting', {id: booking.id}) }}" class="booking-item status-{{ booking.status }} {% if booking.status == 'accepted' %}clickable{% endif %}">
+                                                    <div class="booking-time">
+                                                        <i class="bi bi-clock"></i>
+                                                        {{ booking.startTime ? booking.startTime|date('H:i') : 'TBD' }}
+                                                        {% if booking.durationMinutes %}
+                                                            <small>({{ booking.durationMinutes }}min)</small>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="booking-info">
+                                                        <strong>{{ booking.session.name }}</strong>
+                                                        <small class="d-block text-truncate">with {{ booking.session.instructor.name|default(booking.session.instructor.email) }}</small>
+                                                    </div>
+                                                    <span class="booking-status-badge {{ booking.status }}">
+                                                        {{ booking.status|capitalize }}
+                                                    </span>
+                                                    {% if booking.status == 'accepted' %}
+                                                        <span class="join-indicator">
+                                                            <i class="bi bi-camera-video-fill"></i> Join
+                                                        </span>
+                                                    {% endif %}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                        {% if dayBookings|length > 3 %}
+                                            <div class="more-bookings">
+                                                +{{ dayBookings|length - 3 }} more
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="no-bookings">
+                                            <i class="bi bi-calendar-x"></i>
+                                            <small>No bookings</small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            
+                            {# Add empty cells to complete the grid #}
+                            {% set totalCells = startDayOfWeek + daysInMonth %}
+                            {% set remainingCells = (7 - (totalCells % 7)) % 7 %}
+                            {% for i in 1..remainingCells %}
+                                <div class="calendar-day empty"></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body py-2">
+                        <div class="d-flex flex-wrap gap-4 justify-content-center">
+                            <div class="legend-item">
+                                <span class="status-dot pending"></span>
+                                <span>Pending</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-dot accepted"></span>
+                                <span>Accepted</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-dot completed"></span>
+                                <span>Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Calendar Container */
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.weekday-header {
+    padding: 15px 10px;
+    text-align: center;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+.weekday-header:last-child {
+    border-right: none;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #e9ecef;
+}
+
+.calendar-day {
+    background: white;
+    min-height: 150px;
+    padding: 10px;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.calendar-day.empty {
+    background: #f8f9fa;
+    min-height: 150px;
+}
+
+.calendar-day:hover:not(.empty) {
+    background: #f0f4ff;
+    z-index: 1;
+}
+
+.calendar-day.today {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+    border: 2px solid #ffc107;
+}
+
+.calendar-day.has-bookings {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+}
+
+/* Day Number */
+.day-number {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.day-num {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #495057;
+}
+
+.today-badge {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* Bookings */
+.bookings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.booking-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.15s ease;
+    background: white;
+    border-left: 3px solid;
+}
+
+.booking-item.status-pending {
+    border-left-color: #ffc107;
+}
+
+.booking-item.status-accepted {
+    border-left-color: #28a745;
+}
+
+.booking-item.status-completed {
+    border-left-color: #17a2b8;
+}
+
+.booking-item.clickable:hover {
+    transform: translateX(2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.booking-time {
+    white-space: nowrap;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.booking-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.booking-status-badge {
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.booking-status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.booking-status-badge.accepted {
+    background: #d4edda;
+    color: #155724;
+}
+
+.booking-status-badge.completed {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.join-indicator {
+    color: #28a745;
+    font-weight: 600;
+    font-size: 0.65rem;
+    white-space: nowrap;
+}
+
+.more-bookings {
+    text-align: center;
+    padding: 4px;
+    font-size: 0.75rem;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.no-bookings {
+    text-align: center;
+    padding: 20px 0;
+    color: #ced4da;
+}
+
+.no-bookings i {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Legend */
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.pending {
+    background: #ffc107;
+}
+
+.status-dot.accepted {
+    background: #28a745;
+}
+
+.status-dot.completed {
+    background: #17a2b8;
+}
+
+/* Scrollbar for bookings container */
+.bookings-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.bookings-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bookings-container::-webkit-scrollbar-thumb {
+    background: #dee2e6;
+    border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+    .calendar-day {
+        min-height: 80px;
+        padding: 5px;
+    }
+    
+    .day-num {
+        font-size: 0.9rem;
+    }
+    
+    .booking-info {
+        display: none;
+    }
+}
+</style>
+{% endblock %}

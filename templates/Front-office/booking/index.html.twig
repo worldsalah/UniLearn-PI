@@ -159,33 +159,7 @@ Booking Section START -->
                                                 {% elseif app.user and app.user.role.name == 'instructor' %}
                                                     <!-- Instructor booking - no student selection needed -->
                                                 {% else %}
-                                                    <!-- Show All Users for Guests/Other Roles -->
-                                                    <label class="form-label fw-semibold">All Users</label>
-                                                    <div class="searchable-dropdown">
-                                                        <div class="dropdown-input-wrapper">
-                                                            <input type="text" class="form-control form-control-lg" id="allUsersSearchInput" placeholder="Search users..." autocomplete="off" value="{{ formData.all_users is defined ? formData.all_users : '' }}">
-                                                            <div class="dropdown-arrow">▼</div>
-                                                        </div>
-                                                        <div class="dropdown-options" id="allUsersDropdown">
-                                                            {% if allUsers is defined and allUsers is not empty %}
-                                                                {% for user in allUsers %}
-                                                                    <div class="dropdown-option" data-value="{{ user.id }}" data-name="{{ user.fullName|lower }}" data-email="{{ user.email|lower }}">
-                                                                        <div class="option-name">{{ user.fullName }}</div>
-                                                                        <div class="option-email">{{ user.email }}</div>
-                                                                    </div>
-                                                                {% endfor %}
-                                                            {% else %}
-                                                                <div class="dropdown-option disabled">No users available</div>
-                                                            {% endif %}
-                                                        </div>
-                                                        <input type="hidden" name="all_users" id="allUsersSelected" value="{{ formData.all_users is defined ? formData.all_users : '' }}">
-                                                    </div>
-                                                    {% if errors.all_users is defined %}
-                                                        <div class="error-message text-danger mt-2">
-                                                            <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.all_users }}</small>
-                                                        </div>
-                                                    {% endif %}
-                                                    <small class="text-muted">Search and select a user</small>
+                                                    <!-- Guest/other roles - no user selection needed -->
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -316,26 +290,6 @@ Booking Section START -->
                                                                 </div>
                                                             </div>
                                                             
-                                                            <!-- Start Time Selection -->
-                                                            <div class="start-time-selection mb-3" id="startTimeSelection">
-                                                                <div class="start-time-header mb-2">
-                                                                    <i class="bi bi-clock text-primary me-2"></i>
-                                                                    <span class="fw-semibold">Select Start Time</span>
-                                                                </div>
-                                                                <select class="form-select" name="start_time" id="startTimeSelect" required>
-                                                                    <option value="">Choose start time...</option>
-                                                                </select>
-                                                                <input type="hidden" name="start_time" id="startTimeHidden" value="">
-                                                                <small class="text-muted mt-1 d-block">Available time slots will be shown after selecting a date</small>
-                                                            </div>
-                                                            
-                                                            <!-- Dynamic Duration Options -->
-                                                            <div class="duration-options" id="durationOptions">
-                                                                <div class="row g-2" id="durationOptionsContainer">
-                                                                    <!-- Options will be generated dynamically via JavaScript -->
-                                                                </div>
-                                                            </div>
-                                                            
                                                             <input type="hidden" name="duration_minutes" id="selectedDuration" value="">
                                                             <input type="hidden" name="total_price" id="selectedPrice" value="">
                                                             
@@ -395,6 +349,11 @@ Booking Section START -->
                                                 <div class="calendar-label-header">
                                                     <i class="bi bi-calendar3 text-primary"></i>
                                                     <label class="form-label fw-semibold mb-0">Preferred Date</label>
+                                                    {% if app.user and app.user.role and app.user.role.name == 'instructor' %}
+                                                        <a href="{{ path('teacher_calendar') }}" class="btn btn-sm btn-outline-primary ms-auto" title="View My Calendar">
+                                                            <i class="bi bi-calendar-heart me-1"></i> My Calendar
+                                                        </a>
+                                                    {% endif %}
                                                 </div>
                                                 
                                                 <!-- Modern Calendar -->
@@ -488,66 +447,6 @@ Booking Section START -->
                                             </div>
                                         </div>
 
-                                        <!-- Time Slot Selection -->
-                                        <div class="col-md-6" id="timeSlotSection" style="display: none;">
-                                            <div class="feature-highlight">
-                                                <label class="form-label fw-semibold">
-                                                    <i class="bi bi-clock me-2 text-primary"></i>Select Time Slot
-                                                </label>
-                                                
-                                                <!-- Start Time -->
-                                                <div class="mb-3">
-                                                    <label for="startTime" class="form-label small text-muted">Start Time</label>
-                                                    <select class="form-select form-select-lg" name="start_time" id="startTime">
-                                                        <option value="">Choose start time...</option>
-                                                    </select>
-                                                    <small class="text-muted">Available time slots for this session</small>
-                                                    {% if errors.start_time is defined %}
-                                                        <div class="error-message text-danger mt-2">
-                                                            <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.start_time }}</small>
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                                
-                                                <!-- Duration -->
-                                                <div class="mb-3">
-                                                    <label for="durationMinutes" class="form-label small text-muted">Duration</label>
-                                                    <select class="form-select form-select-lg" name="duration_minutes" id="durationMinutes" required>
-                                                        <option value="">Select duration...</option>
-                                                    </select>
-                                                    <small class="text-muted">How long do you want to learn?</small>
-                                                    {% if errors.duration_minutes is defined %}
-                                                        <div class="error-message text-danger mt-2">
-                                                            <small><i class="bi bi-exclamation-circle me-1"></i>{{ errors.duration_minutes }}</small>
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                                
-                                                <!-- Price Display -->
-                                                <div class="price-display-card" id="priceDisplayCard" style="display: none;">
-                                                    <div class="price-header">
-                                                        <span class="price-label">Total Price</span>
-                                                        <span class="price-badge" id="priceBadge">Calculated</span>
-                                                    </div>
-                                                    <div class="price-amount" id="priceAmount">$0.00</div>
-                                                    <div class="price-breakdown" id="priceBreakdown">
-                                                        <small class="text-muted">Select duration to see price</small>
-                                                    </div>
-                                                    <input type="hidden" name="total_price" id="totalPrice" value="">
-                                                </div>
-                                                
-                                                <!-- Available Hours Info -->
-                                                <div class="available-hours-info mt-3" id="availableHoursInfo" style="display: none;">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <i class="bi bi-info-circle text-info"></i>
-                                                        <small class="text-muted">
-                                                            <span id="availableHoursText">Loading availability...</span>
-                                                        </small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <!-- Message -->
                                         <div class="col-12">
                                             <div class="feature-highlight">
@@ -575,7 +474,7 @@ Booking Section START -->
                                                     </div>
                                                 {% endif %}
                                             </div>
-                                                <button type="submit" class="btn btn-success btn-lg px-5">
+                                                <button type="submit" class="btn btn-success btn-lg px-5" onclick="console.log('BUTTON CLICKED!');">
                                                     <i class="bi bi-calendar-check me-2"></i>
                                                     Book Session Now
                                                 </button>
@@ -1699,8 +1598,12 @@ Booking Section START -->
 </style>
 
 <script>
+console.log('SCRIPT STARTED - Booking page loaded');
 // Custom Calendar Implementation
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== DOM CONTENT LOADED ===');
+    console.log('JavaScript is running!');
+    
     let currentDate = new Date();
     let selectedDate = null;
     let bookedDates = [];
@@ -1717,6 +1620,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const preferredDateInput = document.getElementById('preferredDate');
     const selectedDateDisplay = document.getElementById('selectedDateDisplay');
     const selectedDateText = document.getElementById('selectedDateText');
+    
+    console.log('Calendar elements found:');
+    console.log('calMonthYear:', calMonthYear);
+    console.log('calBody:', calBody);
+    console.log('preferredDateInput:', preferredDateInput);
+    
+    // Check if form exists immediately
+    const formCheck = document.getElementById('bookingForm');
+    console.log('FORM CHECK - bookingForm found:', formCheck);
+    if (formCheck) {
+        console.log('Form action:', formCheck.action);
+        console.log('Form method:', formCheck.method);
+    }
 
     // ============ DURATION SELECTION ============
     // Session availability data
@@ -1733,10 +1649,7 @@ document.addEventListener('DOMContentLoaded', function() {
             {% set toMins = selectedSession.availableTo|date('i') %}
             totalAvailableMinutes = {{ (toHours * 60 + toMins) - (fromHours * 60 + fromMins) }};
             
-            // Populate start time dropdown immediately from Twig data
-            const initialAvailableFrom = '{{ selectedSession.availableFrom|date('H:i') }}';
-            const initialAvailableTo = '{{ selectedSession.availableTo|date('H:i') }}';
-            populateStartTimeDropdown(initialAvailableFrom, initialAvailableTo);
+            // populateStartTimeDropdown function was removed with timeSlotSection
         {% endif %}
         {% if selectedSession.hourlyPrice %}
             sessionHourlyPrice = {{ selectedSession.hourlyPrice }};
@@ -2081,12 +1994,11 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedDateDisplay.style.display = 'block';
         }
         
-        // Show time slot section and populate time slots
-        console.log('Calling showTimeSlotSection...');
-        await showTimeSlotSection();
+        // Show time slot section and populate time slots - REMOVED
+        // Time slot section was deleted from the form
         
-        // Fetch booked time slots for this date and update duration options
-        updateDurationOptionsForDate(dateStr);
+        // Fetch booked time slots for this date and update duration options - REMOVED
+        // Duration options were part of the deleted time slot section
         
         // Re-render to show selection
         renderCalendar();
@@ -2247,25 +2159,57 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Test if we can attach event listener to form
+    const testForm = document.getElementById('bookingForm');
+    if (testForm) {
+        console.log('TEST: Form found, attaching simple click test');
+        testForm.addEventListener('click', function() {
+            console.log('TEST: Form was clicked');
+        });
+    }
+    
     // Form validation
     const form = document.getElementById('bookingForm');
+    console.log('Form element found:', form);
+    
     if (form) {
         form.addEventListener('submit', function(e) {
+            console.log('=== FORM SUBMISSION STARTED ===');
+            console.log('Event object:', e);
+            console.log('Form data before submission:');
+            
+            // Log all form fields
+            const formData = new FormData(form);
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+            
             const termsCheck = document.getElementById('termsCheck');
+            console.log('Terms checkbox found:', termsCheck);
+            console.log('Terms checkbox checked:', termsCheck ? termsCheck.checked : 'not found');
             
             // Check if terms are accepted
             if (!termsCheck || !termsCheck.checked) {
+                console.log('VALIDATION FAILED: Terms not accepted');
                 e.preventDefault();
                 alert('Please accept terms and conditions to proceed.');
                 return;
             }
             
+            console.log('Terms validation passed');
+            
             // Check if date is selected
+            console.log('Preferred date input:', preferredDateInput);
+            console.log('Preferred date value:', preferredDateInput ? preferredDateInput.value : 'not found');
+            
             if (!preferredDateInput || !preferredDateInput.value) {
+                console.log('VALIDATION FAILED: No date selected');
                 e.preventDefault();
                 alert('Please select your preferred date for the session.');
                 return;
             }
+
+            console.log('Date validation passed');
 
             // Check if selected date is not in the past
             const [selYear, selMonth, selDay] = preferredDateInput.value.split('-').map(Number);
@@ -2273,28 +2217,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             
+            console.log('Selected date:', selectedDateObj);
+            console.log('Today:', today);
+            console.log('Is past date:', selectedDateObj < today);
+            
             if (selectedDateObj < today) {
+                console.log('VALIDATION FAILED: Date is in the past');
                 e.preventDefault();
                 alert('Please select a date that is today or in the future.');
                 return;
             }
             
-            // Check if start time is selected
-            const startTimeSelect = document.getElementById('startTime');
-            if (startTimeSelect && !startTimeSelect.value) {
-                e.preventDefault();
-                alert('Please select a start time for your session.');
-                return;
-            }
+            console.log('Date past validation passed');
+            console.log('=== ALL VALIDATIONS PASSED - FORM WILL SUBMIT ===');
             
-            // Check if duration is selected
-            const durationSelect = document.getElementById('durationMinutes');
-            if (durationSelect && !durationSelect.value) {
-                e.preventDefault();
-                alert('Please select the duration of your session.');
-                return;
-            }
+            // Time slot validation removed - these fields are no longer in the form
         });
+    } else {
+        console.error('FORM NOT FOUND: No element with id "bookingForm"');
     }
 
     // ============ TIME SLOT SELECTION LOGIC ============
@@ -2344,350 +2284,17 @@ document.addEventListener('DOMContentLoaded', function() {
         return [];
     }
     
-    // Show time slot section
-    async function showTimeSlotSection() {
-        const timeSlotSection = document.getElementById('timeSlotSection');
-        if (!timeSlotSection) {
-            console.error('timeSlotSection element not found');
-            return;
-        }
-        
-        // Show the section immediately
-        timeSlotSection.style.display = 'block';
-        timeSlotSection.classList.add('active');
-        console.log('Time slot section shown');
-        
-        // Fetch session data if not already loaded
-        if (currentSessionId && !sessionData.hourlyPrice) {
-            console.log('Fetching session data for time slots...');
-            const data = await fetchSessionData(currentSessionId);
-            if (data) {
-                sessionData.availableFrom = data.availableFrom;
-                sessionData.availableTo = data.availableTo;
-                sessionData.hourlyPrice = parseFloat(data.hourlyPrice) || 0;
-                
-                // Calculate total available minutes
-                if (data.availableFrom && data.availableTo) {
-                    const [fromHours, fromMins] = data.availableFrom.split(':').map(Number);
-                    const [toHours, toMins] = data.availableTo.split(':').map(Number);
-                    const fromMinutes = fromHours * 60 + fromMins;
-                    const toMinutes = toHours * 60 + toMins;
-                    sessionData.totalAvailableMinutes = toMinutes - fromMinutes;
-                    console.log('Session data loaded:', sessionData);
-                }
-            } else {
-                console.error('Failed to fetch session data');
-            }
-        }
-        
-        // Populate time slots
-        await populateTimeSlots();
-        
-        // Populate duration dropdown based on available time (even if already loaded)
-        if (sessionData.totalAvailableMinutes > 0) {
-            updateDurationDropdown(sessionData.totalAvailableMinutes);
-        }
-        
-        // Update available hours info
-        updateAvailableHoursInfo();
-    }
+    // Show time slot section - REMOVED
+    // This function was removed because the timeSlotSection was deleted from the form
     
-    // Populate available time slots
-    async function populateTimeSlots() {
-        // Populate both the old startTime dropdown and the new startTimeSelect
-        const startTimeSelectOld = document.getElementById('startTime');
-        const startTimeSelectNew = document.getElementById('startTimeSelect');
-        const startTimeHidden = document.getElementById('startTimeHidden');
-        
-        if (!selectedDate) return;
-        
-        // Clear existing options in both dropdowns
-        if (startTimeSelectOld) {
-            startTimeSelectOld.innerHTML = '<option value="">Choose start time...</option>';
-        }
-        if (startTimeSelectNew) {
-            startTimeSelectNew.innerHTML = '<option value="">Choose start time...</option>';
-        }
-        
-        // Fetch booked time slots for the selected date
-        bookedTimeSlots = await fetchBookedTimeSlots(currentSessionId, selectedDate);
-        
-        // Generate time slots based on session availability
-        if (sessionData.availableFrom && sessionData.availableTo) {
-            const [fromHours, fromMins] = sessionData.availableFrom.split(':').map(Number);
-            const [toHours, toMins] = sessionData.availableTo.split(':').map(Number);
-            
-            // Generate 30-minute interval slots
-            for (let hours = fromHours; hours < toHours || (hours === toHours && fromMins < toMins); hours++) {
-                for (let mins = (hours === fromHours ? fromMins : 0); mins < 60; mins += 30) {
-                    if (hours > toHours || (hours === toHours && mins >= toMins)) break;
-                    
-                    const timeStr = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-                    const displayTime = formatTimeDisplay(hours, mins);
-                    
-                    // Check if this slot is booked
-                    const isBooked = bookedTimeSlots.some(slot => {
-                        const bookedStart = slot.start_time;
-                        const bookedEnd = slot.end_time;
-                        return timeStr >= bookedStart && timeStr < bookedEnd;
-                    });
-                    
-                    // Add option to old dropdown
-                    if (startTimeSelectOld) {
-                        const option = document.createElement('option');
-                        option.value = timeStr;
-                        option.textContent = displayTime;
-                        if (isBooked) {
-                            option.disabled = true;
-                            option.textContent += ' (Booked)';
-                        }
-                        startTimeSelectOld.appendChild(option);
-                    }
-                    
-                    // Add option to new dropdown
-                    if (startTimeSelectNew) {
-                        const option2 = document.createElement('option');
-                        option2.value = timeStr;
-                        option2.textContent = displayTime;
-                        if (isBooked) {
-                            option2.disabled = true;
-                            option2.textContent += ' (Booked)';
-                        }
-                        startTimeSelectNew.appendChild(option2);
-                    }
-                }
-            }
-        }
-        
-        // Add event listener to update hidden field when selection changes
-        if (startTimeSelectNew) {
-            startTimeSelectNew.addEventListener('change', function() {
-                if (startTimeHidden) {
-                    startTimeHidden.value = this.value;
-                }
-            });
-        }
-    }
+    // Populate available time slots - REMOVED
+    // Time slot population was removed because the timeSlotSection was deleted
     
-    // Populate start time dropdown with session availability (before date selection)
-    function populateStartTimeDropdown(availableFrom, availableTo) {
-        const startTimeSelectNew = document.getElementById('startTimeSelect');
-        const startTimeHidden = document.getElementById('startTimeHidden');
-        
-        if (!startTimeSelectNew || !availableFrom || !availableTo) return;
-        
-        // Clear existing options
-        startTimeSelectNew.innerHTML = '<option value="">Choose start time...</option>';
-        
-        const [fromHours, fromMins] = availableFrom.split(':').map(Number);
-        const [toHours, toMins] = availableTo.split(':').map(Number);
-        
-        // Generate 30-minute interval slots
-        for (let hours = fromHours; hours < toHours || (hours === toHours && fromMins < toMins); hours++) {
-            for (let mins = (hours === fromHours ? fromMins : 0); mins < 60; mins += 30) {
-                if (hours > toHours || (hours === toHours && mins >= toMins)) break;
-                
-                const timeStr = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-                const displayTime = formatTimeDisplay(hours, mins);
-                
-                const option = document.createElement('option');
-                option.value = timeStr;
-                option.textContent = displayTime;
-                startTimeSelectNew.appendChild(option);
-            }
-        }
-        
-        // Add event listener to update hidden field
-        startTimeSelectNew.addEventListener('change', function() {
-            if (startTimeHidden) {
-                startTimeHidden.value = this.value;
-            }
-        });
-    }
+    // All time slot related functions have been removed
+    // since the timeSlotSection was deleted from the form
     
-    // Format time for display (12-hour format)
-    function formatTimeDisplay(hours, mins) {
-        const period = hours >= 12 ? 'PM' : 'AM';
-        const displayHours = hours % 12 || 12;
-        return `${displayHours}:${mins.toString().padStart(2, '0')} ${period}`;
-    }
-    
-    // Update available hours info display
-    function updateAvailableHoursInfo() {
-        const availableHoursInfo = document.getElementById('availableHoursInfo');
-        const availableHoursText = document.getElementById('availableHoursText');
-        
-        if (!availableHoursInfo || !availableHoursText) return;
-        
-        if (sessionData.availableFrom && sessionData.availableTo) {
-            const totalHours = sessionData.totalAvailableMinutes / 60;
-            const bookedMinutes = bookedTimeSlots.reduce((total, slot) => {
-                const [startH, startM] = slot.start_time.split(':').map(Number);
-                const [endH, endM] = slot.end_time.split(':').map(Number);
-                return total + ((endH * 60 + endM) - (startH * 60 + startM));
-            }, 0);
-            
-            const remainingMinutes = sessionData.totalAvailableMinutes - bookedMinutes;
-            const remainingHours = (remainingMinutes / 60).toFixed(1);
-            
-            if (remainingMinutes <= 0) {
-                availableHoursText.innerHTML = '<strong class="text-danger">This session is fully booked for this date</strong>';
-                // Disable booking
-                const submitBtn = document.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Fully Booked';
-                }
-            } else {
-                availableHoursText.innerHTML = `<strong>${remainingHours} hours</strong> available (${totalHours} total - ${(bookedMinutes/60).toFixed(1)} booked)`;
-            }
-            
-            availableHoursInfo.style.display = 'block';
-        }
-    }
-    
-    // Calculate and display price
-    function calculatePrice() {
-        const durationSelect = document.getElementById('durationMinutes');
-        const priceDisplayCard = document.getElementById('priceDisplayCard');
-        const priceAmount = document.getElementById('priceAmount');
-        const priceBreakdown = document.getElementById('priceBreakdown');
-        const totalPriceInput = document.getElementById('totalPrice');
-        
-        if (!durationSelect || !priceDisplayCard || !sessionData.hourlyPrice) return;
-        
-        const durationMinutes = parseInt(durationSelect.value) || 0;
-        
-        if (durationMinutes > 0) {
-            const hours = durationMinutes / 60;
-            const totalPrice = hours * sessionData.hourlyPrice;
-            
-            // Update display
-            priceDisplayCard.style.display = 'block';
-            priceAmount.textContent = `$${totalPrice.toFixed(2)}`;
-            priceBreakdown.innerHTML = `<small>${hours.toFixed(1)} hour(s) × $${sessionData.hourlyPrice.toFixed(2)}/hour</small>`;
-            totalPriceInput.value = totalPrice.toFixed(2);
-        } else {
-            priceDisplayCard.style.display = 'none';
-            totalPriceInput.value = '';
-        }
-    }
-    
-    // Event listeners for time slot and duration
-    const startTimeSelect = document.getElementById('startTime');
-    const durationSelect = document.getElementById('durationMinutes');
-    
-    if (startTimeSelect) {
-        startTimeSelect.addEventListener('change', function() {
-            // Validate that the selected start time + duration doesn't exceed available time
-            validateTimeSelection();
-        });
-    }
-    
-    if (durationSelect) {
-        durationSelect.addEventListener('change', function() {
-            calculatePrice();
-            validateTimeSelection();
-        });
-    }
-    
-    // Validate time selection
-    function validateTimeSelection() {
-        const startTime = document.getElementById('startTime')?.value;
-        const duration = parseInt(document.getElementById('durationMinutes')?.value) || 0;
-        
-        if (!startTime || !duration || !sessionData.availableTo) return;
-        
-        const [startH, startM] = startTime.split(':').map(Number);
-        const endMinutes = startH * 60 + startM + duration;
-        
-        const [toH, toM] = sessionData.availableTo.split(':').map(Number);
-        const availableEndMinutes = toH * 60 + toM;
-        
-        if (endMinutes > availableEndMinutes) {
-            alert('The selected duration exceeds the available time slot. Please choose a shorter duration or earlier start time.');
-        }
-        
-        // Check for conflicts with booked slots
-        const endTime = `${Math.floor(endMinutes / 60).toString().padStart(2, '0')}:${(endMinutes % 60).toString().padStart(2, '0')}`;
-        
-        const hasConflict = bookedTimeSlots.some(slot => {
-            return startTime < slot.end_time && endTime > slot.start_time;
-        });
-        
-        if (hasConflict) {
-            alert('This time slot conflicts with an existing booking. Please choose a different time.');
-        }
-    }
-
-    // Initialize for pre-selected session
-    {% if selectedSession %}
-        (async function() {
-            minDate = '{{ selectedSession.startDate|date('Y-m-d') }}';
-            maxDate = '{{ selectedSession.endDate|date('Y-m-d') }}';
-            currentSessionId = '{{ selectedSession.id }}';
-            
-            const dateRangeInfo = document.getElementById('dateRangeInfo');
-            if (dateRangeInfo) {
-                dateRangeInfo.innerHTML = `<strong>Session period:</strong> ${minDate} to ${maxDate}`;
-            }
-            
-            // Fetch session data for time slots
-            const data = await fetchSessionData(currentSessionId);
-            if (data) {
-                sessionData.availableFrom = data.availableFrom;
-                sessionData.availableTo = data.availableTo;
-                sessionData.hourlyPrice = parseFloat(data.hourlyPrice) || 0;
-                
-                if (data.availableFrom && data.availableTo) {
-                    const [fromHours, fromMins] = data.availableFrom.split(':').map(Number);
-                    const [toHours, toMins] = data.availableTo.split(':').map(Number);
-                    sessionData.totalAvailableMinutes = (toHours * 60 + toMins) - (fromHours * 60 + fromMins);
-                    
-                    // Populate start time dropdown with session availability (before date selection)
-                    populateStartTimeDropdown(data.availableFrom, data.availableTo);
-                }
-            }
-            
-            const datesData = await fetchBookedDates(currentSessionId);
-            bookedDates = datesData.bookedDates || [];
-            fullyBookedDates = datesData.fullyBookedDates || [];
-            updateBookedDatesInfo();
-            renderCalendar();
-        })();
-    {% elseif formData.session_id is defined and formData.session_id %}
-        (async function() {
-            currentSessionId = '{{ formData.session_id }}';
-            
-            // Fetch session data for time slots
-            const data = await fetchSessionData(currentSessionId);
-            if (data) {
-                sessionData.availableFrom = data.availableFrom;
-                sessionData.availableTo = data.availableTo;
-                sessionData.hourlyPrice = parseFloat(data.hourlyPrice) || 0;
-                
-                if (data.availableFrom && data.availableTo) {
-                    const [fromHours, fromMins] = data.availableFrom.split(':').map(Number);
-                    const [toHours, toMins] = data.availableTo.split(':').map(Number);
-                    sessionData.totalAvailableMinutes = (toHours * 60 + toMins) - (fromHours * 60 + fromMins);
-                }
-            }
-            
-            const datesData = await fetchBookedDates(currentSessionId);
-            bookedDates = datesData.bookedDates || [];
-            fullyBookedDates = datesData.fullyBookedDates || [];
-            updateBookedDatesInfo();
-            renderCalendar();
-            
-            {% if formData.preferred_date is defined %}
-                selectDate('{{ formData.preferred_date }}');
-            {% endif %}
-        })();
-    {% else %}
-        // Initial render
-        renderCalendar();
-    {% endif %}
+    // Initialize calendar
+    renderCalendar();
 });
 </script>
-
 {% endblock %}

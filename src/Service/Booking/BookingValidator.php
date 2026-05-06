@@ -53,7 +53,7 @@ class BookingValidator
      */
     public function validateTeacher(User $teacher): void
     {
-        if (!$teacher->hasRole(UserRole::TEACHER)) {
+        if (!$teacher->hasRole(UserRole::INSTRUCTOR)) {
             throw new BusinessRuleViolationException('User is not a teacher');
         }
         

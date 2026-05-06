@@ -57,12 +57,16 @@ Header START -->
                         <ul class="dropdown-menu" aria-labelledby="sessionDropdown">
                             <li><h6 class="dropdown-header">Schedule</h6></li>
                             <li><a class="dropdown-item" href="{{ path('all_sessions') }}">All Sessions</a></li>
-                            {% if app.user and 'instructor' == app.user.role.name %}
+                            {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
                                 <li><a class="dropdown-item" href="{{ path('teacher_calendar') }}">Calendar</a></li>
+                            {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
+                                <li><a class="dropdown-item" href="/student/calendar">Calendar</a></li>
                             {% else %}
-                                <li><a class="dropdown-item" href="{{ path('booking_create') }}">Calendar</a></li>
+                                <li><a class="dropdown-item" href="{{ path('all_bookings') }}">Calendar</a></li>
                             {% endif %}
-                            <li><a class="dropdown-item" href="{{ path('all_bookings') }}">My Bookings</a></li>
+                            {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
+                                <li><a class="dropdown-item" href="{{ path('all_bookings') }}">My Bookings</a></li>
+                            {% endif %}
                         </ul>
                     </li>
 
@@ -122,23 +126,33 @@ Header START -->
                                         <div>
                                             <a class="h6 mt-2 mt-sm-0" href="#">{{ app.user.name|default(app.user.email) }}</a>
                                             <p class="small m-0">{{ app.user.email }}</p>
+                                            {# Dynamic user points display #}
+                                            {% if app.user %}
+                                                {% set userPoints = render(controller('App\\Controller\\PointsController::getUserPoints')) %}
+                                                {% if userPoints > 0 %}
+                                                    <p class="small m-0 text-warning"><i class="fas fa-star me-1"></i>{{ userPoints }} points</p>
+                                                {% endif %}
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <!-- Links -->
-                                {% if app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
+                                {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+                                    <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="fas fa-tachometer-alt fa-fw me-2"></i>Admin Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Settings</a></li>
+                                {% elseif app.user and 'ROLE_INSTRUCTOR' in app.user.roles %}
                                     <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
                                     <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="fas fa-chalkboard-teacher fa-fw me-2"></i>Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_instructor_dashboard') }}"><i class="fas fa-chalkboard-teacher fa-fw me-2"></i>Instructor Dashboard</a></li>
                                 {% elseif app.user and 'ROLE_STUDENT' in app.user.roles %}
                                     <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
                                     <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_student_dashboard') }}"><i class="fas fa-graduation-cap fa-fw me-2"></i>Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_student_dashboard') }}"><i class="fas fa-graduation-cap fa-fw me-2"></i>Student Dashboard</a></li>
                                 {% else %}
-                                    <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}"><i class="fas fa-tachometer-alt fa-fw me-2"></i>Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_marketplace_dashboard') }}"><i class="fas fa-shopping-cart fa-fw me-2"></i>My Orders</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}"><i class="bi bi-person fa-fw me-2"></i>My Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Settings</a></li>
                                 {% endif %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a></li>
@@ -194,6 +208,38 @@ Header END -->
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Debug: Log user role information
+    {% if app.user %}
+    console.log('=== USER ROLE DEBUG ===');
+    console.log('User ID:', {{ app.user.id }});
+    console.log('User Email:', '{{ app.user.email }}');
+    console.log('Database Role Name:', '{{ app.user.role.name|default('NULL') }}');
+    console.log('Database Role ID:', '{{ app.user.role.id|default('NULL') }}');
+    console.log('All Roles Array:', {{ app.user.roles|json_encode|raw }});
+    console.log('Has ROLE_INSTRUCTOR:', {{ 'ROLE_INSTRUCTOR' in app.user.roles ? 'true' : 'false' }});
+    console.log('Has ROLE_ADMIN:', {{ 'ROLE_ADMIN' in app.user.roles ? 'true' : 'false' }});
+    console.log('Has ROLE_STUDENT:', {{ 'ROLE_STUDENT' in app.user.roles ? 'true' : 'false' }});
+    console.log('Raw user object:', {{ app.user|json_encode|raw }});
+    console.log('========================');
+    
+    // Temporary force instructor dashboard button for testing
+    {% if app.user.id == 21 %}
+    console.log('FORCING INSTRUCTOR DASHBOARD BUTTON FOR USER ID 21');
+    // Find the instructor dashboard link and make it visible
+    setTimeout(() => {
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+        dropdownItems.forEach(item => {
+            if (item.textContent.includes('Instructor Dashboard')) {
+                item.style.display = 'block';
+                console.log('Instructor Dashboard button forced to show');
+            }
+        });
+    }, 1000);
+    {% endif %}
+    {% else %}
+    console.log('No user logged in');
+    {% endif %}
+
     const searchInput = document.getElementById('headerSearchInput');
     const suggestionsContainer = document.getElementById('headerSuggestionsContainer');
     let debounceTimer;

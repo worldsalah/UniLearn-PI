@@ -2,7 +2,14 @@ twig:
     file_name_pattern: '*.twig'
     globals:
         google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+    cache: '%kernel.build_dir%/twig'
+
+when@prod:
+    twig:
+        strict_variables: false
+        cache: '%kernel.build_dir%/twig'
 
 when@test:
     twig:
         strict_variables: true
+        cache: false

@@ -6,7 +6,6 @@ use App\Repository\TeacherProfileRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TeacherProfileRepository::class)]
 #[ORM\Table(name: 'teacher_profile')]
@@ -14,12 +13,12 @@ use Symfony\Component\Uid\Uuid;
 class TeacherProfile
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     public function __construct()
     {
-        $this->id = Uuid::v4()->toRfc4122();
         $this->availabilities = new ArrayCollection();
         $this->bookings = new ArrayCollection();
     }
@@ -79,7 +78,7 @@ class TeacherProfile
 
     // === Getters & Setters ===
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }

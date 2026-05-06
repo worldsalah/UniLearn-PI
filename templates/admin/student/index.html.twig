@@ -161,7 +161,7 @@
 					<!-- Search bar -->
 					<div class="col-md-4">
 						<form method="GET" class="position-relative" onsubmit="return false;">
-							<input class="form-control bg-body pe-5" type="search" name="search" value="{{ search }}" placeholder="Search students..." aria-label="Search">
+							<input class="form-control bg-body pe-5" type="search" name="search" value="{{ app.request.query.get('search', '') }}" placeholder="Search students..." aria-label="Search">
 							<button type="button" class="bg-transparent px-2 py-0 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" onclick="performSearch()">
 								<i class="fas fa-search fs-6"></i>
 							</button>
@@ -172,9 +172,10 @@
 					<div class="col-md-2">
 						<select class="form-select" name="status" id="statusFilter">
 							<option value="">All Status</option>
-							{% for statusOption in availableStatuses %}
-								<option value="{{ statusOption }}" {% if status == statusOption %}selected{% endif %}>{{ statusOption|capitalize }}</option>
-							{% endfor %}
+							<option value="active" {% if app.request.query.get('status', '') == 'active' %}selected{% endif %}>Active</option>
+							<option value="inactive" {% if app.request.query.get('status', '') == 'inactive' %}selected{% endif %}>Inactive</option>
+							<option value="pending" {% if app.request.query.get('status', '') == 'pending' %}selected{% endif %}>Pending</option>
+							<option value="suspended" {% if app.request.query.get('status', '') == 'suspended' %}selected{% endif %}>Suspended</option>
 						</select>
 					</div>
 
@@ -182,27 +183,27 @@
 					<div class="col-md-2">
 						<select class="form-select" name="role" id="roleFilter">
 							<option value="">All Roles</option>
-							{% for roleOption in availableRoles %}
-								<option value="{{ roleOption }}" {% if role == roleOption %}selected{% endif %}>{{ roleOption|capitalize }}</option>
-							{% endfor %}
+							<option value="Student" {% if app.request.query.get('role', '') == 'Student' %}selected{% endif %}>Student</option>
+							<option value="Instructor" {% if app.request.query.get('role', '') == 'Instructor' %}selected{% endif %}>Instructor</option>
+							<option value="Admin" {% if app.request.query.get('role', '') == 'Admin' %}selected{% endif %}>Admin</option>
 						</select>
 					</div>
 
 					<!-- Sort filter -->
 					<div class="col-md-2">
 						<select class="form-select" name="sort" id="sortFilter">
-							<option value="createdAt" {% if sortBy == 'createdAt' %}selected{% endif %}>Join Date</option>
-							<option value="fullName" {% if sortBy == 'fullName' %}selected{% endif %}>Name</option>
-							<option value="email" {% if sortBy == 'email' %}selected{% endif %}>Email</option>
-							<option value="status" {% if sortBy == 'status' %}selected{% endif %}>Status</option>
+							<option value="createdAt" {% if app.request.query.get('sort', 'createdAt') == 'createdAt' %}selected{% endif %}>Join Date</option>
+							<option value="fullName" {% if app.request.query.get('sort', 'createdAt') == 'fullName' %}selected{% endif %}>Name</option>
+							<option value="email" {% if app.request.query.get('sort', 'createdAt') == 'email' %}selected{% endif %}>Email</option>
+							<option value="status" {% if app.request.query.get('sort', 'createdAt') == 'status' %}selected{% endif %}>Status</option>
 						</select>
 					</div>
 
 					<!-- Sort order -->
 					<div class="col-md-2">
 						<select class="form-select" name="order" id="orderFilter">
-							<option value="desc" {% if sortOrder == 'desc' %}selected{% endif %}>Newest</option>
-							<option value="asc" {% if sortOrder == 'asc' %}selected{% endif %}>Oldest</option>
+							<option value="desc" {% if app.request.query.get('order', 'desc') == 'desc' %}selected{% endif %}>Newest</option>
+							<option value="asc" {% if app.request.query.get('order', 'desc') == 'asc' %}selected{% endif %}>Oldest</option>
 						</select>
 					</div>
 				</div>
@@ -234,35 +235,35 @@
 						<thead>
 							<tr>
 								<th scope="col" class="border-0 rounded-start">
-									<a href="{{ path('admin_student_list', {'search': search, 'status': status, 'role': role, 'sort': 'fullName', 'order': sortBy == 'fullName' and sortOrder == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
+									<a href="{{ path('app_admin_student_index', {'search': app.request.query.get('search', ''), 'status': app.request.query.get('status', ''), 'role': app.request.query.get('role', ''), 'sort': 'fullName', 'order': app.request.query.get('sortBy', 'fullName') == 'fullName' and app.request.query.get('sortOrder', 'asc') == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
 										Student Name 
-										{% if sortBy == 'fullName' %}
-											<i class="fas fa-sort-{{ sortOrder == 'asc' ? 'up' : 'down' }} ms-1"></i>
+										{% if app.request.query.get('sortBy', 'fullName') == 'fullName' %}
+											<i class="fas fa-sort-{{ app.request.query.get('sortOrder', 'asc') == 'asc' ? 'up' : 'down' }} ms-1"></i>
 										{% endif %}
 									</a>
 								</th>
 								<th scope="col" class="border-0">
-									<a href="{{ path('admin_student_list', {'search': search, 'status': status, 'role': role, 'sort': 'email', 'order': sortBy == 'email' and sortOrder == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
+									<a href="{{ path('app_admin_student_index', {'search': app.request.query.get('search', ''), 'status': app.request.query.get('status', ''), 'role': app.request.query.get('role', ''), 'sort': 'email', 'order': app.request.query.get('sortBy', 'email') == 'email' and app.request.query.get('sortOrder', 'asc') == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
 										Email
-										{% if sortBy == 'email' %}
-											<i class="fas fa-sort-{{ sortOrder == 'asc' ? 'up' : 'down' }} ms-1"></i>
+										{% if app.request.query.get('sortBy', 'email') == 'email' %}
+											<i class="fas fa-sort-{{ app.request.query.get('sortOrder', 'asc') == 'asc' ? 'up' : 'down' }} ms-1"></i>
 										{% endif %}
 									</a>
 								</th>
 								<th scope="col" class="border-0">Role</th>
 								<th scope="col" class="border-0">
-									<a href="{{ path('admin_student_list', {'search': search, 'status': status, 'role': role, 'sort': 'status', 'order': sortBy == 'status' and sortOrder == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
+									<a href="{{ path('app_admin_student_index', {'search': app.request.query.get('search', ''), 'status': app.request.query.get('status', ''), 'role': app.request.query.get('role', ''), 'sort': 'status', 'order': app.request.query.get('sortBy', 'status') == 'status' and app.request.query.get('sortOrder', 'asc') == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
 										Status
-										{% if sortBy == 'status' %}
-											<i class="fas fa-sort-{{ sortOrder == 'asc' ? 'up' : 'down' }} ms-1"></i>
+										{% if app.request.query.get('sortBy', 'status') == 'status' %}
+											<i class="fas fa-sort-{{ app.request.query.get('sortOrder', 'asc') == 'asc' ? 'up' : 'down' }} ms-1"></i>
 										{% endif %}
 									</a>
 								</th>
 								<th scope="col" class="border-0">
-									<a href="{{ path('admin_student_list', {'search': search, 'status': status, 'role': role, 'sort': 'createdAt', 'order': sortBy == 'createdAt' and sortOrder == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
+									<a href="{{ path('app_admin_student_index', {'search': app.request.query.get('search', ''), 'status': app.request.query.get('status', ''), 'role': app.request.query.get('role', ''), 'sort': 'createdAt', 'order': app.request.query.get('sortBy', 'createdAt') == 'createdAt' and app.request.query.get('sortOrder', 'asc') == 'asc' ? 'desc' : 'asc'}) }}" class="text-decoration-none text-white">
 										Join Date
-										{% if sortBy == 'createdAt' %}
-											<i class="fas fa-sort-{{ sortOrder == 'asc' ? 'up' : 'down' }} ms-1"></i>
+										{% if app.request.query.get('sortBy', 'createdAt') == 'createdAt' %}
+											<i class="fas fa-sort-{{ app.request.query.get('sortOrder', 'asc') == 'asc' ? 'up' : 'down' }} ms-1"></i>
 										{% endif %}
 									</a>
 								</th>
@@ -316,15 +317,15 @@
 								</td>
 
 								<!-- Table data -->
-								<td>{{ user.joinedAt }}</td>
+								<td>{{ user.createdAt|date('Y-m-d') }}</td>
 
 								<!-- Table data -->
-								<td>{{ user.lastLogin }}</td>
+								<td>N/A</td>
 
 								<!-- Table data -->
 								<td>
-									<a href="{{ path('admin_user_view', {'id': user.id}) }}" class="btn btn-sm btn-success-soft me-1 mb-1 mb-md-0">View</a>
-									<a href="{{ path('admin_user_edit', {'id': user.id}) }}" class="btn btn-sm btn-secondary-soft me-1 mb-1 mb-md-0">Edit</a>
+									<a href="{{ path('app_admin_user_show', {'id': user.id}) }}" class="btn btn-sm btn-success-soft me-1 mb-1 mb-md-0">View</a>
+									<a href="{{ path('app_admin_student_edit', {'id': user.id}) }}" class="btn btn-sm btn-secondary-soft me-1 mb-1 mb-md-0">Edit</a>
 									<button type="button" class="btn btn-sm btn-danger-soft mb-0" 
 											onclick="showDeleteConfirmation({{ user.id }}, '{{ user.name|e('js') }}', '{{ user.email|e('js') }}')" 
 											title="Delete User">
@@ -727,7 +728,7 @@ function performDeleteUser(userId) {
     // Create and submit form
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = `/admin/user/${userId}/delete`;
+    form.action = `/admin/users/${userId}/delete`;
     
     // Add CSRF token
     const csrfToken = document.createElement('input');

@@ -223,7 +223,7 @@ class DashboardController extends AbstractController
         // Count by role
         $users = $userRepo->findAll();
         foreach ($users as $user) {
-            if ($user->hasRole(\App\Enum\UserRole::TEACHER)) {
+            if ($user->hasRole(\App\Enum\UserRole::INSTRUCTOR)) {
                 $stats['totalTeachers']++;
             }
             if ($user->hasRole(\App\Enum\UserRole::STUDENT)) {

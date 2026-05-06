@@ -343,23 +343,58 @@ class EnrollmentController extends AbstractController
         $enrollmentData = [];
         foreach ($enrollments as $enrollment) {
             $course = $enrollment->getCourse();
+
+            // Skip if course is null (orphaned enrollment)
+            if ($course === null) {
+                continue;
+            }
+
+            // Enrollment may point to a deleted course. Resolve it by id to avoid initializing a broken proxy.
+            $courseId = $course->getId();
+            if ($courseId === null) {
+                continue;
+            }
+
+            // Check existence without initializing the proxy / relying on identity map
+            $exists = (bool) $this->entityManager->getConnection()->fetchOne(
+                'SELECT 1 FROM course WHERE id = ?',
+                [$courseId]
+            );
+            if (!$exists) {
+                continue;
+            }
             
             // Check if course is complete (progress >= 100 or status = completed)
             $isComplete = $enrollment->getProgress() >= 100 || $enrollment->getStatus() === 'completed';
             
-            // Check if user has certificate for this course
-            $certificate = $this->certificateRepository->findOneByUserAndCourse($user, $course);
-            $hasCertificate = $certificate !== null;
+            // Check if user has certificate for this course (with error handling for orphaned certificates)
+            $certificate = null;
+            $hasCertificate = false;
+            try {
+                $certificate = $this->certificateRepository->findOneByUserAndCourse($user, $course);
+                $hasCertificate = $certificate !== null;
+            } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+                // Certificate references a non-existent course, skip it
+                $hasCertificate = false;
+            }
             
             // Check if course has quizzes available
-            $canTakeQuiz = $course->getQuizzes()->count() > 0;
+            try {
+                $canTakeQuiz = $course->getQuizzes()->count() > 0;
+            } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+                continue;
+            }
             
             // Get first quiz if available
             $firstQuiz = null;
             if ($canTakeQuiz) {
-                foreach ($course->getQuizzes() as $quiz) {
-                    $firstQuiz = $quiz;
-                    break;
+                try {
+                    foreach ($course->getQuizzes() as $quiz) {
+                        $firstQuiz = $quiz;
+                        break;
+                    }
+                } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+                    $firstQuiz = null;
                 }
             }
             

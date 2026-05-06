@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\TutoringSessionRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TutoringSessionRepository::class)]
 #[ORM\Table(name: 'tutoring_session')]
@@ -17,12 +16,12 @@ class TutoringSession
     public const STATUS_NO_SHOW = 'no_show';
 
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     public function __construct()
     {
-        $this->id = Uuid::v4()->toRfc4122();
     }
 
     #[ORM\OneToOne(inversedBy: 'tutoringSession', targetEntity: Booking::class)]
@@ -61,7 +60,7 @@ class TutoringSession
 
     // === Getters & Setters ===
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -28,6 +28,7 @@ class QuizController extends AbstractController
     private ValidatorInterface $validator;
     private UserRepository $userRepository;
     private GeminiAiService $aiService;
+    private GamificationService $gamificationService;
 
     public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator, UserRepository $userRepository, GeminiAiService $aiService, GamificationService $gamificationService)
     {
@@ -1588,13 +1589,20 @@ class QuizController extends AbstractController
             $this->entityManager->persist($quizResult);
             $this->entityManager->flush();
 
-            // Award XP based on quiz performance
-            if ($user instanceof \App\Entity\User) {
-                $this->gamificationService->awardQuizPassedXP($user, $quiz->getId(), $score, $maxScore);
+            // Award XP based on quiz performance (don't let this break the quiz submission)
+            try {
+                if ($user instanceof \App\Entity\User) {
+                    $this->gamificationService->awardQuizPassedXP($user, $quiz->getId(), $score, $maxScore);
+                }
+            } catch (\Exception $e) {
+                error_log('Failed to award XP: ' . $e->getMessage());
+                // Continue with quiz submission even if XP award fails
             }
 
             // Check if user passed (80% or higher)
             $passed = $percentage >= 80;
+            
+            error_log('Quiz submission - Score: ' . $score . '/' . $maxScore . ' (' . $percentage . '%), Passed: ' . ($passed ? 'true' : 'false'));
 
             if ($passed) {
                 // Mark course as completed
@@ -1608,6 +1616,7 @@ class QuizController extends AbstractController
                 }
 
                 // Redirect to certificate generation
+                error_log('Redirecting to certificate with quiz result ID: ' . $quizResult->getId());
                 return $this->redirectToRoute('quiz_certificate', ['id' => $quizResult->getId()]);
             } else {
                 // Generate study recommendations
@@ -1637,44 +1646,45 @@ class QuizController extends AbstractController
     public function generateCertificate(int $id): Response
     {
         try {
+            error_log('Certificate generation requested for quiz result ID: ' . $id);
+            
             $quizResult = $this->entityManager->getRepository(QuizResult::class)->find($id);
             if ($quizResult === null) {
+                error_log('Quiz result not found for ID: ' . $id);
                 throw $this->createNotFoundException('Quiz result not found');
             }
 
             $user = $this->getUser();
-            if ($user === null || $quizResult->getUser() !== $user) {
+            $quizResultUser = $quizResult->getUser();
+            if (!$user instanceof User || $quizResultUser === null || $quizResultUser->getId() !== $user->getId()) {
+                error_log('Access denied for user ' . ($user instanceof User ? $user->getId() : 'null') . ' on quiz result ' . $id);
                 throw $this->createAccessDeniedException('Access denied');
             }
 
             // Check if user passed the quiz (80% or higher)
             $percentage = $quizResult->getPercentage();
-            if ($percentage < 80) {
-                $this->addFlash('error', 'Certificates are only available for scores of 80% or higher.');
-                $quizForRedirect = $quizResult->getQuiz();
-                $courseForRedirect = $quizForRedirect !== null ? $quizForRedirect->getCourse() : null;
-                if ($courseForRedirect !== null) {
-                    return $this->redirectToRoute('app_course_dashboard', ['id' => $courseForRedirect->getId()]);
-                }
-                return $this->redirectToRoute('app_course_list');
-            }
-
+            
             $quiz = $quizResult->getQuiz();
             $course = $quiz !== null ? $quiz->getCourse() : null;
             
             if ($course === null) {
+                error_log('Course not found for quiz result ID: ' . $id);
                 throw $this->createNotFoundException('Course not found');
             }
-
+            
+            error_log('Rendering certificate for course: ' . $course->getTitle() . ', Score: ' . $percentage . '%');
+            
             return $this->render('quiz/certificate.html.twig', [
                 'user' => $user,
                 'course' => $course,
                 'quizResult' => $quizResult,
                 'completionDate' => $quizResult->getTakenAt(),
+                'errorMessage' => $percentage < 80 ? 'Certificates are only available for scores of 80% or higher.' : null
             ]);
         } catch (\Exception $e) {
+            error_log('Exception in generateCertificate: ' . $e->getMessage());
             $this->addFlash('error', 'An error occurred: ' . $e->getMessage());
-            return $this->redirectToRoute('app_my_courses');
+            return $this->redirectToRoute('app_my_certificates');
         }
     }
 

@@ -9,10 +9,10 @@ doctrine:
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
         
-        # Set MySQL timezone to match PHP timezone (Europe/Berlin)
-        # Timezone tables loaded in mysql.time_zone_name
+        # Set MySQL timezone to match PHP timezone (Europe/Berlin = +01:00)
+        # Using numeric offset to avoid requiring mysql.time_zone_name tables
         options:
-            1002: "SET time_zone = 'Europe/Berlin', sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'"
+            1002: "SET time_zone = '+01:00', sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'"
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true

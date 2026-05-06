@@ -55,3 +55,9 @@ phpstan.neon
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+###> symfony/framework-bundle ###
+/.env
+/.env.local
+/.env.*.local
+###< symfony/framework-bundle ###

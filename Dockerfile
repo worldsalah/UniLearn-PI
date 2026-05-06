@@ -27,3 +27,4 @@ RUN php bin/console cache:warmup --env=prod 2>/dev/null || true
 
 # Start Symfony - warm cache again at runtime (DB available then)
 CMD sh -c "php bin/console cache:warmup --env=prod 2>/dev/null; php -S 0.0.0.0:$PORT -t public"
+0.0.0:$PORT -t public

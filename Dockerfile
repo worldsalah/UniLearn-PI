@@ -15,6 +15,7 @@ COPY . .
 
 RUN mkdir -p var/cache var/log var/sessions && chmod -R 777 var
 
+RUN php bin/console importmap:install
 RUN php bin/console cache:warmup --env=prod 2>/dev/null || true
 
 EXPOSE 8080

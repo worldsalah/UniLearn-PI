@@ -302,11 +302,11 @@ Le système est découpé en **5 modules fonctionnels**, chacun assigné à un m
 
 | # | Module | Entités Clés | Fonctionnalités | Responsable |
 |:---|:---|:---|:---|:---|
-| 1 | 🔐 **Authentification & Utilisateurs** | `User`, `Role` | Inscription, connexion, OAuth, Face ID, JWT, rôles, mot de passe oublié | Tebourbi Malek |
-| 2 | 📚 **Cours & Recommandation** | `Course`, `Chapter`, `Lesson`, `Recommendation` | CRUD cours, leçons, progression, recommandations IA, tableaux de bord | Membre 2 |
-| 3 | 📝 **Quiz & Certification** | `Quiz`, `Question`, `QuizResult`, `Certificate` | Quiz interactifs, scoring, certificats PDF, historique des tentatives | Membre 3 |
-| 4 | 📅 **Réservation & Séances** | `Booking`, `Session`, `Teacher` | Planification, réservation, séances en ligne, disponibilités | Membre 4 |
-| 5 | 💼 **Marketplace & Freelance** | `Product`, `Order`, `Job` | Marketplace, micro-services, commandes, profils freelances | Membre 5 |
+| 1 | 🔐 **Authentification & Utilisateurs** | `User`, `Role` | Inscription, connexion, OAuth, Face ID, JWT, rôles, mot de passe oublié | Kaoubi Omar |
+| 2 | 📚 **Cours & Recommandation** | `Course`, `Chapter`, `Lesson`, `Recommendation` | CRUD cours, leçons, progression, recommandations IA, tableaux de bord | Tebourbi Malek|
+| 3 | 📝 **Quiz & Certification** | `Quiz`, `Question`, `QuizResult`, `Certificate` | Quiz interactifs, scoring, certificats PDF, historique des tentatives | Zribi Islem |
+| 4 | 📅 **Réservation & Séances** | `Booking`, `Session`, `Teacher` | Planification, réservation, séances en ligne, disponibilités | Zemzemi Hajer |
+| 5 | 💼 **Marketplace & Freelance** | `Product`, `Order`, `Job` | Marketplace, micro-services, commandes, profils freelances | Anez Salah |
 
 ## 📊 Statistiques du Projet
 

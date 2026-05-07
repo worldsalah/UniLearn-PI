@@ -325,46 +325,6 @@ Le système est découpé en **5 modules fonctionnels**, chacun assigné à un m
 
 ---
 
-## 🧠 Défis Techniques Résolus
-
-### 1. Progression Dynamique Cohérente
-
-**Problème** : La progression affichée sur la page « Mes Cours » ne correspondait pas à l'état réel des complétions de leçons en base de données. Le champ `enrollment.progress` était mis à jour de manière asynchrone et parfois incorrecte.
-
-**Solution** : Recalcul systématique de la progression directement depuis la table `lesson_completion` à chaque affichage, en utilisant une requête DQL optimisée qui compte les leçons complétées par rapport au total des leçons du cours.
-
-### 2. Boutons Contextuels (Continue → Quiz → Certificate)
-
-**Problème** : Le bouton d'action restait « Continue Learning » même après complétion de toutes les leçons et réussite du quiz.
-
-**Solution** : Système de boutons dynamiques basé sur l'état réel en BDD : `hasCertificate` → View Certificate, `quizPassed` → View Certificate, `progress 100%` → Take Quiz, `progress <100%` → Continue Learning.
-
-### 3. Conflit de Routing QuizController / QuizAttemptController
-
-**Problème** : Deux contrôleurs définissaient la même route `quiz_take`, causant un comportement imprévisible selon l'ordre de chargement.
-
-**Solution** : Séparation claire des responsabilités — un seul contrôleur gère la route `quiz_take`.
-
-### 4. Chargement Paresseux (Lazy Loading) des Collections
-
-**Problème** : `$course->getChapters()->count()` retournait 0 car les chapitres n'étaient pas chargés en mémoire, faussant le calcul du nombre total de leçons.
-
-**Solution** : Utilisation de requêtes explicites via les Repository pour compter les leçons directement en BDD, sans dépendre du chargement paresseux.
-
-### 5. Turbo / Hotwire et Formulaires Symfony
-
-**Problème** : Turbo interceptait les soumissions de formulaires d'inscription et exigeait une réponse de redirection (3xx), alors que le contrôleur renvoyait du JSON ou du HTML 200.
-
-**Solution** : Désactivation de Turbo sur les formulaires d'authentification via `data-turbo="false"` et filtrage des requêtes Turbo dans le contrôleur.
-
-### 6. Certificats avec quizResult Null
-
-**Problème** : Certains enregistrements `Certificate` avaient `quiz_result_id = NULL`, causant des erreurs Twig lors de l'accès aux propriétés de la relation.
-
-**Solution** : Vérifications null-safe dans les templates Twig avec l'opérateur ternaire pour éviter l'accès à des propriétés sur des objets null.
-
----
-
 ## 👥 Équipe de Développement
 
 | Membre | Module | Technologies | Rôle |

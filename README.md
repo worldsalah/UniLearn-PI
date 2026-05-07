@@ -46,16 +46,6 @@
 | 🚀 **Production** | [UniLearn sur Railway](https://pi-websymfony-production.up.railway.app/) | ![Deploy](https://img.shields.io/badge/Actif-✓-brightgreen?style=flat-square) |
 | 🖥️ **Local** | `http://127.0.0.1:8000` | ![Dev](https://img.shields.io/badge/Développement-✓-blue?style=flat-square) |
 
-**Comptes de test :**
-
-| Rôle | Email | Mot de passe |
-|:---|:---|:---|
-| 👨‍🎓 Étudiant | `student@unilearn.com` | `student123` |
-| 👨‍🏫 Enseignant | `teacher@unilearn.com` | `teacher123` |
-| 🔧 Administrateur | `admin@unilearn.com` | `admin123` |
-
----
-
 ## ✨ Fonctionnalités Principales
 
 ### 🔐 Authentification & Sécurité
@@ -375,10 +365,7 @@ Le système est découpé en **5 modules fonctionnels**, chacun assigné à un m
 
 ---
 
-
----
-
-##  Équipe de Développement
+## 👥 Équipe de Développement
 
 | Membre | Module | Technologies | Rôle |
 |:---|:---|:---|:---|
@@ -401,7 +388,7 @@ symfony  ·  e-learning  ·  lms  ·  php  ·  education-platform  ·  quiz-syst
 certificate-generation  ·  doctrine-orm  ·  mysql  ·  twig  ·  google-gemini  ·  
 face-recognition  ·  marketplace  ·  jwt-authentication  ·  elasticsearch  ·  
 pdf-generation  ·  oauth2  ·  recaptcha  ·  bootstrap5  ·  docker  ·  
-recommendation-system  ·  chatbot  ·  student-platform  ·  multi-tenant
+recommendation-system  ·  chatbot  ·  student-platform
 ```
 
 **Mots-clés académiques :**
@@ -410,7 +397,7 @@ recommendation-system  ·  chatbot  ·  student-platform  ·  multi-tenant
 projet-intégré  ·  développement-web  ·  plateforme-éducative  ·  
 système-de-recommandation  ·  apprentissage-en-ligne  ·  évaluation-automatique  ·  
 certification-numérique  ·  architecture-mvc  ·  génie-logiciel  ·  méthodologie-agile  ·  
-scrum  ·  intégration-continue
+scrum  ·  symfony-6  ·  php-8
 ```
 
 ---
@@ -429,7 +416,7 @@ Il n'est pas destiné à un usage commercial sans autorisation préalable des au
 
 <br>
 
-**« Développer séparément. Penser globalement. Intégrer parfaitement. »**
+**« Conçu avec Symfony. Pensé pour l'apprentissage. Développé pour l'avenir. »**
 
 <br>
 

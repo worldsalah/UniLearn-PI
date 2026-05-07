@@ -43,7 +43,7 @@
 
 | Environnement | URL | Statut |
 |:---|:---|:---|
-| 🚀 **Production** | [UniLearn sur Railway]((https://pi-websymfony-production.up.railway.app/)) | ![Deploy](https://img.shields.io/badge/Actif-✓-brightgreen?style=flat-square) |
+| 🚀 **Production** | [UniLearn sur Railway](https://pi-websymfony-production.up.railway.app/) | ![Deploy](https://img.shields.io/badge/Actif-✓-brightgreen?style=flat-square) |
 | 🖥️ **Local** | `http://127.0.0.1:8000` | ![Dev](https://img.shields.io/badge/Développement-✓-blue?style=flat-square) |
 
 **Comptes de test :**
@@ -305,109 +305,6 @@
 
 ---
 
-## 📁 Structure du Projet
-
-```
-UniLearn-PI/
-│
-├── 📂 config/                          # Configuration Symfony
-│   ├── 📂 packages/                    # Configuration des bundles
-│   │   ├── doctrine.yaml              # ORM & connexion BDD
-│   │   ├── security.yaml              # Authentification & autorisation
-│   │   ├── mailer.yaml                # Configuration SMTP
-│   │   ├── knp_snappy.yaml            # Génération PDF
-│   │   └── fos_elastica.yaml          # Configuration Elasticsearch
-│   ├── 📂 routes/                      # Définition des routes
-│   └── 📂 jwt/                        # Clés publique/privée JWT
-│
-├── 📂 public/                          # Racine web
-│   ├── index.php                       # Point d'entrée Symfony
-│   └── 📂 assets/                      # CSS, JS, images
-│
-├── 📂 src/                             # Code source PHP
-│   ├── 📂 Controller/                  # Contrôleurs MVC
-│   │   ├── CourseController.php       # Gestion des cours
-│   │   ├── LessonController.php       # Leçons & complétion
-│   │   ├── QuizController.php         # Quiz & évaluation
-│   │   ├── QuizAttemptController.php  # Tentatives de quiz
-│   │   ├── EnrollmentController.php   # Inscriptions & progression
-│   │   ├── CertificateController.php  # Certificats PDF
-│   │   ├── RegistrationController.php # Inscription utilisateur
-│   │   ├── FaceAuthController.php     # Authentification faciale
-│   │   ├── BookingController.php      # Réservation de séances
-│   │   ├── MarketController.php       # Marketplace étudiante
-│   │   └── SearchController.php      # Recherche Elasticsearch
-│   │
-│   ├── 📂 Entity/                      # Entités Doctrine
-│   │   ├── User.php                   # Utilisateur (étudiant/enseignant/admin)
-│   │   ├── Role.php                   # Rôles & permissions
-│   │   ├── Course.php                 # Cours
-│   │   ├── Chapter.php                # Chapitres
-│   │   ├── Lesson.php                 # Leçons
-│   │   ├── Enrollment.php             # Inscription & progression
-│   │   ├── LessonCompletion.php       # Suivi de complétion
-│   │   ├── Quiz.php                   # Quiz
-│   │   ├── Question.php              # Questions
-│   │   ├── QuizResult.php            # Résultats de quiz
-│   │   ├── Certificate.php           # Certificats
-│   │   ├── Recommendation.php        # Recommandations IA
-│   │   ├── Booking.php               # Réservations
-│   │   ├── Session.php               # Séances en ligne
-│   │   ├── Product.php               # Produits marketplace
-│   │   └── Order.php                 # Commandes marketplace
-│   │
-│   ├── 📂 Repository/                  # Requêtes personnalisées
-│   │   ├── UserRepository.php
-│   │   ├── CourseRepository.php
-│   │   ├── LessonRepository.php
-│   │   ├── LessonCompletionRepository.php
-│   │   ├── QuizRepository.php
-│   │   ├── QuizResultRepository.php
-│   │   ├── CertificateRepository.php
-│   │   └── EnrollmentRepository.php
-│   │
-│   ├── 📂 Service/                     # Logique métier
-│   │   ├── FaceAuthService.php        # Service reconnaissance faciale
-│   │   ├── GeminiService.php          # Service Google Gemini AI
-│   │   ├── MailerService.php          # Service d'envoi d'emails
-│   │   ├── PdfService.php             # Service génération PDF
-│   │   └── SearchService.php          # Service Elasticsearch
-│   │
-│   └── 📂 Form/                        # Formulaires Symfony
-│       ├── RegistrationType.php
-│       ├── LoginType.php
-│       ├── CourseType.php
-│       ├── LessonType.php
-│       └── QuizType.php
-│
-├── 📂 templates/                       # Vues Twig
-│   ├── 📂 auth/                        # Pages d'authentification
-│   │   ├── sign-in.html.twig          # Connexion
-│   │   └── sign-up.html.twig          # Inscription
-│   ├── 📂 course/                      # Pages cours
-│   ├── 📂 lesson/                      # Pages leçons
-│   ├── 📂 quiz/                        # Pages quiz
-│   ├── 📂 enrollment/                  # Mes cours & progression
-│   ├── 📂 certificate/                 # Certificats
-│   ├── 📂 market/                      # Marketplace
-│   ├── 📂 booking/                     # Réservations
-│   ├── 📂 components/                  # Composants réutilisables
-│   │   ├── navbar.html.twig
-│   │   └── footer.html.twig
-│   └── front_base.html.twig           # Layout principal
-│
-├── 📂 migrations/                      # Migrations Doctrine
-├── 📂 var/                             # Cache, logs, sessions
-├── 📂 vendor/                          # Dépendances Composer
-│
-├── .env                                # Variables d'environnement
-├── composer.json                       # Dépendances & autoloading PHP
-├── Dockerfile                          # Image Docker multi-stage
-├── compose.yaml                        # Orchestration Docker Compose
-└── README.md                           # Documentation du projet
-```
-
----
 
 ## 🧩 Modules du Projet
 
